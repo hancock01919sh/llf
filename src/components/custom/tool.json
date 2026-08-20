@@ -1,0 +1,41 @@
+{
+  "collectionName": "components_custom_tools",
+  "info": {
+    "displayName": "Tool",
+    "icon": "command"
+  },
+  "options": {},
+  "attributes": {
+    "url_label": {
+      "type": "string",
+      "default": "Recipe URL",
+      "required": true
+    },
+    "url_placeholder": {
+      "type": "string",
+      "default": "Enter URL",
+      "required": true
+    },
+    "upload_label": {
+      "type": "string",
+      "default": "Image Upload",
+      "required": true
+    },
+    "upload_placeholder": {
+      "type": "string",
+      "default": "Upload Image",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "default": "Explainer copy guiding user on how to upload a recipe to the tool and mentioning several popular sites the tool works with.",
+      "required": true
+    },
+    "cta_label": {
+      "type": "string",
+      "default": "Find my tips",
+      "required": true
+    }
+  },
+  "config": {}
+}

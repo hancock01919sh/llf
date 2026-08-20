@@ -1,0 +1,42 @@
+{
+  "collectionName": "components_component_teasers",
+  "info": {
+    "displayName": "Teaser",
+    "icon": "briefcase"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "component",
+      "component": "shared.title",
+      "repeatable": false
+    },
+    "description": {
+      "type": "blocks"
+    },
+    "ctas": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": true
+    },
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "layout": {
+      "type": "enumeration",
+      "required": true,
+      "default": "Basic",
+      "enum": [
+        "Basic",
+        "Highlight",
+        "Quote"
+      ]
+    }
+  },
+  "config": {}
+}

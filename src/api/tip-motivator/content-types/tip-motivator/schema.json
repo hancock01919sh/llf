@@ -1,0 +1,19 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tip_motivators",
+  "info": {
+    "singularName": "tip-motivator",
+    "pluralName": "tip-motivators",
+    "displayName": "Tip Motivator"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

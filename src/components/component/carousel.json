@@ -1,0 +1,56 @@
+{
+  "collectionName": "components_component_carousels",
+  "info": {
+    "displayName": "Carousel",
+    "icon": "stack"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "component",
+      "component": "shared.title",
+      "repeatable": false
+    },
+    "description": {
+      "type": "text"
+    },
+    "categories": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::category.category",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "mode"
+            },
+            "categories"
+          ]
+        }
+      }
+    },
+    "mode": {
+      "type": "enumeration",
+      "required": true,
+      "default": "categories",
+      "enum": [
+        "categories"
+      ]
+    },
+    "layout": {
+      "type": "enumeration",
+      "required": true,
+      "default": "Basic",
+      "enum": [
+        "Basic",
+        "Compact"
+      ]
+    },
+    "ctas": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

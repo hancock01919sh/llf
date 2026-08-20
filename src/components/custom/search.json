@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_custom_searches",
+  "info": {
+    "displayName": "Search",
+    "icon": "search"
+  },
+  "options": {},
+  "attributes": {
+    "placeholder": {
+      "type": "string",
+      "default": "Search 100+ ingredients",
+      "required": true
+    }
+  },
+  "config": {}
+}

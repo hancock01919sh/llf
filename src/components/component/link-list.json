@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_component_link_lists",
+  "info": {
+    "displayName": "Link List",
+    "icon": "bulletList"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "component",
+      "component": "shared.title",
+      "repeatable": false
+    },
+    "description": {
+      "type": "blocks"
+    },
+    "pages": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::page.page"
+    },
+    "layout": {
+      "type": "enumeration",
+      "required": true,
+      "default": "Basic",
+      "enum": [
+        "Basic",
+        "Two Column"
+      ]
+    }
+  },
+  "config": {}
+}
