@@ -10,7 +10,7 @@ Instructions for AI coding agents (Copilot, Cursor, Claude, and others) and for 
 If a task touches anything marked **[OPEN]**, don't guess. Leave a `// TODO(OPEN-#): …` comment that points to the open-question number in [TDD §15](docs/TDD.md#15-open-questions), and mention it in the PR.
 
 ## Hard rules
-- **Figma is the source of truth for the UI.** TBWA's prototype code is reference only.
+- **Figma is the source of truth for the UI**, specifically the copy in the TBWA Worldwide org, not the MullenLowe original (TDD §6.1, OPEN-33). TBWA's prototype code is reference only.
 - **Never show AI-generated text to users.** Everything users read comes from Strapi or from the typed site strings in `apps/web/content/` (TDD D21). The model only returns structured data (ingredient names), and code matches that data against the CMS catalog. Show unmatched items as a **count**, never as raw model output.
 - **The AI provider must be swappable.** Every model call goes through `extractIngredients(input, ctx): Promise<ExtractionResult>` and a provider adapter (`mock`, `anthropic`, `openai`, `bedrock`). Choose the provider and model with env config (`AI_PROVIDER`, `AI_MODEL`), never with code changes.
 - **Use the mock adapter by default.** Local dev and CI run with `AI_PROVIDER=mock` and recorded fixtures. Live keys (ddd's Anthropic dev key, TBWA's capped OpenAI test key) are used only on Render dev and in the manually triggered `eval` suite.

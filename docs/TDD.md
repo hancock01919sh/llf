@@ -123,7 +123,7 @@ We're building **longlivefood.org**, a fast, accessible, SEO-friendly content si
 - Whether launch needs Spanish (OPEN-12)
 - Whether Ad Council IT accepts Render and Anthropic for development (OPEN-23, OPEN-2)
 - Whether the Copilot coding agent can be used in Ad Council's GitHub and Jira for copy changes (OPEN-32)
-- Moving the Figma file into an org where ddd has a Full or Dev seat (OPEN-33)
+- Confirming the TBWA Worldwide copy of the Figma file is the single design source (OPEN-33)
 
 See [§12.3](#123-decision-deadlines).
 
@@ -461,7 +461,7 @@ Repo: `AdCouncil/ending-wasted-food-strapi`, commit `f753967` ("initial checkin"
 | `shared.seo` | `metaTitle`, `metaKeywords`, `metaDescription` | **No canonical, OG image, or noindex.** Search engines ignore keywords |
 | `shared.title` | `copy`, `header` enum h1–h6 (default h3) | Editor-chosen heading level ✓ (matches the a11y requirement) |
 
-**Missing compared with the notes and the designs:** **Accordion**, **Modal**, **scroll-lock section**, global settings (header, nav, footer, social, default SEO), copy for the tool's UX states, unmatched-ingredient storage, publish webhooks, and the admin typeahead. **The full module gap list is waiting on the Figma audit** (§6.1), which is blocked on Figma access (OPEN-33). "Strings" from the walkthrough are handled in code, not as a CMS type (D21).
+**Missing compared with the notes and the designs:** **Accordion**, **Modal**, **scroll-lock section**, global settings (header, nav, footer, social, default SEO), copy for the tool's UX states, unmatched-ingredient storage, publish webhooks, and the admin typeahead. **The full module gap list is waiting on the Figma audit** (§6.1), which runs against the TBWA Worldwide copy of the file (OPEN-33). "Strings" from the walkthrough are handled in code, not as a CMS type (D21).
 
 
 ### 5.2 Proposed v1 schema [PROPOSED]
@@ -625,7 +625,7 @@ We self-host the free **Community** edition. Paid features would need a license 
 
 ### 6.1 Pages and routes
 
-**Figma file:** "Food Waste I Design R2" (pages: Desktop, Mobile, Design System). We have **view-only** access. **The module-by-module audit hasn't happened yet** (OPEN-10). The Figma MCP server is connected, but a View seat allows only about 20 MCP calls a month, which isn't enough for an audit. The file sits in the MullenLowe Figma org, which has no file admins left, so it has to move to an org where ddd has a Full or Dev seat first (OPEN-33, R17). The audit output fills in the template and block list (§5.2, §6.4) and the token mapping (§6.3).
+**Figma file:** "Food Waste I Design R2" (pages: Desktop, Mobile, Design System). We have **view-only** access. **The module-by-module audit hasn't happened yet** (OPEN-10). The Figma MCP server is connected, but a View seat allows only about 20 MCP calls a month, which isn't enough for an audit. The file sits in the MullenLowe Figma org, which has no file admins left. **Workaround (Oct 6):** Art duplicates it into the **TBWA Worldwide** org, where he has a Full seat (Enterprise, ≈ 600 MCP calls a day). From then on, **the TBWA copy is the design source of truth**, and design edits happen there, not in the MullenLowe original (OPEN-33, R17). Check that the copy kept its local components and styles from the Design System page; any linked from a MullenLowe library will be missing. The audit output fills in the template and block list (§5.2, §6.4) and the token mapping (§6.3).
 
 | Figma frame / source | Route [PROPOSED] | Data source | Notes |
 |---|---|---|---|
@@ -1321,10 +1321,10 @@ gantt
 
 | Phase (V2) | Dates | Tech exit criteria |
 |---|---|---|
-| Prereqs | Oct 2–7 | Repo set up on ddd GitHub (docs, agent guidelines, PR template). Strapi audit (§5.1). TDD v0.3 (WIP to the China team Oct 8). Figma MCP connected (audit blocked on OPEN-33). IAM ask sent (§9.1). Jira project and epics |
+| Prereqs | Oct 2–7 | Repo set up on ddd GitHub (docs, agent guidelines, PR template). Strapi audit (§5.1). TDD v0.3 (WIP to the China team Oct 8). Figma MCP connected; file copied to TBWA Worldwide for the audit (OPEN-33). IAM ask sent (§9.1). Jira project and epics |
 | **Dev start / China kickoff** | **Thu Oct 8** | China team onboarded on docs, Figma, and Jira. TDD WIP walkthrough and feedback. Network access from China checked (§11.4) |
 | Env setup | Oct 8–15 | Local stack (Docker Compose Postgres, seed, mock tool). **Render dev** live from `dev`. CI green. Branch protection |
-| Tech validation | Oct 8–16 | Oct 16 spikes in [`PROOF_DOC.md`](./PROOF_DOC.md) closed (P1–P5, P8, P9, P13). Figma module audit (OPEN-10, needs OPEN-33). Eval set v0 (80–120 items). **Oct 16 decisions** (§12.3). **TDD v1.0**. Art owns repo work until the move; the China team does onboarding, Figma specs, and Jira (§11.4) |
+| Tech validation | Oct 8–16 | Oct 16 spikes in [`PROOF_DOC.md`](./PROOF_DOC.md) closed (P1–P5, P8, P9, P13). Figma module audit on the TBWA copy (OPEN-10). Eval set v0 (80–120 items). **Oct 16 decisions** (§12.3). **TDD v1.0**. Art owns repo work until the move; the China team does onboarding, Figma specs, and Jira (§11.4) |
 | BE CMS structure | Oct 8–21 | Schema v1 (§5.2) on cms-dev. Roles. Seed pipeline and validated project seed (P6). `strapi transfer` proven (P7). Publish hook (§5.3) |
 | FE | Oct 8–Nov 18 | Skeleton of every route, template, and block by Alpha (~Nov 11), then **feature-complete Nov 18**: everything in §6, with a11y and SEO. Toolkit desktop and mobile. Search |
 | BE API | Oct 22–Nov 11 | Find My Tips end to end (URL, image, text) with quota, kill switch, and the status endpoint (§7). Eval round 1 → model recommendation (Nov 13) |
@@ -1423,7 +1423,7 @@ James Calhoun reviews architecture and security decisions. Image selection (Coll
 | R14 | Scope creep (detail pages, recipes, fridge photos, Spanish, broader analytics) | M | H | Decision log. Design is locked. Change requests for anything not in §2. Broader analytics is a separate scope (OPEN-27) |
 | R15 | Friday launch with weekend traffic | M | M | Dark deploy on prod Jan 4–7. DNS-only cutover. Weekend on-call |
 | R16 | **The client depends on developers or agents for copy changes** (site strings in code, D21) | M | M | Copy-change issue form → coding agent → PR preview (§5.2). Process docs for whoever maintains it after handoff. Strings the client edits often move into the CMS (Tool Copy, Global, or a slot). Gauged with the China team in P13 |
-| R17 | **Figma access and MCP limits** block the audit and token mapping (file stuck in the MullenLowe org; a View seat gets ≈ 20 MCP calls a month) | H | M | Move the file (OPEN-33). Use a Full or Dev seat (200 calls a day on Pro, 600 on Organization and Enterprise). Until then, audit by hand from view-only access |
+| R17 | **Figma access and MCP limits** block the audit and token mapping (file stuck in the MullenLowe org; a View seat gets ≈ 20 MCP calls a month) | H | M | Copy the file into TBWA Worldwide (Art's Full seat, Enterprise: ≈ 600 calls a day) and make the copy the only file anyone edits (OPEN-33). **New risk from the copy:** design drift if edits keep landing in the MullenLowe original, so freeze it once the copy exists |
 
 ---
 
@@ -1495,7 +1495,7 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | OPEN-30 | **Seed content source**: Dan's export, earlier Ad Council campaign content, coalition spreadsheets, or a mix? Who approves the scraped content? | Ad Council content + ddd | Oct 16 |
 | OPEN-31 | **What "US-only" covers.** Our reading: AI-provider processing and retention, plus everything we store (all in `us-east-1`); CloudFront and WAF edges are global. If it must hold end to end, the tool API uses a regional API Gateway and regional WAF (§2.4, §9.1) | Ad Council legal (via Danish) | Nov 13 |
 | OPEN-32 | Is the **Copilot coding agent** (and its Jira integration) available in Ad Council's GitHub org and Jira? Who files copy changes after handoff, and can client editors file GitHub issues or Jira tickets? (§5.2) | Ad Council IT + ddd | Oct 16 |
-| OPEN-33 | **Figma file transfer** out of the MullenLowe org (no file admins left; Amber is the org admin; Colleen filed a ticket, and Sam can file future ones) into an org where ddd has a Full or Dev seat, for example TBWA Worldwide (§6.1) | Colleen Miller / Sam + ddd | Oct 16 |
+| OPEN-33 | **Figma file location.** ~~Transfer out of the MullenLowe org~~ (no file admins; Amber is the org admin; Colleen's ticket is open). **Workaround (Oct 6):** Art copies the file into TBWA Worldwide (Full seat). **Still open:** Colleen and Sam confirm all design edits move to the TBWA copy and the MullenLowe original is frozen. If the original's share settings block copying, fall back to the transfer ticket (§6.1) | Colleen Miller / Sam + Art | Oct 8 |
 
 ---
 
@@ -1535,4 +1535,4 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.1 | 2026-10-06 | Art Longbottom (with Copilot) | First draft after the Strapi audit. Figma module audit pending |
 | 0.2 | 2026-10-06 | Art Longbottom (with Copilot) | Aligned with the Tech Process, V2 timeline, weekly status, and kickoff. TL decisions: Render Phase A, Postgres everywhere, Tailwind + shadcn, IP-only CMS admin, `dev`/`staging`/`prod` branches, scrape → seed, ddd Anthropic dev key, GitHub move. Review fixes: no user text stored or sent to analytics, spend alerts aren't caps, EB load-balanced only, no 2FA claim, D1 to PROPOSED. Added §0, §8 scope, §9.6, §11.3–§11.6, §12.2, OPEN-23–30, R12–R15, D12–D20 |
 | 0.2.1 | 2026-10-06 | Art Longbottom (with Copilot) | Second review pass. CloudFront Function rewrites every request to the release prefix, with a stable `/404.html`. Relay authenticates as a GitHub App via its own Function URL; `repository_dispatch` runs from `dev` and checks out the target branch. Tool API: Lambda authorizer on the origin header, default endpoint disabled. CMS in public subnets with no NAT (VPC endpoints as the costed alternative). Search term moved to the URL fragment; sanitized `page_location`; WAF log redaction. Static preview environment. Migration fallback via `strapi export`/`import`. China team timing until the repo move. Oct 16 gate uses a synthetic fixture seed; Oct 21 seed gate; Alpha is a skeleton, feature-complete Nov 18; RC is the first dark `prod` merge. OPEN-14 due Oct 14. US-only scope clarified, OPEN-31 added |
-| 0.3 | 2026-10-06 | Art Longbottom (with Copilot) | Folded in the full kickoff transcript. **Hybrid content model** (D21): CMS for collections, Global, Tool Copy, rich text, and asset slots; site strings and page templates in code; dynamic-zone blocks only for generic pages; Microcopy type dropped. Copy-change flow (issue → coding agent → PR → Render preview). §6.4 rewritten. AWS access facts (IAM users, partial permissions). China team on Render PR previews and cms-dev accounts, process docs, Oct 8 WIP review. Images: lifestyle (iStock), categories (stock first), ingredients (AI approved), optional LLF-IMAGES epic. Added D21, R16–R17, OPEN-32–33, P13 |
+| 0.3 | 2026-10-06 | Art Longbottom (with Copilot) | Folded in the full kickoff transcript. **Hybrid content model** (D21): CMS for collections, Global, Tool Copy, rich text, and asset slots; site strings and page templates in code; dynamic-zone blocks only for generic pages; Microcopy type dropped. Copy-change flow (issue → coding agent → PR → Render preview). §6.4 rewritten. AWS access facts (IAM users, partial permissions). China team on Render PR previews and cms-dev accounts, process docs, Oct 8 WIP review. Images: lifestyle (iStock), categories (stock first), ingredients (AI approved), optional LLF-IMAGES epic. Added D21, R16–R17, OPEN-32–33, P13. Figma: Art copies the file into TBWA Worldwide (Full seat), and the copy becomes the design source (OPEN-33, R17) |
