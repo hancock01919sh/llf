@@ -7,7 +7,7 @@
 | **Delivery** | dotdotdash (ddd) |
 | **Owner / author** | Art Longbottom (tech lead) |
 | **Reviewers** | James Calhoun (tech lead), James Steele (AWS/DevOps), Adam Paikowsky (analytics), Danish Aziz (PM), China dev team (Eva Fan, Alessandro Grena, Maggie Ding) |
-| **Status** | **DRAFT v0.3.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
+| **Status** | **DRAFT v0.3.1.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
 | **Last updated** | 2026-10-06 |
 | **Go-live** | **Friday, January 8, 2027** (go/no-go Thursday, January 7). There's **no contingency** after final QA |
 
@@ -113,6 +113,7 @@ We're building **longlivefood.org**, a fast, accessible, SEO-friendly content si
   - It stores media on local disk.
   - It includes the Strapi Cloud plugin.
 - Several types and modules from the walkthrough are missing: Accordion, Modal, global nav/footer, and scroll-lock. "Strings" from the walkthrough move to code rather than a CMS type (D21).
+- **The Figma audit is done** (Oct 6, [§6.1](#61-pages-and-routes)). Accordion is confirmed. The Modal is a Tip Modal built as UI, not a CMS block (D22). Scroll-lock has no spec (OPEN-36). Design gaps for Colleen: missing tool states and the dish photo (OPEN-34), General Tips, 404, and mobile Toolkit (OPEN-39), and placeholder copy and nav labels (OPEN-38).
 - A few fields differ from the notes. Ingredient uses `title`, not `name`, and `synonyms` is one string rather than a list.
 - Dan's content entries aren't in the repo. So we **seed the content ourselves** ([§5.5](#55-content-seeding-and-migration)).
 
@@ -123,7 +124,8 @@ We're building **longlivefood.org**, a fast, accessible, SEO-friendly content si
 - Whether launch needs Spanish (OPEN-12)
 - Whether Ad Council IT accepts Render and Anthropic for development (OPEN-23, OPEN-2)
 - Whether the Copilot coding agent can be used in Ad Council's GitHub and Jira for copy changes (OPEN-32)
-- Confirming the TBWA Worldwide copy of the Figma file is the single design source (OPEN-33)
+- Confirming the TBWA Worldwide copy of the Figma file is the single design source, and freezing the original (OPEN-33)
+- Whether the tool accepts video links, which the Figma input copy shows (OPEN-35)
 
 See [§12.3](#123-decision-deadlines).
 
@@ -155,10 +157,10 @@ See [§12.3](#123-decision-deadlines).
 |---|---|---|
 | FR-1 | Editors create Pages and fill their content slots. Generic pages (About, General Tips, and similar) are arranged from a library of blocks (dynamic zone). Designed pages use fixed templates (D21) | [CONFIRMED]; template/block split [TL DECISION] |
 | FR-2 | The CMS manages tips, ingredients (with synonyms and a wasted score), categories, groups, and taxonomies | [CONFIRMED] |
-| FR-3 | Find My Tips accepts a recipe URL and an image. The image can be a receipt, a list, a recipe, or **a photo of a dish** (it should recognize the dish and infer its ingredients). Pasted text is [PROPOSED] | [CONFIRMED] (dish recognition: kickoff) |
+| FR-3 | Find My Tips accepts a recipe URL and an image. The image can be a receipt, a list, a recipe, or **a photo of a dish** (it should recognize the dish and infer its ingredients). Pasted text is [PROPOSED]. Figma shows two modes, "Paste a Link" ("Enter a recipe URL or video link") and "Upload an Image" ("Photo of your fridge or pantry"). Video links are new scope (OPEN-35), and the dish-photo flow isn't designed (OPEN-34) | [CONFIRMED] (dish recognition: kickoff; modes: Figma `1:7980`) |
 | FR-4 | Show matched ingredients with their CMS tips, sorted by `wasted` and then by tip priority | [CONFIRMED]/[PROPOSED] |
 | FR-5 | Handle these UX states: loading, success, partial, no-match, unreadable, rate-limited, unavailable, error. All copy comes from the CMS | [CONFIRMED]/[PROPOSED] |
-| FR-6 | Site search across ingredients, tips, and categories ("Search 100+ ingredients") | [CONFIRMED] (Figma `Search_All`). The repo has only a `custom.search` placeholder component, and the behavior is **not built** |
+| FR-6 | Site search across ingredients, tips, and categories ("Search 100+ ingredients") | [CONFIRMED] (Figma Search frames `1:1609`, `1:1702`, `1:4327` and the header search popover `1:7183`). The repo has only a `custom.search` placeholder component, and the behavior is **not built** |
 | FR-7 | Category pages: show either all tips for the category's ingredients or hand-picked tips | [VERIFIED] (`mode` enum) |
 | FR-8 | Help editors find gaps in the catalog (unmatched ingredients) **without storing what users type** | [PROPOSED]. **Off at launch** until legal agrees (OPEN-5, [§7.8](#78-catalog-gaps)) |
 | FR-9 | `finishthefridge` domains redirect (301) to longlivefood.org | [CONFIRMED] |
@@ -461,7 +463,7 @@ Repo: `AdCouncil/ending-wasted-food-strapi`, commit `f753967` ("initial checkin"
 | `shared.seo` | `metaTitle`, `metaKeywords`, `metaDescription` | **No canonical, OG image, or noindex.** Search engines ignore keywords |
 | `shared.title` | `copy`, `header` enum h1–h6 (default h3) | Editor-chosen heading level ✓ (matches the a11y requirement) |
 
-**Missing compared with the notes and the designs:** **Accordion**, **Modal**, **scroll-lock section**, global settings (header, nav, footer, social, default SEO), copy for the tool's UX states, unmatched-ingredient storage, publish webhooks, and the admin typeahead. **The full module gap list is waiting on the Figma audit** (§6.1), which runs against the TBWA Worldwide copy of the file (OPEN-33). "Strings" from the walkthrough are handled in code, not as a CMS type (D21).
+**Missing compared with the notes and the designs:** **Accordion** (confirmed in Figma), **Modal** (resolved: a Tip Modal built as UI, D22), **scroll-lock section** (no Figma spec, OPEN-36), global settings (header, nav, footer, social, default SEO), copy for the tool's UX states, unmatched-ingredient storage, publish webhooks, and the admin typeahead. **The Figma audit is done** (Oct 6, §6.1). Its additions are in the §5.2 component rows: `component.accordion`, `component.asset-list`, `component.jump-nav`, and an optional `component.logo-grid`. "Strings" from the walkthrough are handled in code, not as a CMS type (D21).
 
 
 ### 5.2 Proposed v1 schema [PROPOSED]
@@ -490,15 +492,16 @@ erDiagram
 | Ingredient | Use the **Ingredient Type collection** (manyToOne) and **drop the `type` enum** | Editors can manage types without a schema change, and it removes the duplicate |
 | Ingredient | Add `searchable` boolean (default true), add `plural` (optional string) | Hide pantry staples from search. Better handling of plurals |
 | Tip | Add `slug` (uid), `priority` int (default 0) | Stable IDs and sort order within an ingredient |
-| Tip | `description` → **blocks** (rich text) | The designs show formatted tips. Need to confirm against Figma |
+| Tip | `description` → **blocks** (rich text) | Figma tip cards and the Tip Modal (`1:10735`) show a headline plus a formatted body. [VERIFIED] (Figma audit) |
 | Tip | `tip_type` / `tip_behavior` → explicit **manyToOne**. `tip_motivator` → **manyToMany** (to be decided with content) | Make the relationships match how they're meant to work (§5.1 note) |
 | Category | `ingredients` and `tips` → **manyToMany** (one-way is fine) | One ingredient or tip can appear in several categories (§5.1 note) |
 | Components | `carousel.categories`, `link-list.pages`, `tip-list.tips` → **manyToMany**. `shared.cta.page` → **manyToOne** | Many modules can point at the same page, category, or tip |
 | Tip | *Option:* `ingredients` manyToMany in place of the single `ingredient` | Generic tips such as "freeze bread" apply to many ingredients. **Decide with the content team (OPEN-14, due Oct 14, before the seed format is locked).** The default is to keep manyToOne for simplicity. A later "yes" doesn't block: `ingredients` is added **additively** as the expand step below, and the seed JSON already stores tip → ingredient links as a list |
 | Category, Group | `slug` → **uid**. Add `slug` to Group | URLs and uniqueness |
-| Tip Behavior / Motivator / Type | Add `slug`, `description`. **Seed the 7 coalition behaviors** | Filters and analytics |
+| Group | Add `layout` enum [carousel, image-cards, emoji-cards, list, featured] and `order` int (additive) | The Library page in Figma (`1:1310`) stacks about 10 Group sections in different layouts (Ingredient Reputations, Cuisine, Easy to Miss, Weeknight Staples, Grocery Aisles, and others). Editors pick the layout and order, and code owns how each layout looks (§6.4) |
+| Tip Behavior / Motivator / Type | Add `slug`, `description`. **Seed the 7 coalition behaviors**. Seed the Tip Types the designs use: `use-it`, `store-it`, `rescue-it`, and `buy-it` (Search frame) | Filters and analytics. The type badge (`1:7919`) picks its color from the slug in code, using contrast-safe pairs (§6.3) |
 | Page | Add a `template` enum [generic, home, find-my-tips, library] and optional **slot** fields: `hero` (a single `component.hero`), `intro` (blocks), `featured` (relations), `tool` (a single `custom.tool`). Unused slots are hidden with **conditional fields**, as Category already does for `mode`. `main` (dynamic zone) is shown only for the generic template | D21. Designed pages keep a fixed layout in code, and editors still own the copy and images. Confirmed in P13 |
-| **Global** (new single type) | `siteName`, `header` (nav links), `footer` (link groups, legal, social), `defaultSeo`, `defaultOgImage`, `organization` (for JSON-LD) | No global settings exist yet |
+| **Global** (new single type) | `siteName`, `header` (nav links), `footer` (link groups, legal text including the EPA assistance-agreement line, social, "Manage Preferences" link if a CMP is needed, OPEN-18), `defaultSeo`, `defaultOgImage`, `organization` (for JSON-LD) | No global settings exist yet. The "All tips reviewed by food experts" badge in the designs is a site string (§6.4) |
 | **Tool Copy** (new single type) | Copy for every Find My Tips state: loading messages, success heading, partial-match note, no-match, unreadable, rate-limited, **unavailable** (kill switch), error, privacy notice, "unmatched count" template | FR-5. The client still has to supply the no-match and unreadable copy (OPEN-8) |
 | ~~Microcopy~~ | **Not a CMS type** (D21). Site strings (button labels, form hints, aria labels, the 404 page, empty states) live in typed files in `apps/web/content/` and ship with a deploy | Covers "Strings" from the walkthrough. Strings rarely change, and agents and developers can edit them safely by PR with types and a preview (§6.4) |
 | ~~Ingredient Gap~~ | **Not at launch.** v0.1 proposed storing unmatched terms. Free-text terms can contain personal data, so we store **no user text** until legal decides (OPEN-5, §7.8) | Privacy |
@@ -510,9 +513,12 @@ erDiagram
 | `shared.cta` | Add `variant` [primary, secondary, link], `openInNewTab`, `trackingLabel` (optional, sent in `cta_click`) |
 | `custom.tool` | Add `text_label`, `text_placeholder` (if pasted text is approved), `accepted_inputs` (multi-select), `privacy_note` (blocks) |
 | **`component.accordion`** (new) | `title`, `items[] { question, answer (blocks) }`, `emitFaqSchema` boolean (FAQPage JSON-LD) |
-| **`component.modal`** (new) | Needs a decision on whether it's a standalone block or a CTA behavior. **Confirm in Figma** |
-| **`component.scroll-lock`** (new) | `title`, `panels[] { heading, body, image }`, `layout`. Built with sticky positioning, with a static fallback under reduced motion (§6.5) |
-| Others | Added according to the **Figma module audit** (§6.1). A module becomes a CMS block only if generic pages need it. Otherwise it's built into a template (§6.4) |
+| ~~`component.modal`~~ | **Dropped** (D22). Figma's only modal is the Tip Modal (`1:10735`), which shows CMS tips one at a time. It's UI built from Radix Dialog plus a carousel (§6.6), not an editor-placed block |
+| ~~`component.scroll-lock`~~ | **Deferred** (D22, OPEN-36). Figma has no scroll-lock or sticky spec. The animated Home sections (Animated Headline `1:7162`, Ingredient Tips `1:7233`, Groceries Stat `1:7350`, Usual Suspects `1:7461`) are built into the Home template with a static fallback under reduced motion (§6.6). If a generic page later needs one, add it then |
+| **`component.asset-list`** (new) | `title`, `anchor` (slug for jump links), `items[] { title, medium, file (media), thumbnail, size? }`, `layout` [full-width, wide, tall, medium]. For the Toolkit download sections (Figma `1:1826`–`1:1908`, cards `1:8202`/`1:8216`/`1:8238`/`1:8257`). Clicks send `file_download` (§8) |
+| **`component.jump-nav`** (new) | `items[] { label, anchor }`. The Toolkit badge row (`1:1825`). Renders in-page links to `asset-list` anchors |
+| **`component.logo-grid`** (new, optional) | `title`, `logos[] { image, alt, url? }`. Partner logos on About (WWF, ReFED, WRAP, US Composting Council, ILSR). Only if editors need to change them; otherwise the About copy uses a teaser image |
+| Others | None from the Figma audit (§6.1). Everything else is a template section (§6.4) or shell UI. A module becomes a CMS block only if a generic page needs it |
 
 **Two-phase schema migration** [PROPOSED]. Changing a relation's type or a field's type in place can silently drop data in Strapi, so every non-additive change goes in two steps:
 1. **Expand.** Add the new field or relation (for example `synonyms_list`, or `ingredients_v2` as manyToMany) next to the old one. A migration script in `apps/cms/database/migrations` copies the data across, which is idempotent and logged. The frontend reads the new field, with a fallback to the old one.
@@ -625,24 +631,28 @@ We self-host the free **Community** edition. Paid features would need a license 
 
 ### 6.1 Pages and routes
 
-**Figma file:** "Food Waste I Design R2" (pages: Desktop, Mobile, Design System). We have **view-only** access. **The module-by-module audit hasn't happened yet** (OPEN-10). The Figma MCP server is connected, but a View seat allows only about 20 MCP calls a month, which isn't enough for an audit. The file sits in the MullenLowe Figma org, which has no file admins left. **Workaround (Oct 6):** Art duplicated it as ["Food Waste | Design Copy"](https://www.figma.com/design/IgstWizeCgx5EsDVEJAhnM/) and moves it into a **TBWA Worldwide** project, where he has a Full seat (Enterprise, ≈ 600 MCP calls a day). Until it's moved, the MCP server reports no edit access (it landed in a plan where Art has a View seat). From then on, **the TBWA copy is the design source of truth**, and design edits happen there, not in the MullenLowe original (OPEN-33, R17). Check that the copy kept its local components and styles from the Design System page; any linked from a MullenLowe library will be missing. The audit output fills in the template and block list (§5.2, §6.4) and the token mapping (§6.3).
+**Figma file (design source of truth):** the working copy ["Untitled"](https://www.figma.com/design/JZTCmehamc5QkAYw1lw5jW/) (key `JZTCmehamc5QkAYw1lw5jW`) in the **TBWA Worldwide** org, where Art has a Full seat (Enterprise, ≈ 600 MCP calls a day). It's a duplicate of "Food Waste I Design R2" in the MullenLowe org, which has no file admins left. An earlier copy (`IgstWizeCgx5EsDVEJAhnM`) landed in a plan with only a View seat and isn't used. Still to do (OPEN-33): rename the copy (it's still called "Untitled"), freeze the MullenLowe original, and have Colleen and Sam confirm that design edits happen only in the copy (R17).
+
+**Figma audit [VERIFIED] (Oct 6, via MCP; closes OPEN-10).** The copy kept its components and variables. Pages: Desktop `0:1`, Mobile `1:3600`, Design System `1:5779` (tokens, §6.3), Components `1:5992` (39 component sets, 28 components), Mobile Specs `1:9756`, and Desktop Specs `1:12636`. The specs pages are **directional**: they describe intent, and the implementation details are ddd's call. Grids are **desktop 1440** (12 columns, 20 gutter, 60 margin) and **mobile 402** (6 columns, 20 gutter, 20 margin). **There are no tablet frames**, so tablet layouts are interpolated in code and reviewed with Colleen. The full audit (module catalog, component map, screenshots) is kept with ddd's working notes, and the decisions it led to are in D22. Known Figma housekeeping: the Toolkit frame `1:1801` is mislabeled `Search_All`, and the component set `Mobile` `1:8574` has property errors to fix before using Code Connect.
 
 | Figma frame / source | Route [PROPOSED] | Data source | Notes |
 |---|---|---|---|
-| Homepage | `/` | Page (`path: /`, `template: home`) | Home template: hero slot, featured relations, site strings |
-| Tool Landing | `/find-my-tips/` | Page (`template: find-my-tips`) + `tool` slot | Inputs: URL, upload, dish photo (FR-3) |
-| Loading Screen | client state on `/find-my-tips/` | Tool Copy | Shows progress messages. No route change |
-| Output List Page | `/find-my-tips/results/?i=broccoli,chorizo` | Per-ingredient JSON in the current release | **noindex**. Shareable because the URL holds only matched slugs. `?i=` is **capped at 30 slugs** and unknown slugs are dropped |
-| Library Landing Page | `/tips/` | Page (`template: library`) + Groups/Categories | Library home |
-| Category List-Alt | `/tips/[category]/` | Category (+ `seo`) | Shows tips by `mode` (FR-7) |
-| General Tips | `/general-tips/` (path set in the CMS) | Page (generic template): existing blocks | **Back in the nav** per the weekly status (FR-11) [CONFIRMED] |
-| Search_All (3 frames) | `/search/#q=` | Client-side index (§6.5) | Every result state shown in the frames. The term is in the URL **fragment**, so it never reaches CloudFront, WAF, or any server log, and it's not in analytics `page_location` (§8). It still works with sharing and the back button |
-| About | `/about/` | Page (generic template) + Accordion block | Finish the Fridge FAQ (FR-10) |
-| Toolkit | TBD (e.g. `/toolkit/`) | Page (generic template): blocks + downloads | Desktop design delivered Sep 30. **ddd adapts it for mobile**, and it needs coalition approval (FR-12) |
-| 404 | `/404.html` | Site strings (`content/`) | Custom, branded, and noindexed. Served for unknown paths on Render and AWS |
+| Homepage (`1:1286` / `1:4499`) | `/` | Page (`path: /`, `template: home`) | Home template: hero slot (muted looping video with a pause control, §6.6), Tip of the Week, the animated sections (OPEN-36), category carousels, and the Highlight CTA |
+| Tool Landing (`1:1402` / `1:4571`) | `/find-my-tips/` | Page (`template: find-my-tips`) + `tool` slot | Two modes: "Paste a Link" and "Upload an Image" (FR-3). The dish-photo flow isn't designed (OPEN-34), and video links are OPEN-35 |
+| Loading Screen (`1:1791` / `1:4708`) | client state on `/find-my-tips/` | Tool Copy | Shows progress messages. No route change |
+| Output List Page (`1:1564` / `1:4418`) | `/find-my-tips/results/?i=broccoli,chorizo` | Per-ingredient JSON in the current release | **noindex**. Shareable because the URL holds only matched slugs. `?i=` is **capped at 30 slugs** and unknown slugs are dropped |
+| Library Landing Page (`1:1310` / `1:4766`) | `/tips/` | Page (`template: library`) + Groups/Categories | About 10 Group sections, each rendered by its `layout` in `order` (§5.2, §6.4) |
+| Category List-Alt (`1:1526` / `1:4235`) | `/tips/[category]/` | Category (+ `seo`) | Shows tips by `mode` (FR-7). Tips open in the Tip Modal (§6.6). Mobile adds "Share this list" (`1:4300`) |
+| General Tips | `/general-tips/` (path set in the CMS) | Page (generic template): existing blocks | **Back in the nav** per the weekly status (FR-11) [CONFIRMED]. **No Figma frame** (OPEN-39) |
+| Search (`1:1609`, `1:1702` / `1:4327`), plus the header popover (`1:7183`) | `/search/#q=` | Client-side index (§6.5) | Every result state shown in the frames. The term is in the URL **fragment**, so it never reaches CloudFront, WAF, or any server log, and it's not in analytics `page_location` (§8). It still works with sharing and the back button |
+| About (`1:1466` / `1:4648`) | `/about/` | Page (generic template): teaser, accordion, and CTA blocks, plus an optional logo grid | Finish the Fridge FAQ (FR-10). Its fixed section order in Figma is reproduced with blocks |
+| Toolkit (`1:1801`, mislabeled `Search_All`) | TBD (e.g. `/toolkit/`) | Page (generic template): `jump-nav`, `asset-list`, and `accordion` blocks | Desktop design delivered Sep 30. **No mobile frame**, so ddd adapts it for mobile (OPEN-39), and it needs coalition approval (FR-12) |
+| 404 | `/404.html` | Site strings (`content/`) | Custom, branded, and noindexed. Served for unknown paths on Render and AWS. **No Figma frame** (OPEN-39) |
 | *Not in design* | `/tips/[category]/[tip]/`, `/ingredients/[slug]/` | — | Possible SEO pages after launch (OPEN-15) |
 
 Any other Page entries in Strapi are rendered at their `path` by a catch-all route (`/[...path]`) with the **generic template** (blocks in the `main` dynamic zone, §6.4). Category and Search routes use fixed templates and have no Page entry.
+
+**Overlays and states that aren't routes:** the mobile menu (`1:4721`, a Radix Sheet that returns to the current route on close), the Tip Modal (`1:10735`, §6.6), Save/Share (`1:10947`, §6.6), and the tool's loading and error states (§7.10).
 
 **Slugs and IDs.** Shared URLs (`?i=`), analytics, and the tool's catalog all depend on slugs. So:
 - After the first publish, a slug is **locked**. A lifecycle hook stops edits unless a Super Admin sets `allowSlugChange`, and then a redirect is added.
@@ -677,7 +687,49 @@ During the build:
 
 ### 6.3 Styling and the component library [TL DECISION]
 - **Tailwind CSS (v4)** plus **shadcn/ui** (built on Radix primitives). The shadcn components are copied into `packages/ui`, so **we own the code**: no runtime dependency on a hosted component library, and the styling follows the brand.
-- **Design tokens:** colors, type scale, spacing, radii, and breakpoints come from the Figma **Design System** page (via MCP; OPEN-10). They're defined once as CSS variables in `packages/ui/styles/tokens.css` and wired into Tailwind's `@theme`. No raw hex values or magic numbers in components; a lint rule (`eslint-plugin-tailwindcss` or a custom rule) enforces this.
+- **Design tokens [VERIFIED] (Figma Design System page `1:5779`, Oct 6):** Figma has **no local styles**. Every color, spacing, and radius value is a Figma variable, so the mapping is one to one. They're defined once as CSS variables in `packages/ui/styles/tokens.css` and wired into Tailwind's `@theme`. No raw hex values or magic numbers in components; a lint rule (`eslint-plugin-tailwindcss` or a custom rule) enforces this.
+
+  | Group | Token (Figma name) | Hex | Use |
+  |---|---|---|---|
+  | Surface | Paper | `#FEFAEF` | Default page background |
+  | Surface | Sand | `#FBF5CE` | Alternate section background |
+  | Surface | Mint / Mint Dark | `#F0F58E` / `#DCE55C` | Interactive (buttons, selected states) / its hover |
+  | Surface | Forest Tint | `#DEEADB` | Soft panels |
+  | Ink | Terra | `#231711` | Body text on light surfaces |
+  | Ink | Terra 70 | `#5E5145` | Muted text on light surfaces |
+  | Ink | Terra 40 / Terra 15 | `#A69B8C` / `#E7E0D3` | **Decorative only** (dividers, borders). Never text |
+  | Ink | Sand 70 | `#B4BC9C` | Muted text **on dark surfaces only** |
+  | Brand | Forest / Forest Mid | `#0F3627` / `#2E5C42` | Dark sections / borders on Forest |
+  | Accent | Carrot | `#E2600C` | Accent fills (Terra text on top) |
+  | Semantic | Tomato / Squash / Leaf | `#C2451E` / `#E39B2D` / `#3E7C4F` | Error and Tip Type badges |
+
+  - **Context modes** (Figma "Context" frame `1:5862`). On Paper or Sand: text Terra, muted Terra 70, border Terra 15. On Forest or Terra: text Paper, muted Sand 70, border Forest Mid. Interactive is Mint in every mode. In code these are semantic variables (`--text`, `--text-muted`, `--border`, `--interactive`) that a `data-surface` attribute on each section switches.
+  - **Type:** **Anton** for display (28–74 px) and **Fustat** for body (Regular to ExtraBold). Both are open-licensed Google Fonts. `next/font` downloads them at build time and serves them from our own origin, so browsers make **no calls to Google** (no new vendor). One stray Inter in the mobile-menu legal text becomes Fustat.
+  - **Spacing:** `2xs` 5, `xs` 10, `sm` 15, `md` 20, `lg` 30, `xl` 40, `2xl` 60 (px). **Radius:** `md` 40 and `pill` (Figma 100, coded as `9999px`). **No shadows** in the system.
+  - **Breakpoints [PROPOSED]:** the frames are 402 (mobile) and 1440 (desktop) wide, and there's no tablet frame. Those are reference widths, not breakpoints. The mobile layout runs below Tailwind's `md` (768 px), the desktop layout from `lg` (1024 px), and 768–1023 px is interpolated and reviewed with Colleen. Content is capped at 1440 px with 60 px side margins (20 px on mobile).
+
+  ```css
+  /* packages/ui/styles/tokens.css (excerpt) */
+  @theme {
+    --color-surface-paper: #FEFAEF;  --color-surface-sand: #FBF5CE;
+    --color-surface-mint: #F0F58E;   --color-surface-mint-dark: #DCE55C;
+    --color-ink-terra: #231711;      --color-ink-terra-70: #5E5145;
+    --color-brand-forest: #0F3627;   --color-accent-carrot: #E2600C;
+    /* …the rest of the table above */
+    --font-display: var(--font-anton), Impact, sans-serif;
+    --font-sans: var(--font-fustat), system-ui, sans-serif;
+    --spacing-md: 20px;  /* …2xs to 2xl */
+    --radius-md: 40px;   --radius-pill: 9999px;
+  }
+  ```
+- **Contrast rules for the palette [VERIFIED] (ratios computed from the Figma hex values, D22).** Several brand pairs fail WCAG AA, so the tokens carry usage rules, and the axe checks (§6.6) back them up:
+  - **Safe for any text:** Terra on Paper (16.75:1), Sand (15.85), Mint (15.10), or Mint Dark (12.82). Paper on Forest (12.77). Mint on Forest (11.51). Terra 70 on Paper (7.35). Sand 70 on Terra (8.83) or Forest (6.73). Terra on Carrot (4.92).
+  - **Narrow passes:** Tomato and Leaf on Paper (4.84 and 4.79). Fine for text, but they must not be lightened.
+  - **Large text and UI only:** Paper on Carrot (3.41).
+  - **Never text on light surfaces:** Terra 40 (2.62), Squash (2.24), Sand 70 (1.90). Terra 15 and Forest Mid on Forest are for borders only.
+  - **Tip Type badges** (`1:7919`): Rescue It is Terra on Sand (15.85:1) and Use It is Sand on Leaf (4.54:1, a narrow pass). **Store It is Sand on Squash (2.12:1, fails).** We build it as **Terra on Squash (7.48:1)**, pending Colleen's agreement (OPEN-37).
+  - **Focus ring:** Figma's Focus variants (for example, Primary button `1:6863`) add a **Forest ring**, which passes on Paper (12.77:1) and on a Mint button (11.51:1). A Forest ring vanishes on Forest sections, and Figma has no dark-section focus state, so there the ring is **Mint** (11.51:1). Mint is never the ring on light surfaces (1.11:1 on Paper).
+  - **Text over photos** (Hero, Highlight CTA): the component always applies a fixed-opacity dark overlay. Editors can't turn it off, and it's tested against the brightest image in the set.
 - **Brand rules** (`PROJECT.md`): the campaign's brand rules (Long Live Food lockups, the co-brand order, the illustration style) live as documented components, such as `<LogoLockup variant=… />`, so they're hard to misuse.
 - **Variants** use `class-variance-authority`. Class merging uses `tailwind-merge` (`cn()`), the way shadcn does.
 - **Storybook** (optional, but recommended for the China team): every `packages/ui` component, template, and block has a story with the a11y addon. It's the reference the China team builds against.
@@ -689,7 +741,7 @@ Under the hybrid content model (D21) [TL DECISION; details PROPOSED and confirme
 |---|---|---|---|
 | **Template** | `apps/web/templates/`. Fixed layout and section order for a designed route | Developer or coding agent, by PR | Home, Find My Tips, Library, Category, Search |
 | **Asset slot / content field** | A field on the CMS entry that a template reads (`hero`, `intro`, `featured`, `tool`, `seo`) | Editor, in the CMS | The home hero image and eyebrow |
-| **Block** | A Strapi component in the Page `main` dynamic zone, rendered by the block registry. Generic template only | Editors arrange them. Developers add new block types | Accordion, link list, or teaser on About or General Tips |
+| **Block** | A Strapi component in the Page `main` dynamic zone, rendered by the block registry. Generic template only | Editors arrange them. Developers add new block types | Accordion, teaser, asset list, jump nav, or logo grid on About, General Tips, or Toolkit |
 | **Site string** | `apps/web/content/*.ts`, typed and Zod-validated | Developer or coding agent, by PR (the §5.2 copy-change flow) | Button labels, aria labels, form hints, the 404 page |
 
 The collections (ingredients, tips, categories, groups), Global, and Tool Copy stay in the CMS as described in §5.2.
@@ -712,7 +764,10 @@ export const blocks = {
   'custom.search':       { Component: SearchBox, schema: SearchSchema },
   'custom.tool':         { Component: FindMyTips, schema: ToolSchema },
   'custom.tip-list':     { Component: TipList,   schema: TipListSchema },
-  // + accordion, modal, scroll-lock, … (from the Figma audit), only if generic pages need them
+  'component.accordion': { Component: Accordion, schema: AccordionSchema },
+  'component.asset-list':{ Component: AssetList, schema: AssetListSchema },  // Toolkit downloads
+  'component.jump-nav':  { Component: JumpNav,   schema: JumpNavSchema },
+  // + 'component.logo-grid' if editors need it (§5.2). No modal or scroll-lock block (D22)
 } satisfies BlockRegistry;
 
 // apps/web/content/strings.ts (placeholder text; the real copy comes from Figma)
@@ -723,6 +778,8 @@ export const strings = defineStrings({
 }); // Zod-validated at build time
 ```
 - The Page's `template` field picks the template. Category and Search routes have fixed templates (§6.1).
+- **The Library template** renders each Group as a section, using the Group's `layout` and `order` (§5.2). A new Group shows up without a code change, and a new *kind* of layout is a PR.
+- **Shell UI, not blocks:** the header (with the search popover), the mobile menu, the footer, the Tip Modal, and Save/Share are shared UI in `apps/web/components/`. They read Global, the collections, and site strings (D22).
 - `<DynamicZone blocks={page.main} />` loops through the blocks. Templates and the dynamic zone both wrap each module in `<ModuleBoundary>`, which adds the `data-module-type`, `data-module-index`, and `data-module-id` attributes (§8) and an error boundary. The Zod schemas run at build time.
 - **Unknown `__component`:** the build fails in CI. In development, the block is skipped with a console warning.
 - **Unknown or missing string key:** a type error, so CI fails. Components never inline user-facing strings. They read them from `content/`.
@@ -736,7 +793,8 @@ export const strings = defineStrings({
 ### 6.5 Site search [PROPOSED]
 - With fewer than 1,000 ingredients and tips, a **client-side index** is enough and needs no new vendor. The build creates `search-index.json` (around 50–150 KB gzipped, estimated), loaded only when someone focuses the search box.
 - Search uses the same `normalize()` as the tool (`packages/matching`): lowercase, accent folding, plural stemming, and synonym expansion. Typo tolerance comes from MiniSearch (MIT, client-only, **no external calls**).
-- Results are grouped as Ingredients → Tips → Categories, as shown in `Search_All`. Empty and no-result states use site strings (`content/`, §6.4).
+- **Layout from Figma** (`1:1609`, `1:1702`, `1:4327`): a search field with a count summary ("100 ingredients | 300 tips"), then two columns on desktop. The left column lists matching ingredients with their tip counts, and the right shows tip cards with their type badges. Mobile stacks them and adds "Show More Ingredients." Matching categories are listed below. The "All tips reviewed by food experts" badge is a site string. Empty and no-result states use site strings (`content/`, §6.4).
+- **Header popover** (Nav Bar states Default / Search Open / Search Results, `1:7183`): typing in the header shows the top few results, with "See all" going to `/search/#q=…`. It uses the same index and is a Radix Popover with combobox semantics.
 - **Search terms aren't sent to analytics** (§8), and they never leave the browser: the query lives in the URL fragment (`/search/#q=…`, §6.1).
 - We'd move to server search (Postgres full-text search behind the tool API) only if the index grows past about 300 KB.
 
@@ -750,10 +808,13 @@ export const strings = defineStrings({
   - File input: a keyboard-operable `<label>`/`<input type=file>`. Drag-and-drop is an extra, not the only way.
   - Loading: an `aria-live="polite"` status. Focus moves to the results heading when they're ready.
   - Errors are linked with `aria-describedby`.
-- **Carousel** (shadcn's carousel uses Embla): buttons with clear labels, `aria-roledescription="carousel"`, and slide labels like "3 of 8". **No autoplay.** Swiping is an extra on top of the buttons.
-- **Modal / Accordion:** Radix **Dialog** (focus trap, Escape, focus return, `aria-modal`) and Radix **Accordion** (the WAI-ARIA pattern).
-- **Scroll-lock:** `position: sticky` panels with scroll-driven updates (no wheel or touch hijacking). **Focus isn't trapped**, so keyboard and screen-reader users can move through each panel in order. With `prefers-reduced-motion`, it shows a **static stacked layout** instead. Tailwind's `motion-safe:` / `motion-reduce:` variants are used throughout.
-- **Focus:** a visible `focus-visible` ring that meets **3:1 contrast** against nearby colors, defined as a token.
+- **Carousel** (shadcn's carousel uses Embla): buttons with clear labels, `aria-roledescription="carousel"`, and slide labels like "3 of 8". **No autoplay.** Swiping is an extra on top of the buttons. The dot indicator (`1:11445`) shows **at most 5 dots** with the edge dots scaled down, so the "3 of 8" label carries the real position for screen readers.
+- **Modal / Accordion:** Radix **Dialog** (focus trap, Escape, focus return, `aria-modal`) and Radix **Accordion** (the WAI-ARIA pattern; Figma FAQ Item `1:8171` / `1:8881`).
+- **Tip Modal** (spec `1:10735`): a Dialog holding a carousel of one ingredient's tips, one at a time. It shows the ingredient photo and name, a position label ("2 of 4"), the type badge, the headline, the body, and Share/Save. The arrows are disabled at the first and last tip (**no wraparound**). With a single tip, the arrows and dots are hidden. Closing returns focus to the row that opened it.
+- **Save / Share** (spec `1:10947`; no accounts): **Share** uses the Web Share API, falling back to copying the link. **Save** keeps tip slugs in `localStorage` on the device. The Save button has a pressed state (`aria-pressed`), and a polite live region confirms the action. Where saved tips are listed is OPEN-40. Nothing saved leaves the device, and `tip_interaction` records only the action (§8).
+- **Hero video** (Homepage, play control `1:8904`): short, muted, and looping. It has a visible **pause/play button** (WCAG 2.2.2), it **doesn't autoplay** under `prefers-reduced-motion`, and it has a poster image and alt text from the CMS. It's decorative, so there are no captions, but it must carry no information that isn't also in the text.
+- **Animated sections and scroll-lock** (OPEN-36): Figma has the Animated Headline (`1:7162`) and stepped Home sections, but no scroll-lock spec. Until that's answered they're built as step changes on a timer or a button, with a pause control. If scroll-lock is confirmed, it uses `position: sticky` panels with scroll-driven updates (no wheel or touch hijacking). **Focus isn't trapped**, so keyboard and screen-reader users can move through each panel in order. With `prefers-reduced-motion`, it shows a **static stacked layout** instead. Tailwind's `motion-safe:` / `motion-reduce:` variants are used throughout.
+- **Focus:** a visible `focus-visible` ring that meets **3:1 contrast** against nearby colors, defined as a token: Forest on light surfaces and Mint on dark ones (§6.3).
 - **Tooling:** `eslint-plugin-jsx-a11y`, `@axe-core/playwright` on every route and every tool state in CI, the Storybook a11y addon, plus **manual passes with VoiceOver on iOS/macOS and NVDA with Chrome** before UAT (Dec 8) and again in final QA (§11).
 
 ### 6.7 SEO and AI-search readiness
@@ -891,11 +952,13 @@ type ExtractResponse = {
 4. **JSON-LD parse.** Read every `<script type="application/ld+json">`, handling `@graph`, `@type` arrays, and nested `Recipe` objects. Each `recipeIngredient` line has quantities and units removed and becomes a raw term. **No model call.** The JSON-LD hit rate on real recipe sites is measured in the spike ([`PROOF_DOC.md`](./PROOF_DOC.md)).
 5. **Fallback:** take the visible text (`<main>`/`<article>`, capped at about 15K characters) and call the model's `extract` (text mode).
 
+**Video links** [PROPOSED; scope is OPEN-35]. The Figma input copy says "Enter a recipe URL or video link." If that's in scope, a video link goes through the same path as any URL: `safeFetch` the public page, use its Recipe JSON-LD if it has one, otherwise run text mode on the page's description. If there's neither, the result is **unreadable** (§7.10). We don't call the YouTube, TikTok, or Instagram APIs (each would be a new vendor) and we don't process the video itself. Many video pages carry no ingredient list, so the eval set needs video examples before we promise this.
+
 **Images and text (including dish photos)**
 - The model gets **only the input** and a short system prompt. **We don't send the catalog** at launch. That keeps the prompt small, cheap, and the same for every provider, and the matcher handles naming differences.
   - This is a deliberate change from PROJECT.md §7.2 step 2 [PROPOSED].
   - If the eval shows a recall gap, we'll test a "catalog hint" prompt variant. The output stays raw terms either way.
-- **Dish photos (FR-3):** the model lists the likely main ingredients and marks them `inferred: true`. The UI says "likely ingredients" and lets the user remove any of them before seeing tips.
+- **Dish photos (FR-3):** the model lists the likely main ingredients and marks them `inferred: true`. The UI says "likely ingredients" and lets the user remove any of them before seeing tips. **Figma has no design for this yet.** The upload copy only mentions "Photo of your fridge or pantry" (OPEN-34).
 - **Portable strict output.**
   - The schema (`report_ingredients`) uses only features every provider supports:
     - every field is required
@@ -1002,6 +1065,10 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 | Unavailable | 503, or `/status` says `off` | The tool is replaced with a message from Tool Copy and links to the library and search. With `jsonld-only`, only the URL input is shown |
 | Error | 4xx/5xx/timeout | Specific copy for each error. One retry for 5xx |
 
+**Designed in Figma** (audit, Oct 6): Idle (both modes), the input-level errors (wrong file type, upload failed, invalid link; Tool Function Card `1:7980`, Mobile Input `1:8830`), Loading (`1:1791` / `1:4708`), and Success. **Not designed** (OPEN-34, Colleen): the 10-second "still working" message and Cancel, Partial, Likely (dish) chips, No match, Unreadable, Rate-limited, and Unavailable. Until they arrive we build them from the existing components with Tool Copy text, and Colleen reviews them on the Render preview.
+
+**Results copy:** the Figma results page says "The following ingredients have been extracted." We show only CMS-matched ingredient names and an unmatched **count**, never model output, so that sentence becomes Tool Copy that describes matches (for example, "We found tips for these ingredients"). The desktop badge ("6 Ingredients | 4 tips") counts matched ingredients and the tips shown.
+
 ---
 
 ## 8. Instrumentation specification
@@ -1032,7 +1099,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 | `tips_tool_unavailable` | `mode` (`off`, `jsonld-only`) |
 | `tips_tool_error` | `input_type`, `reason` (`rate_limited`, `challenge`, `timeout`, `invalid_url`, `too_large`, `server`) |
 | `tip_view` | `tip_slug`, `ingredient_slug` |
-| `tip_interaction` | `tip_slug`, `action` (expand, share, copy) |
+| `tip_interaction` | `tip_slug`, `action` (expand, share, copy, save, unsave) |
 
 **Rules:**
 - **No personal data and no user text.** We never send:
@@ -1321,10 +1388,10 @@ gantt
 
 | Phase (V2) | Dates | Tech exit criteria |
 |---|---|---|
-| Prereqs | Oct 2–7 | Repo set up on ddd GitHub (docs, agent guidelines, PR template). Strapi audit (§5.1). TDD v0.3 (WIP to the China team Oct 8). Figma MCP connected; file copied to TBWA Worldwide for the audit (OPEN-33). IAM ask sent (§9.1). Jira project and epics |
+| Prereqs | Oct 2–7 | Repo set up on ddd GitHub (docs, agent guidelines, PR template). Strapi audit (§5.1). TDD v0.3 (WIP to the China team Oct 8). Figma MCP connected; file copied to TBWA Worldwide. **Figma audit done Oct 6** (§6.1, closes OPEN-10). IAM ask sent (§9.1). Jira project and epics |
 | **Dev start / China kickoff** | **Thu Oct 8** | China team onboarded on docs, Figma, and Jira. TDD WIP walkthrough and feedback. Network access from China checked (§11.4) |
 | Env setup | Oct 8–15 | Local stack (Docker Compose Postgres, seed, mock tool). **Render dev** live from `dev`. CI green. Branch protection |
-| Tech validation | Oct 8–16 | Oct 16 spikes in [`PROOF_DOC.md`](./PROOF_DOC.md) closed (P1–P5, P8, P9, P13). Figma module audit on the TBWA copy (OPEN-10). Eval set v0 (80–120 items). **Oct 16 decisions** (§12.3). **TDD v1.0**. Art owns repo work until the move; the China team does onboarding, Figma specs, and Jira (§11.4) |
+| Tech validation | Oct 8–16 | Oct 16 spikes in [`PROOF_DOC.md`](./PROOF_DOC.md) closed (P1–P5, P8, P9, P13). Figma follow-ups: rename the copy and freeze the original (OPEN-33), contrast fixes (OPEN-37), and the missing designs requested from Colleen (OPEN-34, 36, 38, 39). Eval set v0 (80–120 items). **Oct 16 decisions** (§12.3). **TDD v1.0**. Art owns repo work until the move; the China team does onboarding, Figma specs, and Jira (§11.4) |
 | BE CMS structure | Oct 8–21 | Schema v1 (§5.2) on cms-dev. Roles. Seed pipeline and validated project seed (P6). `strapi transfer` proven (P7). Publish hook (§5.3) |
 | FE | Oct 8–Nov 18 | Skeleton of every route, template, and block by Alpha (~Nov 11), then **feature-complete Nov 18**: everything in §6, with a11y and SEO. Toolkit desktop and mobile. Search |
 | BE API | Oct 22–Nov 11 | Find My Tips end to end (URL, image, text) with quota, kill switch, and the status endpoint (§7). Eval round 1 → model recommendation (Nov 13) |
@@ -1368,12 +1435,17 @@ gantt
 | **Fri Oct 16** | IT accepts Render and ddd's Anthropic key for development | 23, 2 | Phase A environments |
 | **Fri Oct 16** | Seed content source | 30 | Seeding (§5.5) |
 | **Fri Oct 16** | Copilot coding agent (and its Jira integration) allowed for copy changes; who files them after handoff | 32 | Copy-change flow (§5.2), handoff plan |
-| **Fri Oct 16** | Figma file moved to an org where ddd has a Full or Dev seat | 33 | Figma audit (OPEN-10), token mapping |
+| **Fri Oct 16** | Figma: the TBWA copy confirmed as the only design source, and the original frozen | 33 | Design drift (R17) |
+| **Fri Oct 16** | Palette contrast fixes (Store It badge, dark-section focus, text over photos) | 37 | Tokens in `packages/ui` (§6.3) |
 | Fri Oct 23 | Recipes and fridge photos in launch scope? | 6, 7 | Tool scope, eval set |
+| Fri Oct 23 | Video links in the tool? | 35 | Tool scope, eval set |
+| Fri Oct 23 | Designs for the missing tool states and the dish-photo flow | 34 | Tool UI build |
+| Fri Oct 23 | Animated Home sections: scroll-driven or timed? Final nav labels | 36, 38 | Home template, header |
 | Fri Oct 23 | Dan's content export (or confirm we don't wait for it) | 13 | Seeding |
 | Fri Oct 23 | Who loads content, how much, and by when | 22 | Content plan, staging content |
 | Fri Oct 30 | QA vendor and their access to staging | 25 | Internal QA (Nov 19) |
 | Fri Oct 30 | Strapi plan features and admin allow-list IPs | 16, 17 | CMS roles, Phase B WAF IP set |
+| Fri Oct 30 | Designs for General Tips, the 404, and the mobile Toolkit; where saved tips are listed | 39, 40 | Those pages, Save |
 | **Fri Nov 13** | Production AI provider, account, and key | 1 | Staging and prod tool |
 | **Fri Nov 13** | Image and text retention, privacy copy | 5 | Privacy policy, FAQ, FR-8 |
 | **Fri Nov 13** | What "US-only" covers (edge vs. storage and AI processing) | 31 | Tool API edge setup (§9.1), provider choice |
@@ -1417,13 +1489,15 @@ James Calhoun reviews architecture and security decisions. Image selection (Coll
 | R8 | AI cost spike from PSA traffic or abuse | M | M | Daily quota and kill switch (hard limits). WAF rate rules, Bot Control, Challenge. Caching. Provider budget alerts (not caps) |
 | R9 | Content not loaded in time (100+ ingredients, hundreds of tips) | M | H | Seeding pipeline (§5.5). Owner and volume due Oct 23 (OPEN-22). Bulk import from CSV |
 | R10 | **Images late** (≈ 1 month: lifestyle from iStock, categories stock first then AI, ingredients AI) | M | M | Placeholder images in the CMS. Images are content, so they can change after code freeze. Due Nov 30 (OPEN-28) |
-| R11 | **Toolkit design changes** after coalition review | M | M | Build it from existing blocks on the generic template, so changes are content, not code. Colleen is estimating the Oct 2 feedback |
+| R11 | **Toolkit design changes** after coalition review | M | M | Build it from existing blocks on the generic template, so changes are content, not code. Colleen is estimating the Oct 2 feedback. Figma has no mobile Toolkit frame yet (OPEN-39) |
 | R12 | **Ad Council IT doesn't accept Render or ddd's Anthropic key** for development | L | H | Ask on Oct 8, decide by Oct 16 (OPEN-23, OPEN-2). Fall back to local-only development plus AWS dev as soon as access allows |
 | R13 | **Pro-bono budget** squeezes AWS and AI spend | M | M | Cheapest architecture that meets the NFRs (§9.5). Quota. Turn dev off after handoff (OPEN-24) |
 | R14 | Scope creep (detail pages, recipes, fridge photos, Spanish, broader analytics) | M | H | Decision log. Design is locked. Change requests for anything not in §2. Broader analytics is a separate scope (OPEN-27) |
 | R15 | Friday launch with weekend traffic | M | M | Dark deploy on prod Jan 4–7. DNS-only cutover. Weekend on-call |
 | R16 | **The client depends on developers or agents for copy changes** (site strings in code, D21) | M | M | Copy-change issue form → coding agent → PR preview (§5.2). Process docs for whoever maintains it after handoff. Strings the client edits often move into the CMS (Tool Copy, Global, or a slot). Gauged with the China team in P13 |
-| R17 | **Figma access and MCP limits** block the audit and token mapping (file stuck in the MullenLowe org; a View seat gets ≈ 20 MCP calls a month) | H | M | Copy the file into TBWA Worldwide (Art's Full seat, Enterprise: ≈ 600 calls a day) and make the copy the only file anyone edits (OPEN-33). **New risk from the copy:** design drift if edits keep landing in the MullenLowe original, so freeze it once the copy exists |
+| R17 | **Figma access and MCP limits** block the audit and token mapping (file stuck in the MullenLowe org; a View seat gets ≈ 20 MCP calls a month) | ~~H~~ L | M | **Mitigated (Oct 6):** the working copy in TBWA Worldwide (Art's Full seat) is readable through MCP, and the audit is done (§6.1). **Remaining risk:** design drift if edits keep landing in the MullenLowe original, so rename the copy and freeze the original (OPEN-33) |
+| R18 | **Brand palette fails contrast** in places (Store It badge, light ink tints, text over photos, no focus state on dark sections), so built pages could fail WCAG AA if they copy Figma exactly | H | M | Token usage rules and code-side fixes in §6.3, axe in CI (§6.6), and the design fixes raised with Colleen (OPEN-37) |
+| R19 | **Tool-state designs arrive late** (partial, no match, unreadable, rate-limited, unavailable, dish photo) | M | M | Build them from existing components with Tool Copy text and review them on the Render preview. Ask Colleen early (OPEN-34). The tool API contract doesn't depend on them |
 
 ---
 
@@ -1452,6 +1526,7 @@ James Calhoun reviews architecture and security decisions. Image selection (Coll
 | D19 | **Seeding by scrape → JSON → validated import**, not by hand | TL DECISION | Repeatable for every environment. No dependency on Dan's export |
 | D20 | **No user text stored** (no gap logging) at launch | PROPOSED (OPEN-5) | Receipts and free text can contain personal data |
 | D21 | **Hybrid content model.** The CMS holds the collections, Global, Tool Copy, long-form rich text, and asset slots. Site strings live in typed files in `apps/web/content/`, and designed routes use code **templates**. A dynamic zone of **blocks** is used only by the generic Page template. No Microcopy type | TL DECISION (gauged with the China team, P13) | Simple, agent-friendly, and easy to hand off. Strings rarely change. Avoids building a full page builder (kickoff) |
+| D22 | **Figma audit outcomes.** The Tip Modal, Save/Share, header, mobile menu, and footer are shared UI, not CMS blocks. `component.modal` is dropped and `component.scroll-lock` deferred; the Home animated sections live in the Home template (OPEN-36). Toolkit is built from `asset-list`, `jump-nav`, and `accordion` blocks. Library Groups gain `layout` and `order`. Tokens come straight from Figma variables, plus contrast rules (§6.3) | TL DECISION | The modal and animations are bound to one designed page, so blocks would add CMS surface without giving editors real choices. The contrast rules keep AA without redesigning the palette |
 
 Bigger decisions get a short ADR in `docs/adr/NNNN-title.md` once they're approved.
 
@@ -1472,7 +1547,7 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | OPEN-7 | Fridge photos at launch? | Ad Council | Oct 23 |
 | OPEN-8 | No-match and unreadable copy. What accuracy is "good enough"? (Proposed: P ≥ 0.9, R ≥ 0.8) | Ad Council | Nov 20 |
 | OPEN-9 | ~~Who designs the mobile Toolkit page?~~ **Answered (weekly status, Oct 5):** desktop delivered Sep 30, ddd adapts it for mobile. Coalition approval still pending (R11) | — | Closed |
-| OPEN-10 | Which Figma modules are still unbuilt? **ddd answers this in the Figma audit** (blocked on Figma access, OPEN-33) | ddd | Oct 16 |
+| OPEN-10 | ~~Which Figma modules are still unbuilt?~~ **Answered (Figma audit, Oct 6):** Accordion is confirmed. The Tip Modal and Save/Share are shared UI, so no modal block. Scroll-lock has no spec (OPEN-36). Toolkit needs `asset-list` and `jump-nav`; About could use `logo-grid` (§5.2, §6.1, D22). Gaps went to Colleen (OPEN-34, 36–40) | — | Closed |
 | OPEN-11 | Ad Council GitHub org, the move date, and who owns the repo after handoff | Ad Council / ddd | Oct 16 |
 | OPEN-12 | Is Spanish or any i18n needed at launch or later? | Ad Council | Oct 16 |
 | OPEN-13 | Can TBWA provide Dan's content (`strapi export` or SQLite file)? We don't wait for it | Ad Council → TBWA | Oct 23 |
@@ -1480,7 +1555,7 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | OPEN-15 | Ingredient or tip detail pages for SEO? (Not in the locked design) | Ad Council | Post-launch |
 | OPEN-16 | Do the self-hosted Community features (Preview; no Review Workflows, SSO, or 2FA) meet editorial approval needs? Is the separate static **preview environment** (§5.2) worth its cost, or do editors review on staging after publishing? | Ad Council | Oct 30 |
 | OPEN-17 | The admin allow-list: which IPs for Ad Council editors, ddd US, and the China team? Do editors have static IPs or a VPN? | Ad Council IT + ddd | Oct 30 |
-| OPEN-18 | Who owns GTM and GA4, and is a CMP or cookie banner required? | Ad Council + Adam P | Nov 13 |
+| OPEN-18 | Who owns GTM and GA4, and is a CMP or cookie banner required? The Figma footer has a "Manage Preferences" link, which suggests a consent manager (and so a vendor) | Ad Council + Adam P | Nov 13 |
 | OPEN-19 | Should AI crawlers (GPTBot, ClaudeBot, Google-Extended, …) be allowed? | Ad Council | Nov 20 |
 | OPEN-20 | DNS control for longlivefood.org and the finishthefridge domains, and the CMS domain name | Ad Council IT | Oct 16 (contact), Nov 13 (records) |
 | OPEN-21 | Is a third-party pen test needed on top of Omnicom IT's testing? | Ad Council IT | Nov 13 |
@@ -1495,7 +1570,14 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | OPEN-30 | **Seed content source**: Dan's export, earlier Ad Council campaign content, coalition spreadsheets, or a mix? Who approves the scraped content? | Ad Council content + ddd | Oct 16 |
 | OPEN-31 | **What "US-only" covers.** Our reading: AI-provider processing and retention, plus everything we store (all in `us-east-1`); CloudFront and WAF edges are global. If it must hold end to end, the tool API uses a regional API Gateway and regional WAF (§2.4, §9.1) | Ad Council legal (via Danish) | Nov 13 |
 | OPEN-32 | Is the **Copilot coding agent** (and its Jira integration) available in Ad Council's GitHub org and Jira? Who files copy changes after handoff, and can client editors file GitHub issues or Jira tickets? (§5.2) | Ad Council IT + ddd | Oct 16 |
-| OPEN-33 | **Figma file location.** ~~Transfer out of the MullenLowe org~~ (no file admins; Amber is the org admin; Colleen's ticket is open). **Workaround (Oct 6):** Art copied the file (["Food Waste \| Design Copy"](https://www.figma.com/design/IgstWizeCgx5EsDVEJAhnM/)); it still has to be moved into a TBWA Worldwide project (Full seat), because the MCP server reports no edit access where it landed. **Still open:** Colleen and Sam confirm all design edits move to the TBWA copy and the MullenLowe original is frozen. If the original's share settings block copying, fall back to the transfer ticket (§6.1) | Colleen Miller / Sam + Art | Oct 8 |
+| OPEN-33 | **Figma file location.** ~~Transfer out of the MullenLowe org~~ (no file admins; Amber is the org admin; Colleen's ticket is open). **Workaround (Oct 6):** Art's first copy ([`IgstWize…`](https://www.figma.com/design/IgstWizeCgx5EsDVEJAhnM/)) had no edit access; the second copy, [`JZTCmehamc5QkAYw1lw5jW`](https://www.figma.com/design/JZTCmehamc5QkAYw1lw5jW/) in TBWA Worldwide (Full seat), works with MCP and is the **working copy** (§6.1). **Still open:** rename it from "Untitled" (and delete the unused first copy), and Colleen and Sam confirm all design edits move to it and the MullenLowe original is frozen | Colleen Miller / Sam + Art | Oct 16 |
+| OPEN-34 | **Missing tool-state designs.** Figma covers idle, input errors, loading, and success. It doesn't cover the 10-second "still working" message and Cancel, partial match, likely-ingredient chips (dish photo), no match, unreadable, rate-limited, or unavailable (kill switch), or the dish-photo flow in general (§7.10, R19) | Colleen Miller | Oct 23 |
+| OPEN-35 | **Video links in the tool.** The Figma input says "Enter a recipe URL or video link." In scope for launch? Proposed: treat them like any URL (`safeFetch`, JSON-LD or the description), no platform APIs, "unreadable" when there's no ingredient text (§7.4) | Ad Council + Colleen; ddd advises | Oct 23 |
+| OPEN-36 | **Animated Home sections.** Figma shows an Animated Headline and stepped sections but has no scroll-lock spec. Scroll-driven, timed, or static? Needs a pause control and a reduced-motion version either way (§6.6) | Colleen Miller | Oct 23 |
+| OPEN-37 | **Contrast fixes in Figma.** Store It badge (Sand on Squash, 2.12:1, `1:7919`). No focus state for controls on Forest sections (the Forest ring would vanish). Terra 40 and Sand 70 must stay off text on light surfaces (disabled states are exempt). Text over photos in the Highlight CTA (the Desktop Specs already ask for a dark overlay). ddd builds the fixes in §6.3; Colleen updates the file to match (R18) | Colleen Miller + Art | Oct 16 |
+| OPEN-38 | **Nav labels and placeholder copy.** The main nav says "The Tool / Tip Library / General Tips / About," but the Search and Toolkit frames say "Discover Tips / Use the Tool / Our Mission," and the Toolkit footer differs again. Lorem ipsum remains in the Category and Results subfooters, the Toolkit body, the About CTA, and the Search CTA | Colleen Miller + Ad Council | Oct 23 |
+| OPEN-39 | **Missing page designs:** General Tips (FR-7), the 404 page, and the mobile Toolkit. Until then, General Tips and the 404 use the generic template, and mobile Toolkit is adapted from desktop (OPEN-9, R11) | Colleen Miller | Oct 30 |
+| OPEN-40 | **Where are saved tips listed?** Save (spec `1:10947`) keeps tips on the device, with no accounts. Is there a Saved view or a header count, and what happens on another device? (§6.6) | Colleen Miller + Ad Council | Oct 30 |
 
 ---
 
@@ -1521,7 +1603,7 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 - Companion docs: [`CLIENT_AUDIT.md`](./CLIENT_AUDIT.md), [`PROOF_DOC.md`](./PROOF_DOC.md), [`RELEASE_LOG.md`](./RELEASE_LOG.md), [`LAUNCH_CHECKLIST.md`](./LAUNCH_CHECKLIST.md)
 - ddd Tech Process (xlsx), PM V2 timeline (xlsx), weekly status (Oct 5), kickoff transcript (full)
 - `AdCouncil/ending-wasted-food-strapi` @ `f753967`: the existing CMS
-- Figma: "Food Waste I Design R2" (Desktop, Mobile, Design System)
+- Figma: the working copy [`JZTCmehamc5QkAYw1lw5jW`](https://www.figma.com/design/JZTCmehamc5QkAYw1lw5jW/) (copied from "Food Waste I Design R2"). Pages: Desktop `0:1`, Mobile `1:3600`, Design System `1:5779`, Components `1:5992`, Mobile Specs `1:9756`, Desktop Specs `1:12636`
 - Strapi 5 docs: relations, REST populate, upload providers, webhooks, Preview, data transfer, pricing/plans
 - Render docs: service previews (PR previews), Blueprints, Postgres (free-tier expiry), Key Value, persistent disks, deploy hooks, environment groups, inbound IP rules
 - AWS: WAF Bot Control, Challenge/CAPTCHA, and JS integration; CloudFront OAC, Functions, and KeyValueStore; API Gateway HTTP API; Elastic Beanstalk Docker; ECS Fargate; IAM Identity Center; GitHub OIDC
@@ -1536,3 +1618,4 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.2 | 2026-10-06 | Art Longbottom (with Copilot) | Aligned with the Tech Process, V2 timeline, weekly status, and kickoff. TL decisions: Render Phase A, Postgres everywhere, Tailwind + shadcn, IP-only CMS admin, `dev`/`staging`/`prod` branches, scrape → seed, ddd Anthropic dev key, GitHub move. Review fixes: no user text stored or sent to analytics, spend alerts aren't caps, EB load-balanced only, no 2FA claim, D1 to PROPOSED. Added §0, §8 scope, §9.6, §11.3–§11.6, §12.2, OPEN-23–30, R12–R15, D12–D20 |
 | 0.2.1 | 2026-10-06 | Art Longbottom (with Copilot) | Second review pass. CloudFront Function rewrites every request to the release prefix, with a stable `/404.html`. Relay authenticates as a GitHub App via its own Function URL; `repository_dispatch` runs from `dev` and checks out the target branch. Tool API: Lambda authorizer on the origin header, default endpoint disabled. CMS in public subnets with no NAT (VPC endpoints as the costed alternative). Search term moved to the URL fragment; sanitized `page_location`; WAF log redaction. Static preview environment. Migration fallback via `strapi export`/`import`. China team timing until the repo move. Oct 16 gate uses a synthetic fixture seed; Oct 21 seed gate; Alpha is a skeleton, feature-complete Nov 18; RC is the first dark `prod` merge. OPEN-14 due Oct 14. US-only scope clarified, OPEN-31 added |
 | 0.3 | 2026-10-06 | Art Longbottom (with Copilot) | Folded in the full kickoff transcript. **Hybrid content model** (D21): CMS for collections, Global, Tool Copy, rich text, and asset slots; site strings and page templates in code; dynamic-zone blocks only for generic pages; Microcopy type dropped. Copy-change flow (issue → coding agent → PR → Render preview). §6.4 rewritten. AWS access facts (IAM users, partial permissions). China team on Render PR previews and cms-dev accounts, process docs, Oct 8 WIP review. Images: lifestyle (iStock), categories (stock first), ingredients (AI approved), optional LLF-IMAGES epic. Added D21, R16–R17, OPEN-32–33, P13. Figma: Art copies the file into TBWA Worldwide (Full seat), and the copy becomes the design source (OPEN-33, R17) |
+| 0.3.1 | 2026-10-06 | Art Longbottom (with Copilot) | Folded in the **Figma audit** of the working copy `JZTCmehamc5QkAYw1lw5jW` (closes OPEN-10). §6.1 routes now carry node IDs, plus overlays and states. §6.3 has the verified tokens, context modes, fonts, spacing and radius, proposed breakpoints (402 and 1440 are reference widths), and palette contrast rules. §5.2: Group `layout`/`order`, `asset-list` and `jump-nav` blocks, modal block dropped, scroll-lock deferred. §6.5 search layout and header popover. §6.6 Tip Modal, Save/Share, hero video, animated sections. §7.4 video links, §7.10 designed vs. missing tool states, `save` in `tip_interaction`. Added D22, R18–R19, OPEN-34–40; R17 mitigated |
