@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Secrets — never commit. Use .env.example for documented keys.
+.env
+.env.*
+!.env.example
+*.pem
+
+# Build output
+.next/
+out/
+dist/
+build/
+.turbo/
+cdk.out/
+*.tsbuildinfo
+
+# Strapi local state
+.tmp/
+.strapi/
+apps/cms/public/uploads/*
+!apps/cms/public/uploads/.gitkeep
+
+# Test / eval artifacts
+coverage/
+playwright-report/
+test-results/
+eval/runs/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
