@@ -41,13 +41,14 @@ Go/no-go criteria and the cutover runbook. **Go/no-go: Thu Jan 7, 2027. Launch: 
 
 ### Content and analytics
 - [ ] Content transferred staging → prod on Jan 4 and checked (TDD §5.5)
-- [ ] Category images final (OPEN-28)
+- [ ] Lifestyle, category, and ingredient images final; no placeholders left (OPEN-28)
 - [ ] Privacy policy and FAQ copy match the data handling (OPEN-5)
 - [ ] GTM/GA4 production IDs set; events verified in GA4 DebugView; no user text in any event, and `page_location` is sanitized (TDD §8)
 - [ ] `robots.txt`, sitemap, and canonical URLs correct for prod
 
 ### Handoff
-- [ ] Editors trained (recording + written guide)
+- [ ] Editors trained (recording + written guide), including how to request a copy change for site strings (TDD §5.2)
+- [ ] Copy-change flow handed over: issue form, who files and reviews, and agent access if allowed (OPEN-32); `docs/runbooks/` current
 - [ ] O&M inputs delivered (TDD §9.6); as-built TDD updated
 - [ ] Credential and owner list stored in the client's vault (**never in docs**)
 

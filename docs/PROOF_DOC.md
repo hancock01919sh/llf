@@ -2,7 +2,7 @@
 
 Technical spikes that prove (or disprove) the riskiest assumptions in the [TDD](./TDD.md). Under the ddd Tech Process this is owned by tech. Most spikes run during **tech validation, Oct 8–16**, and their decisions feed **TDD v1.0**.
 
-**Gates:** the **Oct 16** scaffolding release needs P1–P5, P8, and P9. Scaffolding runs on a **synthetic fixture seed**, so it doesn't wait for content. The validated project seed (P6) and environment transfer (P7) are the **Oct 21** seed gate. P10 and P11 gate the AWS staging move (Nov 25). See [TDD §11.5](./TDD.md#115-release-gates).
+**Gates:** the **Oct 16** scaffolding release needs P1–P5, P8, P9, and P13. Scaffolding runs on a **synthetic fixture seed**, so it doesn't wait for content. The validated project seed (P6) and environment transfer (P7) are the **Oct 21** seed gate. P10 and P11 gate the AWS staging move (Nov 25). See [TDD §11.5](./TDD.md#115-release-gates).
 
 | | |
 |---|---|
@@ -32,6 +32,7 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 | P10 | WAF Challenge / JS integration with the tool API | §7.6 | James S + Art | Nov 6 | ⏳ |
 | P11 | Render → AWS parity | §12.2 | James S + Art | Nov 13 | ⏳ |
 | P12 | CMS fully IP-only (build in CodeBuild inside the VPC) | §9.2 | James S | Only if IT requires | ⏳ |
+| P13 | Hybrid content model + agent copy-change flow | §5.2, §6.4, D21 | Art + China team leads | Oct 16 | ⏳ |
 
 ## Spikes
 
@@ -108,3 +109,9 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 - **Method:** Only run if IT asks. CodeBuild in the VPC with a VPC endpoint to S3; run the `deploy-site` steps.
 - **Result:** _TBD_
 - **Decision:** TDD §9.2.
+
+### P13. Hybrid content model and agent copy-change flow
+- **Hypothesis:** Templates in code with CMS slots, blocks only for generic pages, and site strings in typed `content/*.ts` files (TDD D21) are faster to build and easier to hand off than a full page builder. A copy change filed as an issue can go issue → Copilot coding agent → PR → Render preview → merge in under an hour of human time, with no CMS change.
+- **Method:** Build the Home template (hero slot + featured relations) and the generic template (two blocks) against the fixture seed. Add `content/strings.ts` with Zod validation and a type-checked key lookup. File three sample copy-change issues and assign them to the coding agent; record time to a reviewable PR, preview, and merge, and any mistakes. Walk the China team leads through it and collect their feedback. Check whether the agent and its Jira integration are available to us (OPEN-32).
+- **Result:** _TBD_
+- **Decision:** Confirm or adjust D21 (TDD §14). If the agent isn't allowed, the same flow runs with a developer making the PR. Any string the client expects to edit often moves into the CMS (R16).

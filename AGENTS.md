@@ -11,7 +11,7 @@ If a task touches anything marked **[OPEN]**, don't guess. Leave a `// TODO(OPEN
 
 ## Hard rules
 - **Figma is the source of truth for the UI.** TBWA's prototype code is reference only.
-- **Never show AI-generated text to users.** Everything users read comes from Strapi. The model only returns structured data (ingredient names), and code matches that data against the CMS catalog. Show unmatched items as a **count**, never as raw model output.
+- **Never show AI-generated text to users.** Everything users read comes from Strapi or from the typed site strings in `apps/web/content/` (TDD D21). The model only returns structured data (ingredient names), and code matches that data against the CMS catalog. Show unmatched items as a **count**, never as raw model output.
 - **The AI provider must be swappable.** Every model call goes through `extractIngredients(input, ctx): Promise<ExtractionResult>` and a provider adapter (`mock`, `anthropic`, `openai`, `bedrock`). Choose the provider and model with env config (`AI_PROVIDER`, `AI_MODEL`), never with code changes.
 - **Use the mock adapter by default.** Local dev and CI run with `AI_PROVIDER=mock` and recorded fixtures. Live keys (ddd's Anthropic dev key, TBWA's capped OpenAI test key) are used only on Render dev and in the manually triggered `eval` suite.
 - **Validate model output with Zod** before using it. Use the provider's strict JSON-schema / tool mode.
@@ -28,9 +28,19 @@ If a task touches anything marked **[OPEN]**, don't guess. Leave a `// TODO(OPEN
 - **Accessibility: WCAG 2.1 AA.** shadcn/Radix primitives are a starting point, not proof of compliance. Use semantic headings that respect the heading level chosen in the CMS. Everything must work from the keyboard, focus must be managed in modals and carousels, alt text comes from the CMS, contrast must pass, and `prefers-reduced-motion` must be respected (TDD §6.6).
 - **SEO:** metadata comes from the CMS `seo` component, with a canonical URL and the right JSON-LD (TDD §6.7).
 - **Analytics:** modules carry `data-module-*` attributes so the generic `module_view` and `cta_click` events work without per-module code (TDD §8).
-- **CMS-editable:** editors can change any user-visible copy without a developer. Don't hard-code copy.
+- **Content in the right place (TDD D21):** content, Tool Copy, long-form rich text, and images come from the CMS. Short UI strings come from `apps/web/content/`. Never put a user-visible string literal inline in a component.
 - **Tested:** unit tests for logic, component tests for UI states, and Playwright with axe for pages. Performance budgets from TDD §6.8.
 - **Responsive** at the breakpoints in the Figma designs.
+
+## Where content lives (TDD D21, §6.4)
+| Kind | Lives in | To add one |
+|---|---|---|
+| **Collections, Global, Tool Copy, rich text, asset slots** (hero images, intros, featured items) | Strapi | Schema change in `apps/cms` (additive, TDD §5.2) + Zod schema in `packages/contracts` |
+| **Template** (fixed layout for a designed route) | `apps/web/templates/` | The template, its slot fields on Page (conditional visibility), a Zod schema for the slots, a story, and a registry entry |
+| **Block** (dynamic zone, generic Page template only) | Strapi component + `apps/web/blocks/` | A Strapi component, a Zod schema, a React component, a story, and a registry entry |
+| **Site string** (labels, hints, aria text, the 404 page) | `apps/web/content/*.ts` (typed, Zod-validated) | Edit the file and use the key. No CMS change |
+
+**Copy-change requests** (TDD §5.2): a "Copy change" issue (or Jira ticket) → assigned to the Copilot coding agent → a draft PR that edits only `apps/web/content/` → CI and a Render PR preview → human review → merge to `dev`. When you handle one, change only the strings asked for, keep the keys stable, and link the issue in the PR.
 
 ## Conventions
 - **Stack:** Next.js (App Router) + **Tailwind CSS v4 + shadcn/ui** (components copied into `packages/ui`, tokens from Figma). Strapi 5 in `apps/cms` (the inherited JS project). TypeScript everywhere else.

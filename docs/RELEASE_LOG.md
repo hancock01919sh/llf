@@ -12,7 +12,7 @@ Every build that someone outside the dev team sees gets an entry here. Feedback 
 | Release | Target date | Environment | Tag | Audience | What's in it | Status |
 |---|---|---|---|---|---|---|
 | **Scaffolding** | ~Oct 16 | dev (Render) | — | ddd | Monorepo, CI, Render dev live, **synthetic fixture seed**, mock tool end to end. Repo on Ad Council's GitHub; China team has access (if the move slips, TDD R6) | ⏳ |
-| **Alpha** | ~Nov 11 | dev (Render) | — | ddd | **Skeleton**: every route and module type renders on the project seed, tool end to end on the dev key, all CMS types. Feature-complete follows on Nov 18 | ⏳ |
+| **Alpha** | ~Nov 11 | dev (Render) | — | ddd | **Skeleton**: every route, template, and block type renders on the project seed, tool end to end on the dev key, all CMS types. Feature-complete follows on Nov 18 | ⏳ |
 | **Beta** (Ready for UAT) | **Dec 8** | staging (**AWS**) | — | ddd QA, TBWA, Ad Council, coalition | Feature-complete, tracking in place, real content | ⏳ |
 | **RC** | Dec 23 | staging (AWS) → **prod (AWS, dark)** | `v2026.12.23-1` | Ad Council | UAT and coalition fixes, content frozen in staging. First `staging` → `prod` merge; code and infra deployed dark. Prod site release built after the Jan 4 content transfer | ⏳ |
 | **Launch** | **Jan 8** | prod (AWS) | — | Public | Go/no-go passed ([`LAUNCH_CHECKLIST.md`](./LAUNCH_CHECKLIST.md)) | ⏳ |

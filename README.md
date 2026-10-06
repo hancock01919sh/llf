@@ -7,7 +7,7 @@ The Ad Council's **Long Live Food** coalition site (EPA, Ad Council, WWF, ReFED,
 Built by **dotdotdash**. Go-live: **Fri, January 8, 2027**.
 
 ## Status
-🟡 **Pre-build.** TDD **v0.2.1** (draft, internal review). Development starts **Oct 8** with tech validation (Oct 8–16); the scaffolding release, including the move to Ad Council's GitHub, is due **~Oct 16**. Decisions due Oct 16 are in [TDD §12.3](docs/TDD.md#123-decision-deadlines).
+🟡 **Pre-build.** TDD **v0.3** (draft, internal review; work-in-progress copy to the China team on Oct 8). Development starts **Oct 8** with tech validation (Oct 8–16); the scaffolding release, including the move to Ad Council's GitHub, is due **~Oct 16**. Decisions due Oct 16 are in [TDD §12.3](docs/TDD.md#123-decision-deadlines).
 
 ## Docs
 | Doc | Purpose |

@@ -1,7 +1,7 @@
 # Long Live Food / Finish the Fridge — Project Context
 
 > Context document for coding agents working on the Ad Council "Ending Wasted Food" digital product.
-> Last updated: 2026-10-06. Sources: the kickoff call with Ad Council (Oct 1), the CMS walkthrough with the previous TBWA developers (Sep 29), and the project email threads up to Oct 5.
+> Last updated: 2026-10-06. Sources: the kickoff call with Ad Council (Oct 1; full transcript), the CMS walkthrough with the previous TBWA developers (Sep 29), and the project email threads up to Oct 5.
 >
 > **Confidence labels used below:**
 > - **[CONFIRMED]** stated by the client or in the repo or handoff.
@@ -9,13 +9,14 @@
 > - **[PROPOSED]** our recommended approach, not yet approved by the client.
 > - **[OPEN]** undecided. Don't make assumptions about it; flag it instead.
 
-> **Update, Oct 6 (TDD v0.2).** Where this document and the [TDD](./TDD.md) disagree, **the TDD wins**. The tech lead has since decided ([TDD §14](./TDD.md#14-decision-log)):
+> **Update, Oct 6 (TDD v0.3).** Where this document and the [TDD](./TDD.md) disagree, **the TDD wins**. The tech lead has since decided ([TDD §14](./TDD.md#14-decision-log)):
 > - **Hosting in two phases.** Phase A: local + **Render** (ddd's account) for dev and staging only. Phase B: **Ad Council AWS** from Beta (Dec 8), and always for prod.
 > - **Postgres in every environment**, a separate CMS per environment, and content seeded by scrape → JSON → import.
 > - **Tailwind CSS + shadcn/ui**, WCAG 2.1 AA.
 > - **CMS admin on its own domain behind an IP allow-list.**
 > - **Branches `dev` → `staging` → `prod`.** The repo moves to Ad Council's GitHub by Oct 16; the China team works from Jira tickets.
-> - **AI in dev runs on ddd's Anthropic key** (pending IT acceptance, OPEN-2); the production provider is still OPEN-1.
+> - **AI in dev runs on ddd's Anthropic key** (pending IT acceptance, OPEN-2); the production provider is still OPEN-1 ("most likely Anthropic" at kickoff).
+> - **Hybrid content model (D21).** The CMS holds collections, Global, Tool Copy, long-form rich text, and asset slots (such as hero images). Site strings live in typed files in `apps/web/content/`; designed routes use code templates; a dynamic zone of blocks is used only for generic pages. There's **no Microcopy type**. Copy changes to strings go issue → Copilot coding agent → PR → Render preview (OPEN-32). This supersedes the Strings and Page notes in §5 below.
 > - The **V2 timeline**, QA rounds, and decision deadlines are in [TDD §12](./TDD.md#12-delivery-plan).
 
 ---
@@ -59,8 +60,8 @@ A consumer website, **longlivefood.org**, that helps households waste less food.
 | System | Status |
 |---|---|
 | **GitHub** | `AdCouncil/ending-wasted-food-strapi` holds the Strapi CMS scaffolding. It's committed and in theory ready to deploy. [CONFIRMED] There's **no frontend repo from Ad Council yet**. Dan's prototype frontend ("test") was never committed to a repo, and we've only been given the middleware and API querying approach. [CONFIRMED] |
-| **AWS** | Ad Council's account. TBWA planned **CodePipeline → Elastic Beanstalk** for Strapi plus a database, but **nothing is deployed**. [CONFIRMED] Admin access is requested for James S, James C, and Art and is still pending. Ad Council is changing DevOps partners, so deployment processes may change before launch. [OPEN] |
-| **Strapi environment** | Not deployed yet. We'll need to stand it up in AWS. The China team needs CMS access. [CONFIRMED] |
+| **AWS** | Ad Council's account. TBWA planned **CodePipeline → Elastic Beanstalk** for Strapi plus a database, but **nothing is deployed**. [CONFIRMED] Admin access is requested for James S, James C, and Art and is still pending. At kickoff, James C's **IAM user** (username and password, not SSO) could create a CodeBuild project but **couldn't list users or pipelines**; James S is checking whether his account has admin, and Danish's account is on hold until permissions are fixed (OPEN-3). The China team doesn't need AWS for weeks; they deploy to Render dev with PR previews. Ad Council is changing DevOps partners, so deployment processes may change before launch. [OPEN] |
+| **Strapi environment** | Not deployed yet. We'll need to stand it up in AWS. The China team needs CMS access. [CONFIRMED] Strapi is self-hosted, so access means admin accounts on our cms-dev instance (Super Admin for team leads, Editor for the rest), not invites to a SaaS platform. Schema changes and migrations go through code and deploys. [PROPOSED] |
 | **OpenAI** | **There's no production account.** We only have TBWA's **test key with a $20 spending cap**. Ad Council IT has to approve OpenAI before Ad Council creates an account. [CONFIRMED] Which provider we use is still **[OPEN]** (see §7). |
 | **Project tracking** | ddd uses Jira for development and QA, and Ad Council can get visibility into it. Ad Council uses Asana and Slack (Slack Connect with ddd). [CONFIRMED] |
 | **New tools** | Any new SaaS or tool needs **Ad Council IT approval** first. So far: GitHub, AWS, Strapi, and OpenAI. **Don't add third-party services** without flagging them. [CONFIRMED] |
@@ -105,8 +106,8 @@ Content types Dan built in Strapi:
   - Has a toggle: show **all tips for its ingredients**, or show **specific chosen tips**.
   - Can be its own page, with per-page SEO fields that override the defaults.
 - **Group**, for example "Weeknight dinner staples": a collection of categories that some part of the UX needs.
-- **Strings / microcopy**: single-string entries so editors can change UI copy without a developer.
-- **Page**: has a **dynamic zone** of modules editors can drag and drop:
+- **Strings / microcopy**: single-string entries so editors can change UI copy without a developer. *(Superseded by TDD D21: site strings live in code, in `apps/web/content/`.)*
+- **Page**: has a **dynamic zone** of modules editors can drag and drop *(TDD D21: designed pages use code templates with CMS slots; the dynamic zone of blocks is kept only for generic pages)*:
   - Ad Council–specific modules: **Primary Hero** (displays the page title), **Find My Tips Tool**, custom search.
   - Generic modules: **Teaser** (title, choice of heading level, rich text, links (related, overridden, or custom), image, and a layout variant such as quote-centered with a circular image or left-aligned), **Link List**, **Accordion**, **Modal**, and **Hero Carousel** (**which design has dropped, so remove or ignore it**).
   - Example: a "ULD homepage" Page entry.
@@ -153,7 +154,7 @@ input ─▶ [1] Extract ─▶ [2] Normalize ─▶ [3] Match (code only) ─�
 5. **Log unmatched ingredients** as anonymous counts so the content team can see gaps and add synonyms or tips. That could be a Strapi collection or a simple data store. [PROPOSED]
 
 **Why this matters (non-negotiable unless the client changes it):**
-- **The AI never writes or edits tip content.** Everything users see comes from the CMS, so it's covered by coalition review. That rules out invented food-safety advice from an EPA-backed brand.
+- **The AI never writes or edits tip content.** Everything users see comes from the CMS or the repo's typed site strings (TDD D21), never from the model, so it's covered by coalition review. That rules out invented food-safety advice from an EPA-backed brand.
 - It limits the damage from prompt injection, for example a malicious recipe page or text hidden in an image. The model's output is just data that we check against a fixed list, so injected text can never reach the page.
 - It lets us use a cheaper, smaller model.
 
@@ -241,5 +242,5 @@ Loading (extraction can take seconds), success, **partial match**, **no match**,
 - **Mock all model calls** in tests and CI. The current test key has a $20 cap.
 - **Don't add new SaaS, npm packages that call outside services, or third-party scripts** without flagging them. Each one needs Ad Council IT approval.
 - Treat accessibility (WCAG 2.1 AA) and SEO structured data as part of every component's definition of done.
-- Strapi schema changes must stay friendly to content editors. Prefer CMS-editable fields over hard-coded copy.
+- Strapi schema changes must stay friendly to content editors. Content belongs in CMS fields and short UI strings in `apps/web/content/` (TDD D21); never inline copy in components.
 - Never commit secrets. Use Secrets Manager in AWS and git-ignored `.env` files locally.

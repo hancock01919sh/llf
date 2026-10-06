@@ -13,7 +13,7 @@
 - [ ] Accessibility (WCAG 2.1 AA): keyboard, focus, headings, alt text, contrast, and reduced motion all checked. Axe passes.
 - [ ] SEO: metadata, canonical URL, and JSON-LD where they apply.
 - [ ] Analytics: `data-module-*` attributes and dataLayer events are present (typed in `packages/contracts`), with no personal data, search terms, or user text.
-- [ ] User-visible copy is editable in the CMS (nothing hard-coded).
+- [ ] Content and images come from the CMS; short UI strings come from `apps/web/content/` (TDD D21). No user-visible string literals inline in components.
 - [ ] Tests are added or updated. All model calls are mocked. Prompt, schema, model, or matcher changes include an eval summary.
 - [ ] No secrets in code, config, or fixtures. `.env.example` is updated if needed.
 - [ ] No new third-party services, scripts, or calling packages. If you added one, flag it for Ad Council IT approval here.
