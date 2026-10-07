@@ -5,7 +5,7 @@ Every build that someone outside the dev team sees gets an entry here. Feedback 
 | | |
 |---|---|
 | **Owner** | Art Longbottom (tech lead), with Danish Aziz (PM) |
-| **Jira project** | _TBD_ |
+| **Jira project** | **BD3244** ([board](https://dotdotdash.atlassian.net/jira/software/projects/BD3244/boards/873/backlog)). QA epic: [BD3244-7](https://dotdotdash.atlassian.net/browse/BD3244-7) |
 
 ## Releases
 
@@ -29,6 +29,8 @@ Tags follow `vYYYY.MM.DD-n` on `prod` merges (TDD §9.3). Add a row for every ho
 | Coalition review | Dec 18 (feedback due) | Coalition | Jira or spreadsheet (OPEN-29) | _TBD_ | Danish | **Development bugs only, no design feedback** |
 | Ad Council fixes | Dec 21–23 | ddd | Jira | _TBD_ | Art | |
 | Final QA + security | Jan 4–7 | ddd + Omnicom IT | Jira | _TBD_ | Art | Security, failover, load, harness |
+
+Create each round's saved filter in Jira when the round opens (for example `project = BD3244 AND type = Bug AND labels = uat-tbwa`) and replace _TBD_ with its link.
 
 **Severity** (TDD §11.3): **P1** blocks launch · **P2** fixed before launch or agreed workaround · **P3** post-launch backlog.
 

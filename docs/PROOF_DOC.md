@@ -14,25 +14,27 @@ Technical spikes that prove (or disprove) the riskiest assumptions in the [TDD](
 - Write down the **hypothesis** and **method** before starting, then fill in the **result** and **decision**.
 - If the result changes the design, update the TDD section and the decision log (§14) in the same PR.
 
+Each spike has a Jira ticket (label `spike`) in project BD3244 ([board](https://dotdotdash.atlassian.net/jira/software/projects/BD3244/boards/873/backlog)) with its hypothesis, method, and decision rule. Record the result here and close the ticket.
+
 Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disproved (design changed)
 
 ## Summary
 
-| ID | Spike | TDD | Owner | Due | Status |
-|---|---|---|---|---|---|
-| P1 | Strapi relation semantics | §5.1, §5.2 | Art | Oct 14 | ⏳ |
-| P2 | Strapi 5 in a pnpm workspace | §4.4 | Art | Oct 12 | ⏳ |
-| P3 | Static export routing and `?i=` | §6.2 | Art | Oct 15 | ⏳ |
-| P4 | Render client-IP header for the admin allow-list | §5.4, §10 | Art | Oct 14 | ⏳ |
-| P5 | Publish → rebuild (Render deploy hook; Phase B relay via GitHub App) | §5.3 | Art | Oct 16 | ⏳ |
-| P6 | Scrape → seed pipeline | §5.5 | China team + Art | Oct 21 | ⏳ |
-| P7 | `strapi transfer` between environments (incl. media) | §5.5, §12.2 | Art | Oct 21 | ⏳ |
-| P8 | JSON-LD hit rate on real recipe URLs | §7.4 | Art | Oct 16 | ⏳ |
-| P9 | Model eval baseline (dev key) | §7.7, §7.9 | Art | Oct 16 | ⏳ |
-| P10 | WAF Challenge / JS integration with the tool API | §7.6 | James S + Art | Nov 6 | ⏳ |
-| P11 | Render → AWS parity | §12.2 | James S + Art | Nov 13 | ⏳ |
-| P12 | CMS fully IP-only (build in CodeBuild inside the VPC) | §9.2 | James S | Only if IT requires | ⏳ |
-| P13 | Hybrid content model + agent copy-change flow | §5.2, §6.4, D21 | Art + China team leads | Oct 16 | ⏳ |
+| ID | Jira | Spike | TDD | Owner | Due | Status |
+|---|---|---|---|---|---|---|
+| P1 | [BD3244-23](https://dotdotdash.atlassian.net/browse/BD3244-23) | Strapi relation semantics | §5.1, §5.2 | Art | Oct 14 | ⏳ |
+| P2 | [BD3244-13](https://dotdotdash.atlassian.net/browse/BD3244-13) | Strapi 5 in a pnpm workspace | §4.4 | Art | Oct 12 | ⏳ |
+| P3 | [BD3244-22](https://dotdotdash.atlassian.net/browse/BD3244-22) | Static export routing and `?i=` | §6.2 | Art | Oct 15 | ⏳ |
+| P4 | [BD3244-28](https://dotdotdash.atlassian.net/browse/BD3244-28) | Render client-IP header for the admin allow-list | §5.4, §10 | Art | Oct 14 | ⏳ |
+| P5 | [BD3244-27](https://dotdotdash.atlassian.net/browse/BD3244-27) | Publish → rebuild (Render deploy hook; Phase B relay via GitHub App) | §5.3 | Art | Oct 16 | ⏳ |
+| P6 | [BD3244-30](https://dotdotdash.atlassian.net/browse/BD3244-30) | Scrape → seed pipeline | §5.5 | China team + Art | Oct 21 | ⏳ |
+| P7 | [BD3244-34](https://dotdotdash.atlassian.net/browse/BD3244-34) | `strapi transfer` between environments (incl. media) | §5.5, §12.2 | Art | Oct 21 | ⏳ |
+| P8 | [BD3244-32](https://dotdotdash.atlassian.net/browse/BD3244-32) | JSON-LD hit rate on real recipe URLs | §7.4 | Art | Oct 16 | ⏳ |
+| P9 | [BD3244-33](https://dotdotdash.atlassian.net/browse/BD3244-33) | Model eval baseline (dev key) | §7.7, §7.9 | Art | Oct 16 | ⏳ |
+| P10 | [BD3244-31](https://dotdotdash.atlassian.net/browse/BD3244-31) | WAF Challenge / JS integration with the tool API | §7.6 | James S + Art | Nov 6 | ⏳ |
+| P11 | [BD3244-35](https://dotdotdash.atlassian.net/browse/BD3244-35) | Render → AWS parity | §12.2 | James S + Art | Nov 13 | ⏳ |
+| P12 | [BD3244-29](https://dotdotdash.atlassian.net/browse/BD3244-29) | CMS fully IP-only (build in CodeBuild inside the VPC) | §9.2 | James S | Only if IT requires | ⏳ |
+| P13 | [BD3244-26](https://dotdotdash.atlassian.net/browse/BD3244-26) | Hybrid content model + agent copy-change flow | §5.2, §6.4, D21 | Art + China team leads | Oct 16 | ⏳ |
 
 ## Spikes
 

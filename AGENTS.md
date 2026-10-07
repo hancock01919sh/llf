@@ -48,5 +48,5 @@ If a task touches anything marked **[OPEN]**, don't guess. Leave a `// TODO(OPEN
 - Shared types and Zod schemas live in `packages/contracts`. Don't redefine API shapes anywhere else.
 - Strapi schema changes must be backward compatible (two-phase for relation changes, TDD §5.2). Explain any breaking change in the PR description.
 - **Branches:** `dev` (trunk, deploys to dev) → `staging` (UAT) → `prod` (live). Feature PRs target `dev`. Promotion is by PR. Hotfixes branch from `prod` and are merged back into `staging` and `dev` (TDD §9.3).
-- Use small PRs that reference a Jira ticket (`LLF-123`), with conventional commit prefixes (`feat:`, `fix:`, `chore:`, `docs:`).
+- Use small PRs that reference a Jira ticket (`BD3244-123`, [board](https://dotdotdash.atlassian.net/jira/software/projects/BD3244/boards/873/backlog)), with conventional commit prefixes (`feat:`, `fix:`, `chore:`, `docs:`).
 - **Keep the docs current:** a design change updates the TDD and its decision log (§14) in the same PR; spike results go in `PROOF_DOC.md`; releases go in `RELEASE_LOG.md`.

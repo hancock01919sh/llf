@@ -26,9 +26,9 @@ Status key: ✅ usable · ⚠️ partial or blocked · ❌ missing · ➖ not ne
 | **AI: Anthropic** | ddd's own account | ddd admin | IT to accept dev use with test inputs only (OPEN-2) | ddd | ⚠️ |
 | **DNS** | `longlivefood.org` and the finishthefridge domains | None | Named contact or Route 53 delegation; CMS domain name (OPEN-20) | Ad Council IT | ❌ |
 | **Analytics** | Unknown whether a GTM container / GA4 property exists | None | Ownership, consent, and scope beyond the basic embed (OPEN-18, OPEN-27). The Figma footer has a "Manage Preferences" link, which implies a consent manager | Ad Council + Adam P | ❌ |
-| **Jira** | ddd Jira project for dev and QA | ddd admin | Ad Council / coalition feedback format (OPEN-29) | ddd | ✅ |
+| **Jira** | ddd Jira project **BD3244** for dev and QA ([board](https://dotdotdash.atlassian.net/jira/software/projects/BD3244/boards/873/backlog)). Epics, starter tickets, and spike tickets created Oct 6 | ddd admin | Ad Council / coalition feedback format (OPEN-29) | ddd | ✅ |
 | **Slack / Asana** | Slack Connect with Ad Council. Ad Council uses Asana | ddd members | — | Ad Council | ✅ |
-| **Images** | ≈ 20 lifestyle images (Ad Council iStock; AI only on request), ≈ 50 category images (stock first, AI backup), ingredient images (AI approved: Firefly, Nano Banana, optionally Magnific). Optional offline pipeline (LLF-IMAGES) | — | Separate workstream, ≈ 1 month (OPEN-28) | Colleen Miller | ➖ |
+| **Images** | ≈ 20 lifestyle images (Ad Council iStock; AI only on request), ≈ 50 category images (stock first, AI backup), ingredient images (AI approved: Firefly, Nano Banana, optionally Magnific). Optional offline pipeline (IMAGES epic, BD3244-2) | — | Separate workstream, ≈ 1 month (OPEN-28) | Colleen Miller | ➖ |
 | **QA vendor** | Functional and visual testing per the Tech Process | — | Which vendor and how they reach staging (OPEN-25) | ddd production | ➖ |
 | **Omnicom IT** | Security, failover, load, and harness testing before launch | — | Contact and test plan (OPEN-26) | ddd production | ➖ |
 

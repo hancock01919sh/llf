@@ -7,7 +7,7 @@
 | **Delivery** | dotdotdash (ddd) |
 | **Owner / author** | Art Longbottom (tech lead) |
 | **Reviewers** | James Calhoun (tech lead), James Steele (AWS/DevOps), Adam Paikowsky (analytics), Danish Aziz (PM), China dev team (Eva Fan, Alessandro Grena, Maggie Ding) |
-| **Status** | **DRAFT v0.3.1.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
+| **Status** | **DRAFT v0.3.2.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
 | **Last updated** | 2026-10-06 |
 | **Go-live** | **Friday, January 8, 2027** (go/no-go Thursday, January 7). There's **no contingency** after final QA |
 
@@ -215,7 +215,7 @@ See [§12.3](#123-decision-deadlines).
 - **Image selection is a separate workstream** [CONFIRMED (kickoff)]. Colleen Miller owns it, and it takes about a month (OPEN-28). The CMS has to handle placeholder images until then.
   - **Lifestyle images** (≈ 20): from Ad Council's iStock. AI only if a specific image is requested.
   - **Tip-library category images** (≈ 50): stock first, with AI-generated images as the backup.
-  - **Ingredient images:** AI generation is approved. Tools discussed: Adobe Firefly, Nano Banana, and optionally Magnific for upscaling. ddd may build a small generation pipeline (optional epic LLF-IMAGES, §12.4). It runs offline, and its output is uploaded through the seed pipeline (§5.5), never at runtime.
+  - **Ingredient images:** AI generation is approved. Tools discussed: Adobe Firefly, Nano Banana, and optionally Magnific for upscaling. ddd may build a small generation pipeline (optional epic IMAGES, BD3244-2, §12.4). It runs offline, and its output is uploaded through the seed pipeline (§5.5), never at runtime.
 - **Toolkit approval.** Feedback on the Toolkit arrived on Friday (Oct 2), and Colleen Miller is estimating the changes. The coalition still has to approve the design. We build the Toolkit from existing blocks where we can, so that late changes affect content rather than code.
 - **Maintainability after handoff** [kickoff, James Calhoun]: a future team (for example DDB Australia) must be able to take the site over, and the client shouldn't need ddd for routine copy changes. This drives the hybrid content model (D21), the copy-change flow (§5.2), and the process docs (§11.4). James Steele and James Calhoun have both run Strapi before (the Ether project).
 - **Feedback channels.** Internal feedback goes through Jira. Ad Council and the coalition will use Jira or a spreadsheet, format still to be confirmed (OPEN-29). Either way, everything gets entered into Jira for triage ([`RELEASE_LOG.md`](./RELEASE_LOG.md)).
@@ -1318,6 +1318,8 @@ See [`AGENTS.md`](../AGENTS.md) and the [PR template](../.github/pull_request_te
 
 ### 11.4 Local development and the China team
 - **Ticket flow:** Art writes and grooms **Jira** tickets with acceptance criteria and Figma links. The China team picks them up, and every PR links its ticket (the PR template enforces this). Daily async updates in Jira. A weekly sync with Art.
+  - **Board:** Jira project **BD3244** ([backlog](https://dotdotdash.atlassian.net/jira/software/projects/BD3244/boards/873/backlog)), epics in §12.4. Keys look like `BD3244-123`.
+  - **China team starter tickets (Oct 8–16):** onboarding from the docs ([BD3244-17](https://dotdotdash.atlassian.net/browse/BD3244-17)), local toolchain ([BD3244-20](https://dotdotdash.atlassian.net/browse/BD3244-20)), network check from China ([BD3244-19](https://dotdotdash.atlassian.net/browse/BD3244-19)), TDD WIP review ([BD3244-14](https://dotdotdash.atlassian.net/browse/BD3244-14)), and the Figma review, component inventory, and spec template ([BD3244-25](https://dotdotdash.atlassian.net/browse/BD3244-25)).
 - **Repo access** [TL DECISION]: the China team gets access **after the repo moves to Ad Council's GitHub**, and to **this repo only** (§4.4). The target is to finish the move **by Oct 16** (end of tech validation), so the China team isn't blocked for long (OPEN-11).
   - **Until the move, Art owns all repo work:** scaffolding, CI, the fixture seed, the Render Blueprint, and the template and block registries.
   - **The China team, in the same period:** onboarding from the docs (shared as a PDF/zip outside the repo), Figma review and a module-by-module component spec per Jira ticket, local tool installs (Node, pnpm, Docker, mirrors), and a network check from China.
@@ -1388,7 +1390,7 @@ gantt
 
 | Phase (V2) | Dates | Tech exit criteria |
 |---|---|---|
-| Prereqs | Oct 2–7 | Repo set up on ddd GitHub (docs, agent guidelines, PR template). Strapi audit (§5.1). TDD v0.3 (WIP to the China team Oct 8). Figma MCP connected; file copied to TBWA Worldwide. **Figma audit done Oct 6** (§6.1, closes OPEN-10). IAM ask sent (§9.1). Jira project and epics |
+| Prereqs | Oct 2–7 | Repo set up on ddd GitHub (docs, agent guidelines, PR template). Strapi audit (§5.1). TDD v0.3 (WIP to the China team Oct 8). Figma MCP connected; file copied to TBWA Worldwide. **Figma audit done Oct 6** (§6.1, closes OPEN-10). IAM ask sent (§9.1). **Jira project BD3244 set up Oct 6** ([board](https://dotdotdash.atlassian.net/jira/software/projects/BD3244/boards/873/backlog)): 11 epics, starter tickets, and one ticket per spike (§12.4) |
 | **Dev start / China kickoff** | **Thu Oct 8** | China team onboarded on docs, Figma, and Jira. TDD WIP walkthrough and feedback. Network access from China checked (§11.4) |
 | Env setup | Oct 8–15 | Local stack (Docker Compose Postgres, seed, mock tool). **Render dev** live from `dev`. CI green. Branch protection |
 | Tech validation | Oct 8–16 | Oct 16 spikes in [`PROOF_DOC.md`](./PROOF_DOC.md) closed (P1–P5, P8, P9, P13). Figma follow-ups: rename the copy and freeze the original (OPEN-33), contrast fixes (OPEN-37), and the missing designs requested from Colleen (OPEN-34, 36, 38, 39). Eval set v0 (80–120 items). **Oct 16 decisions** (§12.3). **TDD v1.0**. Art owns repo work until the move; the China team does onboarding, Figma specs, and Jira (§11.4) |
@@ -1457,21 +1459,23 @@ gantt
 | Fri Dec 18 | Dev environment after handoff | 24 | Handoff plan, cost |
 
 ### 12.4 Workstreams (Jira epics)
-| Epic | Scope | Owner (proposed) |
-|---|---|---|
-| **LLF-SETUP** | Monorepo, CI, branch model, Render Blueprint and PR previews, GitHub move, onboarding docs and runbooks, copy-change issue form | Art |
-| **LLF-CMS** | Strapi import, schema v1, roles, admin IP middleware, publish hook, editor guide | Art until the repo move, then China team + Art |
-| **LLF-SEED** | Synthetic fixture seed, then scrape → JSON → validated import, `strapi transfer` runbook | Art (fixture seed), then the China team |
-| **LLF-FE-PLATFORM** | Next.js shell, Tailwind tokens, `packages/ui` (shadcn), template and block registries, site strings (`content/`), fixture mode, SEO, a11y harness, perf budgets | Art |
-| **LLF-FE-MODULES** | One story per module and route (§6.1, §6.4), Toolkit desktop and mobile | China team (component specs from Figma before the move; code after) |
-| **LLF-TOOL** | Handler, Node and Lambda adapters, `safeFetch`, JSON-LD parser, matching, provider adapters, quota and kill switch, UX states | Art + China team |
-| **LLF-EVAL** | Labeled set, runner, model recommendation | Art + content support |
-| **LLF-INFRA-AWS** | IAM ask, CDK stacks, CI/CD, DNS, observability, runbooks, Render → AWS migration | **James Steele** + Art |
-| **LLF-ANALYTICS** | `dataLayer`, GTM container, GA4, consent defaults | **Adam Paikowsky** + FE |
-| **LLF-QA** | Test plan, QA vendor, UAT support, Release Log, launch checklist | **Danish Aziz** + QA vendor |
-| **LLF-IMAGES** (optional) | Offline ingredient-image generation pipeline (Firefly or Nano Banana, optional Magnific upscaling), prompt and style guide, review sheet, upload through the seed pipeline (§5.5). No runtime image generation | Art (Adam's suggestion, if picked up) + Colleen Miller (art direction) |
+Jira project **BD3244** ([board](https://dotdotdash.atlassian.net/jira/software/projects/BD3244/boards/873/backlog)). Every task sits under one of these epics. Spikes are labeled `spike` and are listed with their keys in [`PROOF_DOC.md`](./PROOF_DOC.md).
 
-James Calhoun reviews architecture and security decisions. Image selection (Colleen Miller) is tracked by production. Only the optional ingredient-image pipeline (LLF-IMAGES) is a tech epic.
+| Epic | Key | Scope | Owner (proposed) |
+|---|---|---|---|
+| **SETUP** | [BD3244-1](https://dotdotdash.atlassian.net/browse/BD3244-1) | Monorepo, CI, branch model, Render Blueprint and PR previews, GitHub move, onboarding docs and runbooks, copy-change issue form | Art |
+| **CMS** | [BD3244-11](https://dotdotdash.atlassian.net/browse/BD3244-11) | Strapi import, schema v1, roles, admin IP middleware, publish hook, editor guide | Art until the repo move, then China team + Art |
+| **SEED** | [BD3244-3](https://dotdotdash.atlassian.net/browse/BD3244-3) | Synthetic fixture seed, then scrape → JSON → validated import, `strapi transfer` runbook | Art (fixture seed), then the China team |
+| **FE-PLATFORM** | [BD3244-5](https://dotdotdash.atlassian.net/browse/BD3244-5) | Next.js shell, Tailwind tokens, `packages/ui` (shadcn), template and block registries, site strings (`content/`), fixture mode, SEO, a11y harness, perf budgets | Art |
+| **FE-MODULES** | [BD3244-8](https://dotdotdash.atlassian.net/browse/BD3244-8) | One story per module and route (§6.1, §6.4), Toolkit desktop and mobile | China team (component specs from Figma before the move; code after) |
+| **TOOL** | [BD3244-10](https://dotdotdash.atlassian.net/browse/BD3244-10) | Handler, Node and Lambda adapters, `safeFetch`, JSON-LD parser, matching, provider adapters, quota and kill switch, UX states | Art + China team |
+| **EVAL** | [BD3244-9](https://dotdotdash.atlassian.net/browse/BD3244-9) | Labeled set, runner, model recommendation | Art + content support |
+| **INFRA-AWS** | [BD3244-6](https://dotdotdash.atlassian.net/browse/BD3244-6) | IAM ask, CDK stacks, CI/CD, DNS, observability, runbooks, Render → AWS migration | **James Steele** + Art |
+| **ANALYTICS** | [BD3244-4](https://dotdotdash.atlassian.net/browse/BD3244-4) | `dataLayer`, GTM container, GA4, consent defaults | **Adam Paikowsky** + FE |
+| **QA** | [BD3244-7](https://dotdotdash.atlassian.net/browse/BD3244-7) | Test plan, QA vendor, UAT support, Release Log, launch checklist | **Danish Aziz** + QA vendor |
+| **IMAGES** (optional) | [BD3244-2](https://dotdotdash.atlassian.net/browse/BD3244-2) | Offline ingredient-image generation pipeline (Firefly or Nano Banana, optional Magnific upscaling), prompt and style guide, review sheet, upload through the seed pipeline (§5.5). No runtime image generation | Art (Adam's suggestion, if picked up) + Colleen Miller (art direction) |
+
+James Calhoun reviews architecture and security decisions. Image selection (Colleen Miller) is tracked by production. Only the optional ingredient-image pipeline (IMAGES, BD3244-2) is a tech epic.
 
 ---
 
@@ -1619,3 +1623,4 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.2.1 | 2026-10-06 | Art Longbottom (with Copilot) | Second review pass. CloudFront Function rewrites every request to the release prefix, with a stable `/404.html`. Relay authenticates as a GitHub App via its own Function URL; `repository_dispatch` runs from `dev` and checks out the target branch. Tool API: Lambda authorizer on the origin header, default endpoint disabled. CMS in public subnets with no NAT (VPC endpoints as the costed alternative). Search term moved to the URL fragment; sanitized `page_location`; WAF log redaction. Static preview environment. Migration fallback via `strapi export`/`import`. China team timing until the repo move. Oct 16 gate uses a synthetic fixture seed; Oct 21 seed gate; Alpha is a skeleton, feature-complete Nov 18; RC is the first dark `prod` merge. OPEN-14 due Oct 14. US-only scope clarified, OPEN-31 added |
 | 0.3 | 2026-10-06 | Art Longbottom (with Copilot) | Folded in the full kickoff transcript. **Hybrid content model** (D21): CMS for collections, Global, Tool Copy, rich text, and asset slots; site strings and page templates in code; dynamic-zone blocks only for generic pages; Microcopy type dropped. Copy-change flow (issue → coding agent → PR → Render preview). §6.4 rewritten. AWS access facts (IAM users, partial permissions). China team on Render PR previews and cms-dev accounts, process docs, Oct 8 WIP review. Images: lifestyle (iStock), categories (stock first), ingredients (AI approved), optional LLF-IMAGES epic. Added D21, R16–R17, OPEN-32–33, P13. Figma: Art copies the file into TBWA Worldwide (Full seat), and the copy becomes the design source (OPEN-33, R17) |
 | 0.3.1 | 2026-10-06 | Art Longbottom (with Copilot) | Folded in the **Figma audit** of the working copy `JZTCmehamc5QkAYw1lw5jW` (closes OPEN-10). §6.1 routes now carry node IDs, plus overlays and states. §6.3 has the verified tokens, context modes, fonts, spacing and radius, proposed breakpoints (402 and 1440 are reference widths), and palette contrast rules. §5.2: Group `layout`/`order`, `asset-list` and `jump-nav` blocks, modal block dropped, scroll-lock deferred. §6.5 search layout and header popover. §6.6 Tip Modal, Save/Share, hero video, animated sections. §7.4 video links, §7.10 designed vs. missing tool states, `save` in `tip_interaction`. Added D22, R18–R19, OPEN-34–40; R17 mitigated |
+| 0.3.2 | 2026-10-06 | Art Longbottom (with Copilot) | Wired up Jira project **BD3244** (board 873): §12.4 epics now carry their keys (BD3244-1 to BD3244-11, replacing the `LLF-*` placeholders), §11.4 lists the China team starter tickets, and §12.1 prereqs are done. Spike tickets are listed in `PROOF_DOC.md` |

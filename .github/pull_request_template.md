@@ -1,7 +1,7 @@
 ## Summary
 <!-- What does this PR change, and why? -->
 
-**Jira:** <!-- e.g. LLF-123 -->
+**Jira:** <!-- e.g. BD3244-123 -->
 
 **Target branch:** <!-- Feature PRs target `dev`. `staging` and `prod` only take promotion PRs or `hotfix/*` (TDD §9.3). -->
 
