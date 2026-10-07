@@ -14,6 +14,15 @@ export const TEXT_MAX_LENGTH = 5000;
 /** Request body cap for the tool API. A resized image is ~300–800 KB; base64 adds ~33%. */
 export const BODY_MAX_BYTES = 4 * 1024 * 1024;
 export const IMAGE_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const;
+/** The browser resizes photos to this longest edge and re-encodes them as JPEG before upload (TDD §7.6). */
+export const IMAGE_MAX_DIMENSION = 1600;
+export const IMAGE_JPEG_QUALITY = 0.8;
+
+/** Tool API routes, same-origin behind the CDN (TDD §7.3). */
+export const FIND_TIPS_API = {
+  status: '/api/find-tips/status',
+  extract: '/api/find-tips/extract',
+} as const;
 
 export const ExtractRequest = z.discriminatedUnion('inputType', [
   z.object({

@@ -1,0 +1,166 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "documentId": "fxin0001",
+      "title": "Banana",
+      "type": "Produce",
+      "synonyms": "bananas",
+      "wasted": 4,
+      "image": null,
+      "tips": [
+        {
+          "id": 1,
+          "documentId": "fxtp0001",
+          "title": "Freeze ripe bananas",
+          "description": "Peel, slice, and freeze them for smoothies and baking.",
+          "tip_type": {
+            "id": 1,
+            "documentId": "fxtt0001",
+            "title": "Storage"
+          }
+        },
+        {
+          "id": 2,
+          "documentId": "fxtp0002",
+          "title": "Bake with brown bananas",
+          "description": "Spotty bananas make the sweetest banana bread.",
+          "tip_type": {
+            "id": 3,
+            "documentId": "fxtt0003",
+            "title": "Reuse"
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "documentId": "fxin0002",
+      "title": "Spinach",
+      "type": "Leafy Greens",
+      "synonyms": "baby spinach",
+      "wasted": 5,
+      "image": null,
+      "tips": [
+        {
+          "id": 3,
+          "documentId": "fxtp0003",
+          "title": "Store with a paper towel",
+          "description": "A dry paper towel in the container soaks up moisture so leaves last longer.",
+          "tip_type": {
+            "id": 1,
+            "documentId": "fxtt0001",
+            "title": "Storage"
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "documentId": "fxin0003",
+      "title": "Bread",
+      "type": "Baked Goods",
+      "synonyms": "loaf, sourdough, baguette",
+      "wasted": 4,
+      "image": null,
+      "tips": [
+        {
+          "id": 4,
+          "documentId": "fxtp0004",
+          "title": "Freeze sliced bread",
+          "description": "Toast slices straight from the freezer.",
+          "tip_type": {
+            "id": 1,
+            "documentId": "fxtt0001",
+            "title": "Storage"
+          }
+        },
+        {
+          "id": 5,
+          "documentId": "fxtp0005",
+          "title": "Make croutons",
+          "description": "Cube stale bread, toss with oil, and bake until crisp.",
+          "tip_type": {
+            "id": 3,
+            "documentId": "fxtt0003",
+            "title": "Reuse"
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "documentId": "fxin0004",
+      "title": "Milk",
+      "type": "Dairy",
+      "synonyms": "whole milk",
+      "wasted": 3,
+      "image": null,
+      "tips": [
+        {
+          "id": 6,
+          "documentId": "fxtp0006",
+          "title": "Keep it in the back",
+          "description": "The fridge door is the warmest spot. Store milk on a back shelf.",
+          "tip_type": {
+            "id": 1,
+            "documentId": "fxtt0001",
+            "title": "Storage"
+          }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "documentId": "fxin0005",
+      "title": "Basil",
+      "type": "Fresh Herbs",
+      "synonyms": "sweet basil",
+      "wasted": 4,
+      "image": null,
+      "tips": [
+        {
+          "id": 7,
+          "documentId": "fxtp0007",
+          "title": "Treat it like flowers",
+          "description": "Trim the stems and stand basil in a glass of water on the counter.",
+          "tip_type": {
+            "id": 1,
+            "documentId": "fxtt0001",
+            "title": "Storage"
+          }
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "documentId": "fxin0006",
+      "title": "Chicken",
+      "type": "Protein",
+      "synonyms": "chicken breast, chicken thighs",
+      "wasted": 3,
+      "image": null,
+      "tips": [
+        {
+          "id": 8,
+          "documentId": "fxtp0008",
+          "title": "Plan a leftovers night",
+          "description": "Shred leftover chicken for tacos, soups, or salads.",
+          "tip_type": {
+            "id": 2,
+            "documentId": "fxtt0002",
+            "title": "Prep"
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "page": 1,
+      "pageSize": 100,
+      "pageCount": 1,
+      "total": 6
+    }
+  }
+}

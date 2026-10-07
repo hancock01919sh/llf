@@ -1,0 +1,184 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "documentId": "fxtp0001",
+      "title": "Freeze ripe bananas",
+      "description": "Peel, slice, and freeze them for smoothies and baking.",
+      "tip_type": {
+        "id": 1,
+        "documentId": "fxtt0001",
+        "title": "Storage"
+      },
+      "tip_behavior": null,
+      "tip_motivator": null,
+      "ingredient": {
+        "id": 1,
+        "documentId": "fxin0001",
+        "title": "Banana"
+      }
+    },
+    {
+      "id": 2,
+      "documentId": "fxtp0002",
+      "title": "Bake with brown bananas",
+      "description": "Spotty bananas make the sweetest banana bread.",
+      "tip_type": {
+        "id": 3,
+        "documentId": "fxtt0003",
+        "title": "Reuse"
+      },
+      "tip_behavior": null,
+      "tip_motivator": null,
+      "ingredient": {
+        "id": 1,
+        "documentId": "fxin0001",
+        "title": "Banana"
+      }
+    },
+    {
+      "id": 3,
+      "documentId": "fxtp0003",
+      "title": "Store with a paper towel",
+      "description": "A dry paper towel in the container soaks up moisture so leaves last longer.",
+      "tip_type": {
+        "id": 1,
+        "documentId": "fxtt0001",
+        "title": "Storage"
+      },
+      "tip_behavior": null,
+      "tip_motivator": null,
+      "ingredient": {
+        "id": 2,
+        "documentId": "fxin0002",
+        "title": "Spinach"
+      }
+    },
+    {
+      "id": 4,
+      "documentId": "fxtp0004",
+      "title": "Freeze sliced bread",
+      "description": "Toast slices straight from the freezer.",
+      "tip_type": {
+        "id": 1,
+        "documentId": "fxtt0001",
+        "title": "Storage"
+      },
+      "tip_behavior": null,
+      "tip_motivator": null,
+      "ingredient": {
+        "id": 3,
+        "documentId": "fxin0003",
+        "title": "Bread"
+      }
+    },
+    {
+      "id": 5,
+      "documentId": "fxtp0005",
+      "title": "Make croutons",
+      "description": "Cube stale bread, toss with oil, and bake until crisp.",
+      "tip_type": {
+        "id": 3,
+        "documentId": "fxtt0003",
+        "title": "Reuse"
+      },
+      "tip_behavior": null,
+      "tip_motivator": null,
+      "ingredient": {
+        "id": 3,
+        "documentId": "fxin0003",
+        "title": "Bread"
+      }
+    },
+    {
+      "id": 6,
+      "documentId": "fxtp0006",
+      "title": "Keep it in the back",
+      "description": "The fridge door is the warmest spot. Store milk on a back shelf.",
+      "tip_type": {
+        "id": 1,
+        "documentId": "fxtt0001",
+        "title": "Storage"
+      },
+      "tip_behavior": null,
+      "tip_motivator": null,
+      "ingredient": {
+        "id": 4,
+        "documentId": "fxin0004",
+        "title": "Milk"
+      }
+    },
+    {
+      "id": 7,
+      "documentId": "fxtp0007",
+      "title": "Treat it like flowers",
+      "description": "Trim the stems and stand basil in a glass of water on the counter.",
+      "tip_type": {
+        "id": 1,
+        "documentId": "fxtt0001",
+        "title": "Storage"
+      },
+      "tip_behavior": null,
+      "tip_motivator": null,
+      "ingredient": {
+        "id": 5,
+        "documentId": "fxin0005",
+        "title": "Basil"
+      }
+    },
+    {
+      "id": 8,
+      "documentId": "fxtp0008",
+      "title": "Plan a leftovers night",
+      "description": "Shred leftover chicken for tacos, soups, or salads.",
+      "tip_type": {
+        "id": 2,
+        "documentId": "fxtt0002",
+        "title": "Prep"
+      },
+      "tip_behavior": null,
+      "tip_motivator": null,
+      "ingredient": {
+        "id": 6,
+        "documentId": "fxin0006",
+        "title": "Chicken"
+      }
+    },
+    {
+      "id": 9,
+      "documentId": "fxtp0009",
+      "title": "Shop your fridge first",
+      "description": "Check what you have before you make a list.",
+      "tip_type": {
+        "id": 2,
+        "documentId": "fxtt0002",
+        "title": "Prep"
+      },
+      "tip_behavior": null,
+      "tip_motivator": null,
+      "ingredient": null
+    },
+    {
+      "id": 10,
+      "documentId": "fxtp0010",
+      "title": "First in, first out",
+      "description": "Move older food to the front so it gets eaten first.",
+      "tip_type": {
+        "id": 1,
+        "documentId": "fxtt0001",
+        "title": "Storage"
+      },
+      "tip_behavior": null,
+      "tip_motivator": null,
+      "ingredient": null
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "page": 1,
+      "pageSize": 100,
+      "pageCount": 1,
+      "total": 10
+    }
+  }
+}

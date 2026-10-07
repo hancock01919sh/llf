@@ -1,0 +1,319 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "documentId": "fxpg0001",
+      "title": "Home",
+      "path": "/",
+      "seo": {
+        "metaTitle": "Long Live Food",
+        "metaKeywords": null,
+        "metaDescription": "Easy tips to finish the food you buy."
+      },
+      "main": [
+        {
+          "__component": "component.hero",
+          "id": 1,
+          "eyebrow": "Long Live Food",
+          "layout": "Primary",
+          "images": null,
+          "description": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "text": "Fixture copy. Small changes help you finish the food you buy."
+                }
+              ]
+            }
+          ],
+          "ctas": [
+            {
+              "id": 1,
+              "label": "Find My Tips",
+              "href": null,
+              "page": {
+                "id": 2,
+                "documentId": "fxpg0002",
+                "title": "Find My Tips",
+                "path": "find-my-tips"
+              }
+            },
+            {
+              "id": 2,
+              "label": "Browse tips",
+              "href": null,
+              "page": {
+                "id": 3,
+                "documentId": "fxpg0003",
+                "title": "Tips",
+                "path": "tips"
+              }
+            }
+          ]
+        },
+        {
+          "__component": "custom.search",
+          "id": 2,
+          "placeholder": "Search tips and ingredients"
+        },
+        {
+          "__component": "component.carousel",
+          "id": 3,
+          "title": {
+            "copy": "Browse by category",
+            "header": "h2"
+          },
+          "description": "Fixture copy for the carousel.",
+          "mode": "categories",
+          "layout": "Basic",
+          "categories": [
+            {
+              "id": 1,
+              "documentId": "fxca0001",
+              "title": "Fruits & Veggies",
+              "slug": "fruits-and-veggies",
+              "image": null
+            },
+            {
+              "id": 2,
+              "documentId": "fxca0002",
+              "title": "Fridge Staples",
+              "slug": "fridge-staples",
+              "image": null
+            },
+            {
+              "id": 3,
+              "documentId": "fxca0003",
+              "title": "Smart Shopping",
+              "slug": "smart-shopping",
+              "image": null
+            }
+          ],
+          "ctas": []
+        },
+        {
+          "__component": "custom.tip-list",
+          "id": 4,
+          "title": {
+            "copy": "Quick wins",
+            "header": "h2"
+          },
+          "description": null,
+          "layout": "Basic",
+          "tips": [
+            {
+              "id": 9,
+              "documentId": "fxtp0009",
+              "title": "Shop your fridge first",
+              "description": "Check what you have before you make a list.",
+              "tip_type": {
+                "id": 2,
+                "documentId": "fxtt0002",
+                "title": "Prep"
+              },
+              "tip_behavior": null,
+              "tip_motivator": null,
+              "ingredient": null
+            },
+            {
+              "id": 10,
+              "documentId": "fxtp0010",
+              "title": "First in, first out",
+              "description": "Move older food to the front so it gets eaten first.",
+              "tip_type": {
+                "id": 1,
+                "documentId": "fxtt0001",
+                "title": "Storage"
+              },
+              "tip_behavior": null,
+              "tip_motivator": null,
+              "ingredient": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "documentId": "fxpg0002",
+      "title": "Find My Tips",
+      "path": "find-my-tips",
+      "seo": {
+        "metaTitle": null,
+        "metaKeywords": null,
+        "metaDescription": "Share a recipe and get tips for its ingredients."
+      },
+      "main": [
+        {
+          "__component": "custom.tool",
+          "id": 5,
+          "url_label": "Recipe link",
+          "url_placeholder": "https://",
+          "upload_label": "Recipe photo",
+          "upload_placeholder": "Choose a photo",
+          "description": "Fixture copy. Share a recipe and we'll find tips for its ingredients.",
+          "cta_label": "Find my tips"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "documentId": "fxpg0003",
+      "title": "Tips",
+      "path": "tips",
+      "seo": null,
+      "main": [
+        {
+          "__component": "component.hero",
+          "id": 6,
+          "eyebrow": null,
+          "layout": "Secondary",
+          "images": null,
+          "description": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "text": "Fixture copy. Every tip, sorted by category."
+                }
+              ]
+            }
+          ],
+          "ctas": []
+        },
+        {
+          "__component": "component.carousel",
+          "id": 7,
+          "title": {
+            "copy": "Categories",
+            "header": "h2"
+          },
+          "description": null,
+          "mode": "categories",
+          "layout": "Compact",
+          "categories": [
+            {
+              "id": 1,
+              "documentId": "fxca0001",
+              "title": "Fruits & Veggies",
+              "slug": "fruits-and-veggies",
+              "image": null
+            },
+            {
+              "id": 2,
+              "documentId": "fxca0002",
+              "title": "Fridge Staples",
+              "slug": "fridge-staples",
+              "image": null
+            },
+            {
+              "id": 3,
+              "documentId": "fxca0003",
+              "title": "Smart Shopping",
+              "slug": "smart-shopping",
+              "image": null
+            }
+          ],
+          "ctas": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "documentId": "fxpg0004",
+      "title": "About",
+      "path": "about",
+      "seo": null,
+      "main": [
+        {
+          "__component": "component.hero",
+          "id": 8,
+          "eyebrow": null,
+          "layout": "Secondary",
+          "images": null,
+          "description": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "text": "Fixture copy about the campaign."
+                }
+              ]
+            }
+          ],
+          "ctas": []
+        },
+        {
+          "__component": "component.teaser",
+          "id": 9,
+          "title": {
+            "copy": "Why it matters",
+            "header": "h2"
+          },
+          "description": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "text": "Fixture copy for a teaser."
+                }
+              ]
+            }
+          ],
+          "ctas": [
+            {
+              "id": 3,
+              "label": "Find My Tips",
+              "href": null,
+              "page": {
+                "id": 2,
+                "documentId": "fxpg0002",
+                "title": "Find My Tips",
+                "path": "find-my-tips"
+              }
+            }
+          ],
+          "images": null,
+          "layout": "Highlight"
+        },
+        {
+          "__component": "component.link-list",
+          "id": 10,
+          "title": {
+            "copy": "Keep exploring",
+            "header": "h2"
+          },
+          "description": null,
+          "pages": [
+            {
+              "id": 3,
+              "documentId": "fxpg0003",
+              "title": "Tips",
+              "path": "tips"
+            },
+            {
+              "id": 2,
+              "documentId": "fxpg0002",
+              "title": "Find My Tips",
+              "path": "find-my-tips"
+            }
+          ],
+          "layout": "Basic"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "page": 1,
+      "pageSize": 100,
+      "pageCount": 1,
+      "total": 4
+    }
+  }
+}

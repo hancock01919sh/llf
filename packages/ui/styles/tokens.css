@@ -36,7 +36,7 @@
   --color-semantic-squash: #e39b2d;
   --color-semantic-leaf: #3e7c4f;
 
-  /* next/font sets --font-anton and --font-fustat on <html>. */
+  /* The app sets --font-anton and --font-fustat (self-hosted via Fontsource, no font CDN). */
   --font-display: var(--font-anton), Impact, sans-serif;
   --font-sans: var(--font-fustat), system-ui, sans-serif;
 

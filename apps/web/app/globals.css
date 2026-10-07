@@ -1,0 +1,33 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@llf/ui/styles/tokens.css';
+
+@source '../blocks';
+@source '../components';
+@source '../templates';
+
+/* Fonts are self-hosted from Fontsource (imported in layout.tsx), so no font CDN is called. */
+:root {
+  --font-anton: 'Anton';
+  --font-fustat: 'Fustat Variable';
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
