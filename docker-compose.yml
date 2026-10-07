@@ -1,0 +1,19 @@
+# Local Postgres for the CMS. Same engine as Render Postgres and RDS (TDD §11.4).
+# If 5432 is taken (e.g. Homebrew Postgres), run with POSTGRES_PORT=5433.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: strapi
+      POSTGRES_PASSWORD: strapi
+      POSTGRES_DB: strapi
+    ports: ['${POSTGRES_PORT:-5432}:5432']
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U strapi']
+      interval: 2s
+      retries: 30
+
+volumes:
+  pgdata:

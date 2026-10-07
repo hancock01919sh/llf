@@ -1,0 +1,32 @@
+{
+  "name": "llf",
+  "private": true,
+  "description": "Long Live Food (Ad Council food waste campaign) monorepo",
+  "packageManager": "pnpm@9.15.2",
+  "engines": {
+    "node": ">=22.12 <23"
+  },
+  "prettier": "@llf/config/prettier",
+  "scripts": {
+    "dev": "pnpm db:up && node scripts/ensure-cms-env.mjs && concurrently -k -n web,tool,cms -c cyan,magenta,yellow \"pnpm --filter @llf/web dev\" \"pnpm --filter @llf/find-my-tips dev\" \"pnpm --filter @llf/cms dev\"",
+    "dev:fe": "concurrently -k -n web,tool -c cyan,magenta \"pnpm --filter @llf/web dev\" \"pnpm --filter @llf/find-my-tips dev\"",
+    "dev:cms": "pnpm db:up && node scripts/ensure-cms-env.mjs && pnpm --filter @llf/cms dev",
+    "db:up": "docker compose up -d --wait postgres",
+    "db:down": "docker compose down",
+    "build": "pnpm -r --filter \"!@llf/cms\" build",
+    "build:cms": "pnpm --filter @llf/cms build",
+    "lint": "eslint .",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "e2e": "pnpm --filter @llf/web e2e",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@llf/config": "workspace:*",
+    "concurrently": "10.0.5",
+    "eslint": "9.39.5",
+    "prettier": "3.9.9",
+    "typescript": "6.0.3"
+  }
+}

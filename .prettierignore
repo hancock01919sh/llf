@@ -1,0 +1,11 @@
+pnpm-lock.yaml
+apps/cms
+docs
+**/.next
+**/out
+**/dist
+**/coverage
+**/playwright-report
+**/test-results
+**/*.md
+.github/pull_request_template.md
