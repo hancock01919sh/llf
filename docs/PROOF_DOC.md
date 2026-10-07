@@ -7,7 +7,7 @@ Technical spikes that prove (or disprove) the riskiest assumptions in the [TDD](
 | | |
 |---|---|
 | **Owner** | Art Longbottom (tech lead) |
-| **Last updated** | 2026-10-06 |
+| **Last updated** | 2026-10-07 |
 
 **How to run a spike**
 - Time-box it (default **½–1 day**). Work on a `spike/<id>-<name>` branch; spike code is thrown away or rewritten, never merged as is.
@@ -23,7 +23,7 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 | ID | Jira | Spike | TDD | Owner | Due | Status |
 |---|---|---|---|---|---|---|
 | P1 | [BD3244-23](https://dotdotdash.atlassian.net/browse/BD3244-23) | Strapi relation semantics | §5.1, §5.2 | Art | Oct 14 | ⏳ |
-| P2 | [BD3244-13](https://dotdotdash.atlassian.net/browse/BD3244-13) | Strapi 5 in a pnpm workspace | §4.4 | Art | Oct 12 | ⏳ |
+| P2 | [BD3244-13](https://dotdotdash.atlassian.net/browse/BD3244-13) | Strapi 5 in a pnpm workspace | §4.4 | Art | Oct 12 | ✅ |
 | P3 | [BD3244-22](https://dotdotdash.atlassian.net/browse/BD3244-22) | Static export routing and `?i=` | §6.2 | Art | Oct 15 | ⏳ |
 | P4 | [BD3244-28](https://dotdotdash.atlassian.net/browse/BD3244-28) | Render client-IP header for the admin allow-list | §5.4, §10 | James S + Art | Oct 14 | ⏳ |
 | P5 | [BD3244-27](https://dotdotdash.atlassian.net/browse/BD3244-27) | Publish → rebuild (Render deploy hook; Phase B relay via GitHub App) | §5.3 | James S + Art | Oct 16 | ⏳ |
@@ -47,8 +47,17 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 ### P2. Strapi 5 in a pnpm workspace
 - **Hypothesis:** Strapi 5 builds and runs (`develop`, `build`, Docker image) as `apps/cms` inside a pnpm workspace without hoisting hacks.
 - **Method:** `git subtree add`, then `pnpm install`, `pnpm --filter @llf/cms build`, and a Docker build. Try `node-linker=hoisted` only for `apps/cms` if needed.
-- **Result:** _TBD_
-- **Decision:** If it fails, `apps/cms` keeps its own npm lockfile and sits outside the workspace (TDD §4.4).
+- **Result:** ✅ **Confirmed** (Oct 7, scratch repo, Node 22.14, pnpm 9.15.2, Strapi 5.45.0, Postgres 16).
+  - `git subtree add` of `f753967` into `apps/cms` kept the history. **No hoisting needed**: the default isolated linker installs and builds with no `.npmrc` changes.
+  - The only peer warnings come from inside Strapi's own dependency tree (zod `3.25.67` vs `^3.25.76` via the `ai` SDK; typedoc; codemirror). None of them blocks anything.
+  - Running `strapi develop` and `strapi start` against Postgres 16 in Docker: `/_health` → 204, `/admin` → 200, 78 tables created, and all 9 content APIs → **403** (the Public role has no permissions).
+  - **Docker image:** a multi-stage `node:22-alpine` build (`pnpm fetch` → offline frozen install filtered to `@llf/cms...` → `strapi build` → `pnpm deploy --filter @llf/cms --prod`, then copy `build/`). It runs as the `node` user with a `/_health` healthcheck. The container started against compose Postgres with the same 204/200/403 results. The image is **1.09 GB** (size can be trimmed later; it's not a blocker).
+  - **Gotchas:** this JS project writes its admin bundle to **`build/`, not `dist/`**. The admin build bakes in `ADMIN_PATH`, `STRAPI_ADMIN_BACKEND_URL`, and `STRAPI_TELEMETRY_DISABLED`, so build each environment with its own values. If a local Homebrew Postgres already uses 5432, set `POSTGRES_PORT` (compose) and `DATABASE_PORT`.
+  - **Audit fixes applied in the spike** (they go into the real scaffold): renamed the package to `@llf/cms`; removed `@strapi/plugin-cloud`, `better-sqlite3`, the `deploy` script, and `package-lock.json`; added `pg`; set engines to Node 22; made `config/database.js` Postgres-only (`DATABASE_URL` or `DATABASE_*`, plus SSL, schema, and pool); removed `webhooks.populateRelations`.
+  - **New findings for §5.1:**
+    - The Strapi 5.45 admin depends on the Vercel `ai` SDK for **Strapi AI**. It only turns on when `admin.ai.enabled` (default `true`) **and** an Enterprise `cms-ai` license are both present. We have no license, so it's off, but we set `admin.ai.enabled: false` explicitly and keep the dependency on the third-party list.
+    - `config/admin.js` uses the deprecated `auth.options.expiresIn`. Move it to `auth.sessions` in the scaffold.
+- **Decision:** `apps/cms` **stays inside the pnpm workspace**, on one lockfile and the default linker. Postgres 16 runs everywhere: Docker locally, then Render Postgres, then **RDS Postgres 16** (D13). The fallback (a separate npm lockfile) isn't needed. The spike Dockerfile and compose file are the templates for BD3244-16.
 
 ### P3. Static export routing and `?i=`
 - **Hypothesis:** `output: 'export'` with `trailingSlash: true` serves every route in TDD §6.1, with the results page reading `?i=` via `useSearchParams` inside Suspense, identically through the Phase A Node server and a CloudFront Function.

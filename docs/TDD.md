@@ -7,8 +7,8 @@
 | **Delivery** | dotdotdash (ddd) |
 | **Owner / author** | Art Longbottom (tech lead) |
 | **Reviewers** | James Calhoun (tech lead), James Steele (AWS/DevOps), Adam Paikowsky (analytics), Danish Aziz (PM), China dev team (Eva Fan, Alessandro Grena, Maggie Ding) |
-| **Status** | **DRAFT v0.3.3.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
-| **Last updated** | 2026-10-06 |
+| **Status** | **DRAFT v0.3.4.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
+| **Last updated** | 2026-10-07 |
 | **Go-live** | **Friday, January 8, 2027** (go/no-go Thursday, January 7). There's **no contingency** after final QA |
 
 > **How to read this document.** Every significant statement has a label:
@@ -394,7 +394,7 @@ A single **pnpm workspace** monorepo, so the contracts and matching code are sha
 └─ .github/workflows/      # CI, deploy, publish-triggered build
 ```
 
-- **How we bring in the Strapi code:** `git subtree add` from `AdCouncil/ending-wasted-food-strapi` keeps its history. We rename the package from `test-strapi` to `@llf/cms`. During tech validation we check that Strapi works with pnpm workspaces. If it doesn't, `apps/cms` gets its own npm lockfile and is left out of the workspace ([`PROOF_DOC.md`](./PROOF_DOC.md)).
+- **How we bring in the Strapi code:** `git subtree add` from `AdCouncil/ending-wasted-food-strapi` keeps its history. We rename the package from `test-strapi` to `@llf/cms`. **[VERIFIED] (P2, Oct 7):** Strapi 5.45 installs, builds, and runs inside the pnpm workspace with the default isolated linker and one lockfile, with no hoisting. `apps/cms/Dockerfile` is a multi-stage `node:22-alpine` build that uses `pnpm deploy --prod`. The admin bundle goes to `build/` and is built per environment, because `ADMIN_PATH` and the backend URL are baked in ([`PROOF_DOC.md`](./PROOF_DOC.md#p2-strapi-5-in-a-pnpm-workspace)).
 - **Where the repo lives** [TL DECISION]:
   1. Art scaffolds it in **ddd's GitHub** (Oct 6–9).
   2. It moves to **Ad Council's GitHub org** with GitHub's repository transfer, which keeps the history, issues, and PRs, or with a mirror push if transfer isn't allowed (OPEN-11).
@@ -419,10 +419,13 @@ Repo: `AdCouncil/ending-wasted-food-strapi`, commit `f753967` ("initial checkin"
 | Item | Finding | Impact |
 |---|---|---|
 | Version | Strapi **5.45.0**, **JavaScript** (not TS), package name `test-strapi`, Node `>=20 <=24` | OK. Rename the package. TypeScript conversion is optional and not planned |
-| Database | Uses **SQLite** by default (`better-sqlite3`). `config/database.js` supports Postgres, but **the `pg` driver isn't installed** | Add `pg`. Use **Postgres in every environment**: Docker locally, Render Postgres, then RDS [TL DECISION]. SQLite can't run on a temporary disk |
+| Database | Uses **SQLite** by default (`better-sqlite3`). `config/database.js` supports Postgres, but **the `pg` driver isn't installed** | Add `pg`. Use **Postgres 16 in every environment**: Docker locally, Render Postgres, then RDS Postgres 16 [TL DECISION]. SQLite can't run on a temporary disk. `config/database.js` becomes Postgres-only (`DATABASE_URL` or `DATABASE_*`, with SSL settings ready for RDS) [VERIFIED in P2] |
 | Media | **No upload provider configured** (`config/plugins.js` is empty), so files go to the local `public/uploads` folder | Phase A: local provider on a Render persistent disk. Phase B: `@strapi/provider-upload-aws-s3`, a private bucket, and a CloudFront media domain. Selected by env var |
 | Server config | `config/server.js` sets `webhooks.populateRelations`, a **Strapi 4 setting** that Strapi 5 doesn't use | Remove it. Webhook payloads are handled as Strapi 5 sends them (§5.3) |
 | Plugins | Includes `@strapi/plugin-cloud`, Strapi's paid hosting plugin | **Remove it.** It isn't an IT-approved vendor and we aren't using it |
+| Strapi AI | Strapi 5.45's admin and content-type builder ship **Strapi AI**, which uses the Vercel `ai` SDK and calls `strapi-ai.apps.strapi.io`. It only runs with `admin.ai.enabled` (default `true`) **and** an Enterprise `cms-ai` license [VERIFIED in P2] | No license, so it's off. We still set `admin.ai.enabled: false` in `config/admin.js` and list it in the IT third-party review so nothing calls out by accident |
+| Admin auth | `config/admin.js` uses `auth.options.expiresIn`, which Strapi 5.45 marks as deprecated [VERIFIED in P2] | Move it to `auth.sessions` (`maxRefreshTokenLifespan`, `maxSessionLifespan`) in the scaffold |
+| Lockfile and engines | Ships an npm `package-lock.json`, the `deploy` (Strapi Cloud) script, and Node `>=20 <=24` | Delete the npm lockfile (the root pnpm lockfile replaces it), remove `deploy`, and pin engines to Node 22 [VERIFIED in P2] |
 | API | `defaultLimit 25`, `maxLimit 100`, `withCount` | Build-time fetches **must paginate** (there are more than 100 ingredients) |
 | Middleware | Strapi defaults | Tighten CORS to the admin and preview origins. Add the admin IP allow-list middleware for Phase A (§5.4). Set CSP for the media domain |
 | Admin customization | `src/admin` has **only the example files**. `src/extensions` is empty | The "typeahead ingredient search" from the walkthrough **isn't in the repo** |
@@ -1521,7 +1524,7 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | D10 | Client-side search index | PROPOSED | Small volume, no vendor |
 | D11 | English-only at launch | ASSUMED (OPEN-12) | i18n isn't enabled in the repo |
 | D12 | **Two hosting phases**: Render (ddd account) for dev and staging now, Ad Council AWS for staging and prod later. Prod never on Render | TL DECISION | Development doesn't wait on AWS access. Needs IT acceptance (OPEN-23) |
-| D13 | **Postgres in every environment** (Docker, Render, RDS) | TL DECISION | No SQLite/Postgres drift. Same migrations everywhere |
+| D13 | **Postgres 16 in every environment** (Docker locally, Render Postgres, then RDS Postgres 16) | TL DECISION (Strapi verified on Postgres 16 in P2) | No SQLite/Postgres drift. Same migrations everywhere |
 | D14 | **Tailwind CSS + shadcn/ui**, WCAG 2.1 AA | TL DECISION | Fast, accessible primitives that we own in the repo. Tokens from Figma |
 | D15 | **Branches `dev` → `staging` → `prod`**, promotion by PR | TL DECISION | Each branch maps to one environment, and promotion is reviewable |
 | D16 | **CMS admin on its own domain, IP allow-list only** | TL DECISION | No built-in 2FA in Strapi Community. Removes the admin from the public internet |
@@ -1625,3 +1628,4 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.3.1 | 2026-10-06 | Art Longbottom (with Copilot) | Folded in the **Figma audit** of the working copy `JZTCmehamc5QkAYw1lw5jW` (closes OPEN-10). §6.1 routes now carry node IDs, plus overlays and states. §6.3 has the verified tokens, context modes, fonts, spacing and radius, proposed breakpoints (402 and 1440 are reference widths), and palette contrast rules. §5.2: Group `layout`/`order`, `asset-list` and `jump-nav` blocks, modal block dropped, scroll-lock deferred. §6.5 search layout and header popover. §6.6 Tip Modal, Save/Share, hero video, animated sections. §7.4 video links, §7.10 designed vs. missing tool states, `save` in `tip_interaction`. Added D22, R18–R19, OPEN-34–40; R17 mitigated |
 | 0.3.2 | 2026-10-06 | Art Longbottom (with Copilot) | Wired up Jira project **BD3244** (board 873): §12.4 epics now carry their keys (BD3244-1 to BD3244-11, replacing the `LLF-*` placeholders), §11.4 lists the China team starter tickets, and §12.1 prereqs are done. Spike tickets are listed in `PROOF_DOC.md` |
 | 0.3.3 | 2026-10-06 | Art Longbottom (with Copilot) | Assigned BD3244 owners: **James Steele** takes DevOps (INFRA-AWS, Render Blueprint BD3244-15, spikes P4, P5, P7, P10–P12), **James Calhoun** takes the runbooks (BD3244-18), and Art keeps the basic setup. Updated §11.4 and §12.4 |
+| 0.3.4 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P2 passed** (BD3244-13). Strapi 5.45 runs inside the pnpm workspace with the default linker, one lockfile, and no hoisting. It builds, runs on Postgres 16, and runs as a Docker image (health 204, admin 200, content APIs 403). §4.4 updated. §5.1 adds rows for Strapi AI (`ai` SDK, turned off), the admin auth deprecation, and lockfile/engines. D13 now pins **Postgres 16** (Docker → Render → RDS) |
