@@ -1,0 +1,138 @@
+/*
+ * Design tokens from the Figma Design System page (1:5779). TDD §6.3.
+ * Consumers import this after Tailwind:
+ *   @import 'tailwindcss';
+ *   @import '@llf/ui/styles/tokens.css';
+ * Figma has no local styles, so every value here maps one to one to a Figma variable.
+ */
+
+@source '../src';
+
+/* Disabled buttons and aria-disabled links (asChild) share one style. */
+@custom-variant inactive (&:disabled, &[aria-disabled='true']);
+
+@theme static {
+  /* Only brand colors exist; the default Tailwind palette is removed on purpose. */
+  --color-*: initial;
+
+  --color-surface-paper: #fefaef;
+  --color-surface-sand: #fbf5ce;
+  --color-surface-mint: #f0f58e;
+  --color-surface-mint-dark: #dce55c;
+  --color-surface-forest-tint: #deeadb;
+
+  --color-ink-terra: #231711;
+  --color-ink-terra-70: #5e5145;
+  --color-ink-terra-40: #a69b8c; /* decorative and disabled only, never body text */
+  --color-ink-terra-15: #e7e0d3; /* borders and dividers only */
+  --color-ink-sand-70: #b4bc9c; /* muted text on dark surfaces only */
+
+  --color-brand-forest: #0f3627;
+  --color-brand-forest-mid: #2e5c42;
+
+  --color-accent-carrot: #e2600c;
+
+  --color-semantic-tomato: #c2451e;
+  --color-semantic-squash: #e39b2d;
+  --color-semantic-leaf: #3e7c4f;
+
+  /* next/font sets --font-anton and --font-fustat on <html>. */
+  --font-display: var(--font-anton), Impact, sans-serif;
+  --font-sans: var(--font-fustat), system-ui, sans-serif;
+
+  /* Named Figma text styles. The full type scale is still being audited. */
+  --text-label: 1.125rem; /* Mobile/Label: Fustat 600, 18/1 */
+  --text-label--line-height: 1;
+  --text-paragraph: 1.25rem; /* Desktop/Paragraph: Fustat 400–700, 20/1.4 */
+  --text-paragraph--line-height: 1.4;
+
+  --spacing-2xs: 5px;
+  --spacing-xs: 10px;
+  --spacing-sm: 15px;
+  --spacing-md: 20px;
+  --spacing-lg: 30px;
+  --spacing-xl: 40px;
+  --spacing-2xl: 60px;
+  --spacing-gutter: 20px; /* mobile side margin */
+  --spacing-gutter-lg: 60px; /* desktop side margin */
+  --spacing-control: 55px; /* Primary / Secondary / Tertiary button height */
+  --spacing-control-compact: 48px; /* Save / Share button height */
+
+  --radius-*: initial;
+  --radius-sm: 20px;
+  --radius-md: 40px;
+  --radius-lg: 80px;
+  --radius-pill: 9999px; /* Figma 100 */
+
+  --container-page: 1440px;
+
+  /* The design system has no shadows. */
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+}
+
+/*
+ * Context modes (Figma "Context" frame 1:5862). A `data-surface` attribute on a section switches
+ * the semantic variables; components use the fg / line / interactive / focus utilities below.
+ */
+@theme inline {
+  --color-fg: var(--text);
+  --color-fg-muted: var(--text-muted);
+  --color-line: var(--border);
+  --color-interactive: var(--interactive);
+  --color-interactive-hover: var(--interactive-hover);
+  --color-on-interactive: var(--on-interactive);
+  --color-focus: var(--focus-ring);
+}
+
+@layer base {
+  :root,
+  [data-surface='paper'],
+  [data-surface='sand'],
+  [data-surface='mint'],
+  [data-surface='forest-tint'] {
+    --text: var(--color-ink-terra);
+    --text-muted: var(--color-ink-terra-70);
+    --border: var(--color-ink-terra-15);
+    --interactive: var(--color-surface-mint);
+    --interactive-hover: var(--color-surface-mint-dark);
+    --on-interactive: var(--color-ink-terra);
+    /* Forest ring passes on light surfaces and on Mint (TDD §6.3 contrast rules). */
+    --focus-ring: var(--color-brand-forest);
+  }
+
+  [data-surface='forest'],
+  [data-surface='terra'] {
+    --text: var(--color-surface-sand);
+    --text-muted: var(--color-ink-sand-70);
+    --border: var(--color-brand-forest-mid);
+    --interactive: var(--color-surface-mint);
+    --interactive-hover: var(--color-surface-mint-dark);
+    --on-interactive: var(--color-ink-terra);
+    /* A Forest ring disappears on dark sections, so the ring is Mint there. */
+    --focus-ring: var(--color-surface-mint);
+  }
+
+  [data-surface] {
+    color: var(--text);
+  }
+  [data-surface='paper'] {
+    background-color: var(--color-surface-paper);
+  }
+  [data-surface='sand'] {
+    background-color: var(--color-surface-sand);
+  }
+  [data-surface='mint'] {
+    background-color: var(--color-surface-mint);
+  }
+  [data-surface='forest-tint'] {
+    background-color: var(--color-surface-forest-tint);
+  }
+  [data-surface='forest'] {
+    background-color: var(--color-brand-forest);
+  }
+  [data-surface='terra'] {
+    background-color: var(--color-ink-terra);
+  }
+}
