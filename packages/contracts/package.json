@@ -1,0 +1,28 @@
+{
+  "name": "@llf/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Zod schemas and TypeScript types shared by web, the tool API, seed scripts, and eval",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./analytics": "./src/analytics.ts",
+    "./cms": "./src/cms.ts",
+    "./find-tips": "./src/find-tips.ts",
+    "./catalog": "./src/catalog.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@llf/config": "workspace:*",
+    "@types/node": "22.20.5",
+    "typescript": "6.0.3",
+    "vite": "8.3.3",
+    "vitest": "5.0.3"
+  }
+}
