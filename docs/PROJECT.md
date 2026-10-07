@@ -51,7 +51,7 @@ A consumer website, **longlivefood.org**, that helps households waste less food.
 **People (for reference in tickets and comments):**
 - **Ad Council:** Cat Boyce (Director, Digital Product Management, the day-to-day contact), Tracy Danicich and Hilary Landa (campaign and issue experts), and an AI tools lead / Chief Media Officer who will join the AI decision.
 - **TBWA / OMC production:** Courtney Coyne and Megan Jenkins.
-- **ddd:** Danish Aziz (PM), Adam Paikowsky (analytics and accounts), James Calhoun and Art Longbottom (tech leads), James Steele (AWS and DevOps), Colleen Miller (image selection), and Eva Fan, Alessandro Grena, and Maggie Ding (China dev team).
+- **ddd:** Danish Aziz (PM), Adam Paikowsky (analytics and accounts), James Calhoun and Art Longbottom (tech leads; James C owns the process docs and runbooks), James Steele (AWS and DevOps), Colleen Miller (image selection), and Eva Fan, Alessandro Grena, and Maggie Ding (China dev team).
 
 ---
 
