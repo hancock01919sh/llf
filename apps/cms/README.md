@@ -1,61 +1,30 @@
-# 🚀 Getting started with Strapi
+# @llf/cms
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
+Strapi 5 CMS for Long Live Food, imported with `git subtree` from `AdCouncil/ending-wasted-food-strapi` (commit `f753967`). Schema, roles, and hardening rules are in [TDD §5](../../docs/TDD.md#5-cms-strapi).
 
-### `develop`
+## Local development
 
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
+Run from the repo root:
 
-```
-npm run develop
-# or
-yarn develop
-```
-
-### `start`
-
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
-
-```
-npm run start
-# or
-yarn start
+```sh
+pnpm db:up                         # Postgres 16 in Docker (POSTGRES_PORT overrides 5432)
+cp apps/cms/.env.example apps/cms/.env   # fill in secrets: openssl rand -base64 32
+pnpm dev:cms                       # strapi develop on http://localhost:1337/admin
 ```
 
-### `build`
+Postgres only, everywhere (Docker locally, Render Postgres, then RDS). There is no SQLite fallback.
 
-Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
+## Build and run in Docker
 
-```
-npm run build
-# or
-yarn build
+```sh
+docker build -f apps/cms/Dockerfile -t llf-cms .
 ```
 
-## ⚙️ Deployment
+The build context is the repo root because the image is built from the pnpm workspace. `ADMIN_PATH`, `STRAPI_ADMIN_BACKEND_URL`, and `STRAPI_TELEMETRY_DISABLED` are baked into the admin bundle at build time, so build once per environment. The admin bundle is written to `build/`, not `dist/`.
 
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
+## Rules
 
-```
-yarn strapi deploy
-```
-
-## 📚 Learn more
-
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
-
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
-
-## ✨ Community
-
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
-
----
-
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+- Schema changes are additive and backward compatible; relation changes are two-phase (TDD §5.2).
+- Every schema change updates the matching Zod schema in `packages/contracts`.
+- The Public role has no permissions. The site reads content with an API token at build time.
+- Strapi AI and the Strapi Cloud plugin are disabled; they call services Ad Council IT hasn't approved.

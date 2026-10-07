@@ -1,12 +1,11 @@
 {
-  "name": "test-strapi",
+  "name": "@llf/cms",
   "version": "0.1.0",
   "private": true,
-  "description": "A Strapi application",
+  "description": "Long Live Food CMS (Strapi 5), imported from AdCouncil/ending-wasted-food-strapi",
   "scripts": {
     "build": "strapi build",
     "console": "strapi console",
-    "deploy": "strapi deploy",
     "dev": "strapi develop",
     "develop": "strapi develop",
     "start": "strapi start",
@@ -15,10 +14,9 @@
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
   },
   "dependencies": {
-    "@strapi/plugin-cloud": "5.45.0",
     "@strapi/plugin-users-permissions": "5.45.0",
     "@strapi/strapi": "5.45.0",
-    "better-sqlite3": "12.8.0",
+    "pg": "8.16.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
@@ -26,8 +24,7 @@
   },
   "devDependencies": {},
   "engines": {
-    "node": ">=20.0.0 <=24.x.x",
-    "npm": ">=6.0.0"
+    "node": ">=22 <23"
   },
   "strapi": {
     "uuid": "4b2c269f-5ab1-4752-9cd7-54ebdb92b10c",
