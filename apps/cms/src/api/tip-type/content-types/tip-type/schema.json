@@ -1,0 +1,19 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tip_types",
+  "info": {
+    "singularName": "tip-type",
+    "pluralName": "tip-types",
+    "displayName": "Tip Type"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tip_behaviors",
+  "info": {
+    "singularName": "tip-behavior",
+    "pluralName": "tip-behaviors",
+    "displayName": "Tip Behavior"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

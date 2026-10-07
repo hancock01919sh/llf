@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_custom_tip_lists",
+  "info": {
+    "displayName": "Tip List",
+    "icon": "collapse"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "component",
+      "component": "shared.title",
+      "repeatable": false
+    },
+    "description": {
+      "type": "text"
+    },
+    "tips": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::tip.tip"
+    },
+    "layout": {
+      "type": "enumeration",
+      "required": true,
+      "default": "Basic",
+      "enum": [
+        "Basic",
+        "Single"
+      ]
+    }
+  },
+  "config": {}
+}

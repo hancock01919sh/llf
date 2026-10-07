@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_component_heroes",
+  "info": {
+    "displayName": "Hero",
+    "icon": "crown"
+  },
+  "options": {},
+  "attributes": {
+    "description": {
+      "type": "blocks"
+    },
+    "ctas": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": true
+    },
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "layout": {
+      "type": "enumeration",
+      "required": true,
+      "default": "Primary",
+      "enum": [
+        "Primary",
+        "Secondary"
+      ]
+    }
+  },
+  "config": {}
+}

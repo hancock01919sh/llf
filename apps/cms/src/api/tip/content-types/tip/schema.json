@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tips",
+  "info": {
+    "singularName": "tip",
+    "pluralName": "tips",
+    "displayName": "Tip"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "ingredient": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::ingredient.ingredient",
+      "inversedBy": "tips"
+    },
+    "tip_type": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::tip-type.tip-type"
+    },
+    "tip_behavior": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::tip-behavior.tip-behavior"
+    },
+    "tip_motivator": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::tip-motivator.tip-motivator"
+    }
+  }
+}
