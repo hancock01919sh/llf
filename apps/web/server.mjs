@@ -10,7 +10,9 @@ import handler from 'serve-handler';
 
 const ROOT = path.join(import.meta.dirname, 'out');
 const PORT = Number(process.env.PORT ?? 3000);
-const TIPS_URL = (process.env.TIPS_URL ?? `http://localhost:${process.env.TOOL_PORT ?? '8787'}`).replace(/\/$/, '');
+const TIPS_URL = (
+  process.env.TIPS_URL ?? `http://localhost:${process.env.TOOL_PORT ?? '8787'}`
+).replace(/\/$/, '');
 const NOINDEX = process.env.SITE_ENV !== 'prod';
 const BASIC_AUTH = process.env.BASIC_AUTH ?? '';
 const API_TIMEOUT_MS = 40_000;
@@ -30,12 +32,23 @@ function authorized(req) {
   return given.length === expected.length && timingSafeEqual(given, expected);
 }
 
-const HOP_BY_HOP = new Set(['connection', 'keep-alive', 'transfer-encoding', 'upgrade', 'host', 'content-length']);
+const HOP_BY_HOP = new Set([
+  'connection',
+  'keep-alive',
+  'transfer-encoding',
+  'upgrade',
+  'host',
+  'content-length',
+]);
 
 // Same shape as the service's errors: `ErrorResponse` in packages/contracts/src/find-tips.ts.
 function sendError(res, status, code) {
   const requestId = randomUUID();
-  res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-request-id': requestId });
+  res.writeHead(status, {
+    'content-type': 'application/json; charset=utf-8',
+    'cache-control': 'no-store',
+    'x-request-id': requestId,
+  });
   res.end(JSON.stringify({ requestId, code }));
 }
 
@@ -51,7 +64,9 @@ async function proxy(req, res) {
     chunks.push(chunk);
   }
   const headers = Object.fromEntries(
-    Object.entries(req.headers).filter(([name]) => !HOP_BY_HOP.has(name) && name !== 'authorization'),
+    Object.entries(req.headers).filter(
+      ([name]) => !HOP_BY_HOP.has(name) && name !== 'authorization',
+    ),
   );
   const hasBody = req.method !== 'GET' && req.method !== 'HEAD';
   try {
@@ -72,7 +87,9 @@ async function proxy(req, res) {
   } catch (error) {
     // Never log the request body: it can hold user input (TDD D20).
     const timedOut = error instanceof Error && error.name === 'TimeoutError';
-    console.error(`[server] /api proxy ${timedOut ? 'timed out' : 'failed'}: ${req.method} ${req.url.split('?')[0]}`);
+    console.error(
+      `[server] /api proxy ${timedOut ? 'timed out' : 'failed'}: ${req.method} ${req.url.split('?')[0]}`,
+    );
     sendError(res, timedOut ? 504 : 502, timedOut ? 'timeout' : 'upstream_error');
   }
 }
@@ -95,7 +112,12 @@ const server = http.createServer((req, res) => {
     return;
   }
   // serve-handler answers unknown paths with out/404.html.
-  void handler(req, res, { public: ROOT, cleanUrls: true, trailingSlash: true, directoryListing: false });
+  void handler(req, res, {
+    public: ROOT,
+    cleanUrls: true,
+    trailingSlash: true,
+    directoryListing: false,
+  });
 });
 
 server.listen(PORT, () => {

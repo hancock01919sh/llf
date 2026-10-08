@@ -30,7 +30,9 @@ describe('ctaHref', () => {
   });
 
   it('falls back to a trimmed href', () => {
-    expect(ctaHref({ label: 'Go', href: '  https://adcouncil.org  ' })).toBe('https://adcouncil.org');
+    expect(ctaHref({ label: 'Go', href: '  https://adcouncil.org  ' })).toBe(
+      'https://adcouncil.org',
+    );
   });
 
   it('returns null when nothing is set', () => {

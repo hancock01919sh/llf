@@ -34,7 +34,10 @@ export function Carousel({ block, index }: BlockProps<cms.CarouselBlock>) {
               href={`/tips/${category.slug}/`}
               className="flex flex-col gap-xs rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus"
             >
-              <CmsImage media={category.image} className="aspect-square w-full rounded-sm object-cover" />
+              <CmsImage
+                media={category.image}
+                className="aspect-square w-full rounded-sm object-cover"
+              />
               <Heading as={itemLevel} className="text-xl">
                 {category.title}
               </Heading>

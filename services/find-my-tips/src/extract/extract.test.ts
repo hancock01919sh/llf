@@ -29,7 +29,11 @@ describe('mock provider', () => {
   });
 
   it('reports unreadable text when there are no terms', async () => {
-    const { result } = await extractIngredients(createMockProvider(), { kind: 'text', text: ' , ; \n' }, opts);
+    const { result } = await extractIngredients(
+      createMockProvider(),
+      { kind: 'text', text: ' , ; \n' },
+      opts,
+    );
     expect(result).toMatchObject({ readable: false, items: [] });
   });
 
@@ -62,18 +66,24 @@ describe('extractIngredients', () => {
           });
         }),
     };
-    expect(await codeOf(extractIngredients(slow, { kind: 'text', text: 'milk' }, { ...opts, timeoutMs: 10 }))).toBe(
-      'timeout',
-    );
+    expect(
+      await codeOf(
+        extractIngredients(slow, { kind: 'text', text: 'milk' }, { ...opts, timeoutMs: 10 }),
+      ),
+    ).toBe('timeout');
     expect(aborted).toBe(true);
   });
 
   it('rejects output that fails the schema', async () => {
     const bad: ExtractionProvider = {
       name: 'bad',
-      extract: async () => ({ result: { readable: true, detectedType: 'recipe', items: [{ term: 'milk' }] } }),
+      extract: async () => ({
+        result: { readable: true, detectedType: 'recipe', items: [{ term: 'milk' }] },
+      }),
     };
-    expect(await codeOf(extractIngredients(bad, { kind: 'text', text: 'milk' }, opts))).toBe('upstream_error');
+    expect(await codeOf(extractIngredients(bad, { kind: 'text', text: 'milk' }, opts))).toBe(
+      'upstream_error',
+    );
   });
 
   it('maps provider failures to upstream_error', async () => {
@@ -83,7 +93,9 @@ describe('extractIngredients', () => {
         throw new Error('socket hang up');
       },
     };
-    expect(await codeOf(extractIngredients(broken, { kind: 'text', text: 'milk' }, opts))).toBe('upstream_error');
+    expect(await codeOf(extractIngredients(broken, { kind: 'text', text: 'milk' }, opts))).toBe(
+      'upstream_error',
+    );
   });
 
   it('passes ToolErrors through unchanged', async () => {
@@ -93,14 +105,20 @@ describe('extractIngredients', () => {
         throw new ToolError('rate_limited');
       },
     };
-    expect(await codeOf(extractIngredients(limited, { kind: 'text', text: 'milk' }, opts))).toBe('rate_limited');
+    expect(await codeOf(extractIngredients(limited, { kind: 'text', text: 'milk' }, opts))).toBe(
+      'rate_limited',
+    );
   });
 
   it('passes usage through', async () => {
     const counted: ExtractionProvider = {
       name: 'counted',
       extract: async () => ({
-        result: { readable: true, detectedType: 'recipe', items: [{ term: 'milk', isFood: true, inferred: false }] },
+        result: {
+          readable: true,
+          detectedType: 'recipe',
+          items: [{ term: 'milk', isFood: true, inferred: false }],
+        },
         usage: { inputTokens: 12, outputTokens: 3 },
       }),
     };
@@ -110,9 +128,11 @@ describe('extractIngredients', () => {
 
   it('treats unconfigured live providers as upstream errors', async () => {
     for (const name of ['anthropic', 'openai', 'bedrock'] as const) {
-      expect(await codeOf(extractIngredients(createProvider(name), { kind: 'text', text: 'milk' }, opts))).toBe(
-        'upstream_error',
-      );
+      expect(
+        await codeOf(
+          extractIngredients(createProvider(name), { kind: 'text', text: 'milk' }, opts),
+        ),
+      ).toBe('upstream_error');
     }
     expect(createProvider('mock').name).toBe('mock');
   });

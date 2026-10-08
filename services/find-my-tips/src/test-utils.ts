@@ -17,7 +17,8 @@ export function fakeTransport(pages: Record<string, FakePage>): Transport & { ca
   const transport = async ({ url }: { url: URL }): Promise<TransportResponse> => {
     calls.push(url.href);
     const page = pages[url.href];
-    if (!page) return { status: 404, headers: { 'content-type': 'text/html' }, body: new Uint8Array() };
+    if (!page)
+      return { status: 404, headers: { 'content-type': 'text/html' }, body: new Uint8Array() };
     return {
       status: page.status ?? 200,
       headers: page.headers ?? { 'content-type': 'text/html; charset=utf-8' },
@@ -28,7 +29,11 @@ export function fakeTransport(pages: Record<string, FakePage>): Transport & { ca
 }
 
 export function recipePage(ingredients: string[]): string {
-  const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Recipe', recipeIngredient: ingredients });
+  const jsonLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Recipe',
+    recipeIngredient: ingredients,
+  });
   return `<html><head><script type="application/ld+json">${jsonLd}</script></head><body><main>Recipe</main></body></html>`;
 }
 

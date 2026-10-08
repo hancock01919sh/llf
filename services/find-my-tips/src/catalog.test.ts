@@ -4,7 +4,9 @@ import { describe, expect, it } from 'vitest';
 
 import { createCatalogSource } from './catalog';
 
-const fixture = JSON.parse(readFileSync(new URL('./fixtures/catalog.json', import.meta.url), 'utf8')) as {
+const fixture = JSON.parse(
+  readFileSync(new URL('./fixtures/catalog.json', import.meta.url), 'utf8'),
+) as {
   catalogVersion: string;
   ingredients: { slug: string; title: string; synonyms: string[] }[];
 };
@@ -27,7 +29,8 @@ function fakeFetch(replies: Reply[]) {
     if (reply instanceof Error) throw reply;
     const headers = new Headers({ 'content-type': 'application/json' });
     if (reply.etag) headers.set('etag', reply.etag);
-    const body = reply.status === 304 || reply.body === undefined ? null : JSON.stringify(reply.body);
+    const body =
+      reply.status === 304 || reply.body === undefined ? null : JSON.stringify(reply.body);
     return new Response(body, { status: reply.status, headers });
   };
   return Object.assign(fetch, { calls });
@@ -76,8 +79,17 @@ describe('createCatalogSource', () => {
 
   it('keeps serving the last snapshot when a refresh fails', async () => {
     let time = 0;
-    const fetch = fakeFetch([{ status: 200, body: fixture }, { status: 500 }, new Error('ECONNRESET')]);
-    const source = createCatalogSource({ catalogUrl: CATALOG_URL, refreshMs: 1, fetch, now: () => time });
+    const fetch = fakeFetch([
+      { status: 200, body: fixture },
+      { status: 500 },
+      new Error('ECONNRESET'),
+    ]);
+    const source = createCatalogSource({
+      catalogUrl: CATALOG_URL,
+      refreshMs: 1,
+      fetch,
+      now: () => time,
+    });
     const first = await source.get();
     time = 10;
     expect(await source.get()).toBe(first);

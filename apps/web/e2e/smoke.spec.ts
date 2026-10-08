@@ -12,7 +12,9 @@ const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 async function expectAccessible(page: Page) {
   await expect(page.locator('h1')).toHaveCount(1);
   const { violations } = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze();
-  expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
+  expect(
+    violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`),
+  ).toEqual([]);
 }
 
 test.beforeEach(async ({ page }) => {

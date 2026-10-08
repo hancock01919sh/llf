@@ -34,7 +34,10 @@ function fromCodePoint(code: number): string | undefined {
 export function decodeEntities(text: string): string {
   return text.replace(/&(#x[0-9a-f]+|#\d+|[a-z][a-z0-9]*);/gi, (whole, entity: string) => {
     if (entity[0] === '#') {
-      const code = entity[1] === 'x' || entity[1] === 'X' ? parseInt(entity.slice(2), 16) : parseInt(entity.slice(1), 10);
+      const code =
+        entity[1] === 'x' || entity[1] === 'X'
+          ? parseInt(entity.slice(2), 16)
+          : parseInt(entity.slice(1), 10);
       return fromCodePoint(code) ?? whole;
     }
     return NAMED[entity.toLowerCase()] ?? whole;

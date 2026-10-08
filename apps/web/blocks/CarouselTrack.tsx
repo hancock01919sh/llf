@@ -43,8 +43,7 @@ export function CarouselTrack({
   const move = (delta: number) => {
     const list = listRef.current;
     const target = list?.children[Math.max(0, Math.min(count - 1, current + delta))] as
-      | HTMLElement
-      | undefined;
+      HTMLElement | undefined;
     if (!list || !target) return;
     list.scrollTo({
       left: target.offsetLeft - list.offsetLeft,
@@ -53,7 +52,11 @@ export function CarouselTrack({
   };
 
   return (
-    <section aria-roledescription="carousel" aria-labelledby={labelledBy} className="flex flex-col gap-sm">
+    <section
+      aria-roledescription="carousel"
+      aria-labelledby={labelledBy}
+      className="flex flex-col gap-sm"
+    >
       <ul
         ref={listRef}
         className="flex snap-x snap-mandatory gap-md overflow-x-auto pb-xs motion-safe:scroll-smooth"

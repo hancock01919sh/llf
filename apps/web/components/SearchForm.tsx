@@ -19,7 +19,12 @@ interface SearchFormProps {
  * Site search input. Submitting goes to `/search/#q=…`; the term never enters a path or query
  * string (AGENTS.md). Focusing warms the HTTP cache for the search index.
  */
-export function SearchForm({ placeholder, initialTerm = '', onSearch, className }: SearchFormProps) {
+export function SearchForm({
+  placeholder,
+  initialTerm = '',
+  onSearch,
+  className,
+}: SearchFormProps) {
   const router = useRouter();
   const inputId = useId();
   const [term, setTerm] = useState(initialTerm);

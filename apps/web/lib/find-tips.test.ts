@@ -67,21 +67,63 @@ describe('classifyResponse', () => {
   const error = (code: string) => ({ requestId: 'r', code });
 
   it.each<[string, number, unknown, Headers, Outcome]>([
-    ['bad 200 body', 200, { nope: true }, none, { kind: 'error', reason: 'server', retryable: true }],
+    [
+      'bad 200 body',
+      200,
+      { nope: true },
+      none,
+      { kind: 'error', reason: 'server', retryable: true },
+    ],
     ['WAF 202', 202, null, none, { kind: 'error', reason: 'challenge', retryable: false }],
     ['WAF 405', 405, null, none, { kind: 'error', reason: 'challenge', retryable: false }],
-    ['WAF header', 403, null, new Headers({ 'x-amzn-waf-action': 'captcha' }), { kind: 'error', reason: 'challenge', retryable: false }],
-    ['429 default wait', 429, error('rate_limited'), none, { kind: 'rateLimited', retryAfterMs: 30_000 }],
-    ['429 retry-after', 429, null, new Headers({ 'retry-after': '12' }), { kind: 'rateLimited', retryAfterMs: 12_000 }],
-    ['429 capped', 429, null, new Headers({ 'retry-after': '9999' }), { kind: 'rateLimited', retryAfterMs: 300_000 }],
+    [
+      'WAF header',
+      403,
+      null,
+      new Headers({ 'x-amzn-waf-action': 'captcha' }),
+      { kind: 'error', reason: 'challenge', retryable: false },
+    ],
+    [
+      '429 default wait',
+      429,
+      error('rate_limited'),
+      none,
+      { kind: 'rateLimited', retryAfterMs: 30_000 },
+    ],
+    [
+      '429 retry-after',
+      429,
+      null,
+      new Headers({ 'retry-after': '12' }),
+      { kind: 'rateLimited', retryAfterMs: 12_000 },
+    ],
+    [
+      '429 capped',
+      429,
+      null,
+      new Headers({ 'retry-after': '9999' }),
+      { kind: 'rateLimited', retryAfterMs: 300_000 },
+    ],
     ['503', 503, error('unavailable'), none, { kind: 'unavailable' }],
     ['413', 413, error('too_large'), none, { kind: 'tooLarge' }],
     ['415', 415, error('unsupported_media_type'), none, { kind: 'unsupportedFile' }],
     ['422', 422, error('url_not_allowed'), none, { kind: 'invalidUrl' }],
     ['400 url_not_allowed', 400, error('url_not_allowed'), none, { kind: 'invalidUrl' }],
-    ['400 other', 400, error('invalid_request'), none, { kind: 'error', reason: 'server', retryable: false }],
+    [
+      '400 other',
+      400,
+      error('invalid_request'),
+      none,
+      { kind: 'error', reason: 'server', retryable: false },
+    ],
     ['504', 504, null, none, { kind: 'error', reason: 'timeout', retryable: true }],
-    ['timeout code', 502, error('timeout'), none, { kind: 'error', reason: 'timeout', retryable: true }],
+    [
+      'timeout code',
+      502,
+      error('timeout'),
+      none,
+      { kind: 'error', reason: 'timeout', retryable: true },
+    ],
     ['500', 500, error('server'), none, { kind: 'error', reason: 'server', retryable: true }],
     ['404', 404, error('not_found'), none, { kind: 'error', reason: 'server', retryable: false }],
   ])('%s', (_name, status, body, headers, expected) => {
@@ -121,7 +163,9 @@ describe('status', () => {
     await expect(fetchToolMode(fetcher)).resolves.toBe('live');
     expect(fetcher).toHaveBeenCalledWith(FIND_TIPS_API.status, { cache: 'no-store' });
 
-    await expect(fetchToolMode(async () => new Response('<html>', { status: 200 }))).resolves.toBe('off');
+    await expect(fetchToolMode(async () => new Response('<html>', { status: 200 }))).resolves.toBe(
+      'off',
+    );
     await expect(
       fetchToolMode(async () => {
         throw new TypeError('offline');
@@ -149,7 +193,9 @@ describe('requestExtract', () => {
       .fn<(input: string, init?: RequestInit) => Promise<Response>>()
       .mockResolvedValueOnce(json(502, null))
       .mockResolvedValueOnce(json(200, response()));
-    await expect(requestExtract(body, new AbortController().signal, fetcher)).resolves.toMatchObject({ kind: 'result' });
+    await expect(
+      requestExtract(body, new AbortController().signal, fetcher),
+    ).resolves.toMatchObject({ kind: 'result' });
     expect(fetcher).toHaveBeenCalledTimes(2);
 
     const always504 = vi.fn(async () => json(504, null));
@@ -204,18 +250,29 @@ describe('resultView', () => {
         ],
       }),
     );
-    expect(view).toMatchObject({ kind: 'likely', confirmed: [{ slug: 'bread' }], likely: [{ slug: 'basil' }] });
+    expect(view).toMatchObject({
+      kind: 'likely',
+      confirmed: [{ slug: 'bread' }],
+      likely: [{ slug: 'basil' }],
+    });
   });
 
   it('navigates with unique slugs', () => {
     const banana = { slug: 'banana', title: 'Banana', inferred: false };
-    expect(resultView(response({ matches: [banana, banana] }))).toEqual({ kind: 'navigate', slugs: ['banana'] });
+    expect(resultView(response({ matches: [banana, banana] }))).toEqual({
+      kind: 'navigate',
+      slugs: ['banana'],
+    });
   });
 });
 
 describe('uniqueSlugs', () => {
   it('dedupes and caps at 30', () => {
-    const matches = Array.from({ length: 40 }, (_, i) => ({ slug: `s${i % 35}`, title: 'T', inferred: false }));
+    const matches = Array.from({ length: 40 }, (_, i) => ({
+      slug: `s${i % 35}`,
+      title: 'T',
+      inferred: false,
+    }));
     const slugs = uniqueSlugs(matches);
     expect(slugs).toHaveLength(30);
     expect(new Set(slugs).size).toBe(30);
@@ -225,7 +282,13 @@ describe('uniqueSlugs', () => {
 describe('handoff', () => {
   afterEach(() => sessionStorage.clear());
 
-  const handoff = { inputType: 'url', source: 'jsonld', unmatchedCount: 2, latencyMs: 812, catalogVersion: 'v' } as const;
+  const handoff = {
+    inputType: 'url',
+    source: 'jsonld',
+    unmatchedCount: 2,
+    latencyMs: 812,
+    catalogVersion: 'v',
+  } as const;
 
   it('is read once', () => {
     saveHandoff(handoff);
@@ -234,7 +297,10 @@ describe('handoff', () => {
   });
 
   it('ignores tampered or extra data', () => {
-    sessionStorage.setItem('llf:find-tips-result', JSON.stringify({ ...handoff, unmatchedCount: -1 }));
+    sessionStorage.setItem(
+      'llf:find-tips-result',
+      JSON.stringify({ ...handoff, unmatchedCount: -1 }),
+    );
     expect(takeHandoff()).toBeNull();
     sessionStorage.setItem('llf:find-tips-result', '{not json');
     expect(takeHandoff()).toBeNull();

@@ -1,6 +1,12 @@
 import { readFileSync } from 'node:fs';
 
-import { BODY_MAX_BYTES, ErrorResponse, ExtractResponse, FIND_TIPS_API, StatusResponse } from '@llf/contracts/find-tips';
+import {
+  BODY_MAX_BYTES,
+  ErrorResponse,
+  ExtractResponse,
+  FIND_TIPS_API,
+  StatusResponse,
+} from '@llf/contracts/find-tips';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { createApp } from './app';
@@ -14,7 +20,9 @@ import type { ExtractionProvider } from './extract';
 import type { LogFields } from './log';
 import { PUBLIC_IP, fakeResolver, fakeTransport, recipePage } from './test-utils';
 
-const fixture: unknown = JSON.parse(readFileSync(new URL('./fixtures/catalog.json', import.meta.url), 'utf8'));
+const fixture: unknown = JSON.parse(
+  readFileSync(new URL('./fixtures/catalog.json', import.meta.url), 'utf8'),
+);
 const catalog = staticCatalogSource(fixture as Parameters<typeof staticCatalogSource>[0]);
 
 const PNG = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
@@ -33,7 +41,9 @@ function makeApp(env: Record<string, string> = {}, extra: Partial<AppDeps> = {})
     counters: new MemoryCounterStore(),
     logger: (fields) => logs.push(fields),
     resolve: fakeResolver({ 'recipes.test': [PUBLIC_IP], 'internal.test': ['10.0.0.8'] }),
-    transport: fakeTransport({ [RECIPE_URL]: { html: recipePage(['2 cups whole milk', '1 bag baby spinach']) } }),
+    transport: fakeTransport({
+      [RECIPE_URL]: { html: recipePage(['2 cups whole milk', '1 bag baby spinach']) },
+    }),
     newRequestId: () => 'req-1',
     ...extra,
   });
@@ -63,13 +73,18 @@ describe('status endpoint', () => {
     const { app } = makeApp();
     const res = await app.handle(new Request(base + FIND_TIPS_API.status));
     expect(res.status).toBe(200);
-    expect(StatusResponse.parse(await res.json())).toEqual({ mode: 'live', catalogVersion: 'd6b0257e63c4' });
+    expect(StatusResponse.parse(await res.json())).toEqual({
+      mode: 'live',
+      catalogVersion: 'd6b0257e63c4',
+    });
     expect(res.headers.get('x-request-id')).toBe('req-1');
   });
 
   it('answers HEAD and reflects the kill switch', async () => {
     const { app } = makeApp({ FIND_TIPS_MODE: 'jsonld-only' });
-    expect((await app.handle(new Request(base + FIND_TIPS_API.status, { method: 'HEAD' }))).status).toBe(200);
+    expect(
+      (await app.handle(new Request(base + FIND_TIPS_API.status, { method: 'HEAD' }))).status,
+    ).toBe(200);
     const res = await app.handle(new Request(base + FIND_TIPS_API.status));
     expect(StatusResponse.parse(await res.json()).mode).toBe('jsonld-only');
   });
@@ -84,7 +99,9 @@ describe('status endpoint', () => {
 
   it('turns an unexpected failure into a 500 without leaking details', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-    const broken: CatalogSource = { get: () => Promise.reject(new Error('db password in message')) };
+    const broken: CatalogSource = {
+      get: () => Promise.reject(new Error('db password in message')),
+    };
     const { app } = makeApp({}, { catalog: broken });
     const res = await app.handle(new Request(base + FIND_TIPS_API.status));
     expect(res.status).toBe(500);
@@ -131,22 +148,30 @@ describe('extract: happy paths', () => {
 
   it('extracts an image', async () => {
     const { app } = makeApp();
-    const res = await app.handle(post({ inputType: 'image', imageBase64: b64(PNG), mimeType: 'image/png' }));
+    const res = await app.handle(
+      post({ inputType: 'image', imageBase64: b64(PNG), mimeType: 'image/png' }),
+    );
     expect(res.status).toBe(200);
     const body = ExtractResponse.parse(await res.json());
     expect(body.detectedType).toBe('fridge_photo');
     expect(body.source).toBe('model');
-    expect(body.matches.map((m) => m.slug)).toEqual(expect.arrayContaining(['milk', 'spinach', 'banana']));
+    expect(body.matches.map((m) => m.slug)).toEqual(
+      expect.arrayContaining(['milk', 'spinach', 'banana']),
+    );
   });
 
   it('reads JSON-LD from a recipe URL, then serves the repeat from cache', async () => {
     const { app } = makeApp();
-    const first = ExtractResponse.parse(await (await app.handle(post({ inputType: 'url', url: RECIPE_URL }))).json());
+    const first = ExtractResponse.parse(
+      await (await app.handle(post({ inputType: 'url', url: RECIPE_URL }))).json(),
+    );
     expect(first.source).toBe('jsonld');
     expect(first.detectedType).toBe('recipe');
     expect(first.matches.map((m) => m.slug).sort()).toEqual(['milk', 'spinach']);
 
-    const second = ExtractResponse.parse(await (await app.handle(post({ inputType: 'url', url: RECIPE_URL }))).json());
+    const second = ExtractResponse.parse(
+      await (await app.handle(post({ inputType: 'url', url: RECIPE_URL }))).json(),
+    );
     expect(second.source).toBe('cache');
     expect(second.matches).toEqual(first.matches);
   });
@@ -167,7 +192,9 @@ describe('extract: happy paths', () => {
 describe('extract: request validation', () => {
   it('415s a non-JSON content type', async () => {
     const { app } = makeApp();
-    const res = await app.handle(post({ inputType: 'text', text: 'milk' }, { 'content-type': 'text/plain' }));
+    const res = await app.handle(
+      post({ inputType: 'text', text: 'milk' }, { 'content-type': 'text/plain' }),
+    );
     expect(res.status).toBe(415);
     expect(await errorCode(res)).toBe('unsupported_media_type');
   });
@@ -190,7 +217,9 @@ describe('extract: request validation', () => {
 
   it('415s an image whose bytes do not match the declared type', async () => {
     const { app } = makeApp();
-    const res = await app.handle(post({ inputType: 'image', imageBase64: b64(PNG), mimeType: 'image/jpeg' }));
+    const res = await app.handle(
+      post({ inputType: 'image', imageBase64: b64(PNG), mimeType: 'image/jpeg' }),
+    );
     expect(res.status).toBe(415);
   });
 
@@ -226,13 +255,17 @@ describe('extract: guards', () => {
 
   it('429s with retry-after when the per-IP limit is hit', async () => {
     const { app } = makeApp({ RATE_LIMIT_MODEL: '1' });
-    expect((await app.handle(post({ inputType: 'text', text: 'milk' }), { ip: '203.0.113.9' })).status).toBe(200);
+    expect(
+      (await app.handle(post({ inputType: 'text', text: 'milk' }), { ip: '203.0.113.9' })).status,
+    ).toBe(200);
     const res = await app.handle(post({ inputType: 'text', text: 'milk' }), { ip: '203.0.113.9' });
     expect(res.status).toBe(429);
     expect(Number(res.headers.get('retry-after'))).toBeGreaterThan(0);
     expect(await errorCode(res)).toBe('rate_limited');
     // A different client is unaffected.
-    expect((await app.handle(post({ inputType: 'text', text: 'milk' }), { ip: '203.0.113.10' })).status).toBe(200);
+    expect(
+      (await app.handle(post({ inputType: 'text', text: 'milk' }), { ip: '203.0.113.10' })).status,
+    ).toBe(200);
   });
 
   it('504s when the handler deadline passes', async () => {
@@ -243,7 +276,10 @@ describe('extract: guards', () => {
           ctx.signal.addEventListener('abort', () => reject(ctx.signal.reason as Error));
         }),
     };
-    const { app } = makeApp({ HANDLER_TIMEOUT_MS: '20', MODEL_TIMEOUT_MS: '60000' }, { provider: hanging });
+    const { app } = makeApp(
+      { HANDLER_TIMEOUT_MS: '20', MODEL_TIMEOUT_MS: '60000' },
+      { provider: hanging },
+    );
     const res = await app.handle(post({ inputType: 'text', text: 'milk' }));
     expect(res.status).toBe(504);
     expect(await errorCode(res)).toBe('timeout');

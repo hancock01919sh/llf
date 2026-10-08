@@ -4,7 +4,14 @@ import { IMAGE_MAX_BYTES, decodeImage, sniffImage } from './image';
 
 const JPEG = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10]);
 const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
-const WEBP = new Uint8Array([...new TextEncoder().encode('RIFF'), 0, 0, 0, 0, ...new TextEncoder().encode('WEBP')]);
+const WEBP = new Uint8Array([
+  ...new TextEncoder().encode('RIFF'),
+  0,
+  0,
+  0,
+  0,
+  ...new TextEncoder().encode('WEBP'),
+]);
 
 const b64 = (bytes: Uint8Array) => Buffer.from(bytes).toString('base64');
 
@@ -30,7 +37,10 @@ describe('decodeImage', () => {
 
   it('accepts a data URL prefix and stray whitespace', () => {
     const encoded = b64(JPEG);
-    const result = decodeImage(`data:image/jpeg;base64,${encoded.slice(0, 4)}\n ${encoded.slice(4)}`, 'image/jpeg');
+    const result = decodeImage(
+      `data:image/jpeg;base64,${encoded.slice(0, 4)}\n ${encoded.slice(4)}`,
+      'image/jpeg',
+    );
     expect(result.ok).toBe(true);
   });
 
@@ -41,7 +51,10 @@ describe('decodeImage', () => {
 
   it('rejects images over the server cap', () => {
     const encodedLength = Math.ceil(((IMAGE_MAX_BYTES + 1) * 4) / 3 / 4) * 4 + 8;
-    expect(decodeImage('A'.repeat(encodedLength), 'image/png')).toEqual({ ok: false, reason: 'too_large' });
+    expect(decodeImage('A'.repeat(encodedLength), 'image/png')).toEqual({
+      ok: false,
+      reason: 'too_large',
+    });
   });
 
   it('rejects bytes that do not match the declared type', () => {

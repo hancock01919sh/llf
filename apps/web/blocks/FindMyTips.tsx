@@ -51,7 +51,12 @@ const t = strings.tool;
 type Phase =
   | { kind: 'idle' }
   | { kind: 'loading'; stillWorking: boolean }
-  | { kind: 'likely'; confirmed: IngredientMatch[]; likely: IngredientMatch[]; handoff: ToolHandoff }
+  | {
+      kind: 'likely';
+      confirmed: IngredientMatch[];
+      likely: IngredientMatch[];
+      handoff: ToolHandoff;
+    }
   | { kind: 'noMatch' }
   | { kind: 'unreadable' }
   | { kind: 'rateLimited'; until: number }
@@ -129,7 +134,8 @@ export function FindMyTips({ block }: BlockProps<cms.ToolBlock>) {
   }, [focusKey]);
 
   const busy = phase.kind === 'loading';
-  const waitSeconds = phase.kind === 'rateLimited' ? Math.max(1, Math.ceil((phase.until - now) / 1000)) : 0;
+  const waitSeconds =
+    phase.kind === 'rateLimited' ? Math.max(1, Math.ceil((phase.until - now) / 1000)) : 0;
   const activeTab: InputType = mode === 'jsonld-only' ? 'url' : tab;
 
   function markStarted() {
@@ -154,7 +160,11 @@ export function FindMyTips({ block }: BlockProps<cms.ToolBlock>) {
     if (activeTab === 'url') return { inputType: 'url', url: url.trim() };
     if (activeTab === 'text') return { inputType: 'text', text: text.trim() };
     // validateFile has already checked the file exists.
-    return { inputType: 'image', imageBase64: await toJpegBase64(file as File), mimeType: 'image/jpeg' };
+    return {
+      inputType: 'image',
+      imageBase64: await toJpegBase64(file as File),
+      mimeType: 'image/jpeg',
+    };
   }
 
   function navigate(slugs: string[], handoff: ToolHandoff) {
@@ -178,7 +188,11 @@ export function FindMyTips({ block }: BlockProps<cms.ToolBlock>) {
         };
         if (view.kind === 'navigate') return navigate(view.slugs, handoff);
         if (view.kind === 'likely') return setPhase({ ...view, handoff });
-        track({ event: 'tips_tool_no_match', input_type: inputType, readable: view.kind === 'noMatch' });
+        track({
+          event: 'tips_tool_no_match',
+          input_type: inputType,
+          readable: view.kind === 'noMatch',
+        });
         return setPhase(view);
       }
       case 'unavailable':
@@ -217,7 +231,10 @@ export function FindMyTips({ block }: BlockProps<cms.ToolBlock>) {
     const startedAt = performance.now();
     setPhase({ kind: 'loading', stillWorking: false });
     const stillWorking = setTimeout(
-      () => setPhase((current) => (current.kind === 'loading' ? { ...current, stillWorking: true } : current)),
+      () =>
+        setPhase((current) =>
+          current.kind === 'loading' ? { ...current, stillWorking: true } : current,
+        ),
       STILL_WORKING_MS,
     );
     const timeout = setTimeout(() => {
@@ -239,9 +256,11 @@ export function FindMyTips({ block }: BlockProps<cms.ToolBlock>) {
       track({ event: 'tips_tool_submit', input_type: inputType });
       handleOutcome(await requestExtract(body, abort.signal), inputType, startedAt);
     } catch {
-      if (timedOut) handleOutcome({ kind: 'error', reason: 'timeout', retryable: true }, inputType, startedAt);
+      if (timedOut)
+        handleOutcome({ kind: 'error', reason: 'timeout', retryable: true }, inputType, startedAt);
       else if (abort.signal.aborted) setPhase({ kind: 'idle' });
-      else handleOutcome({ kind: 'error', reason: 'server', retryable: true }, inputType, startedAt);
+      else
+        handleOutcome({ kind: 'error', reason: 'server', retryable: true }, inputType, startedAt);
     } finally {
       clearTimeout(stillWorking);
       clearTimeout(timeout);
@@ -283,7 +302,9 @@ export function FindMyTips({ block }: BlockProps<cms.ToolBlock>) {
         onRemove={(slug) =>
           setPhase({ ...phase, likely: phase.likely.filter((match) => match.slug !== slug) })
         }
-        onConfirm={() => navigate(uniqueSlugs([...phase.confirmed, ...phase.likely]), phase.handoff)}
+        onConfirm={() =>
+          navigate(uniqueSlugs([...phase.confirmed, ...phase.likely]), phase.handoff)
+        }
         onStartOver={startOver}
       />
     );
@@ -302,11 +323,19 @@ export function FindMyTips({ block }: BlockProps<cms.ToolBlock>) {
   return (
     <div className="flex flex-col gap-lg" data-tool-state={phase.kind}>
       {block.description ? <p className="text-paragraph">{block.description}</p> : null}
-      {mode === 'jsonld-only' ? <p className="text-paragraph text-fg-muted">{t.jsonldOnly}</p> : null}
+      {mode === 'jsonld-only' ? (
+        <p className="text-paragraph text-fg-muted">{t.jsonldOnly}</p>
+      ) : null}
 
       <form noValidate onSubmit={(event) => void submit(event)} className="flex flex-col gap-md">
         {tabs.length > 1 ? (
-          <ToolTabs base={ids.base} tabs={tabs} active={activeTab} onChange={chooseTab} disabled={busy} />
+          <ToolTabs
+            base={ids.base}
+            tabs={tabs}
+            active={activeTab}
+            onChange={chooseTab}
+            disabled={busy}
+          />
         ) : null}
 
         <div
@@ -355,7 +384,9 @@ export function FindMyTips({ block }: BlockProps<cms.ToolBlock>) {
                 )}
               />
               <p id={ids.hint} className="text-fg-muted">
-                {file ? format(t.fileChosen, { name: file.name }) : block.upload_placeholder || t.uploadHint}
+                {file
+                  ? format(t.fileChosen, { name: file.name })
+                  : block.upload_placeholder || t.uploadHint}
               </p>
             </>
           ) : null}
@@ -477,11 +508,19 @@ function ToolTabs({
     const index = tabs.indexOf(active);
     const last = tabs.length - 1;
     const next =
-      event.key === 'ArrowRight' ? (index === last ? 0 : index + 1)
-      : event.key === 'ArrowLeft' ? (index === 0 ? last : index - 1)
-      : event.key === 'Home' ? 0
-      : event.key === 'End' ? last
-      : null;
+      event.key === 'ArrowRight'
+        ? index === last
+          ? 0
+          : index + 1
+        : event.key === 'ArrowLeft'
+          ? index === 0
+            ? last
+            : index - 1
+          : event.key === 'Home'
+            ? 0
+            : event.key === 'End'
+              ? last
+              : null;
     if (next === null) return;
     event.preventDefault();
     const tab = tabs[next];
@@ -511,7 +550,9 @@ function ToolTabs({
             onKeyDown={onKeyDown}
             className={cn(
               'h-control-compact rounded-pill border px-md text-label font-semibold focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:opacity-60',
-              selected ? 'border-transparent bg-interactive text-on-interactive' : 'border-line text-fg',
+              selected
+                ? 'border-transparent bg-interactive text-on-interactive'
+                : 'border-line text-fg',
             )}
           >
             {t.tabs[tab]}
@@ -538,7 +579,11 @@ function LikelyMatches({
   const total = phase.confirmed.length + phase.likely.length;
   return (
     <div className="flex flex-col gap-md" data-tool-state="likely">
-      <div ref={messageRef} tabIndex={-1} className="rounded-sm focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-focus">
+      <div
+        ref={messageRef}
+        tabIndex={-1}
+        className="rounded-sm focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-focus"
+      >
         <p className="text-paragraph">{t.likely}</p>
       </div>
       <ul className="flex flex-wrap gap-xs">

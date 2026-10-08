@@ -8,7 +8,9 @@ import { templates } from '@/templates/registry';
 const RESERVED = ['', 'find-my-tips', 'tips', 'search'];
 
 function isReserved(path: string): boolean {
-  return RESERVED.some((reserved) => path === reserved || (reserved && path.startsWith(`${reserved}/`)));
+  return RESERVED.some(
+    (reserved) => path === reserved || (reserved && path.startsWith(`${reserved}/`)),
+  );
 }
 
 interface Params {

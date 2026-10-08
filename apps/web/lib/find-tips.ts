@@ -68,7 +68,9 @@ const DEFAULT_RETRY_AFTER_MS = 30_000;
 
 function retryAfter(headers: Headers): number {
   const seconds = Number(headers.get('retry-after'));
-  return Number.isFinite(seconds) && seconds > 0 ? Math.min(seconds, 300) * 1000 : DEFAULT_RETRY_AFTER_MS;
+  return Number.isFinite(seconds) && seconds > 0
+    ? Math.min(seconds, 300) * 1000
+    : DEFAULT_RETRY_AFTER_MS;
 }
 
 /** Maps an HTTP response from `/extract` to a UI outcome (TDD §7.3 status table). */
@@ -89,8 +91,12 @@ export function classifyResponse(status: number, body: unknown, headers: Headers
   if (status === 415) return { kind: 'unsupportedFile' };
   if (status === 422) return { kind: 'invalidUrl' };
   const code = ErrorResponse.safeParse(body).data?.code;
-  if (status === 400) return code === 'url_not_allowed' ? { kind: 'invalidUrl' } : { kind: 'error', reason: 'server', retryable: false };
-  if (status === 504 || code === 'timeout') return { kind: 'error', reason: 'timeout', retryable: true };
+  if (status === 400)
+    return code === 'url_not_allowed'
+      ? { kind: 'invalidUrl' }
+      : { kind: 'error', reason: 'server', retryable: false };
+  if (status === 504 || code === 'timeout')
+    return { kind: 'error', reason: 'timeout', retryable: true };
   return { kind: 'error', reason: 'server', retryable: status >= 500 };
 }
 

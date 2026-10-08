@@ -14,7 +14,12 @@ import {
 
 describe('toQuery', () => {
   it('serializes nested params in Strapi bracket syntax', () => {
-    expect(toQuery({ populate: { tips: { populate: { tip_type: true } } }, pagination: { pageSize: 100 } })).toEqual([
+    expect(
+      toQuery({
+        populate: { tips: { populate: { tip_type: true } } },
+        pagination: { pageSize: 100 },
+      }),
+    ).toEqual([
       'populate%5Btips%5D%5Bpopulate%5D%5Btip_type%5D=true',
       'pagination%5BpageSize%5D=100',
     ]);
@@ -54,7 +59,9 @@ describe('fixtures (the content contract)', () => {
     for (const path of ['/', 'tips', 'find-my-tips', 'about']) {
       await expect(requirePage(path)).resolves.toBeTruthy();
     }
-    await expect(getPageByPath('/about/')).resolves.toMatchObject({ path: expect.stringMatching(/about/) });
+    await expect(getPageByPath('/about/')).resolves.toMatchObject({
+      path: expect.stringMatching(/about/),
+    });
     await expect(requirePage('missing-page')).rejects.toThrow(ContentError);
   });
 

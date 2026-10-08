@@ -15,7 +15,12 @@ export const PAGE_SIZE = 100;
 type Populate = { [key: string]: true | Populate };
 
 const ctas: Populate = { populate: { page: true } };
-const tipFields: Populate = { tip_type: true, tip_behavior: true, tip_motivator: true, ingredient: true };
+const tipFields: Populate = {
+  tip_type: true,
+  tip_behavior: true,
+  tip_motivator: true,
+  ingredient: true,
+};
 const tipRelations: Populate = { populate: tipFields };
 
 // TODO(BD3244-24): confirm these against seeded content once the seed lands.

@@ -11,8 +11,12 @@ import { runUrlPipeline } from './pipeline';
 const resolve = fakeResolver({ 'recipes.test': [PUBLIC_IP], 'internal.test': ['10.0.0.8'] });
 
 const PAGES = {
-  'https://recipes.test/pie': { html: recipePage(['2 cups whole milk', '1 loaf sourdough, sliced']) },
-  'https://recipes.test/blog': { html: '<html><body><article>milk, spinach, bananas</article></body></html>' },
+  'https://recipes.test/pie': {
+    html: recipePage(['2 cups whole milk', '1 loaf sourdough, sliced']),
+  },
+  'https://recipes.test/blog': {
+    html: '<html><body><article>milk, spinach, bananas</article></body></html>',
+  },
   'https://recipes.test/blank': { html: '<html><body><script>var x = 1;</script></body></html>' },
 };
 
@@ -49,7 +53,10 @@ describe('runUrlPipeline', () => {
     expect(result.source).toBe('jsonld');
     expect(result.detectedType).toBe('recipe');
     expect(result.readable).toBe(true);
-    expect(result.items.map((item) => item.term)).toEqual(['2 cups whole milk', '1 loaf sourdough, sliced']);
+    expect(result.items.map((item) => item.term)).toEqual([
+      '2 cups whole milk',
+      '1 loaf sourdough, sliced',
+    ]);
     expect(result.urlHash).toMatch(/^[0-9a-f]{64}$/);
   });
 

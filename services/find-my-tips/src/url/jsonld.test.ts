@@ -47,13 +47,17 @@ describe('extractRecipeIngredients', () => {
   });
 
   it('unwraps HTML comments around the JSON', () => {
-    const html = script(`<!-- ${JSON.stringify({ '@type': 'Recipe', recipeIngredient: ['chicken'] })} -->`);
+    const html = script(
+      `<!-- ${JSON.stringify({ '@type': 'Recipe', recipeIngredient: ['chicken'] })} -->`,
+    );
     expect(extractRecipeIngredients(html)).toEqual(['chicken']);
   });
 
   it('returns null when there is no recipe', () => {
     expect(extractRecipeIngredients(script({ '@type': 'Article', name: 'x' }))).toBeNull();
     expect(extractRecipeIngredients('<p>no json-ld</p>')).toBeNull();
-    expect(extractRecipeIngredients(script({ '@type': 'Recipe', recipeIngredient: [] }))).toBeNull();
+    expect(
+      extractRecipeIngredients(script({ '@type': 'Recipe', recipeIngredient: [] })),
+    ).toBeNull();
   });
 });

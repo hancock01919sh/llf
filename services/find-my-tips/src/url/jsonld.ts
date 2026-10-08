@@ -30,7 +30,9 @@ function collect(node: unknown, out: string[], depth: number): void {
   if (isRecipeType(record['@type'])) {
     const lines = toLines(record.recipeIngredient ?? record.ingredients);
     for (const line of lines) {
-      const clean = decodeEntities(line.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
+      const clean = decodeEntities(line.replace(/<[^>]*>/g, ' '))
+        .replace(/\s+/g, ' ')
+        .trim();
       if (clean) out.push(clean);
     }
   }

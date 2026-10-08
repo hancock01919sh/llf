@@ -115,7 +115,11 @@ export const nodeTransport: Transport = ({ url, address, signal, maxBytes, userA
           for (const [name, value] of Object.entries(res.headers)) {
             headers[name] = Array.isArray(value) ? value.join(', ') : value;
           }
-          resolve({ status: res.statusCode ?? 0, headers, body: new Uint8Array(Buffer.concat(chunks)) });
+          resolve({
+            status: res.statusCode ?? 0,
+            headers,
+            body: new Uint8Array(Buffer.concat(chunks)),
+          });
         });
         res.on('error', (error) => reject(error));
       },
@@ -125,7 +129,8 @@ export const nodeTransport: Transport = ({ url, address, signal, maxBytes, userA
   });
 
 async function checkTarget(url: URL, resolve: Resolver): Promise<string> {
-  if (url.protocol !== 'http:' && url.protocol !== 'https:') throw new SafeFetchError('url_not_allowed');
+  if (url.protocol !== 'http:' && url.protocol !== 'https:')
+    throw new SafeFetchError('url_not_allowed');
   if (!ALLOWED_PORTS.has(url.port)) throw new SafeFetchError('url_not_allowed');
   if (url.username || url.password) throw new SafeFetchError('url_not_allowed');
 
@@ -136,7 +141,8 @@ async function checkTarget(url: URL, resolve: Resolver): Promise<string> {
     throw new SafeFetchError('url_not_allowed');
   }
   // Any blocked answer rejects the host: an attacker controls which one we'd get.
-  if (addresses.length === 0 || addresses.some(isBlockedIp)) throw new SafeFetchError('url_not_allowed');
+  if (addresses.length === 0 || addresses.some(isBlockedIp))
+    throw new SafeFetchError('url_not_allowed');
   return addresses[0] as string;
 }
 
@@ -163,7 +169,10 @@ function decode(body: Uint8Array, contentType: string | undefined): string {
  * against the private-range blocklist, the connection pinned to the checked
  * address, each redirect re-validated, and a byte and time budget.
  */
-export async function safeFetch(input: URL | string, options: SafeFetchOptions = {}): Promise<SafeFetchResult> {
+export async function safeFetch(
+  input: URL | string,
+  options: SafeFetchOptions = {},
+): Promise<SafeFetchResult> {
   const resolve = options.resolve ?? defaultResolver;
   const transport = options.transport ?? nodeTransport;
   const maxRedirects = options.maxRedirects ?? SAFE_FETCH_DEFAULTS.maxRedirects;
@@ -204,7 +213,8 @@ export async function safeFetch(input: URL | string, options: SafeFetchOptions =
       continue;
     }
     if (status < 200 || status >= 300) throw new SafeFetchError('upstream_error');
-    if (!HTML_TYPES.has(mediaType(headers['content-type']))) throw new SafeFetchError('url_not_allowed');
+    if (!HTML_TYPES.has(mediaType(headers['content-type'])))
+      throw new SafeFetchError('url_not_allowed');
 
     return { finalUrl: url, html: decode(response.body, headers['content-type']) };
   }

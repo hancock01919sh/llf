@@ -57,7 +57,8 @@ export function SearchResults() {
         return response.text();
       })
       .then((json) => {
-        if (!cancelled) setState({ status: 'ready', index: MiniSearch.loadJSON(json, SEARCH_OPTIONS) });
+        if (!cancelled)
+          setState({ status: 'ready', index: MiniSearch.loadJSON(json, SEARCH_OPTIONS) });
       })
       .catch(() => {
         if (!cancelled) setState({ status: 'unavailable' });

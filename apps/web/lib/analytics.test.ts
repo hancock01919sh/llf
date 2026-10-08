@@ -8,7 +8,9 @@ describe('track', () => {
 
   it('queues events before GTM loads', () => {
     track({ event: 'cta_click', cta_label: 'Find my tips', cta_href: '/find-my-tips/' });
-    expect(window.dataLayer).toEqual([{ event: 'cta_click', cta_label: 'Find my tips', cta_href: '/find-my-tips/' }]);
+    expect(window.dataLayer).toEqual([
+      { event: 'cta_click', cta_label: 'Find my tips', cta_href: '/find-my-tips/' },
+    ]);
   });
 });
 

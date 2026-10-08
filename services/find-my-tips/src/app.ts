@@ -64,7 +64,11 @@ export function createApp(deps: AppDeps) {
   const { config, logger } = deps;
   const rateLimit = createRateLimiter(deps.counters, config.rateLimit, now);
   const quota = createQuota(deps.counters, config.quotaDailyModelCalls, now);
-  const providerFields = { provider: deps.provider.name, model: config.model, promptVersion: config.promptVersion };
+  const providerFields = {
+    provider: deps.provider.name,
+    model: config.model,
+    promptVersion: config.promptVersion,
+  };
 
   async function status(requestId: string, started: number): Promise<Response> {
     const { catalogVersion } = await deps.catalog.get();
@@ -77,7 +81,8 @@ export function createApp(deps: AppDeps) {
     const declared = Number(req.headers.get('content-length') ?? '0');
     if (Number.isFinite(declared) && declared > BODY_MAX_BYTES) throw new ToolError('too_large');
     const text = await req.text();
-    if (new TextEncoder().encode(text).byteLength > BODY_MAX_BYTES) throw new ToolError('too_large');
+    if (new TextEncoder().encode(text).byteLength > BODY_MAX_BYTES)
+      throw new ToolError('too_large');
     return text;
   }
 
@@ -168,7 +173,12 @@ export function createApp(deps: AppDeps) {
     }
   }
 
-  async function extract(req: Request, requestId: string, ip: string, started: number): Promise<Response> {
+  async function extract(
+    req: Request,
+    requestId: string,
+    ip: string,
+    started: number,
+  ): Promise<Response> {
     const fields: LogFields = { requestId, event: 'extract' };
     try {
       const request = await parseRequest(req);
@@ -212,9 +222,17 @@ export function createApp(deps: AppDeps) {
   function reject(error: unknown, fields: LogFields, started: number): Response {
     const toolError = error instanceof ToolError ? error : new ToolError('server');
     const response = errorResponse(fields.requestId, toolError.code, toolError.headers);
-    logger({ ...fields, code: toolError.code, status: response.status, latencyMs: now() - started });
+    logger({
+      ...fields,
+      code: toolError.code,
+      status: response.status,
+      latencyMs: now() - started,
+    });
     if (!(error instanceof ToolError)) {
-      console.error('find-my-tips: unhandled error', error instanceof Error ? error.name : 'unknown');
+      console.error(
+        'find-my-tips: unhandled error',
+        error instanceof Error ? error.name : 'unknown',
+      );
     }
     return response;
   }

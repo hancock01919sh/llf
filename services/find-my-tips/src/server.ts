@@ -23,8 +23,7 @@ const catalog = createCatalogSource({
   refreshMs: config.catalogRefreshMs,
   ...(config.catalogUrl ? { catalogUrl: config.catalogUrl } : {}),
   ...(config.catalogFile ? { catalogFile: config.catalogFile } : {}),
-  onLoad: (catalogVersion) =>
-    logger({ requestId: '', event: 'catalog', catalogVersion }),
+  onLoad: (catalogVersion) => logger({ requestId: '', event: 'catalog', catalogVersion }),
 });
 
 const app = createApp({
@@ -85,15 +84,26 @@ const server = createServer(async (req, res) => {
     await send(res, response, method);
   } catch (error) {
     const code = error instanceof BodyTooLargeError ? 'too_large' : 'server';
-    if (code === 'server') console.error('find-my-tips: adapter error', error instanceof Error ? error.name : 'unknown');
-    await send(res, errorResponse(crypto.randomUUID(), code, code === 'too_large' ? { connection: 'close' } : {}), method);
+    if (code === 'server')
+      console.error('find-my-tips: adapter error', error instanceof Error ? error.name : 'unknown');
+    await send(
+      res,
+      errorResponse(crypto.randomUUID(), code, code === 'too_large' ? { connection: 'close' } : {}),
+      method,
+    );
   }
 });
 
 server.requestTimeout = config.handlerTimeoutMs + 5_000;
 
 server.listen(config.port, () => {
-  logger({ requestId: '', event: 'start', port: config.port, provider: config.provider, model: config.model });
+  logger({
+    requestId: '',
+    event: 'start',
+    port: config.port,
+    provider: config.provider,
+    model: config.model,
+  });
 });
 
 function shutdown(): void {

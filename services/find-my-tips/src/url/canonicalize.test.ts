@@ -14,12 +14,15 @@ describe('canonicalizeUrl', () => {
     expect(canonicalizeUrl('https://example.com/r?gclid=1')?.href).toBe('https://example.com/r');
   });
 
-  it.each(['ftp://example.com/r', 'https://user:pass@example.com/r', 'javascript:alert(1)', 'not a url', ''])(
-    'rejects %s',
-    (input) => {
-      expect(canonicalizeUrl(input)).toBeNull();
-    },
-  );
+  it.each([
+    'ftp://example.com/r',
+    'https://user:pass@example.com/r',
+    'javascript:alert(1)',
+    'not a url',
+    '',
+  ])('rejects %s', (input) => {
+    expect(canonicalizeUrl(input)).toBeNull();
+  });
 });
 
 describe('sha256Hex', () => {

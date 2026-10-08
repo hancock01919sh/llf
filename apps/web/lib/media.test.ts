@@ -32,7 +32,14 @@ describe('toImage', () => {
   it('treats missing alt text as decorative', () => {
     expect(toImage(null)).toBeNull();
     expect(
-      toImage({ id: 1, documentId: 'm1', url: 'https://cdn.example/a.jpg', alternativeText: null, width: 10, height: null }),
+      toImage({
+        id: 1,
+        documentId: 'm1',
+        url: 'https://cdn.example/a.jpg',
+        alternativeText: null,
+        width: 10,
+        height: null,
+      }),
     ).toEqual({ src: 'https://cdn.example/a.jpg', alt: '', width: 10, height: undefined });
   });
 });

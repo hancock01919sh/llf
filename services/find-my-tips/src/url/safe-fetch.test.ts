@@ -31,7 +31,10 @@ describe('safeFetch', () => {
   it('decodes the declared charset', async () => {
     const body = new Uint8Array([0x63, 0x72, 0xe8, 0x6d, 0x65]);
     const transport = fakeTransport({
-      'https://recipes.test/': { body, headers: { 'content-type': 'text/html; charset=iso-8859-1' } },
+      'https://recipes.test/': {
+        body,
+        headers: { 'content-type': 'text/html; charset=iso-8859-1' },
+      },
     });
     const result = await safeFetch('https://recipes.test/', { resolve, transport });
     expect(result.html).toBe('crème');
@@ -49,11 +52,16 @@ describe('safeFetch', () => {
 
   it('rejects a redirect to a private address before connecting', async () => {
     const transport = fakeTransport({
-      'https://recipes.test/a': { status: 302, headers: { location: 'http://internal.test/admin' } },
+      'https://recipes.test/a': {
+        status: 302,
+        headers: { location: 'http://internal.test/admin' },
+      },
     });
-    await expect(safeFetch('https://recipes.test/a', { resolve, transport })).rejects.toMatchObject({
-      reason: 'url_not_allowed',
-    });
+    await expect(safeFetch('https://recipes.test/a', { resolve, transport })).rejects.toMatchObject(
+      {
+        reason: 'url_not_allowed',
+      },
+    );
     expect(transport.calls).toEqual(['https://recipes.test/a']);
   });
 
@@ -65,9 +73,11 @@ describe('safeFetch', () => {
       'https://recipes.test/4': { status: 302, headers: { location: '/5' } },
       'https://recipes.test/5': { html: 'too far' },
     });
-    await expect(safeFetch('https://recipes.test/1', { resolve, transport })).rejects.toMatchObject({
-      reason: 'url_not_allowed',
-    });
+    await expect(safeFetch('https://recipes.test/1', { resolve, transport })).rejects.toMatchObject(
+      {
+        reason: 'url_not_allowed',
+      },
+    );
   });
 
   it.each([
@@ -82,7 +92,9 @@ describe('safeFetch', () => {
     ['non-http scheme', 'file:///etc/passwd'],
   ])('rejects %s', async (_label, url) => {
     const transport = fakeTransport({});
-    await expect(safeFetch(url, { resolve, transport })).rejects.toMatchObject({ reason: 'url_not_allowed' });
+    await expect(safeFetch(url, { resolve, transport })).rejects.toMatchObject({
+      reason: 'url_not_allowed',
+    });
     expect(transport.calls).toEqual([]);
   });
 
@@ -90,14 +102,18 @@ describe('safeFetch', () => {
     const transport = fakeTransport({
       'https://recipes.test/file.pdf': { headers: { 'content-type': 'application/pdf' } },
     });
-    await expect(safeFetch('https://recipes.test/file.pdf', { resolve, transport })).rejects.toMatchObject({
+    await expect(
+      safeFetch('https://recipes.test/file.pdf', { resolve, transport }),
+    ).rejects.toMatchObject({
       reason: 'url_not_allowed',
     });
   });
 
   it('treats an oversize body as an upstream error', async () => {
     const transport = fakeTransport({ 'https://recipes.test/': { html: 'x'.repeat(100) } });
-    await expect(safeFetch('https://recipes.test/', { resolve, transport, maxBytes: 10 })).rejects.toMatchObject({
+    await expect(
+      safeFetch('https://recipes.test/', { resolve, transport, maxBytes: 10 }),
+    ).rejects.toMatchObject({
       reason: 'upstream_error',
     });
   });
@@ -123,7 +139,9 @@ describe('safeFetch', () => {
       new Promise<never>((_resolve, reject) => {
         req.signal.addEventListener('abort', () => reject(new Error('aborted')));
       });
-    await expect(safeFetch('https://recipes.test/', { resolve, transport, timeoutMs: 10 })).rejects.toMatchObject({
+    await expect(
+      safeFetch('https://recipes.test/', { resolve, transport, timeoutMs: 10 }),
+    ).rejects.toMatchObject({
       reason: 'timeout',
     });
   });

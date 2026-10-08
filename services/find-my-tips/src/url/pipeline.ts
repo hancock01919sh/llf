@@ -83,7 +83,10 @@ async function fetchPage(url: URL, deps: UrlPipelineDeps) {
  * the caller matches against the current catalog so cached terms never go
  * stale when editors change tips. Never logs or stores the URL itself.
  */
-export async function runUrlPipeline(input: string, deps: UrlPipelineDeps): Promise<UrlPipelineResult> {
+export async function runUrlPipeline(
+  input: string,
+  deps: UrlPipelineDeps,
+): Promise<UrlPipelineResult> {
   const canonical = canonicalizeUrl(input);
   if (!canonical) throw new ToolError('url_not_allowed');
 

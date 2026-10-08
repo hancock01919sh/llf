@@ -9,3 +9,4 @@ docs
 **/test-results
 **/*.md
 .github/pull_request_template.md
+**/next-env.d.ts

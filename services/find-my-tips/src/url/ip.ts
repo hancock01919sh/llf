@@ -53,7 +53,12 @@ function expandV6(address: string): number[] | null {
   const halves = text.split('::');
   if (halves.length > 2) return null;
   const parse = (part: string | undefined) =>
-    part ? part.split(':').filter((g) => g !== '').map((g) => parseInt(g, 16)) : [];
+    part
+      ? part
+          .split(':')
+          .filter((g) => g !== '')
+          .map((g) => parseInt(g, 16))
+      : [];
   const head = parse(halves[0]);
   const rest = parse(halves[1]);
   const explicit = head.length + rest.length;
@@ -70,7 +75,16 @@ function isBlockedV6(address: string): boolean {
   const [g0 = 0, g1 = 0, g2 = 0, g3 = 0, g4 = 0, g5 = 0, g6 = 0, g7 = 0] = groups;
 
   if (groups.every((g) => g === 0)) return true; // ::
-  if (g0 === 0 && g1 === 0 && g2 === 0 && g3 === 0 && g4 === 0 && g5 === 0 && g6 === 0 && g7 === 1) {
+  if (
+    g0 === 0 &&
+    g1 === 0 &&
+    g2 === 0 &&
+    g3 === 0 &&
+    g4 === 0 &&
+    g5 === 0 &&
+    g6 === 0 &&
+    g7 === 1
+  ) {
     return true; // ::1
   }
   // IPv4-mapped (::ffff:a.b.c.d) and IPv4-compatible (::a.b.c.d): check the embedded address.

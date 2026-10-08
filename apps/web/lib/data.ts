@@ -1,11 +1,5 @@
 import { createHash } from 'node:crypto';
-import {
-  Catalog,
-  IngredientData,
-  toSlug,
-  type CatalogIngredient,
-  type cms,
-} from '@llf/contracts';
+import { Catalog, IngredientData, toSlug, type CatalogIngredient, type cms } from '@llf/contracts';
 import MiniSearch from 'minisearch';
 import { ContentError, getIngredients, getTips } from './cms';
 import { mediaUrl } from './media';
@@ -20,7 +14,14 @@ import { SEARCH_OPTIONS, type SearchDocument } from './search';
 
 function splitSynonyms(value: string | null | undefined): string[] {
   if (!value) return [];
-  return [...new Set(value.split(',').map((s) => s.trim()).filter(Boolean))];
+  return [
+    ...new Set(
+      value
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean),
+    ),
+  ];
 }
 
 export interface SluggedIngredient {

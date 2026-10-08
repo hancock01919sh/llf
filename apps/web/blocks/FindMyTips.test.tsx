@@ -22,7 +22,10 @@ const block = cms.ToolBlock.parse({
 });
 
 function json(status: number, body: unknown): Response {
-  return new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'content-type': 'application/json' },
+  });
 }
 
 function extractBody(overrides: Partial<ExtractResponse> = {}): ExtractResponse {
@@ -80,7 +83,10 @@ describe('FindMyTips', () => {
   });
 
   it('treats a failed status request as off', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => Promise.reject(new Error('offline'))));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => Promise.reject(new Error('offline'))),
+    );
     renderTool();
     await screen.findByText(t.unavailable);
   });
@@ -90,7 +96,11 @@ describe('FindMyTips', () => {
     renderTool();
     const tabs = await screen.findAllByRole('tab');
     expect(tabs.map((tab) => tab.textContent)).toEqual([t.tabs.url, t.tabs.image, t.tabs.text]);
-    expect(tabs.map((tab) => tab.getAttribute('aria-selected'))).toEqual(['true', 'false', 'false']);
+    expect(tabs.map((tab) => tab.getAttribute('aria-selected'))).toEqual([
+      'true',
+      'false',
+      'false',
+    ]);
     expect(tabs.map((tab) => tab.getAttribute('tabindex'))).toEqual(['0', '-1', '-1']);
     expect(screen.getByRole('tablist').getAttribute('aria-label')).toBe(t.tabsLabel);
 
@@ -101,14 +111,20 @@ describe('FindMyTips', () => {
     expect(screen.getByLabelText(block.upload_label!).getAttribute('type')).toBe('file');
 
     fireEvent.keyDown(image, { key: 'End' });
-    expect(screen.getByRole('tab', { name: t.tabs.text }).getAttribute('aria-selected')).toBe('true');
+    expect(screen.getByRole('tab', { name: t.tabs.text }).getAttribute('aria-selected')).toBe(
+      'true',
+    );
     expect(screen.getByLabelText(t.textLabel).tagName).toBe('TEXTAREA');
 
     fireEvent.keyDown(document.activeElement!, { key: 'ArrowRight' });
-    expect(screen.getByRole('tab', { name: t.tabs.url }).getAttribute('aria-selected')).toBe('true');
+    expect(screen.getByRole('tab', { name: t.tabs.url }).getAttribute('aria-selected')).toBe(
+      'true',
+    );
 
     const panel = screen.getByRole('tabpanel');
-    expect(panel.getAttribute('aria-labelledby')).toBe(screen.getByRole('tab', { name: t.tabs.url }).id);
+    expect(panel.getAttribute('aria-labelledby')).toBe(
+      screen.getByRole('tab', { name: t.tabs.url }).id,
+    );
   });
 
   it('flags an empty submit, describes the error, and focuses the field', async () => {
@@ -128,7 +144,9 @@ describe('FindMyTips', () => {
     const fetchMock = stubApi('live');
     renderTool();
     await screen.findByRole('tablist');
-    fireEvent.change(screen.getByLabelText(block.url_label!), { target: { value: 'ftp://example.com/x' } });
+    fireEvent.change(screen.getByLabelText(block.url_label!), {
+      target: { value: 'ftp://example.com/x' },
+    });
     fireEvent.click(screen.getByRole('button', { name: block.cta_label }));
     expect(screen.getByText(t.invalidUrl)).toBeTruthy();
     expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -165,8 +183,14 @@ describe('FindMyTips', () => {
 
     await waitFor(() => expect(push).toHaveBeenCalledWith(resultsHref(['banana', 'bread'])));
     const [, init] = fetchMock.mock.calls[1] as unknown as [string, RequestInit];
-    expect(JSON.parse(String(init.body))).toEqual({ inputType: 'url', url: 'https://example.com/recipe' });
-    const handoff = JSON.parse(sessionStorage.getItem('llf:find-tips-result') ?? '{}') as Record<string, unknown>;
+    expect(JSON.parse(String(init.body))).toEqual({
+      inputType: 'url',
+      url: 'https://example.com/recipe',
+    });
+    const handoff = JSON.parse(sessionStorage.getItem('llf:find-tips-result') ?? '{}') as Record<
+      string,
+      unknown
+    >;
     expect(handoff).toMatchObject({ inputType: 'url', source: 'model', unmatchedCount: 2 });
     expect(JSON.stringify(handoff)).not.toContain('example.com');
   });
@@ -187,7 +211,9 @@ describe('FindMyTips', () => {
     renderTool();
     await screen.findByRole('tablist');
     fireEvent.click(screen.getByRole('tab', { name: t.tabs.text }));
-    fireEvent.change(screen.getByLabelText(t.textLabel), { target: { value: 'milk, maybe basil' } });
+    fireEvent.change(screen.getByLabelText(t.textLabel), {
+      target: { value: 'milk, maybe basil' },
+    });
     fireEvent.click(screen.getByRole('button', { name: block.cta_label }));
 
     await screen.findByText(t.likely);
@@ -253,7 +279,9 @@ describe('FindMyTips', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: block.cta_label }));
     await screen.findByText(new RegExp(t.rateLimited.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-    expect(screen.getByRole('button', { name: block.cta_label }).hasAttribute('disabled')).toBe(true);
+    expect(screen.getByRole('button', { name: block.cta_label }).hasAttribute('disabled')).toBe(
+      true,
+    );
   });
 
   it('switches to the unavailable state when extract returns 503', async () => {

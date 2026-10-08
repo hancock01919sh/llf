@@ -2,9 +2,11 @@ import { decodeEntities } from './entities';
 
 export const VISIBLE_TEXT_MAX = 15_000;
 
-const HIDDEN_BLOCKS = /<(script|style|noscript|template|svg|iframe|head|nav|footer|form)\b[\s\S]*?<\/\1\s*>/gi;
+const HIDDEN_BLOCKS =
+  /<(script|style|noscript|template|svg|iframe|head|nav|footer|form)\b[\s\S]*?<\/\1\s*>/gi;
 const COMMENTS = /<!--[\s\S]*?-->/g;
-const BLOCK_TAGS = /<\/?(p|div|li|ul|ol|br|h[1-6]|tr|td|th|section|article|header|main|table|dd|dt)\b[^>]*>/gi;
+const BLOCK_TAGS =
+  /<\/?(p|div|li|ul|ol|br|h[1-6]|tr|td|th|section|article|header|main|table|dd|dt)\b[^>]*>/gi;
 
 function region(html: string, tag: string): string | undefined {
   const match = new RegExp(`<${tag}\\b[^>]*>([\\s\\S]*?)</${tag}\\s*>`, 'i').exec(html);
@@ -19,7 +21,10 @@ function region(html: string, tag: string): string | undefined {
 export function visibleText(html: string, max = VISIBLE_TEXT_MAX): string {
   const withoutComments = html.replace(COMMENTS, ' ');
   const source =
-    region(withoutComments, 'main') ?? region(withoutComments, 'article') ?? region(withoutComments, 'body') ?? withoutComments;
+    region(withoutComments, 'main') ??
+    region(withoutComments, 'article') ??
+    region(withoutComments, 'body') ??
+    withoutComments;
   const text = decodeEntities(
     source
       .replace(HIDDEN_BLOCKS, ' ')

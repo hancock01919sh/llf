@@ -6,7 +6,9 @@ import { describe, expect, it } from 'vitest';
 import { catalogFromData } from './catalog';
 import { matchItems } from './match';
 
-const fixture: unknown = JSON.parse(readFileSync(new URL('./fixtures/catalog.json', import.meta.url), 'utf8'));
+const fixture: unknown = JSON.parse(
+  readFileSync(new URL('./fixtures/catalog.json', import.meta.url), 'utf8'),
+);
 const { matcher } = catalogFromData(fixture);
 
 const food = (term: string, inferred = false): ExtractedItem => ({ term, isFood: true, inferred });
@@ -28,8 +30,12 @@ describe('matchItems', () => {
   });
 
   it('marks a match inferred only when every mention was inferred', () => {
-    expect(matchItems([food('milk', true), food('whole milk', true)], matcher).matches[0]?.inferred).toBe(true);
-    expect(matchItems([food('milk', true), food('whole milk', false)], matcher).matches[0]?.inferred).toBe(false);
+    expect(
+      matchItems([food('milk', true), food('whole milk', true)], matcher).matches[0]?.inferred,
+    ).toBe(true);
+    expect(
+      matchItems([food('milk', true), food('whole milk', false)], matcher).matches[0]?.inferred,
+    ).toBe(false);
   });
 
   it('orders by match strength, then first mention', () => {
@@ -37,7 +43,13 @@ describe('matchItems', () => {
       [food('spinch'), food('sliced bread'), food('chicken thighs'), food('milk'), food('basil')],
       matcher,
     );
-    expect(result.matches.map((match) => match.slug)).toEqual(['chicken', 'milk', 'basil', 'bread', 'spinach']);
+    expect(result.matches.map((match) => match.slug)).toEqual([
+      'chicken',
+      'milk',
+      'basil',
+      'bread',
+      'spinach',
+    ]);
   });
 
   it('does not match a compound whose head noun differs', () => {

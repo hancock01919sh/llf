@@ -14,9 +14,14 @@ export function TipList({ block }: BlockProps<cms.TipListBlock>) {
     <div className="flex flex-col gap-md">
       <CmsTitle title={block.title} className="text-3xl" />
       {block.description ? <p className="text-paragraph">{block.description}</p> : null}
-      <ul className={cn('grid gap-md', block.layout === 'Basic' && 'md:grid-cols-2 lg:grid-cols-3')}>
+      <ul
+        className={cn('grid gap-md', block.layout === 'Basic' && 'md:grid-cols-2 lg:grid-cols-3')}
+      >
         {block.tips.map((tip) => (
-          <li key={tip.documentId} className="flex flex-col gap-xs rounded-sm border border-line p-md">
+          <li
+            key={tip.documentId}
+            className="flex flex-col gap-xs rounded-sm border border-line p-md"
+          >
             {tip.tip_type ? <p className="text-label uppercase">{tip.tip_type.title}</p> : null}
             <Heading as={itemLevel} className="text-xl">
               {tip.title}

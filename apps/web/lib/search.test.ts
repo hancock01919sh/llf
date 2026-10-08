@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { processTerm, readSearchHash, SEARCH_PATH, SEARCH_TERM_MAX_LENGTH, searchHref } from './search';
+import {
+  processTerm,
+  readSearchHash,
+  SEARCH_PATH,
+  SEARCH_TERM_MAX_LENGTH,
+  searchHref,
+} from './search';
 
 describe('searchHref / readSearchHash', () => {
   it('keeps the term in the fragment, never the query string', () => {
@@ -22,7 +28,9 @@ describe('searchHref / readSearchHash', () => {
 
   it('caps the term length both ways', () => {
     const long = 'a'.repeat(SEARCH_TERM_MAX_LENGTH + 50);
-    expect(readSearchHash(searchHref(long).split('#')[1] ?? '')).toHaveLength(SEARCH_TERM_MAX_LENGTH);
+    expect(readSearchHash(searchHref(long).split('#')[1] ?? '')).toHaveLength(
+      SEARCH_TERM_MAX_LENGTH,
+    );
     expect(readSearchHash(`#q=${long}`)).toHaveLength(SEARCH_TERM_MAX_LENGTH);
   });
 });

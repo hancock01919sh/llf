@@ -27,7 +27,11 @@ const entry = <S extends z.ZodType>(e: BlockEntry<S>) => e;
 export const blocks = {
   'component.hero': entry({ schema: cms.HeroBlock, Component: Hero, type: 'hero' }),
   'component.teaser': entry({ schema: cms.TeaserBlock, Component: Teaser, type: 'teaser' }),
-  'component.link-list': entry({ schema: cms.LinkListBlock, Component: LinkList, type: 'link-list' }),
+  'component.link-list': entry({
+    schema: cms.LinkListBlock,
+    Component: LinkList,
+    type: 'link-list',
+  }),
   'component.carousel': entry({ schema: cms.CarouselBlock, Component: Carousel, type: 'carousel' }),
   'custom.search': entry({ schema: cms.SearchBlock, Component: SearchBox, type: 'search' }),
   'custom.tip-list': entry({ schema: cms.TipListBlock, Component: TipList, type: 'tip-list' }),

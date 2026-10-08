@@ -6,7 +6,11 @@ import { createRateLimiter } from './rate-limit';
 function setup() {
   let time = 1_000_000;
   const now = () => time;
-  const limiter = createRateLimiter(new MemoryCounterStore({ now }), { windowMs: 60_000, url: 3, model: 2 }, now);
+  const limiter = createRateLimiter(
+    new MemoryCounterStore({ now }),
+    { windowMs: 60_000, url: 3, model: 2 },
+    now,
+  );
   return { limiter, advance: (ms: number) => (time += ms) };
 }
 
@@ -37,7 +41,8 @@ describe('createRateLimiter', () => {
 
   it('gives URL input its own, larger bucket', async () => {
     const { limiter } = setup();
-    for (let i = 0; i < 3; i += 1) expect(await limiter('1.1.1.1', 'url')).toEqual({ allowed: true });
+    for (let i = 0; i < 3; i += 1)
+      expect(await limiter('1.1.1.1', 'url')).toEqual({ allowed: true });
     expect((await limiter('1.1.1.1', 'url')).allowed).toBe(false);
   });
 

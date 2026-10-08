@@ -4,7 +4,10 @@ import { ContentError } from '@/lib/cms';
 import { resolveBlocks } from './DynamicZone';
 
 const page = (main: unknown[]) =>
-  ({ title: 'Test page', path: 'test', main }) as unknown as Pick<cms.Page, 'title' | 'path' | 'main'>;
+  ({ title: 'Test page', path: 'test', main }) as unknown as Pick<
+    cms.Page,
+    'title' | 'path' | 'main'
+  >;
 
 const good = { __component: 'custom.search', id: 1, placeholder: 'Search' };
 const unknown = { __component: 'component.accordion', id: 2 };
@@ -14,8 +17,13 @@ describe('resolveBlocks', () => {
   afterEach(() => vi.restoreAllMocks());
 
   it('resolves registered blocks with their analytics type and layout', () => {
-    const [block] = resolveBlocks(page([good, { __component: 'component.hero', id: 4 }]), true).slice(1);
-    expect(resolveBlocks(page([good]), true)).toMatchObject([{ key: 'custom.search-1', type: 'search' }]);
+    const [block] = resolveBlocks(
+      page([good, { __component: 'component.hero', id: 4 }]),
+      true,
+    ).slice(1);
+    expect(resolveBlocks(page([good]), true)).toMatchObject([
+      { key: 'custom.search-1', type: 'search' },
+    ]);
     expect(block).toMatchObject({ type: 'hero', layout: 'Primary' });
   });
 

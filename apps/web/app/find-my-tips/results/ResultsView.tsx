@@ -10,9 +10,7 @@ import { track } from '@/lib/analytics';
 import { takeHandoff } from '@/lib/find-tips';
 
 type State =
-  | { status: 'loading' }
-  | { status: 'error' }
-  | { status: 'ready'; ingredients: IngredientData[] };
+  { status: 'loading' } | { status: 'error' } | { status: 'ready'; ingredients: IngredientData[] };
 
 async function loadIngredient(slug: string): Promise<IngredientData | null> {
   try {
@@ -89,7 +87,11 @@ export function ResultsView() {
   return (
     <>
       <header className="flex flex-col gap-sm">
-        <h1 ref={headingRef} tabIndex={-1} className="font-display text-5xl uppercase focus:outline-none">
+        <h1
+          ref={headingRef}
+          tabIndex={-1}
+          className="font-display text-5xl uppercase focus:outline-none"
+        >
           {strings.results.heading}
         </h1>
         {state.status === 'error' ? (
@@ -97,7 +99,9 @@ export function ResultsView() {
         ) : ingredients.length === 0 ? (
           <p>{strings.results.empty}</p>
         ) : (
-          <p>{format(strings.results.count, { ingredients: ingredients.length, tips: tipCount })}</p>
+          <p>
+            {format(strings.results.count, { ingredients: ingredients.length, tips: tipCount })}
+          </p>
         )}
         {unmatchedCount > 0 && ingredients.length > 0 ? (
           <p>
@@ -119,14 +123,19 @@ export function ResultsView() {
             <Heading as="h2" id={`ingredient-${ingredient.slug}`} className="text-3xl">
               {format(strings.results.tipsFor, { title: ingredient.title })}
             </Heading>
-            <p className="text-label">{format(strings.results.wasted, { level: ingredient.wasted })}</p>
+            <p className="text-label">
+              {format(strings.results.wasted, { level: ingredient.wasted })}
+            </p>
           </div>
           {ingredient.tips.length === 0 ? (
             <p>{strings.results.noTips}</p>
           ) : (
             <ul className="grid gap-md md:grid-cols-2 lg:grid-cols-3">
               {ingredient.tips.map((tip) => (
-                <li key={tip.documentId} className="flex flex-col gap-xs rounded-sm border border-line p-md">
+                <li
+                  key={tip.documentId}
+                  className="flex flex-col gap-xs rounded-sm border border-line p-md"
+                >
                   {tip.type ? <p className="text-label uppercase">{tip.type}</p> : null}
                   <Heading as="h3" className="text-xl">
                     {tip.title}
