@@ -37,7 +37,7 @@ If a task touches anything marked **[OPEN]**, don't guess. Leave a `// TODO(OPEN
 |---|---|---|
 | **Collections, Global, Tool Copy, rich text, asset slots** (hero images, intros, featured items) | Strapi | Schema change in `apps/cms` (additive, TDD §5.2) + Zod schema in `packages/contracts` |
 | **Template** (fixed layout for a designed route) | `apps/web/templates/` | The template, its slot fields on Page (conditional visibility), a Zod schema for the slots, a story, and a registry entry |
-| **Block** (dynamic zone, generic Page template only) | Strapi component + `apps/web/blocks/` | A Strapi component, a Zod schema, a React component, a story, and a registry entry |
+| **Block** (dynamic zone: generic Page template, and below the Home slots) | Strapi component + `apps/web/blocks/` | A Strapi component, a Zod schema, a React component, a story, and a registry entry |
 | **Site string** (labels, hints, aria text, the 404 page) | `apps/web/content/*.ts` (typed, Zod-validated) | Edit the file and use the key. No CMS change |
 
 **Copy-change requests** (TDD §5.2): a "Copy change" issue (or Jira ticket) → assigned to the Copilot coding agent → a draft PR that edits only `apps/web/content/` → CI and a Render PR preview → human review → merge to `dev`. When you handle one, change only the strings asked for, keep the keys stable, and link the issue in the PR.

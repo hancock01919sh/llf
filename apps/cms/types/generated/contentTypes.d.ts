@@ -606,6 +606,9 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    featured: Schema.Attribute.Relation<'oneToMany', 'api::category.category'>;
+    hero: Schema.Attribute.Component<'component.hero', false>;
+    intro: Schema.Attribute.Blocks;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::page.page'> &
       Schema.Attribute.Private;
@@ -625,7 +628,13 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
       Schema.Attribute.Unique;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
+    template: Schema.Attribute.Enumeration<
+      ['generic', 'home', 'find-my-tips', 'library']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'generic'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    tool: Schema.Attribute.Component<'custom.tool', false>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

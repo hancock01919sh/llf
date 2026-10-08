@@ -59,13 +59,23 @@ export function resolveBlocks(
 
 const isStrict = () => process.env.NODE_ENV !== 'development';
 
-/** Renders a Page's `main` dynamic zone. Used by the generic template only (TDD §6.4). */
-export function DynamicZone({ page }: { page: Pick<cms.Page, 'title' | 'path' | 'main'> }) {
-  return resolveBlocks(page, isStrict()).map(
-    ({ key, type, id, layout, data, Component }, index) => (
+/**
+ * Renders a Page's `main` dynamic zone (TDD §6.4). Used by the generic and home templates. `offset`
+ * is the number of template slots rendered above it, so module indexes stay page-wide.
+ */
+export function DynamicZone({
+  page,
+  offset = 0,
+}: {
+  page: Pick<cms.Page, 'title' | 'path' | 'main'>;
+  offset?: number;
+}) {
+  return resolveBlocks(page, isStrict()).map(({ key, type, id, layout, data, Component }, i) => {
+    const index = i + offset;
+    return (
       <ModuleBoundary key={key} type={type} index={index} id={String(id)} layout={layout}>
         <Component block={data} index={index} pageTitle={page.title} />
       </ModuleBoundary>
-    ),
-  );
+    );
+  });
 }

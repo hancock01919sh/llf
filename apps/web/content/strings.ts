@@ -87,6 +87,7 @@ const SiteStrings = z.object({
     noTips: text,
   }),
   notFound: z.object({ title: text, body: text, home: text }),
+  home: z.object({ featuredTitle: text }),
 });
 export type SiteStrings = z.infer<typeof SiteStrings>;
 
@@ -172,6 +173,7 @@ export const strings: SiteStrings = SiteStrings.parse({
     body: "We couldn't find that page. It may have moved.",
     home: 'Go to the home page',
   },
+  home: { featuredTitle: 'Browse by category' },
 });
 
 /** Fills `{name}` placeholders. Unknown placeholders are left as-is so missing values show up in review. */

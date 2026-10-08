@@ -1,0 +1,52 @@
+# Copy-change requests for site strings (TDD §5.2, D21). CMS content is edited in Strapi, not here.
+name: Copy change
+description: Change a short site string (a label, hint, aria text, or the 404 page) that lives in code.
+title: 'Copy change: '
+labels: ['copy-change']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for **site strings** only: button labels, form hints, aria text, and the 404 page. They live in `apps/web/content/`.
+        Page content, Tool Copy, tips, long-form text, and images are edited in the CMS. Please don't file those here.
+        Don't paste secrets, personal data, or anything a site visitor typed.
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: Where the text appears. A path on the dev or staging site is enough.
+      placeholder: /find-my-tips/
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current text
+      description: Copy it exactly as it appears. If you know the string key (for example `search.placeholder`), add it.
+    validations:
+      required: true
+  - type: textarea
+    id: new
+    attributes:
+      label: New text
+      description: Exactly what it should say. Keep any `{name}` placeholders from the current text.
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: Reason
+      description: Optional. Brand, legal, accessibility, or a typo, for example.
+  - type: input
+    id: jira
+    attributes:
+      label: Jira ticket
+      description: Optional. The BD3244 ticket this belongs to.
+      placeholder: BD3244-123
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: This is a site string, not CMS content, and the change only needs `apps/web/content/`.
+          required: true

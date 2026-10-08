@@ -34,7 +34,7 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 | P10 | [BD3244-31](https://dotdotdash.atlassian.net/browse/BD3244-31) | WAF Challenge / JS integration with the tool API | §7.6 | James S + Art | Nov 6 | ⏳ |
 | P11 | [BD3244-35](https://dotdotdash.atlassian.net/browse/BD3244-35) | Render → AWS parity | §12.2 | James S + Art | Nov 13 | ⏳ |
 | P12 | [BD3244-29](https://dotdotdash.atlassian.net/browse/BD3244-29) | CMS fully IP-only (build in CodeBuild inside the VPC) | §9.2 | James S | Only if IT requires | ⏳ |
-| P13 | [BD3244-26](https://dotdotdash.atlassian.net/browse/BD3244-26) | Hybrid content model + agent copy-change flow | §5.2, §6.4, D21 | Art + China team leads | Oct 16 | ⏳ |
+| P13 | [BD3244-26](https://dotdotdash.atlassian.net/browse/BD3244-26) | Hybrid content model + agent copy-change flow | §5.2, §6.4, D21 | Art + China team leads | Oct 16 | 🔬 content model ✅; agent flow blocked |
 
 ## Spikes
 
@@ -128,5 +128,10 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 ### P13. Hybrid content model and agent copy-change flow
 - **Hypothesis:** Templates in code with CMS slots, blocks only for generic pages, and site strings in typed `content/*.ts` files (TDD D21) are faster to build and easier to hand off than a full page builder. A copy change filed as an issue can go issue → Copilot coding agent → PR → Render preview → merge in under an hour of human time, with no CMS change.
 - **Method:** Build the Home template (hero slot + featured relations) and the generic template (two blocks) against the fixture seed. Add `content/strings.ts` with Zod validation and a type-checked key lookup. File three sample copy-change issues and assign them to the coding agent; record time to a reviewable PR, preview, and merge, and any mistakes. Walk the China team leads through it and collect their feedback. Check whether the agent and its Jira integration are available to us (OPEN-32).
-- **Result:** _TBD_
-- **Decision:** Confirm or adjust D21 (TDD §14). If the agent isn't allowed, the same flow runs with a developer making the PR. Any string the client expects to edit often moves into the CMS (R16).
+- **Result (Oct 7):** 🔬 Content model ✅ confirmed; agent copy-change flow not run yet.
+  - **Templates and slots:** Page has a required `template` enum (`generic`, `home`, `find-my-tips`, `library`; default `generic`) with conditional slots: `hero`, `intro`, and `featured` (Category relation) on Home; `tool` (Tool Copy) on Find My Tips; `main` (dynamic zone) on generic and Home. Admins only see the fields for the chosen template. `packages/contracts` validates each slot, and the seed schema rejects a slot on the wrong template.
+  - **Live on Strapi 5.45 + Postgres 16:** the fixture seed creates and then re-runs idempotently (slots included; `featured` uses `set`), populate reads every slot back, and the web loader renders `/` as Home (hero, intro, 4 featured categories), `/find-my-tips/` with its Tool Copy, and the other pages as generic. An unknown or missing template falls back to generic.
+  - **Site strings:** `apps/web/content/strings.ts` is Zod-validated at import with a type-checked key lookup and `format()` placeholders. 9 template tests plus the string tests pass (web 111 tests).
+  - **Copy-change form:** `.github/ISSUE_TEMPLATE/copy-change.yml` (page, current text, new text, reason, Jira key, scope check; label `copy-change`).
+  - **Not done:** the three sample issues → coding agent → PR → preview → merge timing, and the China leads walkthrough. Blocked on OPEN-32 (agent and Jira integration), GitHub push access (BD3244-16), and Render PR previews (BD3244-15).
+- **Decision:** Confirm or adjust D21 (TDD §14). So far D21 holds: the template + slot model works with no page builder. Re-run the agent half once access lands. If the agent isn't allowed, the same flow runs with a developer making the PR. Any string the client expects to edit often moves into the CMS (R16).

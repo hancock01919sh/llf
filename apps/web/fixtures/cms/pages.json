@@ -5,93 +5,93 @@
       "documentId": "fxpg0001",
       "title": "Home",
       "path": "/",
+      "template": "home",
       "seo": {
         "metaTitle": "Long Live Food",
         "metaKeywords": null,
         "metaDescription": "Easy tips to finish the food you buy."
       },
-      "main": [
-        {
-          "__component": "component.hero",
-          "id": 1,
-          "eyebrow": "Long Live Food",
-          "layout": "Primary",
-          "images": null,
-          "description": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "text": "Fixture copy. Small changes help you finish the food you buy."
-                }
-              ]
-            }
-          ],
-          "ctas": [
-            {
-              "id": 1,
-              "label": "Find My Tips",
-              "href": null,
-              "page": {
-                "id": 2,
-                "documentId": "fxpg0002",
-                "title": "Find My Tips",
-                "path": "find-my-tips"
+      "hero": {
+        "id": 1,
+        "eyebrow": "Long Live Food",
+        "layout": "Primary",
+        "images": null,
+        "description": [
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "text": "Fixture copy. Small changes help you finish the food you buy."
               }
-            },
-            {
+            ]
+          }
+        ],
+        "ctas": [
+          {
+            "id": 1,
+            "label": "Find My Tips",
+            "href": null,
+            "page": {
               "id": 2,
-              "label": "Browse tips",
-              "href": null,
-              "page": {
-                "id": 3,
-                "documentId": "fxpg0003",
-                "title": "Tips",
-                "path": "tips"
-              }
+              "documentId": "fxpg0002",
+              "title": "Find My Tips",
+              "path": "find-my-tips"
+            }
+          },
+          {
+            "id": 2,
+            "label": "Browse tips",
+            "href": null,
+            "page": {
+              "id": 3,
+              "documentId": "fxpg0003",
+              "title": "Tips",
+              "path": "tips"
+            }
+          }
+        ]
+      },
+      "intro": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "text": "Fixture copy. Use what you have, store it well, and finish the food you buy."
             }
           ]
+        }
+      ],
+      "featured": [
+        {
+          "id": 1,
+          "documentId": "fxca0001",
+          "title": "Fruits & Veggies",
+          "slug": "fruits-and-veggies",
+          "image": null
         },
+        {
+          "id": 2,
+          "documentId": "fxca0002",
+          "title": "Fridge Staples",
+          "slug": "fridge-staples",
+          "image": null
+        },
+        {
+          "id": 3,
+          "documentId": "fxca0003",
+          "title": "Smart Shopping",
+          "slug": "smart-shopping",
+          "image": null
+        }
+      ],
+      "tool": null,
+      "main": [
         {
           "__component": "custom.search",
           "id": 2,
           "placeholder": "Search tips and ingredients"
-        },
-        {
-          "__component": "component.carousel",
-          "id": 3,
-          "title": {
-            "copy": "Browse by category",
-            "header": "h2"
-          },
-          "description": "Fixture copy for the carousel.",
-          "mode": "categories",
-          "layout": "Basic",
-          "categories": [
-            {
-              "id": 1,
-              "documentId": "fxca0001",
-              "title": "Fruits & Veggies",
-              "slug": "fruits-and-veggies",
-              "image": null
-            },
-            {
-              "id": 2,
-              "documentId": "fxca0002",
-              "title": "Fridge Staples",
-              "slug": "fridge-staples",
-              "image": null
-            },
-            {
-              "id": 3,
-              "documentId": "fxca0003",
-              "title": "Smart Shopping",
-              "slug": "smart-shopping",
-              "image": null
-            }
-          ],
-          "ctas": []
         },
         {
           "__component": "custom.tip-list",
@@ -140,30 +140,37 @@
       "documentId": "fxpg0002",
       "title": "Find My Tips",
       "path": "find-my-tips",
+      "template": "find-my-tips",
       "seo": {
         "metaTitle": null,
         "metaKeywords": null,
         "metaDescription": "Share a recipe and get tips for its ingredients."
       },
-      "main": [
-        {
-          "__component": "custom.tool",
-          "id": 5,
-          "url_label": "Recipe link",
-          "url_placeholder": "https://",
-          "upload_label": "Recipe photo",
-          "upload_placeholder": "Choose a photo",
-          "description": "Fixture copy. Share a recipe and we'll find tips for its ingredients.",
-          "cta_label": "Find my tips"
-        }
-      ]
+      "hero": null,
+      "intro": null,
+      "featured": [],
+      "tool": {
+        "id": 5,
+        "url_label": "Recipe link",
+        "url_placeholder": "https://",
+        "upload_label": "Recipe photo",
+        "upload_placeholder": "Choose a photo",
+        "description": "Fixture copy. Share a recipe and we'll find tips for its ingredients.",
+        "cta_label": "Find my tips"
+      },
+      "main": []
     },
     {
       "id": 3,
       "documentId": "fxpg0003",
       "title": "Tips",
       "path": "tips",
+      "template": "generic",
       "seo": null,
+      "hero": null,
+      "intro": null,
+      "featured": [],
+      "tool": null,
       "main": [
         {
           "__component": "component.hero",
@@ -226,7 +233,12 @@
       "documentId": "fxpg0004",
       "title": "About",
       "path": "about",
+      "template": "generic",
       "seo": null,
+      "hero": null,
+      "intro": null,
+      "featured": [],
+      "tool": null,
       "main": [
         {
           "__component": "component.hero",

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getPageByPath, getPages, normalizePath } from '@/lib/cms';
 import { pageMetadata } from '@/lib/seo';
-import { templates } from '@/templates/registry';
+import { templateFor } from '@/templates/registry';
 
 /** Paths with their own route. A CMS page at one of these renders there, not here (TDD §6.1). */
 const RESERVED = ['', 'find-my-tips', 'tips', 'search'];
@@ -40,7 +40,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 }
 
 export default async function CmsPage(props: Params) {
-  // TODO(BD3244-11): choose the template from `Page.template` once the field exists.
-  const Template = templates.generic;
-  return <Template page={await load(props)} />;
+  const page = await load(props);
+  const Template = templateFor(page);
+  return <Template page={page} />;
 }

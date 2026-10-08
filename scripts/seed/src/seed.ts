@@ -8,6 +8,8 @@ type Seed = contract.Seed;
 type SeedBlock = contract.SeedBlock;
 type SeedCta = z.infer<typeof contract.SeedCta>;
 type SeedTitle = z.infer<typeof contract.SeedTitle>;
+type SeedPage = contract.SeedPage;
+type SeedHero = Omit<z.infer<typeof contract.SeedHeroBlock>, '__component'>;
 
 export type Log = (line: string) => void;
 
@@ -175,19 +177,27 @@ export async function runSeed({
     categoryIds.set(category.slug, await upsert('categories', 'slug', category.slug, data));
   }
 
-  // Pages link to each other (CTAs, link lists), so create them all bare first, then write `main`.
+  // Pages link to each other (CTAs, link lists), so create them all bare first, then write the
+  // template slots and `main`.
   const pageIds: IdMap = new Map();
   for (const page of seed.pages) {
-    const data = { title: page.title, path: page.path, seo: page.seo ?? null };
+    const data = {
+      title: page.title,
+      path: page.path,
+      template: page.template,
+      seo: page.seo ?? null,
+    };
     pageIds.set(contract.pathKey(page.path), await upsert('pages', 'path', page.path, data));
   }
   const ids = { pageIds, categoryIds, tipIds };
   for (const page of seed.pages) {
     const documentId = lookup(pageIds, contract.pathKey(page.path), 'page');
-    const main = page.main.map((block) => toBlock(block, ids));
-    if (!dryRun) await client.update('pages', documentId, { main });
+    const data = toPageContent(page, ids);
+    if (!dryRun) await client.update('pages', documentId, data);
+    const slots = PAGE_SLOTS.filter((slot) => page[slot] !== undefined);
     log(
-      `${dryRun ? 'would write' : 'wrote'} pages ${JSON.stringify(page.path)} main (${main.length} blocks)`,
+      `${dryRun ? 'would write' : 'wrote'} pages ${JSON.stringify(page.path)} ${page.template}` +
+        `${slots.length > 0 ? ` [${slots.join(', ')}]` : ''} main (${data.main.length} blocks)`,
     );
   }
 
@@ -214,15 +224,37 @@ function toCta(cta: SeedCta, { pageIds }: BlockIds) {
   return { label: cta.label, href: cta.href ?? null };
 }
 
+const PAGE_SLOTS = ['hero', 'intro', 'featured', 'tool'] as const;
+
+/**
+ * The page's template slots and `main`. Every slot is written (null or empty when absent) so a
+ * re-run clears a slot that was removed from the seed or moved to another template.
+ */
+export function toPageContent(page: SeedPage, ids: BlockIds) {
+  return {
+    hero: page.hero === undefined ? null : toHero(page.hero, ids),
+    intro: page.intro === undefined ? null : contract.toBlocks(page.intro),
+    featured: {
+      set: (page.featured ?? []).map((slug) => lookup(ids.categoryIds, slug, 'category')),
+    },
+    tool: page.tool === undefined ? null : { ...page.tool },
+    main: page.main.map((block) => toBlock(block, ids)),
+  };
+}
+
+function toHero(hero: SeedHero, ids: BlockIds) {
+  return {
+    ...hero,
+    eyebrow: hero.eyebrow ?? null,
+    description: contract.toBlocks(hero.description),
+    ctas: hero.ctas.map((cta) => toCta(cta, ids)),
+  };
+}
+
 function toBlock(block: SeedBlock, ids: BlockIds): Record<string, unknown> {
   switch (block.__component) {
     case 'component.hero':
-      return {
-        ...block,
-        eyebrow: block.eyebrow ?? null,
-        description: contract.toBlocks(block.description),
-        ctas: block.ctas.map((cta) => toCta(cta, ids)),
-      };
+      return toHero(block, ids);
     case 'component.teaser':
       return {
         ...block,
@@ -272,11 +304,15 @@ const tipFields = {
   ingredient: true,
 } satisfies Populate;
 const tipRelations = { populate: tipFields } satisfies Populate;
+const hero = { populate: { ctas, images: true } } satisfies Populate;
 export const POPULATE = {
   pages: {
+    hero,
+    featured: { populate: { image: true } },
+    tool: true,
     main: {
       on: {
-        'component.hero': { populate: { ctas, images: true } },
+        'component.hero': hero,
         'component.teaser': { populate: { title: true, ctas, images: true } },
         'component.link-list': { populate: { title: true, pages: true } },
         'component.carousel': {

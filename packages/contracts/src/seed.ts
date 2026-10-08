@@ -8,6 +8,8 @@ import {
   HeadingLevel,
   INGREDIENT_TYPES,
   LINK_LIST_LAYOUTS,
+  PAGE_TEMPLATES,
+  type PageTemplate,
   TEASER_LAYOUTS,
   TIP_LIST_LAYOUTS,
 } from './cms';
@@ -195,13 +197,41 @@ export const SEED_BLOCK_COMPONENTS = SeedBlock.options.map(
   (option) => option.shape.__component.value,
 );
 
-/** Keyed by path (compared with `pathKey`). */
-export const SeedPage = z.strictObject({
-  title: text,
-  path: SeedPath,
-  seo: SeedSeo.optional(),
-  main: z.array(SeedBlock).default([]),
-});
+/** Which template each Page slot belongs to; mirrors the field conditions in the Strapi Page schema (TDD §6.4). */
+export const PAGE_SLOT_TEMPLATES = {
+  hero: ['home'],
+  intro: ['home'],
+  featured: ['home'],
+  tool: ['find-my-tips'],
+  main: ['generic', 'home'],
+} as const satisfies Record<string, readonly PageTemplate[]>;
+
+/** Keyed by path (compared with `pathKey`). Template slots are only allowed on the template that shows them. */
+export const SeedPage = z
+  .strictObject({
+    title: text,
+    path: SeedPath,
+    template: z.enum(PAGE_TEMPLATES).default('generic'),
+    seo: SeedSeo.optional(),
+    hero: SeedHeroBlock.omit({ __component: true }).optional(),
+    intro: SeedRichText.optional(),
+    featured: z.array(Slug).optional(),
+    tool: SeedToolBlock.omit({ __component: true }).optional(),
+    main: z.array(SeedBlock).default([]),
+  })
+  .superRefine((page, ctx) => {
+    for (const [slot, templates] of Object.entries(PAGE_SLOT_TEMPLATES)) {
+      const value = page[slot as keyof typeof PAGE_SLOT_TEMPLATES];
+      const empty = value === undefined || (Array.isArray(value) && value.length === 0);
+      if (!empty && !(templates as readonly PageTemplate[]).includes(page.template)) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [slot],
+          message: `"${slot}" is not shown by the "${page.template}" template`,
+        });
+      }
+    }
+  });
 export type SeedPage = z.infer<typeof SeedPage>;
 
 export const Seed = z.strictObject({

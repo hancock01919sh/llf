@@ -22,13 +22,17 @@ const tipFields: Populate = {
   ingredient: true,
 };
 const tipRelations: Populate = { populate: tipFields };
+const hero: Populate = { populate: { ctas, images: true } };
 
 // Verified against seeded content (BD3244-24). Keep in sync with POPULATE in scripts/seed/src/seed.ts.
 const POPULATE = {
   pages: {
+    hero,
+    featured: { populate: { image: true } },
+    tool: true,
     main: {
       on: {
-        'component.hero': { populate: { ctas, images: true } },
+        'component.hero': hero,
         'component.teaser': { populate: { title: true, ctas, images: true } },
         'component.link-list': { populate: { title: true, pages: true } },
         'component.carousel': {

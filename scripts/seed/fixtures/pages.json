@@ -4,32 +4,39 @@
     {
       "title": "Home",
       "path": "/",
+      "template": "home",
       "seo": {
         "metaTitle": "Long Live Food",
         "metaDescription": "Easy tips to finish the food you buy."
       },
+      "hero": {
+        "layout": "Primary",
+        "eyebrow": "Long Live Food",
+        "description": ["Fixture copy. Small changes help you finish the food you buy."],
+        "ctas": [
+          {
+            "label": "Find My Tips",
+            "page": "find-my-tips"
+          },
+          {
+            "label": "Browse tips",
+            "page": "tips"
+          }
+        ]
+      },
+      "intro": ["Fixture copy. Use what you have, store it well, and finish the food you buy."],
+      "featured": ["fruits-and-veggies", "fridge-staples", "pantry", "smart-shopping"],
       "main": [
         {
-          "__component": "component.hero",
-          "layout": "Primary",
-          "eyebrow": "Long Live Food",
-          "description": ["Fixture copy. Small changes help you finish the food you buy."],
-          "ctas": [
-            { "label": "Find My Tips", "page": "find-my-tips" },
-            { "label": "Browse tips", "page": "tips" }
-          ]
-        },
-        { "__component": "custom.search", "placeholder": "Search tips and ingredients" },
-        {
-          "__component": "component.carousel",
-          "title": { "copy": "Browse by category", "header": "h2" },
-          "description": "Fixture copy for the carousel.",
-          "layout": "Basic",
-          "categories": ["fruits-and-veggies", "fridge-staples", "pantry", "smart-shopping"]
+          "__component": "custom.search",
+          "placeholder": "Search tips and ingredients"
         },
         {
           "__component": "custom.tip-list",
-          "title": { "copy": "Quick wins", "header": "h2" },
+          "title": {
+            "copy": "Quick wins",
+            "header": "h2"
+          },
           "layout": "Basic",
           "tips": ["Shop your fridge first", "First in, first out"]
         }
@@ -38,18 +45,18 @@
     {
       "title": "Find My Tips",
       "path": "find-my-tips",
-      "seo": { "metaDescription": "Share a recipe and get tips for its ingredients." },
-      "main": [
-        {
-          "__component": "custom.tool",
-          "url_label": "Recipe link",
-          "url_placeholder": "https://",
-          "upload_label": "Recipe photo",
-          "upload_placeholder": "Choose a photo",
-          "description": "Fixture copy. Share a recipe and we'll find tips for its ingredients.",
-          "cta_label": "Find my tips"
-        }
-      ]
+      "template": "find-my-tips",
+      "seo": {
+        "metaDescription": "Share a recipe and get tips for its ingredients."
+      },
+      "tool": {
+        "url_label": "Recipe link",
+        "url_placeholder": "https://",
+        "upload_label": "Recipe photo",
+        "upload_placeholder": "Choose a photo",
+        "description": "Fixture copy. Share a recipe and we'll find tips for its ingredients.",
+        "cta_label": "Find my tips"
+      }
     },
     {
       "title": "Tips",
@@ -62,7 +69,10 @@
         },
         {
           "__component": "component.carousel",
-          "title": { "copy": "Categories", "header": "h2" },
+          "title": {
+            "copy": "Categories",
+            "header": "h2"
+          },
           "layout": "Compact",
           "categories": ["fruits-and-veggies", "fridge-staples", "pantry", "smart-shopping"]
         }
@@ -79,14 +89,25 @@
         },
         {
           "__component": "component.teaser",
-          "title": { "copy": "Why it matters", "header": "h2" },
+          "title": {
+            "copy": "Why it matters",
+            "header": "h2"
+          },
           "description": ["Fixture copy for a teaser."],
-          "ctas": [{ "label": "Find My Tips", "page": "find-my-tips" }],
+          "ctas": [
+            {
+              "label": "Find My Tips",
+              "page": "find-my-tips"
+            }
+          ],
           "layout": "Highlight"
         },
         {
           "__component": "component.link-list",
-          "title": { "copy": "Keep exploring", "header": "h2" },
+          "title": {
+            "copy": "Keep exploring",
+            "header": "h2"
+          },
           "pages": ["tips", "find-my-tips"],
           "layout": "Basic"
         }
@@ -95,7 +116,9 @@
     {
       "title": "Examples",
       "path": "examples",
-      "seo": { "metaDescription": "Fixture page that shows every block layout." },
+      "seo": {
+        "metaDescription": "Fixture page that shows every block layout."
+      },
       "main": [
         {
           "__component": "component.hero",
@@ -108,27 +131,44 @@
         },
         {
           "__component": "component.teaser",
-          "title": { "copy": "A quote teaser", "header": "h2" },
+          "title": {
+            "copy": "A quote teaser",
+            "header": "h2"
+          },
           "description": ["Fixture copy for a quote teaser."],
           "layout": "Quote"
         },
         {
           "__component": "component.teaser",
-          "title": { "copy": "A basic teaser", "header": "h2" },
+          "title": {
+            "copy": "A basic teaser",
+            "header": "h2"
+          },
           "description": ["Fixture copy for a basic teaser."],
-          "ctas": [{ "label": "Example link", "href": "https://example.com/" }],
+          "ctas": [
+            {
+              "label": "Example link",
+              "href": "https://example.com/"
+            }
+          ],
           "layout": "Basic"
         },
         {
           "__component": "component.link-list",
-          "title": { "copy": "Two column links", "header": "h2" },
+          "title": {
+            "copy": "Two column links",
+            "header": "h2"
+          },
           "description": ["Fixture copy for a two column link list."],
           "pages": ["/", "tips", "find-my-tips", "about"],
           "layout": "Two Column"
         },
         {
           "__component": "custom.tip-list",
-          "title": { "copy": "A single tip", "header": "h2" },
+          "title": {
+            "copy": "A single tip",
+            "header": "h2"
+          },
           "description": "Fixture copy for a single tip list.",
           "layout": "Single",
           "tips": ["Turn rice into fried rice"]

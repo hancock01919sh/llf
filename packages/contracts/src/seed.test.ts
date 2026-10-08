@@ -110,6 +110,47 @@ describe('seed schemas', () => {
     expect(Seed.safeParse({ ...minimal(), global: {} }).success).toBe(false);
   });
 
+  it('defaults the page template to generic and fills template slots', () => {
+    expect(SeedPage.parse({ title: 'About', path: 'about' }).template).toBe('generic');
+    const home = SeedPage.parse({
+      title: 'Home',
+      path: '/',
+      template: 'home',
+      hero: { eyebrow: 'Hi' },
+      intro: ['Welcome'],
+      featured: ['fruits'],
+    });
+    expect(home.hero).toEqual({ layout: 'Primary', eyebrow: 'Hi', description: [], ctas: [] });
+    expect(home.featured).toEqual(['fruits']);
+  });
+
+  it.each([
+    [{ template: 'generic', hero: { eyebrow: 'Hi' } }, 'hero'],
+    [{ template: 'generic', featured: ['fruits'] }, 'featured'],
+    [
+      {
+        template: 'home',
+        tool: {
+          url_label: 'a',
+          url_placeholder: 'b',
+          upload_label: 'c',
+          upload_placeholder: 'd',
+          description: 'e',
+          cta_label: 'f',
+        },
+      },
+      'tool',
+    ],
+    [
+      { template: 'find-my-tips', main: [{ __component: 'custom.search', placeholder: 'x' }] },
+      'main',
+    ],
+  ])('rejects a slot the template does not show (%#)', (page, slot) => {
+    const result = SeedPage.safeParse({ title: 'x', path: 'x', ...page });
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0]?.path).toEqual([slot]);
+  });
+
   it('rejects an unknown block component', () => {
     expect(SeedBlock.safeParse({ __component: 'component.video' }).success).toBe(false);
   });

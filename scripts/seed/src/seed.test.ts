@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { seed as contract } from '@llf/contracts';
-import { SeedValidationError, loadSeed, runSeed, verify } from './seed';
+import { SeedValidationError, loadSeed, runSeed, toPageContent, verify } from './seed';
 import type { StrapiClient, StrapiDocument } from './strapi';
 
 const FIXTURES = fileURLToPath(new URL('../fixtures', import.meta.url));
@@ -151,7 +151,7 @@ describe('runSeed', () => {
     seed.categories.length +
     seed.pages.length;
 
-  it('creates every document on the first run, then writes page main zones', async () => {
+  it('creates every document on the first run, then writes page slots and main zones', async () => {
     const fake = fakeClient();
     const report = await runSeed({ client: fake.client, seed });
 
@@ -169,7 +169,7 @@ describe('runSeed', () => {
     expect(fake.updates).toHaveLength(seed.pages.length);
     for (const call of fake.updates) {
       expect(call.plural).toBe('pages');
-      expect(Object.keys(call.data)).toEqual(['main']);
+      expect(Object.keys(call.data)).toEqual(['hero', 'intro', 'featured', 'tool', 'main']);
     }
   });
 
@@ -237,26 +237,68 @@ describe('runSeed', () => {
     );
   });
 
-  it('turns page CTAs and block references into relations', async () => {
+  it('turns page CTAs, template slots and block references into relations', async () => {
     const fake = fakeClient();
     await runSeed({ client: fake.client, seed });
     const pages = [...(fake.store.get('pages') ?? new Map<string, Data>()).values()];
     const home = pages.find((page) => page.path === '/');
-    const main = home?.main as Data[];
-    const hero = main.find((block) => block.__component === 'component.hero');
-    const ctas = hero?.ctas as Data[];
+    expect(home?.template).toBe('home');
+    const hero = home?.hero as Data;
+    const ctas = hero.ctas as Data[];
     expect(ctas.length).toBeGreaterThan(0);
     for (const cta of ctas) {
       expect(cta.page).toEqual({ set: [expect.stringMatching(/^pages-/)] });
     }
-    const carousel = main.find((block) => block.__component === 'component.carousel');
-    expect(
-      (carousel?.categories as { set: string[] }).set.every((id) => id.startsWith('categories-')),
-    ).toBe(true);
+    const featured = (home?.featured as { set: string[] }).set;
+    expect(featured).toHaveLength(
+      seed.pages.find((page) => page.path === '/')?.featured?.length ?? -1,
+    );
+    expect(featured.every((id) => id.startsWith('categories-'))).toBe(true);
+    const main = home?.main as Data[];
     const tipList = main.find((block) => block.__component === 'custom.tip-list');
     expect((tipList?.tips as { set: string[] }).set.every((id) => id.startsWith('tips-'))).toBe(
       true,
     );
+
+    const tool = pages.find((page) => page.template === 'find-my-tips');
+    expect(tool?.tool).toBeTruthy();
+    expect(tool?.hero).toBeNull();
+    expect(tool?.featured).toEqual({ set: [] });
+  });
+});
+
+describe('toPageContent', () => {
+  const ids = { pageIds: new Map(), categoryIds: new Map([['fruit', 'cat-1']]), tipIds: new Map() };
+
+  it('clears every slot a generic page does not use', () => {
+    const page = contract.SeedPage.parse({ title: 'About', path: 'about' });
+    expect(toPageContent(page, ids)).toEqual({
+      hero: null,
+      intro: null,
+      featured: { set: [] },
+      tool: null,
+      main: [],
+    });
+  });
+
+  it('maps featured slugs to category document ids', () => {
+    const page = contract.SeedPage.parse({
+      title: 'Home',
+      path: '/',
+      template: 'home',
+      featured: ['fruit'],
+    });
+    expect(toPageContent(page, ids).featured).toEqual({ set: ['cat-1'] });
+  });
+
+  it('throws on a featured slug that was not seeded', () => {
+    const page = contract.SeedPage.parse({
+      title: 'Home',
+      path: '/',
+      template: 'home',
+      featured: ['missing'],
+    });
+    expect(() => toPageContent(page, ids)).toThrow(/category "missing"/);
   });
 });
 

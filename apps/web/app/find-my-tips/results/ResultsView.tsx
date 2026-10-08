@@ -26,7 +26,7 @@ async function loadIngredient(slug: string): Promise<IngredientData | null> {
  * Results for `?i=slug,slug` (TDD §6.1). Slugs are catalog keys, never user text. Unknown slugs are
  * dropped. When the visitor came from the tool, the handoff adds the partial-match note and the
  * `tips_tool_result` event; a shared link shows the same tips without either.
- * TODO(BD3244-26): the designed results layout, tip cards, and the Tip Modal (BD3244-8).
+ * TODO(BD3244-8): the designed results layout, tip cards, and the Tip Modal.
  */
 export function ResultsView() {
   const slugs = parseResultSlugs(useSearchParams().get('i'));

@@ -4,7 +4,7 @@ import type { TemplateProps } from './types';
 
 /**
  * Tips library (Figma Tips Library frames).
- * TODO(BD3244-26): replace the dynamic zone with the fixed Figma layout and its CMS slot fields.
+ * TODO(BD3244-8): replace the dynamic zone with the fixed Figma layout and its CMS slot fields.
  * Until then it renders the page's blocks so the route works end to end.
  */
 export function LibraryTemplate({ page }: TemplateProps) {

@@ -20,6 +20,50 @@
       "required": true,
       "unique": true
     },
+    "template": {
+      "type": "enumeration",
+      "enum": ["generic", "home", "find-my-tips", "library"],
+      "default": "generic",
+      "required": true
+    },
+    "hero": {
+      "type": "component",
+      "component": "component.hero",
+      "repeatable": false,
+      "conditions": {
+        "visible": {
+          "==": [{ "var": "template" }, "home"]
+        }
+      }
+    },
+    "intro": {
+      "type": "blocks",
+      "conditions": {
+        "visible": {
+          "==": [{ "var": "template" }, "home"]
+        }
+      }
+    },
+    "featured": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::category.category",
+      "conditions": {
+        "visible": {
+          "==": [{ "var": "template" }, "home"]
+        }
+      }
+    },
+    "tool": {
+      "type": "component",
+      "component": "custom.tool",
+      "repeatable": false,
+      "conditions": {
+        "visible": {
+          "==": [{ "var": "template" }, "find-my-tips"]
+        }
+      }
+    },
     "main": {
       "type": "dynamiczone",
       "components": [
@@ -30,7 +74,12 @@
         "custom.search",
         "component.carousel",
         "custom.tip-list"
-      ]
+      ],
+      "conditions": {
+        "visible": {
+          "in": [{ "var": "template" }, ["generic", "home"]]
+        }
+      }
     },
     "seo": {
       "type": "component",

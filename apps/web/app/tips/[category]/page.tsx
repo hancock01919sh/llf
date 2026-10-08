@@ -40,7 +40,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 
 /**
  * Tips category page (Figma Category frames).
- * TODO(BD3244-26): the designed layout, tip cards, and the Tip Modal (BD3244-8).
+ * TODO(BD3244-8): the designed layout, tip cards, and the Tip Modal.
  */
 export default async function CategoryPage(props: Params) {
   const category = await load(props);

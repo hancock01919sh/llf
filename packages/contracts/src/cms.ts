@@ -202,9 +202,30 @@ export const UnknownBlock = z.looseObject({
 });
 export type UnknownBlock = z.infer<typeof UnknownBlock>;
 
+/** Fixed layouts a Page can select (TDD D21). Only `generic` and `home` render `main`. */
+export const PAGE_TEMPLATES = ['generic', 'home', 'find-my-tips', 'library'] as const;
+export type PageTemplate = (typeof PAGE_TEMPLATES)[number];
+
+/** Single (non-dynamic-zone) components come back without `__component`. */
+export const HeroSlot = HeroBlock.omit({ __component: true });
+export type HeroSlot = z.infer<typeof HeroSlot>;
+export const ToolSlot = ToolBlock.omit({ __component: true });
+export type ToolSlot = z.infer<typeof ToolSlot>;
+export const FeaturedCategory = CategoryRef.extend({ image: nullish(Media) });
+export type FeaturedCategory = z.infer<typeof FeaturedCategory>;
+
 export const Page = Entry.extend({
   title: z.string(),
   path: z.string(),
+  // Rows created before the field existed come back null.
+  template: z
+    .enum(PAGE_TEMPLATES)
+    .nullish()
+    .transform((v) => v ?? 'generic'),
+  hero: nullish(HeroSlot),
+  intro: nullish(BlocksContent),
+  featured: z.array(FeaturedCategory).default([]),
+  tool: nullish(ToolSlot),
   main: z.array(UnknownBlock).default([]),
   seo: nullish(Seo),
 });
