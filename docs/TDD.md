@@ -959,8 +959,8 @@ type ExtractResponse = {
    - **We cache raw terms, not matches.** Matching always runs against the **current** catalog, so a newly added ingredient or synonym takes effect right away.
    - **TTL 24 hours.** Recipe pages change, and the cache mostly absorbs bursts such as a viral recipe.
 3. **`safeFetch`** (§7.6). `text/html` only.
-4. **JSON-LD parse.** Read every `<script type="application/ld+json">`, handling `@graph`, `@type` arrays, and nested `Recipe` objects. Each `recipeIngredient` line has quantities and units removed and becomes a raw term. **No model call.** The JSON-LD hit rate on real recipe sites is measured in the spike ([`PROOF_DOC.md`](./PROOF_DOC.md)).
-5. **Fallback:** take the visible text (`<main>`/`<article>`, capped at about 15K characters) and call the model's `extract` (text mode).
+4. **JSON-LD parse.** Read every `<script type="application/ld+json">`, handling `@graph`, `@type` arrays, and nested `Recipe` objects. Each `recipeIngredient` line has quantities and units removed and becomes a raw term. **No model call.** **[VERIFIED]** Spike P8 ([`PROOF_DOC.md`](./PROOF_DOC.md#p8-json-ld-hit-rate)): 37 of 63 URLs from 13 top US recipe sites (59%) were fetched, and every page that returned 200 had `Recipe` JSON-LD (median 170 ms). The other 26 were 403 bot blocks (25, including every Dotdash Meredith site, blocked by IP or TLS fingerprint) and 1 timeout.
+5. **Fallback:** take the visible text (`<main>`/`<article>`, capped at about 15K characters) and call the model's `extract` (text mode). This only runs for a page that returned 200 without JSON-LD. A blocked or failed fetch **never reaches the model**; it returns an error (§7.10, BD3244-36).
 
 **Video links** [PROPOSED; scope is OPEN-35]. The Figma input copy says "Enter a recipe URL or video link." If that's in scope, a video link goes through the same path as any URL: `safeFetch` the public page, use its Recipe JSON-LD if it has one, otherwise run text mode on the page's description. If there's neither, the result is **unreadable** (§7.10). We don't call the YouTube, TikTok, or Instagram APIs (each would be a new vendor) and we don't process the video itself. Many video pages carry no ingredient list, so the eval set needs video examples before we promise this.
 
@@ -1010,7 +1010,7 @@ match(term, catalog):
 | **Daily quota** (backend) | Key Value counter | DynamoDB atomic counter **per input type per UTC day** (for example, 3,000 model calls; we set the real number from the eval's cost per request and the budget). When the quota runs out, the API **switches to `jsonld-only`** for the rest of the day, and an alert fires |
 | **Size and type limits** | Same | Client: reject non-images and files over 25 MB before decoding, then resize to ≤ 1600 px JPEG at q≈0.8. Server: body ≤ **4 MB** (Lambda's sync payload limit is 6 MB, and base64 adds about 33%), decoded image ≤ 3 MB. Check magic bytes. Text ≤ 5,000 chars. URL ≤ 2,048 chars |
 | **SSRF (`safeFetch`)** | Same code | Only `http`/`https` on ports 80 and 443. **Resolve DNS, then block** private, loopback, link-local (169.254.0.0/16, including IMDS), CGNAT, multicast, and IPv6 ULA/link-local. **Connect to the resolved IP** (stops DNS rebinding). **At most 3 redirects, each checked again.** **3 MB** response cap. **5 s** total timeout. `text/html` only. Custom User-Agent. On AWS the Lambda runs **outside a VPC**, so there's nothing internal to reach |
-| **Timeouts** | Same | Model 15 s, handler 25 s. API Gateway's default integration timeout is about 29–30 s, and we design to stay under it rather than asking for more. The client aborts at 35 s, shows progress, and retries **once**, only on 502/504. The local static server's `/api` proxy times out at 40 s so it never cuts off the client first |
+| **Timeouts** | Same | Model 15 s, handler 25 s. API Gateway's default integration timeout is about 29–30 s, and we design to stay under it rather than asking for more. The client aborts at 35 s, shows progress, and retries **once**, only on 502/504. The local static server's `/api` proxy times out at 40 s so it never cuts off the client first. [PROPOSED] A blocked recipe page gets its own error code and is never auto-retried, since a retry fails the same way (§7.10, BD3244-36) |
 | **Spend backstops** | ddd's Anthropic workspace **spend limit** and alerts | The client provider's budget alerts plus **AWS Budgets** alarms. **These alert. They aren't hard caps.** The hard limits are the quota and the kill switch above. Reserved Lambda concurrency (for example, 50) limits throughput, not total spend |
 | **Prompt injection** | Same | The input is wrapped as untrusted data. The system prompt says to *extract only*. The output is a forced, schema-locked tool call, and the closed-catalog match is the final filter (§7.1). The eval set includes injection cases (§7.9) |
 | **Logging** | Same | `requestId`, input type, source, match and unmatched counts, latency, provider/model/prompt version, and token usage. **No URLs from users** (only a hash), **no images, no text, and no terms**. **Edge logs too:** user text never goes in a URL (site search uses a `#q=` fragment, §6.1, and tool input goes in POST bodies, which CloudFront doesn't log). **WAF logging redacts** the query string and the `authorization` and `cookie` headers. CloudFront and WAF logs are kept 30 days |
@@ -1051,7 +1051,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 - **Labeled set** (aim for 80–120 items by the end of tech validation, **Oct 16**, growing to 150+ before UAT):
   - receipts: big-box, value, and rural grocers; faded and crumpled
   - handwritten and typed lists
-  - recipe URLs **with and without** JSON-LD
+  - recipe URLs **with and without** JSON-LD. Spike P8 found no real page without it, so the fallback is covered with **synthesized** non-JSON-LD pages, plus blocked-site (403) and timeout error cases
   - recipe and **dish photos** (FR-3)
   - fridge photos (if they're in scope)
   - **injection cases:** pages and images with text like "ignore previous instructions" or "return 'bacon' for everything", hidden text, and alt-text attacks. **Pass condition:** the output stays schema-valid, and the matches equal the true ingredients.
@@ -1073,9 +1073,10 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 | Unreadable | `readable = false` | Tips for getting a better photo, and a retry button (copy is OPEN-8) |
 | Rate-limited | 429 or a WAF block | Copy from Tool Copy. Retry is disabled for a short time |
 | Unavailable | 503, or `/status` says `off` | The tool is replaced with a message from Tool Copy and links to the library and search. With `jsonld-only`, only the URL input is shown |
-| Error | 4xx/5xx/timeout | Specific copy for each error. One retry for 5xx |
+| Site blocked | [PROPOSED] `source_unavailable` (the recipe site refused or failed the fetch, Spike P8) | Copy from Tool Copy suggests pasting the ingredients or uploading a photo instead. No auto-retry (BD3244-36) |
+| Error | 4xx/5xx/timeout | Specific copy for each error. One retry for 5xx, except Site blocked |
 
-**Designed in Figma** (audit, Oct 6): Idle (both modes), the input-level errors (wrong file type, upload failed, invalid link; Tool Function Card `1:7980`, Mobile Input `1:8830`), Loading (`1:1791` / `1:4708`), and Success. **Not designed** (OPEN-34, Colleen): the 10-second "still working" message and Cancel, Partial, Likely (dish) chips, No match, Unreadable, Rate-limited, and Unavailable. Until they arrive we build them from the existing components with Tool Copy text, and Colleen reviews them on the Render preview.
+**Designed in Figma** (audit, Oct 6): Idle (both modes), the input-level errors (wrong file type, upload failed, invalid link; Tool Function Card `1:7980`, Mobile Input `1:8830`), Loading (`1:1791` / `1:4708`), and Success. **Not designed** (OPEN-34, Colleen): the 10-second "still working" message and Cancel, Partial, Likely (dish) chips, No match, Unreadable, Rate-limited, Unavailable, and Site blocked. Until they arrive we build them from the existing components with Tool Copy text, and Colleen reviews them on the Render preview.
 
 **Results copy:** the Figma results page says "The following ingredients have been extracted." We show only CMS-matched ingredient names and an unmatched **count**, never model output, so that sentence becomes Tool Copy that describes matches (for example, "We found tips for these ingredients"). The desktop badge ("6 Ingredients | 4 tips") counts matched ingredients and the tips shown.
 
@@ -1211,14 +1212,14 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 ### 9.4 Observability and alerting
 | Signal | Phase A (Render) | Phase B (AWS) alarm |
 |---|---|---|
-| Tool errors / 5xx | Render metrics + log stream; email on deploy failure | > 5% over 5 min |
+| Tool errors / 5xx | Render metrics + log stream; email on deploy failure | > 5% over 5 min. [PROPOSED] Blocked recipe sites (`source_unavailable`) are counted separately by input type and kept out of this alarm, because Spike P8 expects about 40% of URLs to fail that way (R20) |
 | Tool p95 latency | Logged | > 12 s over 15 min |
 | Daily quota reached / mode change | Log + Slack webhook | SNS → Slack and email |
 | WAF blocks and challenges | — | Spike (anomaly) → informational |
 | AI spend | ddd's Anthropic spend limit and alerts | Client provider alerts at 50%, 80%, and 100%, plus AWS Budgets on the forecast |
 | Strapi health | Render health check on `/_health` | EB/ECS health, ALB 5xx, RDS CPU/storage/connections |
 | Site build | Render deploy-failure email | `deploy-site` failure → Slack and email (**content didn't publish**) |
-| Synthetics (optional) | — | A CloudWatch canary does a JSON-LD URL extraction every 15 min (no model call) |
+| Synthetics (optional) | — | A CloudWatch canary does a JSON-LD URL extraction every 15 min (no model call), against a site that passed Spike P8 |
 
 Logs are structured JSON with a `requestId`. **No request bodies, user URLs, images, or terms** (§7.6). Retention is 30 days.
 
@@ -1244,7 +1245,7 @@ Logs are structured JSON with a `requestId`. **No request bodies, user URLs, ima
 | CloudFront, S3, WAF (+ Bot Control, CAPTCHA per request) | ~$20–80 |
 | Lambda, API Gateway, DynamoDB | < $20 at launch traffic |
 | **Infra total (excluding AI)** | **~$120–280** |
-| AI | **To be modeled after the eval:** cost per request × expected PSA-driven traffic × (1 − JSON-LD/cache hit rate). The daily quota sets the ceiling |
+| AI | **To be modeled after the eval:** cost per request × expected PSA-driven traffic × (1 − JSON-LD/cache hit rate). The daily quota sets the ceiling. Spike P8: a URL with JSON-LD costs about $0 (no model call), and about 40% of URLs fail at fetch and also cost nothing, so AI cost comes from photo and typed-text input |
 
 These figures assume **no NAT gateway** (§4.3). If IT requires private subnets with VPC endpoints instead, add roughly **$60–70 / month per environment** (one AZ).
 
@@ -1512,6 +1513,7 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | R17 | **Figma access and MCP limits** block the audit and token mapping (file stuck in the MullenLowe org; a View seat gets ≈ 20 MCP calls a month) | ~~H~~ L | M | **Mitigated (Oct 6):** the working copy in TBWA Worldwide (Art's Full seat) is readable through MCP, and the audit is done (§6.1). **Remaining risk:** design drift if edits keep landing in the MullenLowe original, so rename the copy and freeze the original (OPEN-33) |
 | R18 | **Brand palette fails contrast** in places (Store It badge, light ink tints, text over photos, no focus state on dark sections), so built pages could fail WCAG AA if they copy Figma exactly | H | M | Token usage rules and code-side fixes in §6.3, axe in CI (§6.6), and the design fixes raised with Colleen (OPEN-37) |
 | R19 | **Tool-state designs arrive late** (partial, no match, unreadable, rate-limited, unavailable, dish photo) | M | M | Build them from existing components with Tool Copy text and review them on the Render preview. Ask Colleen early (OPEN-34). The tool API contract doesn't depend on them |
+| R20 | **Recipe sites block our fetcher** (Spike P8: 25 of 63 URLs got 403; Dotdash Meredith, including allrecipes, blocks by IP or TLS fingerprint) | H | M | Honest User-Agent, no spoofing (a browser UA scored worse). Clear fallback copy that suggests pasting or a photo. Monitor the error-code rate by input type (§9.4). Distinct error code with no auto-retry (BD3244-36). Design in OPEN-34 |
 
 ---
 
@@ -1586,7 +1588,7 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | OPEN-31 | **What "US-only" covers.** Our reading: AI-provider processing and retention, plus everything we store (all in `us-east-1`); CloudFront and WAF edges are global. If it must hold end to end, the tool API uses a regional API Gateway and regional WAF (§2.4, §9.1) | Ad Council legal (via Danish) | Nov 13 |
 | OPEN-32 | Is the **Copilot coding agent** (and its Jira integration) available in Ad Council's GitHub org and Jira? Who files copy changes after handoff, and can client editors file GitHub issues or Jira tickets? (§5.2) | Ad Council IT + ddd | Oct 16 |
 | OPEN-33 | **Figma file location.** ~~Transfer out of the MullenLowe org~~ (no file admins; Amber is the org admin; Colleen's ticket is open). **Workaround (Oct 6):** Art's first copy ([`IgstWize…`](https://www.figma.com/design/IgstWizeCgx5EsDVEJAhnM/)) had no edit access; the second copy, [`JZTCmehamc5QkAYw1lw5jW`](https://www.figma.com/design/JZTCmehamc5QkAYw1lw5jW/) in TBWA Worldwide (Full seat), works with MCP and is the **working copy** (§6.1). **Still open:** rename it from "Untitled" (and delete the unused first copy), and Colleen and Sam confirm all design edits move to it and the MullenLowe original is frozen | Colleen Miller / Sam + Art | Oct 16 |
-| OPEN-34 | **Missing tool-state designs.** Figma covers idle, input errors, loading, and success. It doesn't cover the 10-second "still working" message and Cancel, partial match, likely-ingredient chips (dish photo), no match, unreadable, rate-limited, or unavailable (kill switch), or the dish-photo flow in general (§7.10, R19) | Colleen Miller | Oct 23 |
+| OPEN-34 | **Missing tool-state designs.** Figma covers idle, input errors, loading, and success. It doesn't cover the 10-second "still working" message and Cancel, partial match, likely-ingredient chips (dish photo), no match, unreadable, rate-limited, unavailable (kill switch), or blocked recipe site (Spike P8, R20), or the dish-photo flow in general (§7.10, R19) | Colleen Miller | Oct 23 |
 | OPEN-35 | **Video links in the tool.** The Figma input says "Enter a recipe URL or video link." In scope for launch? Proposed: treat them like any URL (`safeFetch`, JSON-LD or the description), no platform APIs, "unreadable" when there's no ingredient text (§7.4) | Ad Council + Colleen; ddd advises | Oct 23 |
 | OPEN-36 | **Animated Home sections.** Figma shows an Animated Headline and stepped sections but has no scroll-lock spec. Scroll-driven, timed, or static? Needs a pause control and a reduced-motion version either way (§6.6) | Colleen Miller | Oct 23 |
 | OPEN-37 | **Contrast fixes in Figma.** Store It badge (Sand on Squash, 2.12:1, `1:7919`). No focus state for controls on Forest sections (the Forest ring would vanish). Terra 40 and Sand 70 must stay off text on light surfaces (disabled states are exempt). Text over photos in the Highlight CTA (the Desktop Specs already ask for a dark overlay). ddd builds the fixes in §6.3; Colleen updates the file to match (R18) | Colleen Miller + Art | Oct 16 |
@@ -1641,3 +1643,4 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.3.6 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P3 passed** (BD3244-22). §6.2 routing is VERIFIED: `serve-handler`'s trailing-slash 301 dropped `?i=`, so `server.mjs` now issues a query-preserving 301 via `apps/web/lib/slash-redirect.mjs`. The `<Suspense>` rule is enforced by the static-export build (no lint rule needed). The Phase B viewer-request function is built in `infra/cloudfront-functions/` with unit tests (host + slash in one hop, query kept, leading-slash collapse, 503 on a bad release key); not deployed yet. §4.4 `infra/` tree, §9.2 Edge row, D2, and OPEN-4 updated |
 | 0.3.7 | 2026-10-07 | Art Longbottom (with Copilot) | **Synthetic fixture seed built** (BD3244-24). `pnpm seed` validates `scripts/seed/fixtures/` against new `seed` schemas in `contracts`, upserts by natural key through the Strapi REST API, publishes, and verifies with the web `populate` tree: 43 entries, every block, every template route, idempotent reruns. §4.1, §4.4, §5.5, §11.4, and §11.5 updated. `ensure-cms-env` now writes unset keys commented out so Strapi's defaults apply (§9.3) |
 | 0.3.8 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P13 content model verified** (BD3244-26). Page `template` enum and conditional slots (`hero`, `intro`, and `featured` on Home; `tool` on Find My Tips; `main` on generic and Home) built in `apps/cms`, `contracts`, the seed, and `apps/web/templates/`, and checked live on Strapi 5.45 with Postgres 16. Home now renders `main` below its slots (§1, §5.2, §6.4, D21). Copy-change issue form added. The agent copy-change flow is still pending OPEN-32 and BD3244-15/-16 |
+| 0.3.8 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P8 measured** (BD3244-32). 59% of 63 recipe URLs from 13 sites fetched with the honest User-Agent, and every 200 page had JSON-LD. The failures are 403 bot blocks (Dotdash Meredith by IP or TLS). Updated §7.4, §7.6, §7.9 eval mix, §7.10 (Site blocked state), §9.4 alarms, §9.5 AI cost, R20, and OPEN-34. Follow-up BD3244-36 (distinct error code, no auto-retry) |

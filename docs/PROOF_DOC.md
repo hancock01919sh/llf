@@ -29,7 +29,7 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 | P5 | [BD3244-27](https://dotdotdash.atlassian.net/browse/BD3244-27) | Publish → rebuild (Render deploy hook; Phase B relay via GitHub App) | §5.3 | James S + Art | Oct 16 | ⏳ |
 | P6 | [BD3244-30](https://dotdotdash.atlassian.net/browse/BD3244-30) | Scrape → seed pipeline | §5.5 | China team + Art | Oct 21 | ⏳ |
 | P7 | [BD3244-34](https://dotdotdash.atlassian.net/browse/BD3244-34) | `strapi transfer` between environments (incl. media) | §5.5, §12.2 | James S + Art | Oct 21 | ⏳ |
-| P8 | [BD3244-32](https://dotdotdash.atlassian.net/browse/BD3244-32) | JSON-LD hit rate on real recipe URLs | §7.4 | Art | Oct 16 | ⏳ |
+| P8 | [BD3244-32](https://dotdotdash.atlassian.net/browse/BD3244-32) | JSON-LD hit rate on real recipe URLs | §7.4 | Art | Oct 16 | ✅ |
 | P9 | [BD3244-33](https://dotdotdash.atlassian.net/browse/BD3244-33) | Model eval baseline (dev key) | §7.7, §7.9 | Art | Oct 16 | ⏳ |
 | P10 | [BD3244-31](https://dotdotdash.atlassian.net/browse/BD3244-31) | WAF Challenge / JS integration with the tool API | §7.6 | James S + Art | Nov 6 | ⏳ |
 | P11 | [BD3244-35](https://dotdotdash.atlassian.net/browse/BD3244-35) | Render → AWS parity | §12.2 | James S + Art | Nov 13 | ⏳ |
@@ -97,9 +97,19 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 
 ### P8. JSON-LD hit rate
 - **Hypothesis:** Most recipe URLs that users will paste (top US recipe sites) expose `Recipe` JSON-LD with `recipeIngredient`, so the model is skipped for them.
-- **Method:** 50 URLs from the top recipe sites, run through `safeFetch` + the JSON-LD parser. Record the hit rate, failures, and bot blocks.
-- **Result:** _TBD_
-- **Decision:** Sets the expected AI cost (TDD §9.5) and the eval mix.
+- **Method:** 63 URLs from 13 top US recipe sites (about 5 each), sampled at random (seed 3244) from each site's sitemap and filtered to recipe pages. Each URL went through the real `safeFetch` with production defaults (3 redirects, 3 MB, 5 s) and `extractRecipeIngredients`, 750 ms apart, from a ddd office IP. Two passes: our honest bot user agent (`LongLiveFoodBot/0.1`), then a desktop browser user agent for comparison only. The harness was a temporary script, not committed. It recorded only the status, HTTP code, ingredient-line count, latency, and the public URL, never page content.
+- **Result (Oct 7):** ✅ Hypothesis holds for pages we can fetch. The main risk is bot blocking, not extraction.
+  - **Extraction:** every page that returned 200 had `Recipe` JSON-LD with `recipeIngredient` (37/37). 0 pages needed the model. Ingredient lines per recipe: min 4, median 10, max 21.
+  - **Hit rate (honest UA):** 37/63 (59%). 25 blocked with 403, 1 timeout, 0 "no recipe", 0 not found. Hit latency: median 170 ms, max 2.5 s.
+  - **By site (honest UA):** 5/5 on bonappetit, tasteofhome, budgetbytes, epicurious, bbcgoodfood, and sallysbaking. delish 3/4 (1 timeout). thekitchn 4/5 (1 Varnish 403). **0/5 on allrecipes, simplyrecipes, seriouseats, and eatingwell** (all Dotdash Meredith, Cloudflare 403). pinchofyum 0/4 (CloudFront 403).
+  - **Browser UA (comparison):** **worse**, 28/63 (44%), 35 blocked. Dotdash Meredith still blocked every request, so that block is based on IP or TLS fingerprint, not the user agent. budgetbytes and sallysbaking (Cloudflare) and thekitchn (Varnish) started blocking. pinchofyum and delish improved to 4/4.
+  - **Failure path:** checked in code. A blocked or failed fetch becomes `upstream_error` (HTTP 502) or `timeout` and **never reaches the model**.
+- **Decision:**
+  - **Keep the honest bot user agent.** Spoofing a browser scored worse and raises terms-of-service concerns.
+  - **Plan for a 40–50% URL failure rate.** Real traffic probably leans toward allrecipes, the largest US recipe site. A blocked site needs its own Tool Copy that suggests pasting the ingredients or uploading a photo instead, with **no retry** (it would fail the same way). Added to the §7.10 states, to OPEN-34 for design, and as risk R20.
+  - **AI cost (§9.5):** URL requests cost about $0 in model calls. The model fallback only runs for 200 pages without JSON-LD, which was 0% here. AI cost is driven by photo and typed-text input.
+  - **Eval mix (§7.9):** non-JSON-LD pages are rare in practice, so the eval uses **synthesized** non-JSON-LD pages to cover the fallback, plus blocked-site and timeout error cases.
+  - **Watch in production:** the `upstream_error` and `timeout` rate on URL input, from the existing error metrics (error code and input type only; no URLs or domains are logged, TDD §7.6). A distinct error code for blocked recipe pages is proposed in TDD §7.10 (BD3244-36).
 
 ### P9. Model eval baseline
 - **Hypothesis:** A current Anthropic model on ddd's dev key reaches the G2 target (precision ≥ 0.9, recall ≥ 0.8) on receipts and lists, with a 100% injection pass rate.
