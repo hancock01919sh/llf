@@ -7,6 +7,7 @@ import http from 'node:http';
 import path from 'node:path';
 import { Readable } from 'node:stream';
 import handler from 'serve-handler';
+import { slashRedirect } from './lib/slash-redirect.mjs';
 
 const ROOT = path.join(import.meta.dirname, 'out');
 const PORT = Number(process.env.PORT ?? 3000);
@@ -109,6 +110,12 @@ const server = http.createServer((req, res) => {
   }
   if (req.url?.startsWith('/api/')) {
     void proxy(req, res);
+    return;
+  }
+  // serve-handler's own slash redirect drops the query string (and with it `?i=`), so do it here.
+  const target = slashRedirect(req.url);
+  if (target) {
+    res.writeHead(301, { Location: target }).end();
     return;
   }
   // serve-handler answers unknown paths with out/404.html.

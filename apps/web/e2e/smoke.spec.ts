@@ -86,6 +86,12 @@ test('typed ingredients go to the results page', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 2, name: 'Tips for Milk' })).toBeVisible();
 });
 
+test('slash redirect keeps the ?i= query', async ({ request }) => {
+  const response = await request.get('/find-my-tips/results?i=banana,milk', { maxRedirects: 0 });
+  expect(response.status()).toBe(301);
+  expect(response.headers()['location']).toBe('/find-my-tips/results/?i=banana,milk');
+});
+
 test('healthz answers 200', async ({ request }) => {
   const response = await request.get('/healthz');
   expect(response.status()).toBe(200);
