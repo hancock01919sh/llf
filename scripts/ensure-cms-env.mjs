@@ -35,7 +35,10 @@ const output = template
   .split('\n')
   .map((line) => {
     const match = /^([A-Z0-9_]+)=$/.exec(line);
-    return match && match[1] in values ? `${match[1]}=${values[match[1]]}` : line;
+    if (!match) return line;
+    // Strapi treats an empty value as set (env.int gives NaN, env() gives ''), so keys we
+    // don't fill stay commented out and the config defaults apply.
+    return match[1] in values ? `${match[1]}=${values[match[1]]}` : `# ${line}`;
   })
   .join('\n');
 
