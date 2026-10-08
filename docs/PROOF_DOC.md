@@ -24,7 +24,7 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 |---|---|---|---|---|---|---|
 | P1 | [BD3244-23](https://dotdotdash.atlassian.net/browse/BD3244-23) | Strapi relation semantics | §5.1, §5.2 | Art | Oct 14 | ⏳ |
 | P2 | [BD3244-13](https://dotdotdash.atlassian.net/browse/BD3244-13) | Strapi 5 in a pnpm workspace | §4.4 | Art | Oct 12 | ✅ |
-| P3 | [BD3244-22](https://dotdotdash.atlassian.net/browse/BD3244-22) | Static export routing and `?i=` | §6.2 | Art | Oct 15 | ⏳ |
+| P3 | [BD3244-22](https://dotdotdash.atlassian.net/browse/BD3244-22) | Static export routing and `?i=` | §6.2 | Art | Oct 15 | ✅ |
 | P4 | [BD3244-28](https://dotdotdash.atlassian.net/browse/BD3244-28) | Render client-IP header for the admin allow-list | §5.4, §10 | James S + Art | Oct 14 | ⏳ |
 | P5 | [BD3244-27](https://dotdotdash.atlassian.net/browse/BD3244-27) | Publish → rebuild (Render deploy hook; Phase B relay via GitHub App) | §5.3 | James S + Art | Oct 16 | ⏳ |
 | P6 | [BD3244-30](https://dotdotdash.atlassian.net/browse/BD3244-30) | Scrape → seed pipeline | §5.5 | China team + Art | Oct 21 | ⏳ |
@@ -62,8 +62,12 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 ### P3. Static export routing and `?i=`
 - **Hypothesis:** `output: 'export'` with `trailingSlash: true` serves every route in TDD §6.1, with the results page reading `?i=` via `useSearchParams` inside Suspense, identically through the Phase A Node server and a CloudFront Function.
 - **Method:** Minimal Next.js app with the route list, a 404 page, and the results page. Serve with `server.mjs` (basic auth) and with a CloudFront Function test harness.
-- **Result:** _TBD_
-- **Decision:** Feeds OPEN-4 (static vs SSR), due Oct 16.
+- **Result (Oct 7):** ✅ Confirmed, with one fix.
+  - **Bug found:** `serve-handler`'s own trailing-slash 301 **dropped the query string**, so `/find-my-tips/results?i=apple` lost `?i=`. Fixed with `apps/web/lib/slash-redirect.mjs`: `server.mjs` now issues the 301 itself (path + `/` + the original query) before `serve-handler` runs. Leading `//` or `\` is collapsed so `Location` can't point at another host. Covered by 5 unit tests and an e2e test.
+  - **Phase A server:** `pnpm e2e` 22/22 (desktop and mobile, axe on every page). Checked by hand on a local port with `BASIC_AUTH` set: no or wrong credentials → 401, correct → 200; `/find-my-tips/results?i=apple,banana` → 301 to `/find-my-tips/results/?i=apple,banana`; an unknown path → branded 404; `/healthz` → 200 without auth.
+  - **Suspense:** with the `<Suspense>` wrapper removed, `next build` (static export) **fails** with a prerender error on `/find-my-tips/results`. The build itself enforces the rule, so no extra lint rule is needed.
+  - **Phase B function:** `infra/cloudfront-functions/src/site-viewer-request.js` (cloudfront-js-2.0) implements TDD §6.2 steps 1–5. 9 unit tests against a mock KeyValueStore: `/api` guard, host redirect plus slash in one 301, query kept on both 301s, directory index, release prefix, **503** when the release key is missing or invalid, and no `for…of` (not supported by the runtime). **Not deployed yet** (needs AWS access).
+- **Decision:** **Static export is viable** for every §6.2 route. `?i=` stays a query string, served through a query-preserving slash 301 on both phases. We recommend static for **OPEN-4**; it still needs Ad Council sign-off (due Oct 16). Deploying and smoke-testing the function on a real distribution moves to the Phase B infra work.
 
 ### P4. Render client-IP header for the admin allow-list
 - **Hypothesis:** Render's proxy sets a client-IP header (e.g. the last entry of `X-Forwarded-For`, or a Render-specific header) that a client **can't spoof**, so Strapi middleware can enforce the admin allow-list.

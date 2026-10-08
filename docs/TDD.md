@@ -7,7 +7,7 @@
 | **Delivery** | dotdotdash (ddd) |
 | **Owner / author** | Art Longbottom (tech lead) |
 | **Reviewers** | James Calhoun (tech lead), James Steele (AWS/DevOps), Adam Paikowsky (analytics), Danish Aziz (PM), China dev team (Eva Fan, Alessandro Grena, Maggie Ding) |
-| **Status** | **DRAFT v0.3.5.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
+| **Status** | **DRAFT v0.3.6.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
 | **Last updated** | 2026-10-07 |
 | **Go-live** | **Friday, January 8, 2027** (go/no-go Thursday, January 7). There's **no contingency** after final QA |
 
@@ -81,7 +81,7 @@ We're building **longlivefood.org**, a fast, accessible, SEO-friendly content si
 - **Postgres everywhere** [TL DECISION]: Docker Postgres locally, Render Postgres in Phase A, and **RDS Postgres** in Phase B.
 - **Frontend** [TL DECISION]: **Next.js** (App Router, TypeScript) with **Tailwind CSS and shadcn/ui** (built on Radix primitives).
   - Every component has to meet **WCAG 2.1 AA**.
-  - Static export or server rendering is still **OPEN-4**. We recommend static-first. The data layer is kept separate so switching later is cheap.
+  - Static export or server rendering is still **OPEN-4**. We recommend static-first, and spike P3 confirmed static routing and `?i=` work. The data layer is kept separate so switching later is cheap.
 - **CMS:** the existing **Strapi 5** project, hardened for production with Postgres, S3 media, and the Cloud plugin removed.
   - The **admin runs on its own domain, open only to allow-listed IPs** [TL DECISION].
   - The public site runs on a public endpoint. Visitors never reach Strapi.
@@ -388,6 +388,7 @@ A single **pnpm workspace** monorepo, so the contracts and matching code are sha
 │  └─ config/              # shared tsconfig, eslint, prettier
 ├─ infra/
 │  ├─ aws/                 # AWS CDK app (stacks per env)
+│  ├─ cloudfront-functions/ # site viewer-request function (§6.2) + unit tests
 │  └─ render.yaml          # Render Blueprint for Phase A (dev, staging)
 ├─ scripts/
 │  ├─ ensure-cms-env.mjs   # creates apps/cms/.env with random local secrets if missing
@@ -665,7 +666,7 @@ Any other Page entries in Strapi are rendered at their `path` by a catch-all rou
 - After the first publish, a slug is **locked**. A lifecycle hook stops edits unless a Super Admin sets `allowSlugChange`, and then a redirect is added.
 - Code refers to entries by Strapi `documentId` or slug, never by numeric `id`, which differs between environments.
 
-### 6.2 Rendering, routing, and data fetching [PROPOSED; mode is OPEN-4]
+### 6.2 Rendering, routing, and data fetching [PROPOSED; mode is OPEN-4; routing VERIFIED by spike P3]
 
 **Recommendation: static first** (`output: 'export'`). The site is content that changes when someone publishes, plus one dynamic tool. Static output works the same way on Render (Phase A) and S3/CloudFront (Phase B), costs almost nothing, and has no server to scale or patch. **We switch to SSR/ISR only if** the spike or the designs need something static output can't provide, such as instant SSR preview or a very large number of pages.
 
@@ -677,16 +678,16 @@ During the build:
 
 **Routing on static hosting** (the rubber-duck review flagged this):
 - `trailingSlash: true`, so `/tips/fruit/` is exported as `/tips/fruit/index.html`. Plain object storage can serve that without rewrite rules for every page.
-- **Phase B:** a **CloudFront Function** (viewer request) on the site's default cache behavior does the following, **in this order**:
+- **Phase B:** a **CloudFront Function** (viewer request) on the site's default cache behavior does the following, **in this order**. The source is `infra/cloudfront-functions/src/site-viewer-request.js` (cloudfront-js-2.0), unit-tested against a mock KeyValueStore. Leading `//` or `\` in the path is collapsed to one `/` first, so a redirect `Location` can never point at another host.
   1. **`/api/*` is left alone.** It's a separate cache behavior with API Gateway as its origin, so the function isn't attached there. As a guard, the function also returns any `/api/*` request unchanged.
-  2. **Host redirect:** `finishthefridge.*` and `www` → `https://longlivefood.org/<same path>` with a 301.
-  3. **Trailing slash:** a path with no file extension and no trailing slash gets a 301 to the same path plus `/`.
+  2. **Host redirect:** `finishthefridge.*` and `www` → `https://longlivefood.org/<same path>` with a 301. The trailing slash is added in the **same** 301 (one hop), and the query string is kept.
+  3. **Trailing slash:** a path with no file extension and no trailing slash gets a 301 to the same path plus `/`, **keeping the query string** (so `?i=` survives).
   4. **Directory index:** a path ending in `/` gets `index.html` appended.
-  5. **Release prefix:** **every** remaining URI (pages, `/data/*`, `/_next/static/*`, images, `robots.txt`, `sitemap.xml`) is prefixed with `/releases/<current>/`, where `<current>` is read from the KeyValueStore.
+  5. **Release prefix:** **every** remaining URI (pages, `/data/*`, `/_next/static/*`, images, `robots.txt`, `sitemap.xml`) is prefixed with `/releases/<current>/`, where `<current>` is read from the KeyValueStore. If the key is missing or isn't a plain release ID (`[A-Za-z0-9._-]+`), the function returns **503** rather than guessing a path.
 
   Unknown keys return the branded 404 with status **404**. The CloudFront custom error response (for 403/404 from the origin) can only point at a fixed path, so each deploy also copies the release's `404.html` to the **stable, unversioned key `/404.html`** (§5.3). The release still has its own copy, so the page is found whichever key CloudFront fetches.
-- **Phase A:** a tiny **Node static server** (`apps/web/server.mjs`, using `serve-handler` or similar) does the same mapping, plus **basic auth** for dev and staging and a correct 404. We use this instead of Render's static-site product, which can't add basic auth or IP rules.
-- **The results page** (`/find-my-tips/results/`) is a static shell. The component that reads `?i=` calls `useSearchParams()` and **must be inside `<Suspense>`**. Otherwise `next build` with static export fails (or makes the whole page render only in the browser). A lint rule and a build test cover this.
+- **Phase A:** a tiny **Node static server** (`apps/web/server.mjs`, using `serve-handler`) does the same mapping, plus **basic auth** for dev and staging and a correct 404. It issues the trailing-slash 301 itself (`apps/web/lib/slash-redirect.mjs`, same rules as the function) because `serve-handler`'s own redirect **drops the query string** (found in P3). We use this instead of Render's static-site product, which can't add basic auth or IP rules.
+- **The results page** (`/find-my-tips/results/`) is a static shell. The component that reads `?i=` calls `useSearchParams()` and **must be inside `<Suspense>`**. **[VERIFIED, P3]** Without it, `next build` with static export fails with a prerender error, so the build itself enforces the rule. An e2e test checks that `?i=` survives the slash redirect.
 
 **Images:** `next/image` with `unoptimized`, using **Strapi's responsive formats** (`thumbnail`, `small`, `medium`, `large`) as the `srcset`. The media comes from the Render CMS in Phase A and the media CDN in Phase B. **Fonts:** self-hosted with Fontsource packages.
 
@@ -1160,7 +1161,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 
 | Stack (CDK, `infra/`) | Resources |
 |---|---|
-| `Edge` | ACM certificates, CloudFront distributions (site, media, cms), WAF web ACLs (site: rate rules, Bot Control, Challenge/CAPTCHA; cms: IP set), CloudFront Functions (routing + release pointer, redirects, security headers), CloudFront KeyValueStore (current release) |
+| `Edge` | ACM certificates, CloudFront distributions (site, media, cms), WAF web ACLs (site: rate rules, Bot Control, Challenge/CAPTCHA; cms: IP set), CloudFront Functions (routing + release pointer, redirects, security headers; site function in `infra/cloudfront-functions/`), CloudFront KeyValueStore (current release) |
 | `Site` | S3 site bucket (OAC, private) with immutable `releases/<build-id>/` prefixes and a lifecycle rule (§5.3) |
 | `Cms` | **D3:** EB Docker (load-balanced, 1 instance) **or** ECS Fargate + ALB. Strapi in **public subnets with a public IP for outbound only** (security group: inbound from the ALB only). RDS Postgres in private subnets. S3 media bucket. Secrets Manager. Backup plan. **No NAT gateway** (§4.3 explains why, and the VPC-endpoint alternative if IT requires private subnets) |
 | `FindMyTips` | API Gateway HTTP API (**default `execute-api` endpoint disabled**; regional custom domain as the CloudFront origin) with a **Lambda authorizer** for `x-origin-verify` (§7.6). Lambdas `extract` and `status`. `publish-relay` Lambda with its **own Function URL** (§5.3) and the GitHub App key in Secrets Manager. DynamoDB table (cache + quota, TTL). SSM parameters (kill switch, quota, model) |
@@ -1517,7 +1518,7 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | # | Decision | Status | Rationale |
 |---|---|---|---|
 | D1 | Retrieval, not generation. The model returns raw terms only; code matches against a closed catalog. No model text shown to users | PROPOSED (agreed direction in PROJECT.md §7.2; needs client sign-off) | Safety, coalition review, prompt-injection containment |
-| D2 | Next.js static export (Phase B: S3 + CloudFront) | PROPOSED (OPEN-4, due Oct 16) | No servers on the request path, cheapest, small attack surface. SSR is the documented alternative (§6.2) |
+| D2 | Next.js static export (Phase B: S3 + CloudFront) | PROPOSED (OPEN-4, due Oct 16); routing VERIFIED by P3 | No servers on the request path, cheapest, small attack surface. SSR is the documented alternative (§6.2) |
 | D3 | Strapi as a Docker image on **EB (load-balanced)** or **ECS Fargate + ALB**, with RDS Postgres and S3 media. Cloud plugin removed | PROPOSED (choose with James S during tech validation) | Same image on Render and AWS. EB single-instance has no ALB, so it doesn't fit the CMS domain design |
 | D4 | **A separate CMS and database per environment** (dev, staging, prod). Content moves with `strapi transfer` | TL DECISION | Isolation for UAT. Prod content is entered in staging, then transferred on Jan 4 (§5.5) |
 | D5 | API Gateway + Lambda for the tool in Phase B, outside any VPC. One handler with Node and Lambda adapters | PROPOSED | Scales to zero. Limits the SSRF blast radius. The same code runs on Render |
@@ -1553,7 +1554,7 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | OPEN-1 | **Production AI provider, account, and key.** "Most likely Anthropic" (kickoff), direct or via Bedrock. OpenAI is the approved-vendor alternative (account pending). It must meet US-only data handling, no training, and spend controls (§7.7) | Ad Council (Cat + AI lead) | Nov 13 |
 | OPEN-2 | Does Ad Council IT accept **ddd's Anthropic key for development**, with test inputs only? (Reworded: the mock adapter means the China team isn't blocked either way) | Ad Council IT | Oct 16 |
 | OPEN-3 | **Usable AWS access**: the current IAM users can't list users or pipelines. We need scoped access (SSO ReadOnly + project admin), GitHub OIDC deploy role, account structure, and how the DevOps partner change affects CI/CD (§9.1). Danish's account waits on this | Ad Council IT / James S (via Danish → Cat) | Oct 16 |
-| OPEN-4 | Rendering mode: static export (recommended) or SSR/ISR? | ddd → Ad Council | Oct 16 |
+| OPEN-4 | Rendering mode: static export (recommended) or SSR/ISR? Spike P3 found no blocker for static | ddd → Ad Council | Oct 16 |
 | OPEN-5 | Are uploaded images or typed text kept? (Recommendation: no.) This affects the privacy policy, FAQ, and FR-8 | Ad Council legal | Nov 13 |
 | OPEN-6 | Are recipes in scope, and who owns them? | Ad Council | Oct 23 |
 | OPEN-7 | Fridge photos at launch? | Ad Council | Oct 23 |
@@ -1635,3 +1636,4 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.3.3 | 2026-10-06 | Art Longbottom (with Copilot) | Assigned BD3244 owners: **James Steele** takes DevOps (INFRA-AWS, Render Blueprint BD3244-15, spikes P4, P5, P7, P10–P12), **James Calhoun** takes the runbooks (BD3244-18), and Art keeps the basic setup. Updated §11.4 and §12.4 |
 | 0.3.4 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P2 passed** (BD3244-13). Strapi 5.45 runs inside the pnpm workspace with the default linker, one lockfile, and no hoisting. It builds, runs on Postgres 16, and runs as a Docker image (health 204, admin 200, content APIs 403). §4.4 updated. §5.1 adds rows for Strapi AI (`ai` SDK, turned off), the admin auth deprecation, and lockfile/engines. D13 now pins **Postgres 16** (Docker → Render → RDS) |
 | 0.3.5 | 2026-10-07 | Art Longbottom (with Copilot) | **Scaffold built** (BD3244-16). §4.4 is now VERIFIED for `apps/`, `services/`, `packages/`, and root tooling (pnpm 9.15.2 via `packageManager`, Node `>=22.12 <23`, no Turborepo, CODEOWNERS). §9.3 describes `ci.yml` as built (checks + e2e jobs, mock provider, fixtures, no secrets). §6.3 fonts use Fontsource. §7 limits and timeouts add the client checks (25 MB, 35 s) and the 40 s local proxy. §9.3 and §11.4 describe the single root `.env`, `ensure-cms-env`, the `dev`/`dev:fe`/`dev:cms` scripts, and fixture mode. New D23. README Quickstart added |
+| 0.3.6 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P3 passed** (BD3244-22). §6.2 routing is VERIFIED: `serve-handler`'s trailing-slash 301 dropped `?i=`, so `server.mjs` now issues a query-preserving 301 via `apps/web/lib/slash-redirect.mjs`. The `<Suspense>` rule is enforced by the static-export build (no lint rule needed). The Phase B viewer-request function is built in `infra/cloudfront-functions/` with unit tests (host + slash in one hop, query kept, leading-slash collapse, 503 on a bad release key); not deployed yet. §4.4 `infra/` tree, §9.2 Edge row, D2, and OPEN-4 updated |
