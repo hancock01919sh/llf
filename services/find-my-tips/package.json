@@ -1,0 +1,29 @@
+{
+  "name": "@llf/find-my-tips",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Find My Tips tool API: extraction, URL fetch, catalog matching (TDD §7)",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@llf/contracts": "workspace:*",
+    "@llf/matching": "workspace:*",
+    "tsx": "4.23.15",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@llf/config": "workspace:*",
+    "@types/node": "22.20.5",
+    "typescript": "6.0.3",
+    "vite": "8.3.3",
+    "vitest": "5.0.3"
+  }
+}

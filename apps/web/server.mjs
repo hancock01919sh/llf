@@ -1,7 +1,7 @@
 // Serves the static export the way CloudFront will (TDD §6.2, §9.1): files from `out/`, `/api/*`
 // proxied to the Find My Tips service, `404.html` for unknown paths. Used on Render dev and by
 // Playwright. Production never runs this; AWS uses S3 + CloudFront.
-import { timingSafeEqual } from 'node:crypto';
+import { randomUUID, timingSafeEqual } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
@@ -32,13 +32,20 @@ function authorized(req) {
 
 const HOP_BY_HOP = new Set(['connection', 'keep-alive', 'transfer-encoding', 'upgrade', 'host', 'content-length']);
 
+// Same shape as the service's errors: `ErrorResponse` in packages/contracts/src/find-tips.ts.
+function sendError(res, status, code) {
+  const requestId = randomUUID();
+  res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-request-id': requestId });
+  res.end(JSON.stringify({ requestId, code }));
+}
+
 async function proxy(req, res) {
   const chunks = [];
   let size = 0;
   for await (const chunk of req) {
     size += chunk.length;
     if (size > API_MAX_BODY) {
-      res.writeHead(413).end();
+      sendError(res, 413, 'too_large');
       return;
     }
     chunks.push(chunk);
@@ -66,8 +73,7 @@ async function proxy(req, res) {
     // Never log the request body: it can hold user input (TDD D20).
     const timedOut = error instanceof Error && error.name === 'TimeoutError';
     console.error(`[server] /api proxy ${timedOut ? 'timed out' : 'failed'}: ${req.method} ${req.url.split('?')[0]}`);
-    res.writeHead(timedOut ? 504 : 502, { 'content-type': 'application/json' });
-    res.end(JSON.stringify({ error: timedOut ? 'timeout' : 'unavailable' }));
+    sendError(res, timedOut ? 504 : 502, timedOut ? 'timeout' : 'upstream_error');
   }
 }
 

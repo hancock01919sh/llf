@@ -1,0 +1,11 @@
+{
+  "catalogVersion": "d6b0257e63c4",
+  "ingredients": [
+    { "slug": "banana", "title": "Banana", "synonyms": ["bananas"] },
+    { "slug": "basil", "title": "Basil", "synonyms": ["sweet basil"] },
+    { "slug": "bread", "title": "Bread", "synonyms": ["loaf", "sourdough", "baguette"] },
+    { "slug": "chicken", "title": "Chicken", "synonyms": ["chicken breast", "chicken thighs"] },
+    { "slug": "milk", "title": "Milk", "synonyms": ["whole milk"] },
+    { "slug": "spinach", "title": "Spinach", "synonyms": ["baby spinach"] }
+  ]
+}
