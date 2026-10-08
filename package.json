@@ -8,9 +8,9 @@
   },
   "prettier": "@llf/config/prettier",
   "scripts": {
-    "dev": "pnpm db:up && node scripts/ensure-cms-env.mjs && concurrently -k -n web,tool,cms -c cyan,magenta,yellow \"pnpm --filter @llf/web dev\" \"pnpm --filter @llf/find-my-tips dev\" \"pnpm --filter @llf/cms dev\"",
+    "dev": "pnpm db:up && node --env-file-if-exists=.env scripts/ensure-cms-env.mjs && concurrently -k -n web,tool,cms -c cyan,magenta,yellow \"pnpm --filter @llf/web dev\" \"pnpm --filter @llf/find-my-tips dev\" \"pnpm --filter @llf/cms dev\"",
     "dev:fe": "concurrently -k -n web,tool -c cyan,magenta \"pnpm --filter @llf/web dev\" \"pnpm --filter @llf/find-my-tips dev\"",
-    "dev:cms": "pnpm db:up && node scripts/ensure-cms-env.mjs && pnpm --filter @llf/cms dev",
+    "dev:cms": "pnpm db:up && node --env-file-if-exists=.env scripts/ensure-cms-env.mjs && pnpm --filter @llf/cms dev",
     "db:up": "docker compose up -d --wait postgres",
     "db:down": "docker compose down",
     "build": "pnpm -r --filter \"!@llf/cms\" build",

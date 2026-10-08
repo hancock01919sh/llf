@@ -49,8 +49,16 @@ describe('loadConfig', () => {
     });
   });
 
+  it('prefers TOOL_PORT over PORT', () => {
+    expect(loadConfig({ TOOL_PORT: '8899', PORT: '3000' }).port).toBe(8899);
+    expect(loadConfig({ TOOL_PORT: '', PORT: '3000' }).port).toBe(3000);
+    expect(() => loadConfig({ TOOL_PORT: 'abc' })).toThrow(/TOOL_PORT/);
+  });
+
   it('names the invalid variables without echoing their values', () => {
-    expect(() => loadConfig({ PORT: 'abc', AI_PROVIDER: 'foo' })).toThrow(/invalid environment \(.*PORT/);
+    expect(() => loadConfig({ PORT: 'abc', AI_PROVIDER: 'foo' })).toThrow(
+      /invalid environment \(.*PORT/,
+    );
     expect(() => loadConfig({ AI_PROVIDER: 'foo' })).toThrow(/AI_PROVIDER/);
     expect(() => loadConfig({ AI_PROVIDER: 'foo' })).not.toThrow(/foo/);
     expect(() => loadConfig({ FIND_TIPS_MODE: 'sometimes' })).toThrow(/FIND_TIPS_MODE/);

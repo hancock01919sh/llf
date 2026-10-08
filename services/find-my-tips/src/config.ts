@@ -4,8 +4,7 @@ import { z } from 'zod';
 export const PROVIDERS = ['mock', 'anthropic', 'openai', 'bedrock'] as const;
 export type ProviderName = (typeof PROVIDERS)[number];
 
-const intFromEnv = (fallback: number) =>
-  z.coerce.number().int().positive().default(fallback);
+const intFromEnv = (fallback: number) => z.coerce.number().int().positive().default(fallback);
 
 const EnvSchema = z.object({
   // Phase A kill switch (TDD §7.7). Phase B reads an SSM parameter instead.
@@ -13,6 +12,9 @@ const EnvSchema = z.object({
   AI_PROVIDER: z.enum(PROVIDERS).default('mock'),
   AI_MODEL: z.string().trim().min(1).default('mock-1'),
   PROMPT_VERSION: z.string().trim().min(1).default('p1'),
+  // TOOL_PORT wins so one root `.env` can drive both the tool and the web proxy;
+  // PORT is what Render injects.
+  TOOL_PORT: z.coerce.number().int().positive().optional(),
   PORT: intFromEnv(8787),
   CATALOG_URL: z.url().optional(),
   CATALOG_FILE: z.string().trim().min(1).optional(),
@@ -58,7 +60,7 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     provider: e.AI_PROVIDER,
     model: e.AI_MODEL,
     promptVersion: e.PROMPT_VERSION,
-    port: e.PORT,
+    port: e.TOOL_PORT ?? e.PORT,
     catalogUrl: e.CATALOG_URL,
     catalogFile: e.CATALOG_FILE,
     catalogRefreshMs: e.CATALOG_REFRESH_MS,
