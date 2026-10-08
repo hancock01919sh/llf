@@ -7,7 +7,7 @@
 | **Delivery** | dotdotdash (ddd) |
 | **Owner / author** | Art Longbottom (tech lead) |
 | **Reviewers** | James Calhoun (tech lead), James Steele (AWS/DevOps), Adam Paikowsky (analytics), Danish Aziz (PM), China dev team (Eva Fan, Alessandro Grena, Maggie Ding) |
-| **Status** | **DRAFT v0.3.4.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
+| **Status** | **DRAFT v0.3.5.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
 | **Last updated** | 2026-10-07 |
 | **Go-live** | **Friday, January 8, 2027** (go/no-go Thursday, January 7). There's **no contingency** after final QA |
 
@@ -365,9 +365,9 @@ flowchart TB
 >
 > **Why `/api/*` on the CMS domain isn't IP-restricted:** GitHub-hosted runners don't have fixed IPs, so they can't be allow-listed. The Public role has **no permissions**, so `/api/*` returns nothing without the read-only token. If Ad Council IT wants the whole CMS domain IP-only, we'd run the build inside AWS instead (CodeBuild), which costs a little more. That's tracked in [`PROOF_DOC.md`](./PROOF_DOC.md).
 
-### 4.4 Repository layout [PROPOSED]
+### 4.4 Repository layout [VERIFIED for apps/, services/, packages/, and root tooling; PROPOSED for infra/, scripts/seed/, eval/]
 
-A single **pnpm workspace** monorepo, so the contracts and matching code are shared and change in one place.
+A single **pnpm workspace** monorepo, so the contracts and matching code are shared and change in one place. **The scaffold is built** (BD3244-16, Oct 7). The [README Quickstart](../README.md) is the onboarding entry point.
 
 ```
 /
@@ -375,19 +375,23 @@ A single **pnpm workspace** monorepo, so the contracts and matching code are sha
 │  ├─ web/                 # Next.js + Tailwind + shadcn/ui (static export)
 │  │  ├─ content/          # typed site strings (Zod-validated), changed by PR (D21)
 │  │  ├─ templates/        # one template per designed route, reading CMS slots
-│  │  └─ blocks/           # dynamic-zone blocks + registry (generic Page template)
+│  │  ├─ blocks/           # dynamic-zone blocks + registry (generic Page template)
+│  │  ├─ fixtures/cms/     # recorded CMS JSON for builds without Strapi (CMS_FIXTURES=1)
+│  │  └─ e2e/              # Playwright + axe specs (API mocked with page.route)
 │  └─ cms/                 # Strapi project, imported from AdCouncil/ending-wasted-food-strapi (+ Dockerfile)
 ├─ services/
 │  └─ find-my-tips/        # handler + adapters (node, lambda), publish relay
 ├─ packages/
 │  ├─ contracts/           # Zod schemas and TS types (API, catalog snapshot, extraction)
 │  ├─ matching/            # normalize() + match(); shared by search and the API
-│  ├─ ui/                  # (optional) shadcn components + Tailwind preset from Figma tokens
+│  ├─ ui/                  # shadcn components; Figma tokens in styles/tokens.css
 │  └─ config/              # shared tsconfig, eslint, prettier
 ├─ infra/
 │  ├─ aws/                 # AWS CDK app (stacks per env)
 │  └─ render.yaml          # Render Blueprint for Phase A (dev, staging)
-├─ scripts/seed/           # scrape/extract → JSON → import (one-off, re-runnable)
+├─ scripts/
+│  ├─ ensure-cms-env.mjs   # creates apps/cms/.env with random local secrets if missing
+│  └─ seed/                # scrape/extract → JSON → import (one-off, re-runnable)
 ├─ eval/                   # labeled set, runner, reports (run on demand)
 ├─ docs/                   # TDD, PROJECT, companion docs, ADRs, runbooks
 ├─ docker-compose.yml      # local Postgres (and optional Strapi)
@@ -405,7 +409,7 @@ A single **pnpm workspace** monorepo, so the contracts and matching code are sha
   - PRs need 1 approving review (a tech lead for `staging` and `prod`) and green CI.
   - No direct pushes, and no force pushes.
   - A hotfix branches from `prod`, then merges back to `staging` and `dev`.
-- **Toolchain:** Node 22 LTS (`.nvmrc`), pnpm 9, Turborepo for task caching (optional), ESLint (with `jsx-a11y`), Prettier, Vitest, Playwright, and `@axe-core/playwright`.
+- **Toolchain:** Node 22 LTS (`.nvmrc`; `engines` `>=22.12 <23`), pnpm **9.15.2** pinned by `packageManager` (Corepack), ESLint flat config (with `jsx-a11y`), Prettier (`format:check` runs in CI), Vitest, Playwright, and `@axe-core/playwright`. Turborepo isn't used yet; plain `pnpm -r` is fast enough at this size. `.github/CODEOWNERS` routes workflows, infra, `docs/`, and `packages/contracts/` to the tech lead.
 
 ---
 
@@ -684,7 +688,7 @@ During the build:
 - **Phase A:** a tiny **Node static server** (`apps/web/server.mjs`, using `serve-handler` or similar) does the same mapping, plus **basic auth** for dev and staging and a correct 404. We use this instead of Render's static-site product, which can't add basic auth or IP rules.
 - **The results page** (`/find-my-tips/results/`) is a static shell. The component that reads `?i=` calls `useSearchParams()` and **must be inside `<Suspense>`**. Otherwise `next build` with static export fails (or makes the whole page render only in the browser). A lint rule and a build test cover this.
 
-**Images:** `next/image` with `unoptimized`, using **Strapi's responsive formats** (`thumbnail`, `small`, `medium`, `large`) as the `srcset`. The media comes from the Render CMS in Phase A and the media CDN in Phase B. **Fonts:** self-hosted with `next/font`.
+**Images:** `next/image` with `unoptimized`, using **Strapi's responsive formats** (`thumbnail`, `small`, `medium`, `large`) as the `srcset`. The media comes from the Render CMS in Phase A and the media CDN in Phase B. **Fonts:** self-hosted with Fontsource packages.
 
 **If we pick SSR/ISR** (OPEN-4): on Render, a Node web service (`next start`). On AWS, OpenNext on Lambda, or a container on the same ECS/EB setup as Strapi. `lib/cms` is isolated so that switching costs little. The routing section above would then be handled by Next.js itself.
 
@@ -707,7 +711,7 @@ During the build:
   | Semantic | Tomato / Squash / Leaf | `#C2451E` / `#E39B2D` / `#3E7C4F` | Error and Tip Type badges |
 
   - **Context modes** (Figma "Context" frame `1:5862`). On Paper or Sand: text Terra, muted Terra 70, border Terra 15. On Forest or Terra: text Paper, muted Sand 70, border Forest Mid. Interactive is Mint in every mode. In code these are semantic variables (`--text`, `--text-muted`, `--border`, `--interactive`) that a `data-surface` attribute on each section switches.
-  - **Type:** **Anton** for display (28–74 px) and **Fustat** for body (Regular to ExtraBold). Both are open-licensed Google Fonts. `next/font` downloads them at build time and serves them from our own origin, so browsers make **no calls to Google** (no new vendor). One stray Inter in the mobile-menu legal text becomes Fustat.
+  - **Type:** **Anton** for display (28–74 px) and **Fustat** for body (Regular to ExtraBold). Both are open-licensed Google Fonts. The Fontsource npm packages (`@fontsource/anton`, `@fontsource-variable/fustat`, imported in `app/layout.tsx`) bundle the font files at build time and serve them from our own origin, so browsers make **no calls to Google** (no new vendor), and builds don't need network access to Google either. One stray Inter in the mobile-menu legal text becomes Fustat.
   - **Spacing:** `2xs` 5, `xs` 10, `sm` 15, `md` 20, `lg` 30, `xl` 40, `2xl` 60 (px). **Radius:** `md` 40 and `pill` (Figma 100, coded as `9999px`). **No shadows** in the system.
   - **Breakpoints [PROPOSED]:** the frames are 402 (mobile) and 1440 (desktop) wide, and there's no tablet frame. Those are reference widths, not breakpoints. The mobile layout runs below Tailwind's `md` (768 px), the desktop layout from `lg` (1024 px), and 768–1023 px is interpolated and reviewed with Colleen. Content is capped at 1440 px with 60 px side margins (20 px on mobile).
 
@@ -1001,9 +1005,9 @@ match(term, catalog):
 | **Origin protection** | Basic auth | CloudFront adds a secret `x-origin-verify` header. A **Lambda authorizer** on every route checks it **before** any quota, cache, or model work, and returns 403 if it's missing or wrong. During rotation it accepts the **current and previous** secrets, so there's no outage. The default **`execute-api` endpoint is disabled**, so the API is only reachable through its custom domain, and a smoke test checks that a **direct call without the header fails** |
 | **Kill switch** (backend) | `FIND_TIPS_MODE` env var | SSM parameter `FIND_TIPS_MODE` = `live` / `jsonld-only` / `off`, read by the API **on every request** (cached for 30 s). `off` returns 503. The UI reads `/api/find-tips/status` and shows the Unavailable state |
 | **Daily quota** (backend) | Key Value counter | DynamoDB atomic counter **per input type per UTC day** (for example, 3,000 model calls; we set the real number from the eval's cost per request and the budget). When the quota runs out, the API **switches to `jsonld-only`** for the rest of the day, and an alert fires |
-| **Size and type limits** | Same | Client: resize to ≤ 1600 px JPEG at q≈0.8 and reject non-images. Server: body ≤ **4 MB** (Lambda's sync payload limit is 6 MB, and base64 adds about 33%). Check magic bytes. Text ≤ 5,000 chars. URL ≤ 2,048 chars |
+| **Size and type limits** | Same | Client: reject non-images and files over 25 MB before decoding, then resize to ≤ 1600 px JPEG at q≈0.8. Server: body ≤ **4 MB** (Lambda's sync payload limit is 6 MB, and base64 adds about 33%), decoded image ≤ 3 MB. Check magic bytes. Text ≤ 5,000 chars. URL ≤ 2,048 chars |
 | **SSRF (`safeFetch`)** | Same code | Only `http`/`https` on ports 80 and 443. **Resolve DNS, then block** private, loopback, link-local (169.254.0.0/16, including IMDS), CGNAT, multicast, and IPv6 ULA/link-local. **Connect to the resolved IP** (stops DNS rebinding). **At most 3 redirects, each checked again.** **3 MB** response cap. **5 s** total timeout. `text/html` only. Custom User-Agent. On AWS the Lambda runs **outside a VPC**, so there's nothing internal to reach |
-| **Timeouts** | Same | Model 15 s, handler 25 s. API Gateway's default integration timeout is about 29–30 s, and we design to stay under it rather than asking for more. The client shows progress and retries **once**, only on 502/504 |
+| **Timeouts** | Same | Model 15 s, handler 25 s. API Gateway's default integration timeout is about 29–30 s, and we design to stay under it rather than asking for more. The client aborts at 35 s, shows progress, and retries **once**, only on 502/504. The local static server's `/api` proxy times out at 40 s so it never cuts off the client first |
 | **Spend backstops** | ddd's Anthropic workspace **spend limit** and alerts | The client provider's budget alerts plus **AWS Budgets** alarms. **These alert. They aren't hard caps.** The hard limits are the quota and the kill switch above. Reserved Lambda concurrency (for example, 50) limits throughput, not total spend |
 | **Prompt injection** | Same | The input is wrapped as untrusted data. The system prompt says to *extract only*. The output is a forced, schema-locked tool call, and the closed-catalog match is the final filter (§7.1). The eval set includes injection cases (§7.9) |
 | **Logging** | Same | `requestId`, input type, source, match and unmatched counts, latency, provider/model/prompt version, and token usage. **No URLs from users** (only a hash), **no images, no text, and no terms**. **Edge logs too:** user text never goes in a URL (site search uses a `#q=` fragment, §6.1, and tool input goes in POST bodies, which CloudFront doesn't log). **WAF logging redacts** the query string and the `authorization` and `cookie` headers. CloudFront and WAF logs are kept 30 days |
@@ -1170,7 +1174,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
   - a **CSP** that allows only self, the media CDN, the API, GTM/GA4 (`googletagmanager.com`, `google-analytics.com`), and the **WAF integration SDK** domain
 - **If IT wants even the CMS's `/api/*` to be IP-only:** the site build moves into **CodeBuild inside the VPC** (triggered by the relay), and the WAF IP set then covers the whole CMS domain. Everything else stays the same.
 
-### 9.3 CI/CD and the branch model [TL DECISION for the branches; PROPOSED for the workflows]
+### 9.3 CI/CD and the branch model [TL DECISION for the branches; VERIFIED for `ci.yml`; PROPOSED for the other workflows]
 
 **Branches.** `dev` is the **default branch** (trunk). Work happens on short-lived feature branches that open PRs into `dev`. **Promotion is a PR**: `dev` → `staging` → `prod`.
 - All three branches are **protected** (§4.4): PR required, CI green, 1 approving review (a tech lead for `staging` and `prod`), and no force-push.
@@ -1180,7 +1184,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 
 | Workflow | Trigger | Steps |
 |---|---|---|
-| `ci.yml` | PR to any branch | install (pnpm cache), lint, type-check, unit and component tests, contract tests, build web against **fixture content**, Playwright + axe against a mocked API, `cdk synth` (once Phase B starts) |
+| `ci.yml` (**built**) | PR to `dev`, `staging`, or `prod`; push to `dev`; manual | Two jobs with `AI_PROVIDER=mock`, `CMS_FIXTURES=1`, read-only permissions, **no secrets**, and actions pinned by SHA. **checks:** `pnpm install --frozen-lockfile` (pnpm cache) → `format:check` → `lint` → `typecheck` → `test` (unit, component, and contract tests). **e2e:** build web against **fixture content** → Playwright (Chromium) + axe with the API mocked by `page.route` → upload the report on failure. `cdk synth` is added once Phase B starts |
 | Render auto-deploy | push to `dev` / `staging` (Phase A) | Render builds each service from the Blueprint. CMS schema changes ship this way only |
 | `deploy-infra.yml` | push to `dev` / `staging` / `prod` (Phase B) | `cdk diff` → `cdk deploy` for that environment. **GitHub Environments** with required reviewers for `staging` and `prod` |
 | `deploy-cms.yml` | push touching `apps/cms` (Phase B) | build the Docker image → ECR → deploy to that environment's EB/ECS |
@@ -1192,7 +1196,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 - **About the DevOps transition:** TBWA planned CodePipeline. We **recommend GitHub Actions**, because the code lives on GitHub (an approved tool) and it's simpler to hand over. If James S prefers CodePipeline or CodeBuild, the steps move over unchanged, since the CDK and scripts don't depend on the CI system (OPEN-3).
 
 **Secrets and configuration**
-- **Local:** `.env` (git-ignored). `.env.example` lists every key **with no real values**.
+- **Local:** one root `.env` (git-ignored). `.env.example` lists every key **with no real values**. `scripts/ensure-cms-env.mjs` creates `apps/cms/.env` with random local-only Strapi secrets the first time `pnpm dev` or `pnpm dev:cms` runs.
 - **Render:** **environment groups** per environment (`llf-dev`, `llf-staging`), with ddd's Anthropic key only in those groups. Nobody pastes keys into individual services.
 - **Render deploy-hook URLs** (Phase A) are secrets. They're stored only in the Strapi webhook settings and the Render environment group, never in the repo or in Jira.
 - **AWS:** Secrets Manager for credentials (Strapi keys, DB, AI provider key, Strapi API tokens, origin-verify secret, webhook secret, and the **publish relay's GitHub App private key**, §5.3). SSM Parameter Store for non-secret configuration (kill switch, quota, model name).
@@ -1327,9 +1331,9 @@ See [`AGENTS.md`](../AGENTS.md) and the [PR template](../.github/pull_request_te
   - **Until the move, ddd owns all repo work.** Art owns scaffolding, CI, the fixture seed, and the template and block registries. James Steele owns the Render Blueprint ([BD3244-15](https://dotdotdash.atlassian.net/browse/BD3244-15)) and the DevOps spikes (P4, P5, P7, P10–P12). James Calhoun owns the runbooks ([BD3244-18](https://dotdotdash.atlassian.net/browse/BD3244-18)).
   - **The China team, in the same period:** onboarding from the docs (shared as a PDF/zip outside the repo), Figma review and a module-by-module component spec per Jira ticket, local tool installs (Node, pnpm, Docker, mirrors), and a network check from China.
   - **If the move slips past Oct 16** (R6): Art keeps building the foundation, and the China team writes component specs and static markup against Figma, ready to drop into `packages/ui`, templates, and blocks once they have access. We escalate the move through Danish the same day. ddd-org access for the China team is **not** a fallback (TL decision).
-- **Local stack:** `pnpm dev` starts the web app, the CMS against **Postgres in Docker Compose** (the same engine as every environment), and the tool handler with `AI_PROVIDER=mock`. **No Render, AWS, or AI credentials are needed** for about 95% of the work.
+- **Local stack:** `pnpm dev` starts the web app, the CMS against **Postgres in Docker Compose** (the same engine as every environment), and the tool handler with `AI_PROVIDER=mock`. **No Render, AWS, or AI credentials are needed** for about 95% of the work. **[VERIFIED]** `pnpm dev` runs `db:up` → `ensure-cms-env` → web (port 3000) + tool (8787, `TOOL_PORT`) + Strapi (1337). `pnpm dev:fe` runs only web + tool, and `pnpm dev:cms` runs only Postgres + Strapi. See the [README Quickstart](../README.md).
 - **Seed data:** `pnpm seed` loads JSON into the local CMS. Until the validated project seed exists (P6, Oct 21), it loads a **synthetic fixture seed** (made-up ingredients and tips, plus every block on a sample page and every template) that matches the `contracts` schemas. After that, it loads the scraped set from §5.5.
-- **Fixture mode:** the frontend can build entirely from `fixtures/cms/*.json`, so frontend work doesn't depend on Strapi running.
+- **Fixture mode:** with `CMS_FIXTURES=1`, the frontend builds entirely from `apps/web/fixtures/cms/*.json`, so frontend work doesn't depend on Strapi running. Without it, `CMS_URL` and `CMS_TOKEN` are required and the build fails fast if they're missing.
 - **Network from China:** mainland China can't reach the Anthropic or OpenAI APIs directly, and GitHub, npm, and Docker Hub can be slow. The team uses the **mock adapter** locally and the shared **dev environment on Render** (behind basic auth) for live tests. We'll ask about VPN and registry mirrors at the Oct 8 kickoff.
 - **Deploys and previews:** the China team doesn't touch AWS. They push, CI runs, and each PR gets a **Render preview link** they can share for review (§9.1). Render workspace seats for logs are added when needed.
 - **CMS access:** Strapi admin accounts on **cms-dev**: Super Admin for the team leads (to manage users) and Editor for the rest (§5.4). Schema changes and migrations ship as code through a deploy.
@@ -1534,6 +1538,7 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | D20 | **No user text stored** (no gap logging) at launch | PROPOSED (OPEN-5) | Receipts and free text can contain personal data |
 | D21 | **Hybrid content model.** The CMS holds the collections, Global, Tool Copy, long-form rich text, and asset slots. Site strings live in typed files in `apps/web/content/`, and designed routes use code **templates**. A dynamic zone of **blocks** is used only by the generic Page template. No Microcopy type | TL DECISION (gauged with the China team, P13) | Simple, agent-friendly, and easy to hand off. Strings rarely change. Avoids building a full page builder (kickoff) |
 | D22 | **Figma audit outcomes.** The Tip Modal, Save/Share, header, mobile menu, and footer are shared UI, not CMS blocks. `component.modal` is dropped and `component.scroll-lock` deferred; the Home animated sections live in the Home template (OPEN-36). Toolkit is built from `asset-list`, `jump-nav`, and `accordion` blocks. Library Groups gain `layout` and `order`. Tokens come straight from Figma variables, plus contrast rules (§6.3) | TL DECISION | The modal and animations are bound to one designed page, so blocks would add CMS surface without giving editors real choices. The contrast rules keep AA without redesigning the palette |
+| D23 | **Scaffold conventions** (BD3244-16). CI runs on GitHub Actions with the mock AI provider and CMS fixtures, no secrets, read-only permissions, and SHA-pinned actions. One root `.env`, with `apps/cms/.env` generated locally. Fonts are self-hosted with Fontsource instead of `next/font`. No Turborepo until build times need it | TL DECISION | CI can run on forks and PRs without secrets. Fontsource builds offline and gives the same no-Google-calls result. Fewer tools for the China team to learn |
 
 Bigger decisions get a short ADR in `docs/adr/NNNN-title.md` once they're approved.
 
@@ -1629,3 +1634,4 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.3.2 | 2026-10-06 | Art Longbottom (with Copilot) | Wired up Jira project **BD3244** (board 873): §12.4 epics now carry their keys (BD3244-1 to BD3244-11, replacing the `LLF-*` placeholders), §11.4 lists the China team starter tickets, and §12.1 prereqs are done. Spike tickets are listed in `PROOF_DOC.md` |
 | 0.3.3 | 2026-10-06 | Art Longbottom (with Copilot) | Assigned BD3244 owners: **James Steele** takes DevOps (INFRA-AWS, Render Blueprint BD3244-15, spikes P4, P5, P7, P10–P12), **James Calhoun** takes the runbooks (BD3244-18), and Art keeps the basic setup. Updated §11.4 and §12.4 |
 | 0.3.4 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P2 passed** (BD3244-13). Strapi 5.45 runs inside the pnpm workspace with the default linker, one lockfile, and no hoisting. It builds, runs on Postgres 16, and runs as a Docker image (health 204, admin 200, content APIs 403). §4.4 updated. §5.1 adds rows for Strapi AI (`ai` SDK, turned off), the admin auth deprecation, and lockfile/engines. D13 now pins **Postgres 16** (Docker → Render → RDS) |
+| 0.3.5 | 2026-10-07 | Art Longbottom (with Copilot) | **Scaffold built** (BD3244-16). §4.4 is now VERIFIED for `apps/`, `services/`, `packages/`, and root tooling (pnpm 9.15.2 via `packageManager`, Node `>=22.12 <23`, no Turborepo, CODEOWNERS). §9.3 describes `ci.yml` as built (checks + e2e jobs, mock provider, fixtures, no secrets). §6.3 fonts use Fontsource. §7 limits and timeouts add the client checks (25 MB, 35 s) and the 40 s local proxy. §9.3 and §11.4 describe the single root `.env`, `ensure-cms-env`, the `dev`/`dev:fe`/`dev:cms` scripts, and fixture mode. New D23. README Quickstart added |

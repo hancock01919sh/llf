@@ -7,10 +7,10 @@ Strapi 5 CMS for Long Live Food, imported with `git subtree` from `AdCouncil/end
 Run from the repo root:
 
 ```sh
-pnpm db:up                         # Postgres 16 in Docker (POSTGRES_PORT overrides 5432)
-cp apps/cms/.env.example apps/cms/.env   # fill in secrets: openssl rand -base64 32
-pnpm dev:cms                       # strapi develop on http://localhost:1337/admin
+pnpm dev:cms   # starts Postgres 16 in Docker, then strapi develop on http://localhost:1337/admin
 ```
+
+On first run, `pnpm dev:cms` (or `pnpm dev`) creates `apps/cms/.env` from `.env.example` with random local-only secrets and the Docker Postgres settings. It never overwrites an existing file. `POSTGRES_PORT` in the root `.env` overrides 5432.
 
 Postgres only, everywhere (Docker locally, Render Postgres, then RDS). There is no SQLite fallback.
 
