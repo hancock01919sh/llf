@@ -38,7 +38,7 @@ export function llfConfig(options = {}) {
         '@typescript-eslint/consistent-type-imports': 'error',
         '@typescript-eslint/no-unused-vars': [
           'error',
-          { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+          { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
         ],
         // User input must never be logged (TDD D20). Use the structured logger.
         'no-console': ['error', { allow: ['warn', 'error'] }],
