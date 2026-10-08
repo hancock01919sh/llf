@@ -2,19 +2,32 @@ import { ExtractionResult } from '@llf/contracts/find-tips';
 
 import type { ProviderName } from '../config';
 import { ToolError } from '../http';
+import { createAnthropicProvider } from './anthropic';
 import { createMockProvider } from './mock';
-import { createAnthropicProvider, createBedrockProvider, createOpenAIProvider } from './stubs';
+import { createBedrockProvider, createOpenAIProvider } from './stubs';
 import type { ExtractionInput, ExtractionProvider, ExtractionUsage } from './types';
 
+export { createAnthropicProvider } from './anthropic';
 export { MOCK_IMAGE_RESULT, createMockProvider } from './mock';
 export * from './types';
 
-export function createProvider(name: ProviderName): ExtractionProvider {
+export type ProviderOptions = {
+  anthropicApiKey?: string | undefined;
+  fetch?: typeof fetch;
+};
+
+export function createProvider(
+  name: ProviderName,
+  options: ProviderOptions = {},
+): ExtractionProvider {
   switch (name) {
     case 'mock':
       return createMockProvider();
     case 'anthropic':
-      return createAnthropicProvider();
+      return createAnthropicProvider({
+        apiKey: options.anthropicApiKey,
+        ...(options.fetch ? { fetch: options.fetch } : {}),
+      });
     case 'openai':
       return createOpenAIProvider();
     case 'bedrock':

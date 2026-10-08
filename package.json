@@ -20,6 +20,7 @@
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm -r --if-present test",
     "e2e": "pnpm --filter @llf/web e2e",
+    "eval": "pnpm --filter @llf/find-my-tips eval",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

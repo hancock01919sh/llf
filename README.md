@@ -7,7 +7,7 @@ The Ad Council's **Long Live Food** coalition site (EPA, Ad Council, WWF, ReFED,
 Built by **dotdotdash**. Go-live: **Fri, January 8, 2027**.
 
 ## Status
-🟡 **Scaffolding.** TDD **v0.3.7** (draft, internal review). The monorepo, web app, Find My Tips service, CI (BD3244-16), and the synthetic CMS seed (BD3244-24) are in place; deployment to Render and the move to Ad Council's GitHub come next. The scaffolding release is due **~Oct 16**. Decisions due Oct 16 are in [TDD §12.3](docs/TDD.md#123-decision-deadlines).
+🟡 **Scaffolding.** TDD **v0.3.10** (draft, internal review). The monorepo, web app, Find My Tips service, CI (BD3244-16), and the synthetic CMS seed (BD3244-24) are in place; deployment to Render and the move to Ad Council's GitHub come next. The scaffolding release is due **~Oct 16**. Decisions due Oct 16 are in [TDD §12.3](docs/TDD.md#123-decision-deadlines).
 
 ## Quickstart
 **Prerequisites:** Node 22 (`nvm use` reads `.nvmrc`), pnpm 9 (`corepack enable` picks the version from `package.json`), and Docker (only for the CMS).

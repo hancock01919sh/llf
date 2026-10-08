@@ -7,7 +7,7 @@
 | **Delivery** | dotdotdash (ddd) |
 | **Owner / author** | Art Longbottom (tech lead) |
 | **Reviewers** | James Calhoun (tech lead), James Steele (AWS/DevOps), Adam Paikowsky (analytics), Danish Aziz (PM), China dev team (Eva Fan, Alessandro Grena, Maggie Ding) |
-| **Status** | **DRAFT v0.3.8.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
+| **Status** | **DRAFT v0.3.10.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
 | **Last updated** | 2026-10-07 |
 | **Go-live** | **Friday, January 8, 2027** (go/no-go Thursday, January 7). There's **no contingency** after final QA |
 
@@ -299,7 +299,7 @@ The same code runs in both phases. Only the adapters and the environment configu
 | `packages/ui` *(optional)* | shadcn/ui components + Tailwind preset | Design-system primitives generated from the Figma tokens | [PROPOSED] |
 | `infra` | AWS CDK v2 (TypeScript) + `render.yaml` (Render Blueprint) | AWS stacks for each environment. Render services for Phase A | [PROPOSED] |
 | `scripts/seed` | TypeScript CLI | Validated JSON → idempotent import into Strapi through the REST API (§5.5). The synthetic fixture seed is built; the one-off scrape or extract of the project seed is not | [VERIFIED] synthetic seed (BD3244-24); [PROPOSED] scrape |
-| `eval` | TypeScript CLI | Accuracy evaluation against a labeled set, run only on purpose | [PROPOSED] |
+| `eval` | TypeScript CLI (`services/find-my-tips/src/eval/`), data in root `eval/` | Accuracy evaluation against a labeled set, run only on purpose | [VERIFIED] harness (BD3244-33); labeled set pending |
 
 ### 4.3 Environments and network
 
@@ -365,7 +365,7 @@ flowchart TB
 >
 > **Why `/api/*` on the CMS domain isn't IP-restricted:** GitHub-hosted runners don't have fixed IPs, so they can't be allow-listed. The Public role has **no permissions**, so `/api/*` returns nothing without the read-only token. If Ad Council IT wants the whole CMS domain IP-only, we'd run the build inside AWS instead (CodeBuild), which costs a little more. That's tracked in [`PROOF_DOC.md`](./PROOF_DOC.md).
 
-### 4.4 Repository layout [VERIFIED for apps/, services/, packages/, scripts/, and root tooling; PROPOSED for the rest of infra/, the project-seed scrape, and eval/]
+### 4.4 Repository layout [VERIFIED for apps/, services/, packages/, scripts/, and root tooling; and eval/ (harness, BD3244-33); PROPOSED for the rest of infra/ and the project-seed scrape]
 
 A single **pnpm workspace** monorepo, so the contracts and matching code are shared and change in one place. **The scaffold is built** (BD3244-16, Oct 7). The [README Quickstart](../README.md) is the onboarding entry point.
 
@@ -380,7 +380,7 @@ A single **pnpm workspace** monorepo, so the contracts and matching code are sha
 │  │  └─ e2e/              # Playwright + axe specs (API mocked with page.route)
 │  └─ cms/                 # Strapi project, imported from AdCouncil/ending-wasted-food-strapi (+ Dockerfile)
 ├─ services/
-│  └─ find-my-tips/        # handler + adapters (node, lambda), publish relay
+│  └─ find-my-tips/        # handler + adapters (node, lambda), publish relay; src/extract (providers, prompts), src/eval (runner)
 ├─ packages/
 │  ├─ contracts/           # Zod schemas and TS types (API, catalog snapshot, extraction)
 │  ├─ matching/            # normalize() + match(); shared by search and the API
@@ -393,7 +393,7 @@ A single **pnpm workspace** monorepo, so the contracts and matching code are sha
 ├─ scripts/
 │  ├─ ensure-cms-env.mjs   # creates apps/cms/.env with random local secrets if missing (unset keys commented out)
 │  └─ seed/                # synthetic fixture seed: JSON → validate → upsert → publish → verify (re-runnable); the project-seed scrape lands here later
-├─ eval/                   # labeled set, runner, reports (run on demand)
+├─ eval/                   # sets/ (labeled sets), runs/ (git-ignored), reports/; run on demand
 ├─ docs/                   # TDD, PROJECT, companion docs, ADRs, runbooks
 ├─ docker-compose.yml      # local Postgres (and optional Strapi)
 └─ .github/workflows/      # CI, deploy, publish-triggered build
@@ -1029,7 +1029,7 @@ export async function extractIngredients(input, ctx): Promise<ExtractionResult> 
 | Adapter | Use | Config | Vendor status |
 |---|---|---|---|
 | `mock` | **Default for local and CI.** Returns fixtures keyed on an input hash, or a deterministic stub | `AI_PROVIDER=mock` | — |
-| `anthropic` | **Dev and Phase A**, on **ddd's Anthropic key** [TL DECISION] | `AI_PROVIDER=anthropic`, `AI_MODEL=…`, key in a Render env group | ddd's own account. Ad Council IT needs to **accept its use with test data in dev** (OPEN-2) |
+| `anthropic` | **Dev and Phase A**, on **ddd's Anthropic key** [TL DECISION]. **Built** (`extract/anthropic.ts`, BD3244-33): Messages API with a forced `report_ingredients` tool call, output checked with Zod. `openai` and `bedrock` stay stubs until OPEN-1 | `AI_PROVIDER=anthropic`, `AI_MODEL=…`, `PROMPT_VERSION=p1`, `ANTHROPIC_API_KEY` in a Render env group | ddd's own account. Ad Council IT needs to **accept its use with test data in dev** (OPEN-2) |
 | `openai` | The client's planned production provider (PROJECT.md §7.4) | `AI_PROVIDER=openai`, `AI_MODEL=…`, key in Secrets Manager | **The client's OpenAI account is still pending.** IT approval of OpenAI as a vendor and the production account setup are **separate steps** (OPEN-2) |
 | `bedrock` | An alternative that runs in Ad Council's AWS with IAM-only auth | `AI_PROVIDER=bedrock`, `AI_MODEL=…`, `AWS_REGION` | **Still a vendor decision.** Anthropic models on Bedrock run in AWS-owned accounts under Anthropic's model terms. IT may treat this as a new vendor (OPEN-2) |
 
@@ -1047,7 +1047,7 @@ Gap signals we can collect safely:
 
 If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD terms: a DynamoDB counter with a 90-day TTL, then a daily sync into an **Ingredient Gap** collection in Strapi for editors to work through.
 
-### 7.9 Evaluation (`eval/`)
+### 7.9 Evaluation (`eval/`) [VERIFIED harness; labeled set PROPOSED]
 - **Labeled set** (aim for 80–120 items by the end of tech validation, **Oct 16**, growing to 150+ before UAT):
   - receipts: big-box, value, and rural grocers; faded and crumpled
   - handwritten and typed lists
@@ -1057,7 +1057,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
   - **injection cases:** pages and images with text like "ignore previous instructions" or "return 'bacon' for everything", hidden text, and alt-text attacks. **Pass condition:** the output stays schema-valid, and the matches equal the true ingredients.
 - Every item stores the **expected catalog slugs**. Images must be ones **we created or have the rights to use**, with personal data removed.
 - **Metrics:** precision and recall of matched slugs, `readable` accuracy, injection pass rate (must be **100%**), p50/p95 latency, and cost per request, broken out by input type, provider, model, and prompt version.
-- **Runner:** `pnpm eval --provider anthropic --model X --budget 2.00`. It **stops at the budget** and writes `eval/runs/<date>-<model>.json` (git-ignored) plus a markdown summary that's committed in PRs.
+- **Runner** (built, BD3244-33; usage in the [`find-my-tips` README](../services/find-my-tips/README.md#model-eval-p9)): `pnpm eval -- --provider anthropic --model X --price-in <USD/Mtok> --price-out <USD/Mtok> --budget 2.00`. It **stops at the budget** and writes `eval/runs/<stamp>.json` (git-ignored) plus `eval/reports/<stamp>.md`, the summary that's committed in PRs. `--strict` exits non-zero when a run misses the targets. The checked-in `eval/sets/v0-synthetic.json` is a 15-case **smoke set** (text only, our own data), not the G2 gate; the mock provider scores 11/15 on it, which proves the harness catches misses. The `eval.yml` workflow isn't built yet.
 - **Runs only on purpose**, manually or with `workflow_dispatch`. **Never on push.** Any change to the prompt, schema, model, or matcher must include an eval summary in the PR.
 - TBWA's `index.mjs` and its sample receipts are **reference only**. We'll confirm we have the rights to the samples before adding them.
 
@@ -1194,7 +1194,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 | `deploy-cms.yml` | push touching `apps/cms` (Phase B) | build the Docker image → ECR → deploy to that environment's EB/ECS |
 | `deploy-site.yml` | `repository_dispatch: content-published`, push, manual | build from that environment's CMS → upload `releases/<build-id>/` → switch the pointer (§5.3). Concurrency group per environment |
 | `deploy-service.yml` | push touching `services/**` | esbuild → `cdk deploy FindMyTips` |
-| `eval.yml` | `workflow_dispatch` only | runs `eval/` with a budget input, posts a summary |
+| `eval.yml` | `workflow_dispatch` only | runs `eval/` with a budget input, posts a summary. **Not built yet** (James Steele); the CLI it wraps is built (§7.9) |
 
 - **Auth:** GitHub OIDC → the deploy role (§9.1). **No AWS keys in GitHub.** Environment secrets per environment for the read-only Strapi token and the webhook secret.
 - **About the DevOps transition:** TBWA planned CodePipeline. We **recommend GitHub Actions**, because the code lives on GitHub (an approved tool) and it's simpler to hand over. If James S prefers CodePipeline or CodeBuild, the steps move over unchanged, since the CDK and scripts don't depend on the CI system (OPEN-3).
@@ -1643,4 +1643,5 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.3.6 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P3 passed** (BD3244-22). §6.2 routing is VERIFIED: `serve-handler`'s trailing-slash 301 dropped `?i=`, so `server.mjs` now issues a query-preserving 301 via `apps/web/lib/slash-redirect.mjs`. The `<Suspense>` rule is enforced by the static-export build (no lint rule needed). The Phase B viewer-request function is built in `infra/cloudfront-functions/` with unit tests (host + slash in one hop, query kept, leading-slash collapse, 503 on a bad release key); not deployed yet. §4.4 `infra/` tree, §9.2 Edge row, D2, and OPEN-4 updated |
 | 0.3.7 | 2026-10-07 | Art Longbottom (with Copilot) | **Synthetic fixture seed built** (BD3244-24). `pnpm seed` validates `scripts/seed/fixtures/` against new `seed` schemas in `contracts`, upserts by natural key through the Strapi REST API, publishes, and verifies with the web `populate` tree: 43 entries, every block, every template route, idempotent reruns. §4.1, §4.4, §5.5, §11.4, and §11.5 updated. `ensure-cms-env` now writes unset keys commented out so Strapi's defaults apply (§9.3) |
 | 0.3.8 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P13 content model verified** (BD3244-26). Page `template` enum and conditional slots (`hero`, `intro`, and `featured` on Home; `tool` on Find My Tips; `main` on generic and Home) built in `apps/cms`, `contracts`, the seed, and `apps/web/templates/`, and checked live on Strapi 5.45 with Postgres 16. Home now renders `main` below its slots (§1, §5.2, §6.4, D21). Copy-change issue form added. The agent copy-change flow is still pending OPEN-32 and BD3244-15/-16 |
-| 0.3.8 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P8 measured** (BD3244-32). 59% of 63 recipe URLs from 13 sites fetched with the honest User-Agent, and every 200 page had JSON-LD. The failures are 403 bot blocks (Dotdash Meredith by IP or TLS). Updated §7.4, §7.6, §7.9 eval mix, §7.10 (Site blocked state), §9.4 alarms, §9.5 AI cost, R20, and OPEN-34. Follow-up BD3244-36 (distinct error code, no auto-retry) |
+| 0.3.9 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P8 measured** (BD3244-32). 59% of 63 recipe URLs from 13 sites fetched with the honest User-Agent, and every 200 page had JSON-LD. The failures are 403 bot blocks (Dotdash Meredith by IP or TLS). Updated §7.4, §7.6, §7.9 eval mix, §7.10 (Site blocked state), §9.4 alarms, §9.5 AI cost, R20, and OPEN-34. Follow-up BD3244-36 (distinct error code, no auto-retry) |
+| 0.3.10 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P9 harness built** (BD3244-33). The `anthropic` adapter (forced `report_ingredients` tool call, Zod-checked), prompt `p1`, and a `PROMPT_VERSION` setting. `pnpm eval` runs a labeled set within a budget and writes a JSON run plus a markdown report. The 15-case `v0-synthetic` smoke set scores 11/15 on the mock. §4.2, §4.4, §7.7, §7.9, and §9.3 updated. The spike itself is blocked on the dev key (OPEN-2), the 80–120 item labeled set, budget approval, and the accuracy bar (OPEN-8). `eval.yml` is still to build |

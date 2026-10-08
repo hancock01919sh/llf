@@ -30,7 +30,7 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 | P6 | [BD3244-30](https://dotdotdash.atlassian.net/browse/BD3244-30) | Scrape → seed pipeline | §5.5 | China team + Art | Oct 21 | ⏳ |
 | P7 | [BD3244-34](https://dotdotdash.atlassian.net/browse/BD3244-34) | `strapi transfer` between environments (incl. media) | §5.5, §12.2 | James S + Art | Oct 21 | ⏳ |
 | P8 | [BD3244-32](https://dotdotdash.atlassian.net/browse/BD3244-32) | JSON-LD hit rate on real recipe URLs | §7.4 | Art | Oct 16 | ✅ |
-| P9 | [BD3244-33](https://dotdotdash.atlassian.net/browse/BD3244-33) | Model eval baseline (dev key) | §7.7, §7.9 | Art | Oct 16 | ⏳ |
+| P9 | [BD3244-33](https://dotdotdash.atlassian.net/browse/BD3244-33) | Model eval baseline (dev key) | §7.7, §7.9 | Art | Oct 16 | 🔬 harness built / blocked |
 | P10 | [BD3244-31](https://dotdotdash.atlassian.net/browse/BD3244-31) | WAF Challenge / JS integration with the tool API | §7.6 | James S + Art | Nov 6 | ⏳ |
 | P11 | [BD3244-35](https://dotdotdash.atlassian.net/browse/BD3244-35) | Render → AWS parity | §12.2 | James S + Art | Nov 13 | ⏳ |
 | P12 | [BD3244-29](https://dotdotdash.atlassian.net/browse/BD3244-29) | CMS fully IP-only (build in CodeBuild inside the VPC) | §9.2 | James S | Only if IT requires | ⏳ |
@@ -113,9 +113,13 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 
 ### P9. Model eval baseline
 - **Hypothesis:** A current Anthropic model on ddd's dev key reaches the G2 target (precision ≥ 0.9, recall ≥ 0.8) on receipts and lists, with a 100% injection pass rate.
-- **Method:** `pnpm eval --provider anthropic` on the v0 labeled set (80–120 items), within a fixed budget.
-- **Result:** _TBD_
-- **Decision:** Baseline for the production provider decision (OPEN-1, Nov 13).
+- **Method:** `pnpm eval -- --provider anthropic --model <model> --price-in <usd> --price-out <usd> --budget <usd>` on the v0 labeled set (80–120 items). The run report (`eval/reports/<stamp>.md`) is committed; the raw run (`eval/runs/`) is git-ignored. Usage is in the [Find My Tips README](../services/find-my-tips/README.md#model-eval-p9).
+- **Result (Oct 7):** 🔬 Harness built; the live run is **blocked**.
+  - **Built (BD3244-33):** the Anthropic adapter (strict tool mode, Zod-validated), the versioned prompt `p1`, and the eval CLI (`services/find-my-tips/src/eval/`): per-case precision, recall, readable flag, injection pass, latency, tokens, and cost; a spend budget; `--strict` to fail a run that misses G2; and a Markdown report.
+  - **Smoke set:** `eval/sets/v0-synthetic.json`, 15 synthetic text cases (lists, recipes, a receipt, unreadable input, and injection attempts). It checks the harness only and **is not** the G2 gate.
+  - **Mock baseline:** 11/15 cases pass (precision 91.2%, recall 96.9%, readable 93.3%, injection 50%). The 4 failures are by design: they prove the harness catches extra terms, missing terms, a wrong readable flag, and injected terms.
+  - **Blocked on:** the Anthropic dev key (IT acceptance, OPEN-2, Oct 16); the 80–120 item labeled set with rights-cleared images (no people or personal data); budget approval for the run; the model and its per-token prices; and the accuracy bar (OPEN-8, Nov 20). The `eval.yml` workflow (manual trigger) is not built yet (James S).
+- **Decision:** Baseline for the production provider decision (OPEN-1, Nov 13). The OpenAI and Bedrock adapters stay stubs until OPEN-1 is decided.
 
 ### P10. WAF Challenge with the tool API
 - **Hypothesis:** The WAF JS integration SDK lets `POST /api/find-tips/*` pass a Challenge from our static site without a page reload, and the client can handle a 202 challenge response.

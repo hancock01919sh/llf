@@ -9,6 +9,7 @@ describe('loadConfig', () => {
       provider: 'mock',
       model: 'mock-1',
       promptVersion: 'p1',
+      anthropicApiKey: undefined,
       port: 8787,
       catalogUrl: undefined,
       catalogFile: undefined,
@@ -47,6 +48,14 @@ describe('loadConfig', () => {
       catalogUrl: 'https://cms.example.test/api/catalog',
       rateLimit: { windowMs: 300_000, url: 5, model: 1 },
     });
+  });
+
+  it('reads the Anthropic key without echoing it on errors', () => {
+    expect(loadConfig({ ANTHROPIC_API_KEY: ' sk-test ' }).anthropicApiKey).toBe('sk-test');
+    expect(loadConfig({ ANTHROPIC_API_KEY: '' }).anthropicApiKey).toBeUndefined();
+    expect(() => loadConfig({ ANTHROPIC_API_KEY: 'sk-secret', PORT: 'abc' })).not.toThrow(
+      /sk-secret/,
+    );
   });
 
   it('prefers TOOL_PORT over PORT', () => {
