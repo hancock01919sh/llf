@@ -7,7 +7,7 @@ The Ad Council's **Long Live Food** coalition site (EPA, Ad Council, WWF, ReFED,
 Built by **dotdotdash**. Go-live: **Fri, January 8, 2027**.
 
 ## Status
-🟡 **Scaffolding.** TDD **v0.3.5** (draft, internal review). The monorepo, web app, Find My Tips service, and CI are in place (BD3244-16); deployment to Render and the move to Ad Council's GitHub come next. The scaffolding release is due **~Oct 16**. Decisions due Oct 16 are in [TDD §12.3](docs/TDD.md#123-decision-deadlines).
+🟡 **Scaffolding.** TDD **v0.3.7** (draft, internal review). The monorepo, web app, Find My Tips service, CI (BD3244-16), and the synthetic CMS seed (BD3244-24) are in place; deployment to Render and the move to Ad Council's GitHub come next. The scaffolding release is due **~Oct 16**. Decisions due Oct 16 are in [TDD §12.3](docs/TDD.md#123-decision-deadlines).
 
 ## Quickstart
 **Prerequisites:** Node 22 (`nvm use` reads `.nvmrc`), pnpm 9 (`corepack enable` picks the version from `package.json`), and Docker (only for the CMS).
@@ -22,6 +22,7 @@ pnpm install
 | `CMS_FIXTURES=1 pnpm dev:fe` | Web + Find My Tips, content from `apps/web/fixtures/cms`. **No Docker, no Strapi.** Start here. | web http://localhost:3000, tool http://localhost:8787 |
 | `pnpm dev` | Postgres (Docker) + Strapi + web + tool | adds Strapi admin http://localhost:1337/admin |
 | `pnpm dev:cms` | Postgres + Strapi only | http://localhost:1337/admin |
+| `pnpm seed` | Loads the synthetic fixtures into a running Strapi, publishes them, and verifies the result. Needs `CMS_URL` and a full-access `CMS_SEED_TOKEN` ([seed README](scripts/seed/README.md)) | — |
 
 - Put `CMS_FIXTURES=1` in `.env` to make fixtures the default. Without it, web needs `CMS_URL` and `CMS_TOKEN` (a **read-only** Strapi API token: Strapi admin → Settings → API Tokens).
 - `pnpm dev` and `pnpm dev:cms` create `apps/cms/.env` with random local-only secrets on first run. If Homebrew Postgres holds 5432, set `POSTGRES_PORT=5433` in `.env`.
@@ -46,6 +47,7 @@ First e2e run: `pnpm --filter @llf/web exec playwright install chromium`. `pnpm 
 | `packages/contracts` | Zod schemas and types shared across apps: CMS shapes, Find My Tips API, analytics events |
 | `packages/matching` | Ingredient normalization and catalog matching |
 | `packages/ui` | shadcn/ui components and the Figma design tokens (`styles/tokens.css`) |
+| `scripts/seed` | Synthetic CMS fixture seed: validate, upsert, publish, verify ([its README](scripts/seed/README.md)) |
 
 ## Docs
 | Doc | Purpose |

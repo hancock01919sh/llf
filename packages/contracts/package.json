@@ -9,7 +9,8 @@
     "./analytics": "./src/analytics.ts",
     "./cms": "./src/cms.ts",
     "./find-tips": "./src/find-tips.ts",
-    "./catalog": "./src/catalog.ts"
+    "./catalog": "./src/catalog.ts",
+    "./seed": "./src/seed.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",

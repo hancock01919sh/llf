@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "data": [
+    {
+      "title": "Freeze ripe bananas",
+      "description": "Peel, slice, and freeze them for smoothies and baking.",
+      "type": "Storage",
+      "behavior": "Storing",
+      "motivator": "Save money",
+      "ingredient": "banana"
+    },
+    {
+      "title": "Bake with brown bananas",
+      "description": "Spotty bananas make the sweetest banana bread.",
+      "type": "Reuse",
+      "behavior": "Cooking",
+      "ingredient": "banana"
+    },
+    {
+      "title": "Store with a paper towel",
+      "description": "A dry paper towel in the container soaks up moisture so leaves last longer.",
+      "type": "Storage",
+      "behavior": "Storing",
+      "ingredient": "spinach"
+    },
+    {
+      "title": "Freeze sliced bread",
+      "description": "Toast slices straight from the freezer.",
+      "type": "Storage",
+      "behavior": "Storing",
+      "ingredient": "bread"
+    },
+    {
+      "title": "Make croutons",
+      "description": "Cube stale bread, toss with oil, and bake until crisp.",
+      "type": "Reuse",
+      "behavior": "Cooking",
+      "ingredient": "bread"
+    },
+    {
+      "title": "Keep it in the back",
+      "description": "The fridge door is the warmest spot. Store milk on a back shelf.",
+      "type": "Storage",
+      "behavior": "Storing",
+      "ingredient": "milk"
+    },
+    {
+      "title": "Treat it like flowers",
+      "description": "Trim the stems and stand basil in a glass of water on the counter.",
+      "type": "Storage",
+      "behavior": "Storing",
+      "ingredient": "basil"
+    },
+    {
+      "title": "Plan a leftovers night",
+      "description": "Shred leftover chicken for tacos, soups, or salads.",
+      "type": "Prep",
+      "behavior": "Planning",
+      "motivator": "Save time",
+      "ingredient": "chicken"
+    },
+    {
+      "title": "Turn rice into fried rice",
+      "description": "Day-old rice fries up best. Add any vegetables that need using.",
+      "type": "Rescue It",
+      "behavior": "Cooking",
+      "ingredient": "rice"
+    },
+    {
+      "title": "Shop your fridge first",
+      "description": "Check what you have before you make a list.",
+      "type": "Prep",
+      "behavior": "Planning",
+      "motivator": "Save money"
+    },
+    {
+      "title": "First in, first out",
+      "description": "Move older food to the front so it gets eaten first.",
+      "type": "Storage",
+      "behavior": "Storing",
+      "motivator": "Help the planet"
+    }
+  ]
+}

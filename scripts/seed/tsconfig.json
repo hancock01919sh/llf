@@ -1,0 +1,4 @@
+{
+  "extends": "@llf/config/tsconfig/library.json",
+  "include": ["src", "fixtures"]
+}

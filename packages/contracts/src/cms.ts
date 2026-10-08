@@ -65,6 +65,7 @@ export type Seo = z.infer<typeof Seo>;
 export const Taxonomy = Entry.extend({ title: z.string() });
 export type Taxonomy = z.infer<typeof Taxonomy>;
 
+/** Enum values from `apps/cms/src`, exported so the seed and web share one list. */
 export const INGREDIENT_TYPES = [
   'Baked Goods',
   'Dairy',
@@ -74,6 +75,13 @@ export const INGREDIENT_TYPES = [
   'Produce',
   'Protein',
 ] as const;
+export const CATEGORY_MODES = ['Ingredients', 'Tips'] as const;
+export const HERO_LAYOUTS = ['Primary', 'Secondary'] as const;
+export const TEASER_LAYOUTS = ['Basic', 'Highlight', 'Quote'] as const;
+export const LINK_LIST_LAYOUTS = ['Basic', 'Two Column'] as const;
+export const CAROUSEL_MODES = ['categories'] as const;
+export const CAROUSEL_LAYOUTS = ['Basic', 'Compact'] as const;
+export const TIP_LIST_LAYOUTS = ['Basic', 'Single'] as const;
 
 // Collections
 export const IngredientRef = Entry.extend({
@@ -108,7 +116,7 @@ export const CategoryRef = Entry.extend({
 
 export const Category = CategoryRef.extend({
   description: nullish(z.string()),
-  mode: z.enum(['Ingredients', 'Tips']).default('Ingredients'),
+  mode: z.enum(CATEGORY_MODES).default('Ingredients'),
   image: nullish(Media),
   ingredients: z.array(Ingredient).optional(),
   tips: z.array(Tip).optional(),
@@ -133,7 +141,7 @@ export const HeroBlock = block('component.hero').extend({
   ctas: z.array(Cta).default([]),
   images: nullish(z.array(Media)),
   eyebrow: nullish(z.string()),
-  layout: z.enum(['Primary', 'Secondary']).default('Primary'),
+  layout: z.enum(HERO_LAYOUTS).default('Primary'),
 });
 export type HeroBlock = z.infer<typeof HeroBlock>;
 
@@ -142,7 +150,7 @@ export const TeaserBlock = block('component.teaser').extend({
   description: nullish(BlocksContent),
   ctas: z.array(Cta).default([]),
   images: nullish(z.array(Media)),
-  layout: z.enum(['Basic', 'Highlight', 'Quote']).default('Basic'),
+  layout: z.enum(TEASER_LAYOUTS).default('Basic'),
 });
 export type TeaserBlock = z.infer<typeof TeaserBlock>;
 
@@ -150,7 +158,7 @@ export const LinkListBlock = block('component.link-list').extend({
   title: nullish(Title),
   description: nullish(BlocksContent),
   pages: z.array(PageRef).default([]),
-  layout: z.enum(['Basic', 'Two Column']).default('Basic'),
+  layout: z.enum(LINK_LIST_LAYOUTS).default('Basic'),
 });
 export type LinkListBlock = z.infer<typeof LinkListBlock>;
 
@@ -158,8 +166,8 @@ export const CarouselBlock = block('component.carousel').extend({
   title: nullish(Title),
   description: nullish(z.string()),
   categories: z.array(CategoryRef.extend({ image: nullish(Media) })).default([]),
-  mode: z.enum(['categories']).default('categories'),
-  layout: z.enum(['Basic', 'Compact']).default('Basic'),
+  mode: z.enum(CAROUSEL_MODES).default('categories'),
+  layout: z.enum(CAROUSEL_LAYOUTS).default('Basic'),
   ctas: z.array(Cta).default([]),
 });
 export type CarouselBlock = z.infer<typeof CarouselBlock>;
@@ -173,7 +181,7 @@ export const TipListBlock = block('custom.tip-list').extend({
   title: nullish(Title),
   description: nullish(z.string()),
   tips: z.array(Tip).default([]),
-  layout: z.enum(['Basic', 'Single']).default('Basic'),
+  layout: z.enum(TIP_LIST_LAYOUTS).default('Basic'),
 });
 export type TipListBlock = z.infer<typeof TipListBlock>;
 

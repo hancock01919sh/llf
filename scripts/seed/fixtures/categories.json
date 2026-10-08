@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "data": [
+    {
+      "title": "Fruits & Veggies",
+      "slug": "fruits-and-veggies",
+      "description": "Keep produce fresh for longer.",
+      "mode": "Ingredients",
+      "group": "Your kitchen",
+      "ingredients": ["banana", "spinach", "basil"],
+      "seo": { "metaDescription": "Tips to keep fruits and vegetables fresh." }
+    },
+    {
+      "title": "Fridge Staples",
+      "slug": "fridge-staples",
+      "description": "Bread, milk, and protein.",
+      "mode": "Ingredients",
+      "group": "Your kitchen",
+      "ingredients": ["bread", "milk", "chicken"]
+    },
+    {
+      "title": "Pantry",
+      "slug": "pantry",
+      "description": "Dry foods that still go to waste.",
+      "mode": "Ingredients",
+      "group": "Your kitchen",
+      "ingredients": ["rice"]
+    },
+    {
+      "title": "Smart Shopping",
+      "slug": "smart-shopping",
+      "description": "Waste less before you even get home.",
+      "mode": "Tips",
+      "group": "Your kitchen",
+      "tips": ["Shop your fridge first", "First in, first out"]
+    }
+  ]
+}

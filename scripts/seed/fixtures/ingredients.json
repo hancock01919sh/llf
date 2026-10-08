@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "data": [
+    { "title": "Banana", "type": "Produce", "synonyms": ["bananas"], "wasted": 4 },
+    { "title": "Spinach", "type": "Leafy Greens", "synonyms": ["baby spinach"], "wasted": 5 },
+    {
+      "title": "Bread",
+      "type": "Baked Goods",
+      "synonyms": ["loaf", "sourdough", "baguette"],
+      "wasted": 4
+    },
+    { "title": "Milk", "type": "Dairy", "synonyms": ["whole milk"], "wasted": 3 },
+    { "title": "Basil", "type": "Fresh Herbs", "synonyms": ["sweet basil"], "wasted": 4 },
+    {
+      "title": "Chicken",
+      "type": "Protein",
+      "synonyms": ["chicken breast", "chicken thighs"],
+      "wasted": 3
+    },
+    { "title": "Rice", "type": "Dry Foods", "synonyms": ["white rice", "brown rice"], "wasted": 2 }
+  ]
+}

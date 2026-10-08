@@ -7,7 +7,7 @@
 | **Delivery** | dotdotdash (ddd) |
 | **Owner / author** | Art Longbottom (tech lead) |
 | **Reviewers** | James Calhoun (tech lead), James Steele (AWS/DevOps), Adam Paikowsky (analytics), Danish Aziz (PM), China dev team (Eva Fan, Alessandro Grena, Maggie Ding) |
-| **Status** | **DRAFT v0.3.6.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
+| **Status** | **DRAFT v0.3.7.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
 | **Last updated** | 2026-10-07 |
 | **Go-live** | **Friday, January 8, 2027** (go/no-go Thursday, January 7). There's **no contingency** after final QA |
 
@@ -298,7 +298,7 @@ The same code runs in both phases. Only the adapters and the environment configu
 | `packages/matching` | TypeScript | Normalization and matching with no AI, used by site search **and** the service | [PROPOSED] |
 | `packages/ui` *(optional)* | shadcn/ui components + Tailwind preset | Design-system primitives generated from the Figma tokens | [PROPOSED] |
 | `infra` | AWS CDK v2 (TypeScript) + `render.yaml` (Render Blueprint) | AWS stacks for each environment. Render services for Phase A | [PROPOSED] |
-| `scripts/seed` | TypeScript CLI | One-off scrape or extract → JSON → validated import into Strapi (§5.5) | [PROPOSED] |
+| `scripts/seed` | TypeScript CLI | Validated JSON → idempotent import into Strapi through the REST API (§5.5). The synthetic fixture seed is built; the one-off scrape or extract of the project seed is not | [VERIFIED] synthetic seed (BD3244-24); [PROPOSED] scrape |
 | `eval` | TypeScript CLI | Accuracy evaluation against a labeled set, run only on purpose | [PROPOSED] |
 
 ### 4.3 Environments and network
@@ -365,7 +365,7 @@ flowchart TB
 >
 > **Why `/api/*` on the CMS domain isn't IP-restricted:** GitHub-hosted runners don't have fixed IPs, so they can't be allow-listed. The Public role has **no permissions**, so `/api/*` returns nothing without the read-only token. If Ad Council IT wants the whole CMS domain IP-only, we'd run the build inside AWS instead (CodeBuild), which costs a little more. That's tracked in [`PROOF_DOC.md`](./PROOF_DOC.md).
 
-### 4.4 Repository layout [VERIFIED for apps/, services/, packages/, and root tooling; PROPOSED for infra/, scripts/seed/, eval/]
+### 4.4 Repository layout [VERIFIED for apps/, services/, packages/, scripts/, and root tooling; PROPOSED for the rest of infra/, the project-seed scrape, and eval/]
 
 A single **pnpm workspace** monorepo, so the contracts and matching code are shared and change in one place. **The scaffold is built** (BD3244-16, Oct 7). The [README Quickstart](../README.md) is the onboarding entry point.
 
@@ -391,8 +391,8 @@ A single **pnpm workspace** monorepo, so the contracts and matching code are sha
 │  ├─ cloudfront-functions/ # site viewer-request function (§6.2) + unit tests
 │  └─ render.yaml          # Render Blueprint for Phase A (dev, staging)
 ├─ scripts/
-│  ├─ ensure-cms-env.mjs   # creates apps/cms/.env with random local secrets if missing
-│  └─ seed/                # scrape/extract → JSON → import (one-off, re-runnable)
+│  ├─ ensure-cms-env.mjs   # creates apps/cms/.env with random local secrets if missing (unset keys commented out)
+│  └─ seed/                # synthetic fixture seed: JSON → validate → upsert → publish → verify (re-runnable); the project-seed scrape lands here later
 ├─ eval/                   # labeled set, runner, reports (run on demand)
 ├─ docs/                   # TDD, PROJECT, companion docs, ADRs, runbooks
 ├─ docker-compose.yml      # local Postgres (and optional Strapi)
@@ -610,6 +610,8 @@ The tool API includes `catalogVersion` in every response. If it doesn't match th
 | 2. Normalize | `scripts/seed` turns the source into **versioned JSON** (`seed/ingredients.json`, `tips.json`, `categories.json`, …) and validates it against `packages/contracts` | Synonyms are split into lists. Slugs are generated and locked (§6.1) |
 | 3. Import | Idempotent upserts by slug through the **Strapi REST API** (using a write token that's revoked afterward), or `strapi import` of a generated export archive | No database credentials needed. Works the same on Render and AWS |
 | 4. Media | Images are uploaded through the Upload API. Category images can be placeholders until the image workstream delivers (OPEN-28) | |
+
+**[VERIFIED] Synthetic fixture seed (BD3244-24).** Steps 2 and 3 are built in `scripts/seed` and run with `pnpm seed`. The fixtures live in `scripts/seed/fixtures/` and are validated with the `seed` schemas in `packages/contracts` (relations by natural key; dangling references fail). The import upserts by natural key (title, slug, or path) through the REST API with a full-access token that is revoked after the run, publishes each entry, then **verifies** by reading the content back with the web app's `populate` tree and parsing it with the `cms.*` schemas. Against local Strapi 5.45 on Postgres 16, the first run created 43 entries covering every block and every template route; a rerun only updated them. No media yet (step 4, OPEN-28). The scrape (step 1) and the project seed are still PROPOSED (P6). Synthetic content only: never run it against staging or prod. See [`scripts/seed/README.md`](../scripts/seed/README.md).
 
 - **Moving between environments:** `strapi transfer` (Strapi's built-in, token-authenticated, streaming transfer) copies content and media from one instance to another. We use it for **Render staging → AWS staging** (Phase B cutover) and **staging → prod** (Jan 4, the start of final QA).
   - **Fallback, if `transfer` fails** (volume, timeouts, or a provider mismatch): `strapi export` (encrypted, **including assets**) on the source, then `strapi import` on the target. If media still doesn't come across, copy the disk uploads to the S3 media bucket and rewrite the media URLs, then run a check that **every** media URL in the content resolves.
@@ -1197,7 +1199,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 - **About the DevOps transition:** TBWA planned CodePipeline. We **recommend GitHub Actions**, because the code lives on GitHub (an approved tool) and it's simpler to hand over. If James S prefers CodePipeline or CodeBuild, the steps move over unchanged, since the CDK and scripts don't depend on the CI system (OPEN-3).
 
 **Secrets and configuration**
-- **Local:** one root `.env` (git-ignored). `.env.example` lists every key **with no real values**. `scripts/ensure-cms-env.mjs` creates `apps/cms/.env` with random local-only Strapi secrets the first time `pnpm dev` or `pnpm dev:cms` runs.
+- **Local:** one root `.env` (git-ignored). `.env.example` lists every key **with no real values**. `scripts/ensure-cms-env.mjs` creates `apps/cms/.env` with random local-only Strapi secrets the first time `pnpm dev` or `pnpm dev:cms` runs. Keys with no value are written commented out (`# KEY=`), so Strapi falls back to its defaults instead of reading an empty string.
 - **Render:** **environment groups** per environment (`llf-dev`, `llf-staging`), with ddd's Anthropic key only in those groups. Nobody pastes keys into individual services.
 - **Render deploy-hook URLs** (Phase A) are secrets. They're stored only in the Strapi webhook settings and the Render environment group, never in the repo or in Jira.
 - **AWS:** Secrets Manager for credentials (Strapi keys, DB, AI provider key, Strapi API tokens, origin-verify secret, webhook secret, and the **publish relay's GitHub App private key**, §5.3). SSM Parameter Store for non-secret configuration (kill switch, quota, model name).
@@ -1333,7 +1335,7 @@ See [`AGENTS.md`](../AGENTS.md) and the [PR template](../.github/pull_request_te
   - **The China team, in the same period:** onboarding from the docs (shared as a PDF/zip outside the repo), Figma review and a module-by-module component spec per Jira ticket, local tool installs (Node, pnpm, Docker, mirrors), and a network check from China.
   - **If the move slips past Oct 16** (R6): Art keeps building the foundation, and the China team writes component specs and static markup against Figma, ready to drop into `packages/ui`, templates, and blocks once they have access. We escalate the move through Danish the same day. ddd-org access for the China team is **not** a fallback (TL decision).
 - **Local stack:** `pnpm dev` starts the web app, the CMS against **Postgres in Docker Compose** (the same engine as every environment), and the tool handler with `AI_PROVIDER=mock`. **No Render, AWS, or AI credentials are needed** for about 95% of the work. **[VERIFIED]** `pnpm dev` runs `db:up` → `ensure-cms-env` → web (port 3000) + tool (8787, `TOOL_PORT`) + Strapi (1337). `pnpm dev:fe` runs only web + tool, and `pnpm dev:cms` runs only Postgres + Strapi. See the [README Quickstart](../README.md).
-- **Seed data:** `pnpm seed` loads JSON into the local CMS. Until the validated project seed exists (P6, Oct 21), it loads a **synthetic fixture seed** (made-up ingredients and tips, plus every block on a sample page and every template) that matches the `contracts` schemas. After that, it loads the scraped set from §5.5.
+- **Seed data [VERIFIED]:** `pnpm seed` loads JSON into the local CMS. Until the validated project seed exists (P6, Oct 21), it loads the **synthetic fixture seed** (BD3244-24): made-up ingredients and tips, every block, and a page for every template route, validated against the `contracts` schemas. It's idempotent, and it verifies what it wrote. After P6, it loads the scraped set from §5.5. See [`scripts/seed/README.md`](../scripts/seed/README.md).
 - **Fixture mode:** with `CMS_FIXTURES=1`, the frontend builds entirely from `apps/web/fixtures/cms/*.json`, so frontend work doesn't depend on Strapi running. Without it, `CMS_URL` and `CMS_TOKEN` are required and the build fails fast if they're missing.
 - **Network from China:** mainland China can't reach the Anthropic or OpenAI APIs directly, and GitHub, npm, and Docker Hub can be slow. The team uses the **mock adapter** locally and the shared **dev environment on Render** (behind basic auth) for live tests. We'll ask about VPN and registry mirrors at the Oct 8 kickoff.
 - **Deploys and previews:** the China team doesn't touch AWS. They push, CI runs, and each PR gets a **Render preview link** they can share for review (§9.1). Render workspace seats for logs are added when needed.
@@ -1344,7 +1346,7 @@ See [`AGENTS.md`](../AGENTS.md) and the [PR template](../.github/pull_request_te
 ### 11.5 Release gates
 | Gate | Date | Criteria |
 |---|---|---|
-| Scaffolding release | ~Oct 16 | Monorepo, CI, Render dev live, **synthetic fixture seed**, mock tool end to end. The Oct 16 spikes are closed (P1–P5, P8, P9, P13). Repo moved to Ad Council's GitHub and the China team has access (if the move slips, R6) |
+| Scaffolding release | ~Oct 16 | Monorepo, CI, Render dev live, **synthetic fixture seed** (built, BD3244-24), mock tool end to end. The Oct 16 spikes are closed (P1–P5, P8, P9, P13). Repo moved to Ad Council's GitHub and the China team has access (if the move slips, R6) |
 | Seed gate | Oct 21 | Validated project seed from the agreed source (P6), and `strapi transfer` proven between environments (P7). Schema v1 on cms-dev |
 | Alpha | ~Nov 11 | **Skeleton**: every route and every module type renders against the project seed, and every CMS type is in place. Tool end to end with the dev key. Not feature-complete; FE runs to **Nov 18** |
 | Feature-complete | Nov 18 | End of FE. Every route and module matches Figma (desktop and mobile), with a11y and SEO. Ready for tracking and internal QA |
@@ -1637,3 +1639,4 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.3.4 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P2 passed** (BD3244-13). Strapi 5.45 runs inside the pnpm workspace with the default linker, one lockfile, and no hoisting. It builds, runs on Postgres 16, and runs as a Docker image (health 204, admin 200, content APIs 403). §4.4 updated. §5.1 adds rows for Strapi AI (`ai` SDK, turned off), the admin auth deprecation, and lockfile/engines. D13 now pins **Postgres 16** (Docker → Render → RDS) |
 | 0.3.5 | 2026-10-07 | Art Longbottom (with Copilot) | **Scaffold built** (BD3244-16). §4.4 is now VERIFIED for `apps/`, `services/`, `packages/`, and root tooling (pnpm 9.15.2 via `packageManager`, Node `>=22.12 <23`, no Turborepo, CODEOWNERS). §9.3 describes `ci.yml` as built (checks + e2e jobs, mock provider, fixtures, no secrets). §6.3 fonts use Fontsource. §7 limits and timeouts add the client checks (25 MB, 35 s) and the 40 s local proxy. §9.3 and §11.4 describe the single root `.env`, `ensure-cms-env`, the `dev`/`dev:fe`/`dev:cms` scripts, and fixture mode. New D23. README Quickstart added |
 | 0.3.6 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P3 passed** (BD3244-22). §6.2 routing is VERIFIED: `serve-handler`'s trailing-slash 301 dropped `?i=`, so `server.mjs` now issues a query-preserving 301 via `apps/web/lib/slash-redirect.mjs`. The `<Suspense>` rule is enforced by the static-export build (no lint rule needed). The Phase B viewer-request function is built in `infra/cloudfront-functions/` with unit tests (host + slash in one hop, query kept, leading-slash collapse, 503 on a bad release key); not deployed yet. §4.4 `infra/` tree, §9.2 Edge row, D2, and OPEN-4 updated |
+| 0.3.7 | 2026-10-07 | Art Longbottom (with Copilot) | **Synthetic fixture seed built** (BD3244-24). `pnpm seed` validates `scripts/seed/fixtures/` against new `seed` schemas in `contracts`, upserts by natural key through the Strapi REST API, publishes, and verifies with the web `populate` tree: 43 entries, every block, every template route, idempotent reruns. §4.1, §4.4, §5.5, §11.4, and §11.5 updated. `ensure-cms-env` now writes unset keys commented out so Strapi's defaults apply (§9.3) |

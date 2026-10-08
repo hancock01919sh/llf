@@ -23,7 +23,7 @@ const tipFields: Populate = {
 };
 const tipRelations: Populate = { populate: tipFields };
 
-// TODO(BD3244-24): confirm these against seeded content once the seed lands.
+// Verified against seeded content (BD3244-24). Keep in sync with POPULATE in scripts/seed/src/seed.ts.
 const POPULATE = {
   pages: {
     main: {

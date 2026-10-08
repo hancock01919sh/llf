@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "data": {
+    "tip_types": [
+      { "title": "Storage" },
+      { "title": "Prep" },
+      { "title": "Reuse" },
+      { "title": "Use It" },
+      { "title": "Store It" },
+      { "title": "Rescue It" }
+    ],
+    "tip_behaviors": [{ "title": "Planning" }, { "title": "Storing" }, { "title": "Cooking" }],
+    "tip_motivators": [
+      { "title": "Save money" },
+      { "title": "Save time" },
+      { "title": "Help the planet" }
+    ]
+  }
+}

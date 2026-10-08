@@ -13,6 +13,7 @@
     "dev:cms": "pnpm db:up && node --env-file-if-exists=.env scripts/ensure-cms-env.mjs && pnpm --filter @llf/cms dev",
     "db:up": "docker compose up -d --wait postgres",
     "db:down": "docker compose down",
+    "seed": "pnpm --filter @llf/seed seed",
     "build": "pnpm -r --filter \"!@llf/cms\" build",
     "build:cms": "pnpm --filter @llf/cms build",
     "lint": "eslint .",

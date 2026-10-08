@@ -1,0 +1,24 @@
+{
+  "name": "@llf/seed",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Synthetic fixture seed for Strapi (TDD §5.5, §11.4)",
+  "type": "module",
+  "scripts": {
+    "seed": "tsx --env-file-if-exists=../../.env src/cli.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@llf/contracts": "workspace:*",
+    "tsx": "4.23.15",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@llf/config": "workspace:*",
+    "@types/node": "22.20.5",
+    "typescript": "6.0.3",
+    "vite": "8.3.3",
+    "vitest": "5.0.3"
+  }
+}
