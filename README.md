@@ -43,7 +43,7 @@ First e2e run: `pnpm --filter @llf/web exec playwright install chromium`. `pnpm 
 |---|---|
 | `apps/web` | Next.js static export (`out/`) + `server.mjs` (static server and `/api/find-tips` proxy for local and Render) |
 | `apps/cms` | Strapi 5 ([its README](apps/cms/README.md)) |
-| `services/find-my-tips` | Find My Tips API: extraction (swappable AI provider), recipe URL fetch, catalog matching |
+| `services/find-my-tips` | Find My Tips API: extraction (swappable AI provider), recipe URL fetch, catalog matching ([README](services/find-my-tips/README.md)) |
 | `packages/contracts` | Zod schemas and types shared across apps: CMS shapes, Find My Tips API, analytics events |
 | `packages/matching` | Ingredient normalization and catalog matching |
 | `packages/ui` | shadcn/ui components and the Figma design tokens (`styles/tokens.css`) |
