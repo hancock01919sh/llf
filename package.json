@@ -21,6 +21,7 @@
     "test": "pnpm -r --if-present test",
     "e2e": "pnpm --filter @llf/web e2e",
     "eval": "pnpm --filter @llf/find-my-tips eval",
+    "arena": "pnpm --filter @llf/find-my-tips arena",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

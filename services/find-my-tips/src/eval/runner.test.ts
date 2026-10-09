@@ -16,6 +16,7 @@ const fixture: unknown = JSON.parse(
 );
 const { matcher } = catalogFromData(fixture);
 const SET_PATH = fileURLToPath(new URL('./not-a-real-set.json', import.meta.url));
+const SOURCES = { test: { description: 'Test fixtures', license: 'n/a', piiReviewed: true } };
 
 function clock(step = 10): () => number {
   let t = 0;
@@ -35,7 +36,7 @@ function textCase(id: string, text: string, expectedSlugs: string[]) {
 
 function options(cases: unknown[], overrides: Partial<EvalOptions> = {}): EvalOptions {
   return {
-    set: LabeledSet.parse({ version: 't', cases }),
+    set: LabeledSet.parse({ version: 't', sources: SOURCES, cases }),
     setPath: SET_PATH,
     provider: createMockProvider(),
     model: 'm',
@@ -109,6 +110,7 @@ describe('runEval', () => {
         detectedType: 'fridge_photo',
         expectedReadable: true,
         expectedSlugs: [],
+        source: 'test',
       },
     ];
     await expect(runEval(options(cases))).rejects.toThrow();

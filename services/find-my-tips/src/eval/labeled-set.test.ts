@@ -23,6 +23,11 @@ const IMAGE_CASE = {
   detectedType: 'fridge_photo',
   expectedReadable: true,
   expectedSlugs: ['milk'],
+  source: 'stock-a',
+};
+
+const SOURCES = {
+  'stock-a': { description: 'Licensed stock batch', license: 'Stock EULA', piiReviewed: true },
 };
 
 const issuePaths = (value: unknown, schema: typeof LabeledCase | typeof LabeledSet) => {
@@ -49,6 +54,12 @@ describe('LabeledCase', () => {
     expect(issuePaths(noPath, LabeledCase)).toContainEqual(['imagePath']);
   });
 
+  it('requires a provenance source on image cases', () => {
+    const { source: _source, ...noSource } = IMAGE_CASE;
+    expect(issuePaths(noSource, LabeledCase)).toContainEqual(['source']);
+    expect(LabeledCase.safeParse(TEXT_CASE).success).toBe(true);
+  });
+
   it('rejects duplicate slugs, bad ids, and unknown slugs', () => {
     expect(
       issuePaths({ ...TEXT_CASE, expectedSlugs: ['milk', 'milk'] }, LabeledCase),
@@ -65,8 +76,35 @@ describe('LabeledSet', () => {
     expect(LabeledSet.safeParse({ version: 'v0', cases: [] }).success).toBe(false);
   });
 
+  it('checks case sources against the manifest and requires a PII review', () => {
+    const sources = SOURCES;
+    expect(
+      LabeledSet.safeParse({
+        version: 'v1',
+        sources,
+        cases: [{ ...TEXT_CASE, source: 'stock-a' }],
+      }).success,
+    ).toBe(true);
+    expect(
+      issuePaths(
+        { version: 'v1', sources, cases: [{ ...TEXT_CASE, source: 'staff-b' }] },
+        LabeledSet,
+      ),
+    ).toContainEqual(['cases', 0, 'source']);
+    expect(
+      issuePaths(
+        {
+          version: 'v1',
+          sources: { 'stock-a': { ...sources['stock-a'], piiReviewed: false } },
+          cases: [TEXT_CASE],
+        },
+        LabeledSet,
+      ),
+    ).toContainEqual(['sources', 'stock-a', 'piiReviewed']);
+  });
+
   it('rejects duplicate ids at the second occurrence', () => {
-    const value = { version: 'v0', cases: [TEXT_CASE, IMAGE_CASE, TEXT_CASE] };
+    const value = { version: 'v0', sources: SOURCES, cases: [TEXT_CASE, IMAGE_CASE, TEXT_CASE] };
     expect(issuePaths(value, LabeledSet)).toContainEqual(['cases', 2, 'id']);
   });
 });
@@ -84,7 +122,10 @@ describe('loadLabeledSet and caseInput', () => {
 
   it('loads a set and reads images relative to the set file', async () => {
     const setPath = join(dir, 'set.json');
-    await writeFile(setPath, JSON.stringify({ version: 'v0', cases: [TEXT_CASE, IMAGE_CASE] }));
+    await writeFile(
+      setPath,
+      JSON.stringify({ version: 'v0', sources: SOURCES, cases: [TEXT_CASE, IMAGE_CASE] }),
+    );
     await mkdir(join(dir, 'images'));
     await writeFile(join(dir, 'images', 'fridge-1.jpg'), new Uint8Array([0xff, 0xd8, 0xff]));
 

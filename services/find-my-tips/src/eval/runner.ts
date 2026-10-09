@@ -1,7 +1,7 @@
 import type { Matcher } from '@llf/matching';
 
 import { extractIngredients } from '../extract';
-import type { ExtractionProvider } from '../extract';
+import type { ExtractionProvider, ReasoningEffort } from '../extract';
 import { ToolError } from '../http';
 import { matchItems } from '../match';
 import type { LabeledSet } from './labeled-set';
@@ -16,6 +16,7 @@ export type EvalOptions = {
   provider: ExtractionProvider;
   model: string;
   promptVersion: string;
+  reasoningEffort?: ReasoningEffort;
   timeoutMs: number;
   matcher: Matcher;
   pricing: Pricing;
@@ -53,6 +54,9 @@ export async function runEval(options: EvalOptions): Promise<EvalRun> {
         timeoutMs: options.timeoutMs,
         model: options.model,
         promptVersion: options.promptVersion,
+        ...(options.reasoningEffort === undefined
+          ? {}
+          : { reasoningEffort: options.reasoningEffort }),
       });
       const { matches, unmatchedCount } = matchItems(result.items, options.matcher);
       outcome = {

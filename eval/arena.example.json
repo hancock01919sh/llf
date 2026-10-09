@@ -1,0 +1,59 @@
+{
+  "version": "arena-v0",
+  "description": "BD3244-37 starting matrix. Prices are public list prices in USD per million tokens as of Oct 2025; re-check them on the run date. Gemini stays disabled until it has an adapter and IT approval (TDD §7.7 [PROPOSED]).",
+  "setPath": "sets/v0-synthetic.json",
+  "budgetUsd": 20,
+  "monthlyCapUsd": 500,
+  "usesPerMonth": [25000, 50000],
+  "callsPerUse": 1,
+  "cells": [
+    {
+      "label": "mock",
+      "provider": "mock",
+      "model": "mock-1",
+      "pricing": { "inputPerMTok": 0, "outputPerMTok": 0 },
+      "note": "Baseline: proves the harness, never a candidate."
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5",
+      "pricing": { "inputPerMTok": 1, "outputPerMTok": 5 },
+      "budgetUsd": 5
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5-mini",
+      "effort": "minimal",
+      "pricing": { "inputPerMTok": 0.25, "outputPerMTok": 2 },
+      "budgetUsd": 4
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5-mini",
+      "effort": "low",
+      "pricing": { "inputPerMTok": 0.25, "outputPerMTok": 2 },
+      "budgetUsd": 4
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5-nano",
+      "effort": "minimal",
+      "pricing": { "inputPerMTok": 0.05, "outputPerMTok": 0.4 },
+      "budgetUsd": 2
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5-nano",
+      "effort": "low",
+      "pricing": { "inputPerMTok": 0.05, "outputPerMTok": 0.4 },
+      "budgetUsd": 2
+    },
+    {
+      "provider": "gemini",
+      "model": "gemini-2.5-flash-lite",
+      "pricing": { "inputPerMTok": 0.1, "outputPerMTok": 0.4 },
+      "enabled": false,
+      "note": "no adapter yet; needs Ad Council IT approval (TDD §7.7 [PROPOSED])"
+    }
+  ]
+}

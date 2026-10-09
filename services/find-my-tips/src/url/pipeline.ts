@@ -18,7 +18,10 @@ export const EXTRACTOR_VERSION = 'x1';
 
 export type UrlPipelineDeps = {
   cache: CacheStore;
-  config: Pick<Config, 'mode' | 'model' | 'promptVersion' | 'urlCacheTtlMs' | 'modelTimeoutMs'>;
+  config: Pick<
+    Config,
+    'mode' | 'model' | 'promptVersion' | 'urlCacheTtlMs' | 'modelTimeoutMs' | 'reasoningEffort'
+  >;
   provider: ExtractionProvider;
   quota: Quota;
   resolve?: Resolver;
@@ -41,8 +44,9 @@ type CachedTerms = Pick<UrlPipelineResult, 'items' | 'detectedType' | 'readable'
 const aliasKey = (canonicalHash: string) => `alias#${canonicalHash}`;
 
 function valueKey(urlHash: string, deps: UrlPipelineDeps): string {
-  const { promptVersion, model } = deps.config;
-  return `url#${urlHash}#${EXTRACTOR_VERSION}#${promptVersion}#${model}`;
+  const { promptVersion, model, reasoningEffort } = deps.config;
+  const effort = reasoningEffort ? `#${reasoningEffort}` : '';
+  return `url#${urlHash}#${EXTRACTOR_VERSION}#${promptVersion}#${model}${effort}`;
 }
 
 async function readCache(deps: UrlPipelineDeps, key: string): Promise<CachedTerms | undefined> {
@@ -137,6 +141,7 @@ export async function runUrlPipeline(
       timeoutMs: deps.config.modelTimeoutMs,
       model: deps.config.model,
       promptVersion: deps.config.promptVersion,
+      ...(deps.config.reasoningEffort ? { reasoningEffort: deps.config.reasoningEffort } : {}),
       ...(deps.signal ? { signal: deps.signal } : {}),
     },
   );

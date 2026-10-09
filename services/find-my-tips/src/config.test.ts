@@ -10,6 +10,8 @@ describe('loadConfig', () => {
       model: 'mock-1',
       promptVersion: 'p1',
       anthropicApiKey: undefined,
+      openaiApiKey: undefined,
+      reasoningEffort: undefined,
       port: 8787,
       catalogUrl: undefined,
       catalogFile: undefined,
@@ -56,6 +58,20 @@ describe('loadConfig', () => {
     expect(() => loadConfig({ ANTHROPIC_API_KEY: 'sk-secret', PORT: 'abc' })).not.toThrow(
       /sk-secret/,
     );
+  });
+
+  it('reads the OpenAI key without echoing it on errors', () => {
+    expect(loadConfig({ OPENAI_API_KEY: ' sk-proj-test ' }).openaiApiKey).toBe('sk-proj-test');
+    expect(loadConfig({ OPENAI_API_KEY: '' }).openaiApiKey).toBeUndefined();
+    expect(() => loadConfig({ OPENAI_API_KEY: 'sk-proj-secret', PORT: 'abc' })).not.toThrow(
+      /sk-proj-secret/,
+    );
+  });
+
+  it('parses AI_REASONING_EFFORT', () => {
+    expect(loadConfig({ AI_REASONING_EFFORT: 'minimal' }).reasoningEffort).toBe('minimal');
+    expect(loadConfig({ AI_REASONING_EFFORT: '' }).reasoningEffort).toBeUndefined();
+    expect(() => loadConfig({ AI_REASONING_EFFORT: 'extreme' })).toThrow(/AI_REASONING_EFFORT/);
   });
 
   it('prefers TOOL_PORT over PORT', () => {

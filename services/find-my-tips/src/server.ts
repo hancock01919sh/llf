@@ -29,7 +29,10 @@ const catalog = createCatalogSource({
 const app = createApp({
   config,
   catalog,
-  provider: createProvider(config.provider, { anthropicApiKey: config.anthropicApiKey }),
+  provider: createProvider(config.provider, {
+    anthropicApiKey: config.anthropicApiKey,
+    openaiApiKey: config.openaiApiKey,
+  }),
   cache: new MemoryCacheStore(),
   counters: new MemoryCounterStore(),
   logger,

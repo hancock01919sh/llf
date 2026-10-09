@@ -4,13 +4,30 @@ export type ExtractionInput =
   | { kind: 'text'; text: string }
   | { kind: 'image'; bytes: Uint8Array; mimeType: (typeof IMAGE_MIME_TYPES)[number] };
 
+/**
+ * Reasoning budget for models that support it (OpenAI `reasoning_effort`).
+ * Adapters without the concept ignore it. Set by `AI_REASONING_EFFORT`.
+ */
+export const REASONING_EFFORTS = ['none', 'minimal', 'low', 'medium', 'high'] as const;
+export type ReasoningEffort = (typeof REASONING_EFFORTS)[number];
+
 export type ExtractionContext = {
   signal: AbortSignal;
   model: string;
   promptVersion: string;
+  reasoningEffort?: ReasoningEffort;
 };
 
-export type ExtractionUsage = { inputTokens: number; outputTokens: number };
+/**
+ * `outputTokens` is everything billed at the output rate. `reasoningTokens`
+ * is the part of it spent on hidden reasoning, reported for visibility only:
+ * never add it to `outputTokens` again.
+ */
+export type ExtractionUsage = {
+  inputTokens: number;
+  outputTokens: number;
+  reasoningTokens?: number;
+};
 
 /** Raw adapter output. `result` is untrusted until `extractIngredients` parses it. */
 export type ProviderOutput = { result: unknown; usage?: ExtractionUsage };

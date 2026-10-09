@@ -1,6 +1,8 @@
 import { ToolMode } from '@llf/contracts/find-tips';
 import { z } from 'zod';
 
+import { REASONING_EFFORTS, type ReasoningEffort } from './extract/types';
+
 export const PROVIDERS = ['mock', 'anthropic', 'openai', 'bedrock'] as const;
 export type ProviderName = (typeof PROVIDERS)[number];
 
@@ -14,6 +16,10 @@ const EnvSchema = z.object({
   PROMPT_VERSION: z.string().trim().min(1).default('p1'),
   // Dev only (ddd's key on Render dev or a local `.env`). Never logged or echoed.
   ANTHROPIC_API_KEY: z.string().trim().min(1).optional(),
+  // TBWA's capped test key (dev and the eval arena only). Never logged or echoed.
+  OPENAI_API_KEY: z.string().trim().min(1).optional(),
+  // Only sent to providers that support it (OpenAI reasoning models). Unset = provider default.
+  AI_REASONING_EFFORT: z.enum(REASONING_EFFORTS).optional(),
   // TOOL_PORT wins so one root `.env` can drive both the tool and the web proxy;
   // PORT is what Render injects.
   TOOL_PORT: z.coerce.number().int().positive().optional(),
@@ -36,6 +42,8 @@ export type Config = {
   model: string;
   promptVersion: string;
   anthropicApiKey: string | undefined;
+  openaiApiKey: string | undefined;
+  reasoningEffort: ReasoningEffort | undefined;
   port: number;
   catalogUrl: string | undefined;
   catalogFile: string | undefined;
@@ -64,6 +72,8 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     model: e.AI_MODEL,
     promptVersion: e.PROMPT_VERSION,
     anthropicApiKey: e.ANTHROPIC_API_KEY,
+    openaiApiKey: e.OPENAI_API_KEY,
+    reasoningEffort: e.AI_REASONING_EFFORT,
     port: e.TOOL_PORT ?? e.PORT,
     catalogUrl: e.CATALOG_URL,
     catalogFile: e.CATALOG_FILE,

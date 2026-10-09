@@ -2,10 +2,9 @@ import type { ExtractionProvider } from './types';
 import { ProviderNotConfiguredError } from './types';
 
 /**
- * OpenAI lands with the TBWA test key; Bedrock is the Phase B option
- * (TDD §7.4, OPEN-1). Follow `anthropic.ts`: send `REPORT_INGREDIENTS_TOOL`
- * as a forced tool call, pass `ctx.signal`, and return the raw tool input
- * plus token usage.
+ * Bedrock is the Phase B option (TDD §7.4, OPEN-1). Follow `anthropic.ts` or
+ * `openai.ts`: send `REPORT_INGREDIENTS_TOOL` as a forced tool call or strict
+ * JSON schema, pass `ctx.signal`, and return the raw result plus token usage.
  */
 function stub(name: string): ExtractionProvider {
   return {
@@ -16,5 +15,4 @@ function stub(name: string): ExtractionProvider {
   };
 }
 
-export const createOpenAIProvider = () => stub('openai');
 export const createBedrockProvider = () => stub('bedrock');

@@ -18,6 +18,7 @@ export type CaseScore = {
   kind: LabeledCase['kind'];
   detectedType: DetectedType;
   injection: boolean;
+  expectedReadable: boolean;
   latencyMs: number;
   errorCode?: ErrorCode;
   tp: number;
@@ -32,6 +33,8 @@ export type CaseScore = {
   unmatchedCount: number;
   inputTokens: number;
   outputTokens: number;
+  /** Already included in outputTokens; reported separately to show what reasoning costs. */
+  reasoningTokens: number;
 };
 
 export type Pricing = { inputPerMTok: number; outputPerMTok: number };
@@ -44,13 +47,17 @@ export type Summary = {
   precision: number;
   recall: number;
   readableAccuracy: number;
+  /** Share of not-food cases (expectedReadable false) the model correctly rejected; null if none. */
+  nonFoodRejectionRate: number | null;
   injectionCases: number;
   injectionPassRate: number | null;
   latencyP50Ms: number;
   latencyP95Ms: number;
   inputTokens: number;
   outputTokens: number;
+  reasoningTokens: number;
   costUsd: number;
+  costPerCallUsd: number;
 };
 
 export type Report = {
@@ -69,6 +76,7 @@ export function scoreCase(item: LabeledCase, outcome: CaseOutcome, latencyMs: nu
     kind: item.kind,
     detectedType: item.detectedType,
     injection: item.injection,
+    expectedReadable: item.expectedReadable,
     latencyMs,
   };
 
@@ -88,6 +96,7 @@ export function scoreCase(item: LabeledCase, outcome: CaseOutcome, latencyMs: nu
       unmatchedCount: 0,
       inputTokens: 0,
       outputTokens: 0,
+      reasoningTokens: 0,
     };
   }
 
@@ -112,6 +121,7 @@ export function scoreCase(item: LabeledCase, outcome: CaseOutcome, latencyMs: nu
     unmatchedCount: outcome.unmatchedCount,
     inputTokens: outcome.usage?.inputTokens ?? 0,
     outputTokens: outcome.usage?.outputTokens ?? 0,
+    reasoningTokens: outcome.usage?.reasoningTokens ?? 0,
   };
 }
 
@@ -133,14 +143,18 @@ export function summarize(scores: readonly CaseScore[], pricing: Pricing): Summa
   let fn = 0;
   let inputTokens = 0;
   let outputTokens = 0;
+  let reasoningTokens = 0;
   for (const score of scores) {
     tp += score.tp;
     fp += score.fp;
     fn += score.fn;
     inputTokens += score.inputTokens;
     outputTokens += score.outputTokens;
+    reasoningTokens += score.reasoningTokens;
   }
   const injection = scores.filter((score) => score.injection);
+  const nonFood = scores.filter((score) => !score.expectedReadable);
+  const cost = costUsd(inputTokens, outputTokens, pricing);
   const latencies = scores.map((score) => score.latencyMs);
 
   return {
@@ -152,6 +166,10 @@ export function summarize(scores: readonly CaseScore[], pricing: Pricing): Summa
     recall: tp + fn === 0 ? 1 : tp / (tp + fn),
     readableAccuracy:
       scores.length === 0 ? 0 : scores.filter((s) => s.readableCorrect).length / scores.length,
+    nonFoodRejectionRate:
+      nonFood.length === 0
+        ? null
+        : nonFood.filter((s) => s.readableCorrect).length / nonFood.length,
     injectionCases: injection.length,
     injectionPassRate:
       injection.length === 0 ? null : injection.filter((s) => s.passed).length / injection.length,
@@ -159,7 +177,9 @@ export function summarize(scores: readonly CaseScore[], pricing: Pricing): Summa
     latencyP95Ms: percentile(latencies, 95),
     inputTokens,
     outputTokens,
-    costUsd: costUsd(inputTokens, outputTokens, pricing),
+    reasoningTokens,
+    costUsd: cost,
+    costPerCallUsd: scores.length === 0 ? 0 : cost / scores.length,
   };
 }
 

@@ -4,15 +4,23 @@ import type { ProviderName } from '../config';
 import { ToolError } from '../http';
 import { createAnthropicProvider } from './anthropic';
 import { createMockProvider } from './mock';
-import { createBedrockProvider, createOpenAIProvider } from './stubs';
-import type { ExtractionInput, ExtractionProvider, ExtractionUsage } from './types';
+import { createOpenAIProvider } from './openai';
+import { createBedrockProvider } from './stubs';
+import type {
+  ExtractionInput,
+  ExtractionProvider,
+  ExtractionUsage,
+  ReasoningEffort,
+} from './types';
 
 export { createAnthropicProvider } from './anthropic';
 export { MOCK_IMAGE_RESULT, createMockProvider } from './mock';
+export { createOpenAIProvider } from './openai';
 export * from './types';
 
 export type ProviderOptions = {
   anthropicApiKey?: string | undefined;
+  openaiApiKey?: string | undefined;
   fetch?: typeof fetch;
 };
 
@@ -29,7 +37,10 @@ export function createProvider(
         ...(options.fetch ? { fetch: options.fetch } : {}),
       });
     case 'openai':
-      return createOpenAIProvider();
+      return createOpenAIProvider({
+        apiKey: options.openaiApiKey,
+        ...(options.fetch ? { fetch: options.fetch } : {}),
+      });
     case 'bedrock':
       return createBedrockProvider();
   }
@@ -39,6 +50,8 @@ export type ExtractOptions = {
   timeoutMs: number;
   model: string;
   promptVersion: string;
+  /** Passed to adapters that support it; omitted means the model default. */
+  reasoningEffort?: ReasoningEffort | undefined;
   /** Aborts the model call when the whole request is cancelled. */
   signal?: AbortSignal;
 };
@@ -65,6 +78,7 @@ export async function extractIngredients(
       signal,
       model: options.model,
       promptVersion: options.promptVersion,
+      ...(options.reasoningEffort ? { reasoningEffort: options.reasoningEffort } : {}),
     });
   } catch (error) {
     if (timeout.aborted) throw new ToolError('timeout');

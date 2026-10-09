@@ -18,10 +18,12 @@ All keys are optional and every one has a default. Empty values are treated as u
 
 | Key | Default | Notes |
 |---|---|---|
-| `AI_PROVIDER` | `mock` | `mock` \| `anthropic` \| `openai` \| `bedrock`. `anthropic` is live (`src/extract/anthropic.ts`). `openai` and `bedrock` are stubs until OPEN-1 is decided. |
+| `AI_PROVIDER` | `mock` | `mock` \| `anthropic` \| `openai` \| `bedrock`. `anthropic` and `openai` are live (`src/extract/anthropic.ts`, `src/extract/openai.ts`). `bedrock` is a stub until OPEN-1 is decided. |
 | `AI_MODEL` | `mock-1` | Passed to the provider and included in the URL cache key. |
 | `PROMPT_VERSION` | `p1` | System prompt version (`src/extract/prompt.ts`). Add a new version instead of editing one that an eval has scored. |
 | `ANTHROPIC_API_KEY` | unset | Dev only: ddd's key, on Render dev and for `pnpm eval` (OPEN-2). Without it, `anthropic` returns `upstream_error`. Never logged. |
+| `OPENAI_API_KEY` | unset | TBWA's capped test key, for Render dev, `pnpm eval`, and `pnpm arena` only (OPEN-1). Without it, `openai` returns `upstream_error`. Never logged. |
+| `AI_REASONING_EFFORT` | unset | `minimal` \| `low` \| `medium` \| `high`. Sent to OpenAI reasoning models only; the other providers ignore it. Unset uses the model's default. |
 | `FIND_TIPS_MODE` | `live` | Kill switch (TDD §7.7). `jsonld-only` makes no model calls; `off` returns 503 `unavailable`. |
 | `TOOL_PORT` / `PORT` | `8787` | `TOOL_PORT` takes precedence. Render sets `PORT`. |
 | `CATALOG_URL` / `CATALOG_FILE` | bundled `src/fixtures/catalog.json` | Catalog source, refreshed every `CATALOG_REFRESH_MS` (60 s). |
@@ -77,11 +79,16 @@ pnpm eval -- -h           # all options
 pnpm eval -- --provider anthropic --model <model-id> \
   --price-in <usd-per-Mtok> --price-out <usd-per-Mtok> --budget 5 \
   --set eval/sets/<set>.json
+
+# OpenAI (needs OPENAI_API_KEY, OPEN-1)
+pnpm eval -- --provider openai --model <model-id> --effort minimal \
+  --price-in <usd-per-Mtok> --price-out <usd-per-Mtok> --budget 2
 ```
 
 | Option | Meaning |
 |---|---|
 | `--provider`, `--model`, `--prompt` | Override `AI_PROVIDER`, `AI_MODEL`, and `PROMPT_VERSION` from `.env` |
+| `--effort <level>` | Reasoning effort for OpenAI reasoning models. Overrides `AI_REASONING_EFFORT` |
 | `--set <file>` | Labeled set. Defaults to `eval/sets/v0-synthetic.json` |
 | `--price-in`, `--price-out` | USD per million tokens. Required for live providers so the run can report cost |
 | `--budget <usd>` | Stops before the next case once spend reaches this. Keep it well under the $100/month dev cap |
@@ -95,16 +102,44 @@ Files live in the repo-root `eval/` folder:
 | `eval/sets/*.json` | Labeled sets | Tracked |
 | `eval/runs/<stamp>.json` | Full per-case results | Ignored |
 | `eval/reports/<stamp>.md` | Summary report: overall, by input kind, by detected type, per case | Commit the ones you cite as evidence |
+| `eval/arena.example.json` | Example arena matrix | Tracked |
+| `eval/runs/arena-<stamp>.json` | Full arena results, every cell and case | Ignored |
+| `eval/reports/arena-<stamp>.md` | Arena scorecard | Commit the ones you cite as evidence |
 
-`<stamp>` is `<UTC time>-<provider>-<model>`, for example `2026-10-08T072620Z-anthropic-claude-x`.
+`<stamp>` is `<UTC time>-<provider>-<model>`, for example `2026-10-08T072620Z-anthropic-claude-x`. A run with `--effort` adds `-<effort>`.
 
-**Labeled sets.** Each case has an `id` (kebab case), a `kind` (`text` with `text`, or `image` with `imagePath` relative to the set file and `mimeType`), the `detectedType`, `expectedReadable`, the `expectedSlugs` from the CMS catalog, and `injection: true` for prompt-injection cases. The schema is `src/eval/labeled-set.ts`. Images must be rights-cleared and must not show people or personal data.
+**Labeled sets.** Each case has an `id` (kebab case), a `kind` (`text` with `text`, or `image` with `imagePath` relative to the set file and `mimeType`), the `detectedType`, `expectedReadable`, the `expectedSlugs` from the CMS catalog, `injection: true` for prompt-injection cases, and an optional `source`. The set's `sources` map records where each source came from (`description`, `license`, `piiReviewed`); the loader rejects a case whose source is unknown or not PII-reviewed. The schema is `src/eval/labeled-set.ts`, and the guide to collecting cases is [`eval/sets/README.md`](../../eval/sets/README.md). Images must be rights-cleared and must not show people or personal data.
 
 **Prompts.** The prompt is versioned in `src/extract/prompt.ts` (`p1`). Once a version has been scored, don't edit it. Add `p2` and compare the two with `--prompt`.
 
 **`v0-synthetic.json` is a harness smoke test, not the G2 gate.** It has 15 text cases. The mock adapter scores 11 of 15 and misses the bar on purpose, because it splits text on commas and new lines and treats every item as food. It fails `recipe-banana-bread` (extra "bread"), `receipt-grocery` (misses banana), `unreadable-noise` (says readable), and `injection-recipe-note` (keeps the injected items). The G2 set is 80–120 real items, then 150+ before UAT.
 
-`openai` and `bedrock` are stubs until OPEN-1 is decided. The manual `eval.yml` workflow (TDD §9) is not built yet.
+`bedrock` is a stub until OPEN-1 is decided. The manual `eval.yml` workflow (TDD §9) is not built yet.
+
+### Arena (BD3244-37)
+The arena runs one labeled set through every enabled cell of a provider × model × reasoning-effort matrix and writes a single scorecard, so the model choice for OPEN-1 rests on the same cases, prompt, and catalog for every candidate (TDD §7.9, D24).
+
+```sh
+pnpm arena -- --dry-run   # list the cells, which ones run, and why the rest are skipped. $0
+pnpm arena                # run eval/arena.example.json. Cells without a key are skipped
+pnpm arena -- --matrix eval/<matrix>.json --set eval/sets/<set>.json --budget 10
+pnpm arena -- -h          # all options
+```
+
+| Option | Meaning |
+|---|---|
+| `--matrix <file>` | Matrix to run. Defaults to `eval/arena.example.json` |
+| `--set <file>` | Labeled set. Defaults to the matrix `setPath`, then `eval/sets/v0-synthetic.json` |
+| `--prompt <version>` | Prompt version for every cell. Defaults to `PROMPT_VERSION` |
+| `--budget <usd>` | Spend cap across all cells. Overrides the matrix `budgetUsd` |
+| `--out <dir>` | Output root. Defaults to `eval/` |
+| `--dry-run` | Validates the matrix and prints the plan without calling a model |
+
+**Matrix.** `budgetUsd` caps the whole run; each cell can also set its own `budgetUsd`. `monthlyCapUsd` (default 500), `usesPerMonth` (default 25,000 and 50,000), and `callsPerUse` (default 1) drive the cost forecast. Each cell has a `provider`, `model`, optional `effort`, `pricing` (`inputPerMTok`, `outputPerMTok` in USD), `enabled`, and an optional `label` and `note`. The prices in the example matrix are public list prices we assumed in October 2025. Check them before citing a scorecard.
+
+**Scorecard.** One row per cell: cases, precision, recall, not-food rejected, injection pass rate, p50 and p95 latency, measured cost per call, cost per month at each volume, whether a 12-month forecast stays within `monthlyCapUsd`, and whether the cell meets the G2 bar. Cells that hit their budget are listed under "Stopped at the cap" and are not comparable. If we add a guardrail pre-call, set `callsPerUse` to 2.
+
+**Skipped cells.** A cell is skipped, not failed, when its key is missing (`anthropic` needs `ANTHROPIC_API_KEY`, OPEN-2; `openai` needs `OPENAI_API_KEY`, OPEN-1), when its provider is the `bedrock` stub, or when its provider is only proposed (`gemini`, which has no adapter and needs Ad Council IT approval). Proposed providers must stay `enabled: false`.
 
 ## Known behavior
 - **Bot-protected recipe sites return `upstream_error` (502).** For example, Allrecipes and Simply Recipes return 403 to our user agent. Use sites that serve JSON-LD for demos and evals, such as cookieandkate.com or budgetbytes.com.

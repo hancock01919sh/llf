@@ -119,6 +119,7 @@ export function createApp(deps: AppDeps) {
       timeoutMs: config.modelTimeoutMs,
       model: config.model,
       promptVersion: config.promptVersion,
+      ...(config.reasoningEffort ? { reasoningEffort: config.reasoningEffort } : {}),
       signal,
     };
     switch (request.inputType) {

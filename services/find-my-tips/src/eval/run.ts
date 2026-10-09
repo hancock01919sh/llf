@@ -6,6 +6,7 @@ import { parseArgs } from 'node:util';
 import { catalogFromData } from '../catalog';
 import { loadConfig, PROVIDERS, type ProviderName } from '../config';
 import { createProvider } from '../extract';
+import { REASONING_EFFORTS, type ReasoningEffort } from '../extract/types';
 import { promptVersions } from '../extract/prompt';
 import { loadLabeledSet } from './labeled-set';
 import { meetsTargets, type Pricing } from './metrics';
@@ -21,12 +22,14 @@ const FIXTURE_CATALOG = new URL('../fixtures/catalog.json', import.meta.url);
 const USAGE = `Usage: pnpm eval [options]
 
 Runs the labeled set through the extraction + matching path and scores it (TDD §7.9, PROOF_DOC P9).
-Defaults come from the same env as the service (AI_PROVIDER, AI_MODEL, PROMPT_VERSION, ANTHROPIC_API_KEY).
+Defaults come from the same env as the service (AI_PROVIDER, AI_MODEL, PROMPT_VERSION,
+ANTHROPIC_API_KEY, OPENAI_API_KEY, AI_REASONING_EFFORT).
 
 Options:
   --provider <name>    ${PROVIDERS.join(' | ')}
   --model <id>         Model id passed to the provider
   --prompt <version>   Prompt version (${promptVersions().join(', ')})
+  --effort <level>     Reasoning effort (${REASONING_EFFORTS.join(' | ')}; OpenAI only)
   --set <file>         Labeled set (default: eval/sets/v0-synthetic.json)
   --budget <usd>       Stop before the next case once spend reaches this
   --price-in <usd>     USD per million input tokens (required for live providers)
@@ -51,25 +54,33 @@ function usd(flag: string, value: string | undefined): number | undefined {
   return parsed;
 }
 
-function checkProvider(name: ProviderName, apiKey: string | undefined): void {
-  if (name === 'anthropic' && !apiKey) {
+type ProviderKeys = { anthropicApiKey?: string | undefined; openaiApiKey?: string | undefined };
+
+function checkProvider(name: ProviderName, keys: ProviderKeys): void {
+  if (name === 'anthropic' && !keys.anthropicApiKey) {
     throw new Error(
       'ANTHROPIC_API_KEY is not set (OPEN-2). Add it to the root .env to run a live eval.',
     );
   }
-  if (name === 'openai' || name === 'bedrock') {
+  if (name === 'openai' && !keys.openaiApiKey) {
     throw new Error(
-      `The ${name} adapter is a stub until OPEN-1 is decided. Use mock or anthropic.`,
+      'OPENAI_API_KEY is not set (OPEN-1). Add it to the root .env to run a live eval.',
+    );
+  }
+  if (name === 'bedrock') {
+    throw new Error(
+      'The bedrock adapter is a stub until OPEN-1 is decided. Use mock, anthropic, or openai.',
     );
   }
 }
 
-function stamp(date: Date, provider: string, model: string): string {
+function stamp(date: Date, provider: string, model: string, effort?: string): string {
   const time = date
     .toISOString()
     .replace(/[:]/g, '')
     .replace(/\.\d+Z$/, 'Z');
-  return `${time}-${provider}-${model.toLowerCase().replace(/[^a-z0-9.-]+/g, '-')}`;
+  const slug = model.toLowerCase().replace(/[^a-z0-9.-]+/g, '-');
+  return `${time}-${provider}-${slug}${effort ? `-${effort}` : ''}`;
 }
 
 async function main(): Promise<void> {
@@ -82,6 +93,7 @@ async function main(): Promise<void> {
       provider: { type: 'string' },
       model: { type: 'string' },
       prompt: { type: 'string' },
+      effort: { type: 'string' },
       set: { type: 'string' },
       budget: { type: 'string' },
       'price-in': { type: 'string' },
@@ -105,7 +117,11 @@ async function main(): Promise<void> {
   if (!promptVersions().includes(promptVersion)) {
     throw new Error(`--prompt must be one of ${promptVersions().join(', ')}`);
   }
-  checkProvider(provider, config.anthropicApiKey);
+  const effort = (values.effort ?? config.reasoningEffort) as ReasoningEffort | undefined;
+  if (effort !== undefined && !REASONING_EFFORTS.includes(effort)) {
+    throw new Error(`--effort must be one of ${REASONING_EFFORTS.join(', ')}`);
+  }
+  checkProvider(provider, config);
 
   const budgetUsd = usd('budget', values.budget);
   const priceIn = usd('price-in', values['price-in']);
@@ -124,14 +140,19 @@ async function main(): Promise<void> {
   );
 
   write(
-    `eval: ${set.cases.length} cases from ${set.version}, ${provider}/${model}, prompt ${promptVersion}`,
+    `eval: ${set.cases.length} cases from ${set.version}, ${provider}/${model}, prompt ${promptVersion}` +
+      (effort ? `, effort ${effort}` : ''),
   );
   const run = await runEval({
     set,
     setPath,
-    provider: createProvider(provider, { anthropicApiKey: config.anthropicApiKey }),
+    provider: createProvider(provider, {
+      anthropicApiKey: config.anthropicApiKey,
+      openaiApiKey: config.openaiApiKey,
+    }),
     model,
     promptVersion,
+    ...(effort === undefined ? {} : { reasoningEffort: effort }),
     timeoutMs: config.modelTimeoutMs,
     matcher,
     pricing,
@@ -144,18 +165,19 @@ async function main(): Promise<void> {
     provider,
     model,
     promptVersion,
+    ...(effort === undefined ? {} : { reasoningEffort: effort }),
     setVersion: set.version,
     catalogVersion,
     ...(budgetUsd === undefined ? {} : { budgetUsd }),
   };
   const outDir = values.out ? fromCwd(values.out) : DEFAULT_OUT;
-  const name = stamp(date, provider, model);
+  const name = stamp(date, provider, model, effort);
   const jsonPath = join(outDir, 'runs', `${name}.json`);
   const mdPath = join(outDir, 'reports', `${name}.md`);
   await mkdir(join(outDir, 'runs'), { recursive: true });
   await mkdir(join(outDir, 'reports'), { recursive: true });
   await writeFile(jsonPath, `${JSON.stringify({ meta, ...run }, null, 2)}\n`);
-  await writeFile(mdPath, renderMarkdown(meta, run));
+  await writeFile(mdPath, renderMarkdown(meta, run, { forecast: {} }));
 
   const { overall } = run.report;
   const ok = meetsTargets(overall);

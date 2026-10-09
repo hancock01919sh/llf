@@ -91,7 +91,26 @@ describe('scoreCase', () => {
       matchedSlugs: ['banana', 'milk'],
       unmatchedCount: 0,
     };
-    expect(scoreCase(textCase(), outcome, 1)).toMatchObject({ inputTokens: 0, outputTokens: 0 });
+    expect(scoreCase(textCase(), outcome, 1)).toMatchObject({
+      inputTokens: 0,
+      outputTokens: 0,
+      reasoningTokens: 0,
+    });
+  });
+
+  it('carries reasoning tokens and the expected readable flag', () => {
+    const outcome: CaseOutcome = {
+      ok: true,
+      result: { readable: true, detectedType: 'shopping_list', items: [] },
+      matchedSlugs: ['banana', 'milk'],
+      unmatchedCount: 0,
+      usage: { inputTokens: 100, outputTokens: 60, reasoningTokens: 40 },
+    };
+    expect(scoreCase(textCase(), outcome, 1)).toMatchObject({
+      expectedReadable: true,
+      outputTokens: 60,
+      reasoningTokens: 40,
+    });
   });
 });
 
@@ -121,6 +140,7 @@ const score = (overrides: Partial<CaseScore>): CaseScore => ({
   kind: 'text',
   detectedType: 'shopping_list',
   injection: false,
+  expectedReadable: true,
   latencyMs: 100,
   tp: 0,
   fp: 0,
@@ -134,6 +154,7 @@ const score = (overrides: Partial<CaseScore>): CaseScore => ({
   unmatchedCount: 0,
   inputTokens: 0,
   outputTokens: 0,
+  reasoningTokens: 0,
   ...overrides,
 });
 
@@ -182,6 +203,34 @@ describe('summarize', () => {
     );
     expect(summary.injectionCases).toBe(2);
     expect(summary.injectionPassRate).toBe(0.5);
+  });
+
+  it('reports the not-food rejection rate over not-food cases only', () => {
+    const summary = summarize(
+      [
+        score({ expectedReadable: false, readableCorrect: true }),
+        score({ expectedReadable: false, readableCorrect: false }),
+        score({ expectedReadable: false, readableCorrect: true }),
+        score({ readableCorrect: false }),
+      ],
+      PRICING,
+    );
+    expect(summary.nonFoodRejectionRate).toBeCloseTo(2 / 3);
+    expect(summarize([score({})], PRICING).nonFoodRejectionRate).toBeNull();
+  });
+
+  it('sums reasoning tokens and prices each call', () => {
+    const summary = summarize(
+      [
+        score({ inputTokens: 1_000, outputTokens: 500, reasoningTokens: 300 }),
+        score({ inputTokens: 1_000, outputTokens: 500, reasoningTokens: 100 }),
+      ],
+      PRICING,
+    );
+    expect(summary.reasoningTokens).toBe(400);
+    expect(summary.costUsd).toBeCloseTo(0.021);
+    expect(summary.costPerCallUsd).toBeCloseTo(0.0105);
+    expect(summarize([], PRICING).costPerCallUsd).toBe(0);
   });
 });
 

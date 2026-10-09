@@ -12,7 +12,8 @@
     "start": "tsx --env-file-if-exists=../../.env src/server.ts",
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
-    "eval": "tsx --env-file-if-exists=../../.env src/eval/run.ts"
+    "eval": "tsx --env-file-if-exists=../../.env src/eval/run.ts",
+    "arena": "tsx --env-file-if-exists=../../.env src/eval/arena-run.ts"
   },
   "dependencies": {
     "@llf/contracts": "workspace:*",

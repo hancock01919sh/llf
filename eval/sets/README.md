@@ -1,0 +1,66 @@
+# Labeled eval sets
+
+Labeled sets feed the model eval (`pnpm eval`) and the arena (`pnpm arena`, BD3244-37). The schema lives in `services/find-my-tips/src/eval/labeled-set.ts`, and the loader rejects any set that doesn't match it. See TDD §7.9.
+
+## What's here
+| File | Purpose |
+|---|---|
+| `v0-synthetic.json` | 15 hand-written text cases. Use it for smoke tests and CI only. It is **not** the G2 gate. |
+
+## Rules for real sets
+- **Only use rights-cleared items.** Every image case must point at a `sources` entry that names its license (the loader refuses an image case without one). Text cases should too. Don't use scraped photos without a license, stock images whose terms forbid ML use, or anything without clear provenance.
+- **No people and no personal data.** Leave out faces, names, addresses, loyalty numbers, card digits, and handwriting that identifies someone. Crop or redact them before an item is added. Each source has to be reviewed (`piiReviewed: true`) or the loader refuses the set.
+- **Never use real user submissions.** The tool doesn't store user input (TDD D20), so production traffic can't be used as an eval set.
+- **Keep images small.** Store images next to the set file at ≤1 MP (JPEG or PNG). Set `imagePath` relative to the set file. Production preprocessing will downscale to about 1 MP (not built yet, see BD3244-37), so eval images should match.
+
+## Schema
+```jsonc
+{
+  "version": "v1-pilot",            // goes into reports
+  "description": "…",
+  "sources": {
+    "ddd-kitchen-2025-10": {
+      "description": "Photos taken by ddd staff in their own kitchens",
+      "license": "ddd-owned, internal eval use",
+      "piiReviewed": true
+    }
+  },
+  "cases": [
+    {
+      "id": "fridge-001",           // slug, unique in the set
+      "kind": "image",              // "text" | "image"
+      "imagePath": "images/fridge-001.jpg",
+      "mimeType": "image/jpeg",
+      "detectedType": "fridge_photo", // recipe | receipt | shopping_list | dish | fridge_photo | unknown
+      "expectedReadable": true,
+      "expectedSlugs": ["milk", "eggs", "spinach"], // catalog slugs, no duplicates
+      "injection": false,           // true for prompt-injection probes
+      "source": "ddd-kitchen-2025-10"
+    }
+  ]
+}
+```
+
+Text cases use `text` instead of `imagePath`. `expectedSlugs` has to use slugs from the catalog the run is scored against. The arena currently scores against the fixture catalog (`services/find-my-tips/src/fixtures/catalog.json`) until the Strapi catalog is ready (BD3244-37).
+
+## Coverage targets
+Build the set in two steps. Start with a **20-item pilot** to prove that labeling, licensing, and scoring work end to end. Then grow it toward the **~500 items** that BD3244-37 calls for. TDD §7.9 sets the floor at 80–120 for the G2 gate and 150+ before UAT.
+
+Spread the cases across `detectedType`:
+
+| Category | `detectedType` | Pilot | Full |
+|---|---|---|---|
+| Fridge and pantry photos | `fridge_photo` | 5 | ~125 |
+| Receipts | `receipt` | 4 | ~100 |
+| Shopping lists (typed and handwritten) | `shopping_list` | 4 | ~100 |
+| Recipes (text and photos of cards or books) | `recipe` | 3 | ~75 |
+| Plated dishes | `dish` | 2 | ~50 |
+| Unreadable or off-topic | `unknown`, `expectedReadable: false` | 1 | ~25 |
+| Prompt-injection probes | any type, `injection: true` | 1 | ~25 |
+
+Injection probes must return no unexpected slugs. The metrics count any leak as an injection failure.
+
+## Adding a set
+1. Add the images under `eval/sets/<set-name>/images/` and the JSON file at `eval/sets/<set-name>.json`.
+2. Run `pnpm eval -- --set eval/sets/<set-name>.json`. With the mock provider this checks that the set loads and scores.
+3. Point the arena at it with `pnpm arena -- --set eval/sets/<set-name>.json`, or set `setPath` in the matrix.

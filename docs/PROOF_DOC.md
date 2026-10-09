@@ -30,7 +30,7 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 | P6 | [BD3244-30](https://dotdotdash.atlassian.net/browse/BD3244-30) | Scrape → seed pipeline | §5.5 | China team + Art | Oct 21 | ⏳ |
 | P7 | [BD3244-34](https://dotdotdash.atlassian.net/browse/BD3244-34) | `strapi transfer` between environments (incl. media) | §5.5, §12.2 | James S + Art | Oct 21 | ⏳ |
 | P8 | [BD3244-32](https://dotdotdash.atlassian.net/browse/BD3244-32) | JSON-LD hit rate on real recipe URLs | §7.4 | Art | Oct 16 | ✅ |
-| P9 | [BD3244-33](https://dotdotdash.atlassian.net/browse/BD3244-33) | Model eval baseline (dev key) | §7.7, §7.9 | Art | Oct 16 | 🔬 harness built / blocked |
+| P9 | [BD3244-33](https://dotdotdash.atlassian.net/browse/BD3244-33), [BD3244-37](https://dotdotdash.atlassian.net/browse/BD3244-37) (arena) | Model eval baseline and cross-vendor arena | §7.7, §7.9 | Art | Oct 16 (baseline), Nov 13 (pick) | 🔬 harness + arena built / blocked |
 | P10 | [BD3244-31](https://dotdotdash.atlassian.net/browse/BD3244-31) | WAF Challenge / JS integration with the tool API | §7.6 | James S + Art | Nov 6 | ⏳ |
 | P11 | [BD3244-35](https://dotdotdash.atlassian.net/browse/BD3244-35) | Render → AWS parity | §12.2 | James S + Art | Nov 13 | ⏳ |
 | P12 | [BD3244-29](https://dotdotdash.atlassian.net/browse/BD3244-29) | CMS fully IP-only (build in CodeBuild inside the VPC) | §9.2 | James S | Only if IT requires | ⏳ |
@@ -119,7 +119,14 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
   - **Smoke set:** `eval/sets/v0-synthetic.json`, 15 synthetic text cases (lists, recipes, a receipt, unreadable input, and injection attempts). It checks the harness only and **is not** the G2 gate.
   - **Mock baseline:** 11/15 cases pass (precision 91.2%, recall 96.9%, readable 93.3%, injection 50%). The 4 failures are by design: they prove the harness catches extra terms, missing terms, a wrong readable flag, and injected terms.
   - **Blocked on:** the Anthropic dev key (IT acceptance, OPEN-2, Oct 16); the 80–120 item labeled set with rights-cleared images (no people or personal data); budget approval for the run; the model and its per-token prices; and the accuracy bar (OPEN-8, Nov 20). The `eval.yml` workflow (manual trigger) is not built yet (James S).
-- **Decision:** Baseline for the production provider decision (OPEN-1, Nov 13). The OpenAI and Bedrock adapters stay stubs until OPEN-1 is decided.
+- **Arena prep (Oct 8, BD3244-37):** 🔬 Built; live runs are **blocked**.
+  - **Built:** the `openai` adapter (strict JSON schema, Zod-validated, `AI_REASONING_EFFORT`) and `pnpm arena`, which runs every enabled cell in a matrix (`eval/arena.example.json`) on the same set and prompt, with per-cell and global budgets and a `--dry-run`. The scorecard (`eval/reports/arena-<stamp>.md`) adds not-food rejection, p50/p95, $/call, and a **$/month forecast** at 25K and 50K uses against the ~$500/month cap (`callsPerUse: 2` if we add a guardrail pre-call).
+  - **Matrix `arena-v0`** ($20 global budget): mock; `claude-haiku-4-5`; `gpt-5-mini` and `gpt-5-nano` at reasoning `minimal` and `low`; `gemini-2.5-flash-lite` (disabled: no adapter, needs IT approval). Prices are assumed list prices and must be re-checked on the run date.
+  - **Labeled sets** now carry provenance (source, rights, PII-checked). Every image case must name a source, and the loader refuses a set with an unknown or un-reviewed source. See [`eval/sets/README.md`](../eval/sets/README.md).
+  - **Mock smoke:** $0 spent; it ran the mock cell, skipped the others with reasons, and the mock failed the bar on injection (50%), as designed.
+  - **Blocked on:** the Anthropic dev key (OPEN-2) and TBWA's OpenAI test key; the labeled set and the CMS ingredient catalog; IT approval before any Gemini adapter; and ≤1 MP image resize before image cases are run, so the measured tokens per image are realistic.
+  - Drafts for the client, Legal, and IT are in [`docs/eval/arena/`](eval/arena/README.md).
+- **Decision:** Baseline for the production provider decision (OPEN-1, Nov 13). The pick is the cheapest arena cell that meets G2 with 100% injection resistance and fits the monthly cap (TDD D24). The Bedrock adapter stays a stub until OPEN-1 is decided.
 
 ### P10. WAF Challenge with the tool API
 - **Hypothesis:** The WAF JS integration SDK lets `POST /api/find-tips/*` pass a Challenge from our static site without a page reload, and the client can handle a 202 challenge response.

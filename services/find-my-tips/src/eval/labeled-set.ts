@@ -23,6 +23,11 @@ export const LabeledCase = z
     expectedReadable: z.boolean(),
     expectedSlugs: z.array(Slug),
     injection: z.boolean().default(false),
+    /** Provenance id from the set's `sources` manifest (license, consent, no-PII check). */
+    source: z
+      .string()
+      .regex(/^[a-z0-9][a-z0-9-]*$/)
+      .optional(),
   })
   .superRefine((value, ctx) => {
     if (value.kind === 'text' && value.text === undefined) {
@@ -35,16 +40,32 @@ export const LabeledCase = z
         message: 'image cases need `imagePath` and `mimeType`',
       });
     }
+    if (value.kind === 'image' && value.source === undefined) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['source'],
+        message: 'image cases need a `source` (license and PII review)',
+      });
+    }
     if (new Set(value.expectedSlugs).size !== value.expectedSlugs.length) {
       ctx.addIssue({ code: 'custom', path: ['expectedSlugs'], message: 'duplicate slug' });
     }
   });
 export type LabeledCase = z.infer<typeof LabeledCase>;
 
+/** Where a batch of cases came from, so Legal can audit every item (BD3244-37). */
+export const LabeledSource = z.object({
+  description: z.string().min(1),
+  license: z.string().min(1),
+  piiReviewed: z.boolean(),
+});
+export type LabeledSource = z.infer<typeof LabeledSource>;
+
 export const LabeledSet = z
   .object({
     version: z.string().min(1),
     description: z.string().optional(),
+    sources: z.record(z.string(), LabeledSource).optional(),
     cases: z.array(LabeledCase).min(1),
   })
   .superRefine((value, ctx) => {
@@ -58,7 +79,23 @@ export const LabeledSet = z
         });
       }
       seen.add(item.id);
+      if (item.source !== undefined && value.sources?.[item.source] === undefined) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['cases', index, 'source'],
+          message: `unknown source "${item.source}"`,
+        });
+      }
     });
+    for (const [id, source] of Object.entries(value.sources ?? {})) {
+      if (!source.piiReviewed) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['sources', id, 'piiReviewed'],
+          message: `source "${id}" has not been reviewed for personal data`,
+        });
+      }
+    }
   });
 export type LabeledSet = z.infer<typeof LabeledSet>;
 
