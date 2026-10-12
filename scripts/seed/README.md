@@ -14,7 +14,7 @@ The content is **synthetic**. It is not client copy, so never seed it into stagi
 |---|---|---|
 | `taxonomies.json` | tip type, behavior, motivator | Placeholder values: `TODO(BD3244-11)` |
 | `ingredients.json` | ingredient | |
-| `tips.json` | tip | Tip → ingredient is `manyToOne`; tip → taxonomies is `oneToOne` (see below) |
+| `tips.json` | tip | Tip → ingredient is `manyToOne`; tip → taxonomies is `manyToOne` |
 | `groups.json` | group | |
 | `categories.json` | category | |
 | `pages.json` | page + blocks | Includes `examples` and `pantry`, which exist only in the seed |
@@ -65,7 +65,7 @@ curl -s localhost:1337/admin/api-tokens -H "authorization: Bearer $ADMIN_JWT" \
 - **Port 5432 already in use?** Set `POSTGRES_PORT=5433` in the root `.env`, then delete `apps/cms/.env` so `pnpm dev:cms` regenerates it with the new `DATABASE_PORT`.
 - **Calling Strapi with curl:** square brackets in query strings (`filters[title][$eq]=…`) need `curl -g` or `%5B`/`%5D` encoding.
 - **Media:** the seed doesn't upload images yet (OPEN-28). Image fields are left empty, and the site renders without them.
-- **Shared `oneToOne` relations:** several tips point to the same taxonomy term. In Strapi 5.45 this works and verifies cleanly. The planned model is still `manyToOne` (TDD §5.1).
+- **Shared taxonomy terms:** several tips point to the same taxonomy term (`manyToOne`, redeclared in P1). `node scripts/check-cms-relations.mjs` checks the cardinality of every relation against a running CMS.
 - **Render dev:** seeding Render waits on BD3244-15, which provides the service and its admin URL. The steps are the same, run with that environment's `CMS_URL` and a short-lived token.
 
 ## Tests

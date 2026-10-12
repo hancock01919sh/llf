@@ -44,7 +44,7 @@ Full detail is in [TDD §5.1](./TDD.md#51-audit-of-the-existing-strapi-repo). Th
 - No upload provider → Render disk in Phase A, S3 + CloudFront in Phase B.
 - `@strapi/plugin-cloud` included → remove it (not an approved vendor).
 - `webhooks.populateRelations` is a Strapi 4 setting → remove it.
-- Several relations are declared one-way `oneToOne` / `oneToMany` where the intent is many-to-one or many-to-many → relation spike ([`PROOF_DOC.md`](./PROOF_DOC.md) P1).
+- Several relations are declared one-way `oneToOne` / `oneToMany` where the intent is many-to-one or many-to-many → relation spike ([`PROOF_DOC.md`](./PROOF_DOC.md) P1): redeclared, no DDL or data change.
 - Missing types and modules: Accordion, Modal, global nav/footer, scroll-lock, Tool Copy. Strings move to code, not a CMS type (TDD D21). After the Figma audit (TDD D22): add Accordion, Asset List, and Jump Nav blocks, and `layout`/`order` on Group. The Tip Modal is UI, not a block, and scroll-lock is deferred (OPEN-36).
 - `Ingredient.title` (not `name`); `synonyms` is a single string.
 - No admin customization (the walkthrough's typeahead isn't in the repo).

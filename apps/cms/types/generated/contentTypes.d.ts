@@ -458,7 +458,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     group: Schema.Attribute.Relation<'manyToOne', 'api::group.group'>;
     image: Schema.Attribute.Media<'images' | 'files'>;
     ingredients: Schema.Attribute.Relation<
-      'oneToMany',
+      'manyToMany',
       'api::ingredient.ingredient'
     >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -473,7 +473,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.String & Schema.Attribute.Required;
-    tips: Schema.Attribute.Relation<'oneToMany', 'api::tip.tip'>;
+    tips: Schema.Attribute.Relation<'manyToMany', 'api::tip.tip'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -606,7 +606,7 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    featured: Schema.Attribute.Relation<'oneToMany', 'api::category.category'>;
+    featured: Schema.Attribute.Relation<'manyToMany', 'api::category.category'>;
     hero: Schema.Attribute.Component<'component.hero', false>;
     intro: Schema.Attribute.Blocks;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -750,14 +750,14 @@ export interface ApiTipTip extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
     tip_behavior: Schema.Attribute.Relation<
-      'oneToOne',
+      'manyToOne',
       'api::tip-behavior.tip-behavior'
     >;
     tip_motivator: Schema.Attribute.Relation<
-      'oneToOne',
+      'manyToOne',
       'api::tip-motivator.tip-motivator'
     >;
-    tip_type: Schema.Attribute.Relation<'oneToOne', 'api::tip-type.tip-type'>;
+    tip_type: Schema.Attribute.Relation<'manyToOne', 'api::tip-type.tip-type'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

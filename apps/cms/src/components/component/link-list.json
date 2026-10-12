@@ -16,7 +16,7 @@
     },
     "pages": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "manyToMany",
       "target": "api::page.page"
     },
     "layout": {

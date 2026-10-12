@@ -26,17 +26,17 @@
     },
     "tip_type": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "manyToOne",
       "target": "api::tip-type.tip-type"
     },
     "tip_behavior": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "manyToOne",
       "target": "api::tip-behavior.tip-behavior"
     },
     "tip_motivator": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "manyToOne",
       "target": "api::tip-motivator.tip-motivator"
     }
   }

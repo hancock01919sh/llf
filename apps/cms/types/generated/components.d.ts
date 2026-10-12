@@ -8,7 +8,7 @@ export interface ComponentCarousel extends Struct.ComponentSchema {
   };
   attributes: {
     categories: Schema.Attribute.Relation<
-      'oneToMany',
+      'manyToMany',
       'api::category.category'
     >;
     ctas: Schema.Attribute.Component<'shared.cta', true>;
@@ -51,7 +51,7 @@ export interface ComponentLinkList extends Struct.ComponentSchema {
     layout: Schema.Attribute.Enumeration<['Basic', 'Two Column']> &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'Basic'>;
-    pages: Schema.Attribute.Relation<'oneToMany', 'api::page.page'>;
+    pages: Schema.Attribute.Relation<'manyToMany', 'api::page.page'>;
     title: Schema.Attribute.Component<'shared.title', false>;
   };
 }
@@ -97,7 +97,7 @@ export interface CustomTipList extends Struct.ComponentSchema {
     layout: Schema.Attribute.Enumeration<['Basic', 'Single']> &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'Basic'>;
-    tips: Schema.Attribute.Relation<'oneToMany', 'api::tip.tip'>;
+    tips: Schema.Attribute.Relation<'manyToMany', 'api::tip.tip'>;
     title: Schema.Attribute.Component<'shared.title', false>;
   };
 }
@@ -138,7 +138,7 @@ export interface SharedCta extends Struct.ComponentSchema {
   attributes: {
     href: Schema.Attribute.String;
     label: Schema.Attribute.String;
-    page: Schema.Attribute.Relation<'oneToOne', 'api::page.page'>;
+    page: Schema.Attribute.Relation<'manyToOne', 'api::page.page'>;
   };
 }
 
