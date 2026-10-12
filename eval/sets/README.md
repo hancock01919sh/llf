@@ -11,7 +11,7 @@ Labeled sets feed the model eval (`pnpm eval`) and the arena (`pnpm arena`, BD32
 - **Only use rights-cleared items.** Every image case must point at a `sources` entry that names its license (the loader refuses an image case without one). Text cases should too. Don't use scraped photos without a license, stock images whose terms forbid ML use, or anything without clear provenance.
 - **No people and no personal data.** Leave out faces, names, addresses, loyalty numbers, card digits, and handwriting that identifies someone. Crop or redact them before an item is added. Each source has to be reviewed (`piiReviewed: true`) or the loader refuses the set.
 - **Never use real user submissions.** The tool doesn't store user input (TDD D20), so production traffic can't be used as an eval set.
-- **Keep images small.** Store images next to the set file at ≤1 MP (JPEG or PNG). Set `imagePath` relative to the set file. Production preprocessing will downscale to about 1 MP (not built yet, see BD3244-37), so eval images should match.
+- **Keep images small.** Store images next to the set file at ≤1 MP (JPEG or PNG). Set `imagePath` relative to the set file. Production preprocessing downscales to about 1 MP before every model call (`downscaleImage`), so eval images should match.
 
 ## Schema
 ```jsonc

@@ -2,6 +2,7 @@ import { ExtractionResult } from '@llf/contracts/find-tips';
 
 import type { ProviderName } from '../config';
 import { ToolError } from '../http';
+import { downscaleImage } from '../image';
 import { createAnthropicProvider } from './anthropic';
 import { createGeminiProvider } from './gemini';
 import { createMockProvider } from './mock';
@@ -80,9 +81,14 @@ export async function extractIngredients(
   const timeout = AbortSignal.timeout(options.timeoutMs);
   const signal = options.signal ? AbortSignal.any([timeout, options.signal]) : timeout;
 
+  const prepared: ExtractionInput =
+    input.kind === 'image'
+      ? { kind: 'image', ...(await downscaleImage(input.bytes, input.mimeType)) }
+      : input;
+
   let output;
   try {
-    output = await provider.extract(input, {
+    output = await provider.extract(prepared, {
       signal,
       model: options.model,
       promptVersion: options.promptVersion,

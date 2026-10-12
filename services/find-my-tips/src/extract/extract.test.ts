@@ -1,3 +1,4 @@
+import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 
 import { ToolError } from '../http';
@@ -135,5 +136,33 @@ describe('extractIngredients', () => {
       ).toBe('upstream_error');
     }
     expect(createProvider('mock').name).toBe('mock');
+  });
+});
+
+describe('image downscaling before the model call', () => {
+  it('hands the provider an image of at most 1 MP', async () => {
+    const big = new Uint8Array(
+      await sharp({ create: { width: 2400, height: 1800, channels: 3, background: '#336699' } })
+        .jpeg()
+        .toBuffer(),
+    );
+    let seen: Uint8Array | undefined;
+    const provider: ExtractionProvider = {
+      name: 'mock',
+      extract: async (input) => {
+        if (input.kind === 'image') seen = input.bytes;
+        return createMockProvider().extract(
+          { kind: 'text', text: 'milk' },
+          {
+            signal: new AbortController().signal,
+            model: 'mock-1',
+            promptVersion: 'p1',
+          },
+        );
+      },
+    };
+    await extractIngredients(provider, { kind: 'image', bytes: big, mimeType: 'image/jpeg' }, opts);
+    const meta = await sharp(seen).metadata();
+    expect(meta.width! * meta.height!).toBeLessThanOrEqual(1_000_000);
   });
 });

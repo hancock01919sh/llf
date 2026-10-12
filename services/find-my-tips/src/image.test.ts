@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
-import { IMAGE_MAX_BYTES, decodeImage, sniffImage } from './image';
+import sharp from 'sharp';
+
+import {
+  IMAGE_MAX_BYTES,
+  IMAGE_MAX_PIXELS,
+  decodeImage,
+  downscaleImage,
+  sniffImage,
+} from './image';
 
 const JPEG = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10]);
 const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
@@ -63,5 +71,42 @@ describe('decodeImage', () => {
       ok: false,
       reason: 'unsupported',
     });
+  });
+});
+
+describe('downscaleImage', () => {
+  const make = (width: number, height: number, format: 'jpeg' | 'png' | 'webp') =>
+    sharp({ create: { width, height, channels: 3, background: '#88aa44' } })
+      [format]()
+      .toBuffer()
+      .then((b) => new Uint8Array(b));
+
+  it('resizes JPEGs above 1 MP keeping aspect ratio', async () => {
+    const input = await make(2000, 1000, 'jpeg');
+    const out = await downscaleImage(input, 'image/jpeg');
+    const meta = await sharp(out.bytes).metadata();
+    expect(out.mimeType).toBe('image/jpeg');
+    expect(meta.width! * meta.height!).toBeLessThanOrEqual(IMAGE_MAX_PIXELS);
+    expect(meta.width! / meta.height!).toBeCloseTo(2, 1);
+  });
+
+  it('keeps WebP as WebP and re-encodes PNG as JPEG', async () => {
+    const webp = await downscaleImage(await make(1600, 1200, 'webp'), 'image/webp');
+    expect(webp.mimeType).toBe('image/webp');
+    expect(sniffImage(webp.bytes)).toBe('image/webp');
+    const png = await downscaleImage(await make(1600, 1200, 'png'), 'image/png');
+    expect(png.mimeType).toBe('image/jpeg');
+    expect(sniffImage(png.bytes)).toBe('image/jpeg');
+  });
+
+  it('returns small images unchanged', async () => {
+    const input = await make(800, 600, 'jpeg');
+    const out = await downscaleImage(input, 'image/jpeg');
+    expect(out.bytes).toBe(input);
+  });
+
+  it('passes undecodable bytes through', async () => {
+    const out = await downscaleImage(JPEG, 'image/jpeg');
+    expect(out.bytes).toBe(JPEG);
   });
 });

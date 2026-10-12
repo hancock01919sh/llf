@@ -25,6 +25,8 @@ Thanks for the time on Oct 8. Here's how we plan to compare models for Find My T
 | Cost per use | What one search costs us |
 | Monthly forecast | Cost at 25K and 50K uses a month, over 12 months |
 
+**Preliminary results (Oct 12; 15 synthetic text cases, not the final set; $0.04 spent).** Meets the bar on this set: Claude Haiku 4.5 (precision 100%, recall 100%, injection 100%, about $0.0017 per use, $84/month at 50K), GPT-5 mini at minimal and low effort (100%, 100%, 100%; $0.0002 and $0.0004 per use; $11 and $22/month at 50K). Does not meet it: GPT-5 nano (injection 0%) and Gemini 2.5 Flash-Lite (precision 91.4%, injection 50%). All stay far under $500/month. The set is small, with only 2 injection cases, so we will re-run on the [80–120] item set before recommending anything.
+
 **The bar.** A model passes if precision is at least [90%], recall is at least [80%], and it resists every injection case. Of the models that pass, we recommend the cheapest one that stays under about $500 a month at 50K uses.
 
 **The safety pre-check.** We'll also price an optional extra check before the main call, which screens out non-food and abusive uploads. It roughly doubles the calls per use, so we'll show the cost with and without it and leave the UX choice to you.
@@ -40,7 +42,7 @@ Thanks for the time on Oct 8. Here's how we plan to compare models for Find My T
 1. Agreement on the measures and the bar above.
 2. A decision on whether Gemini stays in the comparison.
 3. The vendor questionnaire you use for OpenAI, so we can prepare answers for each vendor in parallel.
-4. Approval for up to [$20] of test spend across all models.
+4. Approval for up to [$20] of test spend across all models (the preliminary run cost $0.04).
 
 Thanks,
 James

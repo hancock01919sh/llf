@@ -1,3 +1,5 @@
+import sharp from 'sharp';
+
 import type { IMAGE_MIME_TYPES } from '@llf/contracts/find-tips';
 
 type ImageMime = (typeof IMAGE_MIME_TYPES)[number];
@@ -38,4 +40,47 @@ export function decodeImage(base64: string, declared: ImageMime): DecodedImage {
   const sniffed = sniffImage(bytes);
   if (!sniffed || sniffed !== declared) return { ok: false, reason: 'unsupported' };
   return { ok: true, bytes, mimeType: sniffed };
+}
+
+/** Images above this many pixels are downscaled before any model call (TDD D24). */
+export const IMAGE_MAX_PIXELS = 1_000_000;
+
+const JPEG_QUALITY = 80;
+
+/**
+ * Downscales an image to at most ~1 MP, keeping aspect ratio, in memory only.
+ * Images already within the limit are returned untouched. Output keeps the
+ * input format (PNG becomes JPEG, which is far smaller for photos). If the
+ * bytes cannot be decoded they pass through unchanged and the provider
+ * rejects them. Nothing is written or logged.
+ */
+export async function downscaleImage(
+  bytes: Uint8Array,
+  mimeType: ImageMime,
+  maxPixels: number = IMAGE_MAX_PIXELS,
+): Promise<{ bytes: Uint8Array; mimeType: ImageMime }> {
+  try {
+    const { width, height } = await sharp(bytes).metadata();
+    if (!width || !height || width * height <= maxPixels) return { bytes, mimeType };
+    const scale = Math.sqrt(maxPixels / (width * height));
+    const resized = sharp(bytes)
+      .rotate()
+      .resize({
+        width: Math.max(1, Math.floor(width * scale)),
+        height: Math.max(1, Math.floor(height * scale)),
+        fit: 'inside',
+      });
+    if (mimeType === 'image/webp') {
+      return {
+        bytes: new Uint8Array(await resized.webp({ quality: JPEG_QUALITY }).toBuffer()),
+        mimeType,
+      };
+    }
+    return {
+      bytes: new Uint8Array(await resized.jpeg({ quality: JPEG_QUALITY }).toBuffer()),
+      mimeType: 'image/jpeg',
+    };
+  } catch {
+    return { bytes, mimeType };
+  }
 }

@@ -16,7 +16,14 @@ Run: `eval/reports/arena-[stamp].md` · Set: [name, size] · Prompt: [version] �
 
 | Cell | Precision | Recall | Readable / not food | Injection | p50 / p95 | $/use | $/month at 50K | Pass |
 |---|---|---|---|---|---|---|---|---|
-| | | | | | | | | |
+| claude-haiku-4-5 (prelim.) | 100.0% | 100.0% | 100% not-food | 100% | 1329 / 1694 ms | $0.0017 | $83.76 | ✅ |
+| gpt-5-mini minimal (prelim.) | 100.0% | 100.0% | 100% not-food | 100% | 1082 / 2071 ms | $0.0002 | $10.80 | ✅ |
+| gpt-5-mini low (prelim.) | 100.0% | 100.0% | 100% not-food | 100% | 2035 / 3501 ms | $0.0004 | $21.87 | ✅ |
+| gpt-5-nano minimal (prelim.) | 91.2% | 96.9% | 100% not-food | 0% | 988 / 1377 ms | $0.00004 | $2.25 | ❌ |
+| gpt-5-nano low (prelim.) | 91.4% | 100.0% | 100% not-food | 0% | 3048 / 6662 ms | $0.0002 | $10.19 | ❌ |
+| gemini-2.5-flash-lite (prelim.) | 91.4% | 100.0% | 100% not-food | 50% | 559 / 834 ms | $0.0001 | $3.28 | ❌ |
+
+PRELIMINARY: Oct 12 run on `v0-synthetic` (15 text cases, 2 injection cases), prompt `p1`, assumed Oct 2025 list prices, $0.04 spent. Report: `eval/reports/arena-2026-10-12T205919Z.md`.  The "Readable / not food" column shows the not-food rejection rate only. The final table needs the 80–120 item labeled set (OPEN-8).
 
 ## 12-month forecast and break-even
 
