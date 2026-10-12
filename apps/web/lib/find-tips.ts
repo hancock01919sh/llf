@@ -85,6 +85,8 @@ export function classifyResponse(status: number, body: unknown, headers: Headers
   if (status === 202 || status === 405 || headers.get('x-amzn-waf-action')) {
     return { kind: 'error', reason: 'challenge', retryable: false };
   }
+  if (status === 424 || ErrorResponse.safeParse(body).data?.code === 'source_unavailable')
+    return { kind: 'error', reason: 'site_blocked', retryable: false };
   if (status === 429) return { kind: 'rateLimited', retryAfterMs: retryAfter(headers) };
   if (status === 503) return { kind: 'unavailable' };
   if (status === 413) return { kind: 'tooLarge' };

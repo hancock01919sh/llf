@@ -270,6 +270,21 @@ describe('FindMyTips', () => {
     expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 
+  it('shows Site blocked copy with no retry button and no auto-retry', async () => {
+    const fetchMock = stubApi('live', () =>
+      json(424, { requestId: 'x', code: 'source_unavailable' }),
+    );
+    renderTool();
+    await screen.findByRole('tablist');
+    fireEvent.change(screen.getByLabelText(block.url_label!), {
+      target: { value: 'https://example.com/recipe' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: block.cta_label }));
+    await screen.findByText(t.siteBlocked);
+    expect(screen.queryByRole('button', { name: t.retry })).toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
   it('counts down after a 429 and disables submit', async () => {
     stubApi('live', () => new Response(null, { status: 429, headers: { 'retry-after': '5' } }));
     renderTool();

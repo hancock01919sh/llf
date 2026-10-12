@@ -70,6 +70,7 @@ const SiteStrings = z.object({
     unsupportedFile: text,
     required: text,
     challenge: text,
+    siteBlocked: text,
     timeout: text,
     retryIn: text,
     startOver: text,
@@ -151,6 +152,8 @@ export const strings: SiteStrings = SiteStrings.parse({
     searchSite: 'Search the site',
     unsupportedFile: 'Use a JPEG, PNG, or WebP image.',
     required: 'Add a link, photo, or list first.',
+    siteBlocked:
+      "That recipe site won't let us read it. Paste the ingredient list or upload a photo instead.",
     challenge: "We couldn't confirm you're human. Reload the page and try again.",
     timeout: 'That took too long. Please try again.',
     retryIn: 'You can try again in {seconds} seconds.',

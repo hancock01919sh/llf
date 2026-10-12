@@ -9,6 +9,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   rate_limited: 429,
   unavailable: 503,
   upstream_error: 502,
+  source_unavailable: 424,
   timeout: 504,
   not_found: 404,
   method_not_allowed: 405,

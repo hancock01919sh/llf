@@ -84,6 +84,13 @@ describe('classifyResponse', () => {
       { kind: 'error', reason: 'challenge', retryable: false },
     ],
     [
+      'blocked recipe site',
+      424,
+      error('source_unavailable'),
+      none,
+      { kind: 'error', reason: 'site_blocked', retryable: false },
+    ],
+    [
       '429 default wait',
       429,
       error('rate_limited'),
@@ -145,6 +152,7 @@ describe('errorReason', () => {
     [{ kind: 'tooLarge' }, 'too_large'],
     [{ kind: 'unsupportedFile' }, 'server'],
     [{ kind: 'error', reason: 'challenge', retryable: false }, 'challenge'],
+    [{ kind: 'error', reason: 'site_blocked', retryable: false }, 'site_blocked'],
   ])('%o → %s', (outcome, expected) => {
     expect(errorReason(outcome)).toBe(expected);
   });
@@ -186,6 +194,16 @@ describe('requestExtract', () => {
     expect(url).toBe(FIND_TIPS_API.extract);
     expect(init.method).toBe('POST');
     expect(JSON.parse(String(init.body))).toEqual(body);
+  });
+
+  it('never auto-retries a blocked recipe site', async () => {
+    const fetcher = vi.fn(async () => json(424, { requestId: 'x', code: 'source_unavailable' }));
+    await expect(requestExtract(body, new AbortController().signal, fetcher)).resolves.toEqual({
+      kind: 'error',
+      reason: 'site_blocked',
+      retryable: false,
+    });
+    expect(fetcher).toHaveBeenCalledOnce();
   });
 
   it('retries once on 502/504, then classifies', async () => {

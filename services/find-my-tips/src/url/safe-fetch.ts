@@ -5,9 +5,11 @@ import { isIP } from 'node:net';
 import type { LookupFunction } from 'node:net';
 
 import { canonicalizeUrl } from './canonicalize';
+import { isSiteBlocked } from './blocked';
 import { isBlockedIp } from './ip';
 
-export type SafeFetchReason = 'url_not_allowed' | 'upstream_error' | 'timeout';
+export type SafeFetchReason =
+  'url_not_allowed' | 'upstream_error' | 'timeout' | 'source_unavailable';
 
 export class SafeFetchError extends Error {
   readonly reason: SafeFetchReason;
@@ -199,6 +201,8 @@ export async function safeFetch(
     if (response.body.byteLength > maxBytes) throw new SafeFetchError('upstream_error');
 
     const { status, headers } = response;
+    if (isSiteBlocked(status, headers, response.body))
+      throw new SafeFetchError('source_unavailable');
     if (status >= 300 && status < 400 && headers.location) {
       if (redirects >= maxRedirects) throw new SafeFetchError('url_not_allowed');
       let next: URL;

@@ -93,6 +93,7 @@ export const ERROR_CODES = [
   'rate_limited',
   'unavailable',
   'upstream_error',
+  'source_unavailable',
   'timeout',
   'not_found',
   'method_not_allowed',

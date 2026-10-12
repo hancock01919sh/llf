@@ -1,11 +1,21 @@
 import { describe, expect, it } from 'vitest';
 import {
   EXTRACTION_MAX_ITEMS,
+  ErrorResponse,
   ExtractRequest,
   ExtractionResult,
   REPORT_INGREDIENTS_TOOL,
   TEXT_MAX_LENGTH,
 } from './find-tips';
+
+describe('ErrorResponse', () => {
+  it('accepts the distinct blocked-site code', () => {
+    expect(ErrorResponse.safeParse({ requestId: 'r', code: 'source_unavailable' }).success).toBe(
+      true,
+    );
+    expect(ErrorResponse.safeParse({ requestId: 'r', code: 'nope' }).success).toBe(false);
+  });
+});
 
 describe('ExtractRequest', () => {
   it('accepts each input type', () => {

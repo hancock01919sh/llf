@@ -118,6 +118,21 @@ describe('safeFetch', () => {
     });
   });
 
+  it('reports a blocked origin as source_unavailable, distinct from other failures', async () => {
+    for (const status of [401, 403, 429, 451]) {
+      const transport = fakeTransport({ 'https://recipes.test/': { status } });
+      await expect(
+        safeFetch('https://recipes.test/', { resolve, transport }),
+      ).rejects.toMatchObject({ reason: 'source_unavailable' });
+    }
+    const challenge = fakeTransport({
+      'https://recipes.test/': { html: '<title>Just a moment...</title>' },
+    });
+    await expect(
+      safeFetch('https://recipes.test/', { resolve, transport: challenge }),
+    ).rejects.toMatchObject({ reason: 'source_unavailable' });
+  });
+
   it('treats a non-2xx status as an upstream error', async () => {
     const transport = fakeTransport({ 'https://recipes.test/': { status: 500 } });
     await expect(safeFetch('https://recipes.test/', { resolve, transport })).rejects.toMatchObject({

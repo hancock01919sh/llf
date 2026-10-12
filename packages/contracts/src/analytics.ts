@@ -25,6 +25,7 @@ export const TOOL_ERROR_REASONS = [
   'timeout',
   'invalid_url',
   'too_large',
+  'site_blocked',
   'server',
 ] as const;
 export type ToolErrorReason = (typeof TOOL_ERROR_REASONS)[number];

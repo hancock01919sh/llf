@@ -47,6 +47,15 @@ async function codeOf(promise: Promise<unknown>): Promise<string> {
 }
 
 describe('runUrlPipeline', () => {
+  it('returns source_unavailable for a blocked page and never reaches the model', async () => {
+    const { deps, quota } = setup();
+    deps.transport = fakeTransport({ 'https://recipes.test/blocked': { status: 403 } });
+    expect(await codeOf(runUrlPipeline('https://recipes.test/blocked', deps))).toBe(
+      'source_unavailable',
+    );
+    expect(await quota.exhausted('url')).toBe(false);
+  });
+
   it('reads recipe JSON-LD without calling the model, even with no quota left', async () => {
     const { deps } = setup({}, 0);
     const result = await runUrlPipeline('https://recipes.test/pie?utm_source=feed', deps);

@@ -75,6 +75,7 @@ const ERROR_COPY: Record<ToolErrorReason, string> = {
   timeout: t.timeout,
   invalid_url: t.invalidUrl,
   too_large: t.tooLarge,
+  site_blocked: t.siteBlocked,
   server: t.error,
 };
 
