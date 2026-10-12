@@ -23,13 +23,13 @@ const USAGE = `Usage: pnpm eval [options]
 
 Runs the labeled set through the extraction + matching path and scores it (TDD §7.9, PROOF_DOC P9).
 Defaults come from the same env as the service (AI_PROVIDER, AI_MODEL, PROMPT_VERSION,
-ANTHROPIC_API_KEY, OPENAI_API_KEY, AI_REASONING_EFFORT).
+ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, AI_REASONING_EFFORT).
 
 Options:
   --provider <name>    ${PROVIDERS.join(' | ')}
   --model <id>         Model id passed to the provider
   --prompt <version>   Prompt version (${promptVersions().join(', ')})
-  --effort <level>     Reasoning effort (${REASONING_EFFORTS.join(' | ')}; OpenAI only)
+  --effort <level>     Reasoning effort (${REASONING_EFFORTS.join(' | ')}; OpenAI and Gemini)
   --set <file>         Labeled set (default: eval/sets/v0-synthetic.json)
   --budget <usd>       Stop before the next case once spend reaches this
   --price-in <usd>     USD per million input tokens (required for live providers)
@@ -54,7 +54,11 @@ function usd(flag: string, value: string | undefined): number | undefined {
   return parsed;
 }
 
-type ProviderKeys = { anthropicApiKey?: string | undefined; openaiApiKey?: string | undefined };
+type ProviderKeys = {
+  anthropicApiKey?: string | undefined;
+  openaiApiKey?: string | undefined;
+  geminiApiKey?: string | undefined;
+};
 
 function checkProvider(name: ProviderName, keys: ProviderKeys): void {
   if (name === 'anthropic' && !keys.anthropicApiKey) {
@@ -67,9 +71,12 @@ function checkProvider(name: ProviderName, keys: ProviderKeys): void {
       'OPENAI_API_KEY is not set (OPEN-1). Add it to the root .env to run a live eval.',
     );
   }
+  if (name === 'gemini' && !keys.geminiApiKey) {
+    throw new Error('GEMINI_API_KEY is not set. Add it to the root .env to run a live eval.');
+  }
   if (name === 'bedrock') {
     throw new Error(
-      'The bedrock adapter is a stub until OPEN-1 is decided. Use mock, anthropic, or openai.',
+      'The bedrock adapter is a stub until OPEN-1 is decided. Use mock, anthropic, openai, or gemini.',
     );
   }
 }
@@ -149,6 +156,7 @@ async function main(): Promise<void> {
     provider: createProvider(provider, {
       anthropicApiKey: config.anthropicApiKey,
       openaiApiKey: config.openaiApiKey,
+      geminiApiKey: config.geminiApiKey,
     }),
     model,
     promptVersion,

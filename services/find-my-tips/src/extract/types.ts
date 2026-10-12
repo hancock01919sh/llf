@@ -5,7 +5,7 @@ export type ExtractionInput =
   | { kind: 'image'; bytes: Uint8Array; mimeType: (typeof IMAGE_MIME_TYPES)[number] };
 
 /**
- * Reasoning budget for models that support it (OpenAI `reasoning_effort`).
+ * Reasoning budget for models that support it (OpenAI `reasoning_effort`, Gemini thinking budget).
  * Adapters without the concept ignore it. Set by `AI_REASONING_EFFORT`.
  */
 export const REASONING_EFFORTS = ['none', 'minimal', 'low', 'medium', 'high'] as const;

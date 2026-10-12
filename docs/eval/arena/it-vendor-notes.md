@@ -8,7 +8,7 @@ Working notes for Ad Council IT approval (BD3244-37). Cat has a questionnaire fo
 |---|---|---|---|
 | OpenAI | Candidate for production; TBWA test key for the arena | Planned production provider; questionnaire in progress | Get Cat's questionnaire and TBWA's capped test key |
 | Anthropic | Dev and Phase A on ddd's key; arena candidate | Pending (OPEN-2). Internal staff use only today | IT acceptance of ddd's dev key |
-| Google (Gemini) | Arena candidate only | **Not approved.** New vendor | IT decision before we build the adapter or run it |
+| Google (Gemini) | Arena candidate on ddd's own key (dev/eval, test data only) | Pending (like Anthropic). Not approved for production | IT acceptance of ddd's key for eval; IT approval before any production use |
 | AWS Bedrock | Option to run models in Ad Council's AWS | AWS is approved; model terms vary | Decide after OPEN-1 |
 
 ## Questionnaire tracker
@@ -17,7 +17,7 @@ Working notes for Ad Council IT approval (BD3244-37). Cat has a questionnaire fo
 |---|---|---|---|---|
 | OpenAI | | | | Cat's template |
 | Anthropic | | | | |
-| Google | | | | Only if IT is open to a new vendor |
+| Google | | | | Only if Gemini is considered for production |
 
 ## Answers we can give for our side
 

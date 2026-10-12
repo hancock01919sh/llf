@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { REASONING_EFFORTS, type ReasoningEffort } from './extract/types';
 
-export const PROVIDERS = ['mock', 'anthropic', 'openai', 'bedrock'] as const;
+export const PROVIDERS = ['mock', 'anthropic', 'openai', 'gemini', 'bedrock'] as const;
 export type ProviderName = (typeof PROVIDERS)[number];
 
 const intFromEnv = (fallback: number) => z.coerce.number().int().positive().default(fallback);
@@ -18,7 +18,10 @@ const EnvSchema = z.object({
   ANTHROPIC_API_KEY: z.string().trim().min(1).optional(),
   // TBWA's capped test key (dev and the eval arena only). Never logged or echoed.
   OPENAI_API_KEY: z.string().trim().min(1).optional(),
-  // Only sent to providers that support it (OpenAI reasoning models). Unset = provider default.
+  // ddd's own Gemini key (dev and the eval arena only, TDD D25). Never logged or echoed.
+  GEMINI_API_KEY: z.string().trim().min(1).optional(),
+  // Only sent to providers that support it (OpenAI reasoning models, Gemini thinking
+  // budgets). Unset = provider default.
   AI_REASONING_EFFORT: z.enum(REASONING_EFFORTS).optional(),
   // TOOL_PORT wins so one root `.env` can drive both the tool and the web proxy;
   // PORT is what Render injects.
@@ -43,6 +46,7 @@ export type Config = {
   promptVersion: string;
   anthropicApiKey: string | undefined;
   openaiApiKey: string | undefined;
+  geminiApiKey: string | undefined;
   reasoningEffort: ReasoningEffort | undefined;
   port: number;
   catalogUrl: string | undefined;
@@ -73,6 +77,7 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     promptVersion: e.PROMPT_VERSION,
     anthropicApiKey: e.ANTHROPIC_API_KEY,
     openaiApiKey: e.OPENAI_API_KEY,
+    geminiApiKey: e.GEMINI_API_KEY,
     reasoningEffort: e.AI_REASONING_EFFORT,
     port: e.TOOL_PORT ?? e.PORT,
     catalogUrl: e.CATALOG_URL,

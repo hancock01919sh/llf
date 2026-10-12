@@ -27,7 +27,7 @@ This folder holds the working drafts for the Oct 8 arena action items. They feed
 |---|---|---|---|
 | Anthropic dev key accepted by Ad Council IT | Claude Haiku cell | Ad Council IT | OPEN-2 |
 | TBWA's capped OpenAI test key | GPT-5 mini and nano cells | TBWA | BD3244-37 |
-| IT approval for Google (Gemini) as a new vendor | Gemini adapter and cell | Cat / Ad Council IT | BD3244-37 |
+| Acceptance of ddd's Gemini key for eval (test data only) | Gemini cell | Ad Council IT | OPEN-2 |
 | Approval for about [$20] of eval spend | Any live run | Cat | BD3244-37 |
 | Labeled set of [80–120] items with rights-cleared images | Meaningful scores | Art, with content from Ad Council | OPEN-8 |
 | CMS ingredient catalog | Matching against real terms | Content team | OPEN-8 |

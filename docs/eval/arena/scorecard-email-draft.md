@@ -33,12 +33,12 @@ Thanks for the time on Oct 8. Here's how we plan to compare models for Find My T
 
 - Anthropic Claude Haiku 4.5
 - OpenAI GPT-5 mini and GPT-5 nano, each at two effort settings
-- Google Gemini 2.5 Flash-Lite. This would be a new vendor for Ad Council, so it needs IT approval before we test it.
+- Google Gemini 2.5 Flash-Lite, tested on our own key with test data only. It would need IT approval before any production use.
 
 **What we need from you**
 
 1. Agreement on the measures and the bar above.
-2. IT approval to test Gemini, or a decision to leave it out.
+2. A decision on whether Gemini stays in the comparison.
 3. The vendor questionnaire you use for OpenAI, so we can prepare answers for each vendor in parallel.
 4. Approval for up to [$20] of test spend across all models.
 

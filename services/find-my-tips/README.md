@@ -18,12 +18,13 @@ All keys are optional and every one has a default. Empty values are treated as u
 
 | Key | Default | Notes |
 |---|---|---|
-| `AI_PROVIDER` | `mock` | `mock` \| `anthropic` \| `openai` \| `bedrock`. `anthropic` and `openai` are live (`src/extract/anthropic.ts`, `src/extract/openai.ts`). `bedrock` is a stub until OPEN-1 is decided. |
+| `AI_PROVIDER` | `mock` | `mock` \| `anthropic` \| `openai` \| `gemini` \| `bedrock`. `anthropic`, `openai`, and `gemini` are live (`src/extract/anthropic.ts`, `src/extract/openai.ts`, `src/extract/gemini.ts`). `bedrock` is a stub until OPEN-1 is decided. |
 | `AI_MODEL` | `mock-1` | Passed to the provider and included in the URL cache key. |
 | `PROMPT_VERSION` | `p1` | System prompt version (`src/extract/prompt.ts`). Add a new version instead of editing one that an eval has scored. |
 | `ANTHROPIC_API_KEY` | unset | Dev only: ddd's key, on Render dev and for `pnpm eval` (OPEN-2). Without it, `anthropic` returns `upstream_error`. Never logged. |
 | `OPENAI_API_KEY` | unset | TBWA's capped test key, for Render dev, `pnpm eval`, and `pnpm arena` only (OPEN-1). Without it, `openai` returns `upstream_error`. Never logged. |
-| `AI_REASONING_EFFORT` | unset | `minimal` \| `low` \| `medium` \| `high`. Sent to OpenAI reasoning models only; the other providers ignore it. Unset uses the model's default. |
+| `GEMINI_API_KEY` | unset | ddd's own key, for Render dev, `pnpm eval`, and `pnpm arena` only, with test data only (TDD D25). Without it, `gemini` returns `upstream_error`. Never logged. |
+| `AI_REASONING_EFFORT` | unset | `none` \| `minimal` \| `low` \| `medium` \| `high`. Sent to OpenAI as `reasoning_effort`; mapped to a Gemini `thinkingBudget` (0 / 0 / 1024 / 8192 / 24576). Anthropic and the mock ignore it. Unset uses the model's default. |
 | `FIND_TIPS_MODE` | `live` | Kill switch (TDD §7.7). `jsonld-only` makes no model calls; `off` returns 503 `unavailable`. |
 | `TOOL_PORT` / `PORT` | `8787` | `TOOL_PORT` takes precedence. Render sets `PORT`. |
 | `CATALOG_URL` / `CATALOG_FILE` | bundled `src/fixtures/catalog.json` | Catalog source, refreshed every `CATALOG_REFRESH_MS` (60 s). |
@@ -139,7 +140,7 @@ pnpm arena -- -h          # all options
 
 **Scorecard.** One row per cell: cases, precision, recall, not-food rejected, injection pass rate, p50 and p95 latency, measured cost per call, cost per month at each volume, whether a 12-month forecast stays within `monthlyCapUsd`, and whether the cell meets the G2 bar. Cells that hit their budget are listed under "Stopped at the cap" and are not comparable. If we add a guardrail pre-call, set `callsPerUse` to 2.
 
-**Skipped cells.** A cell is skipped, not failed, when its key is missing (`anthropic` needs `ANTHROPIC_API_KEY`, OPEN-2; `openai` needs `OPENAI_API_KEY`, OPEN-1), when its provider is the `bedrock` stub, or when its provider is only proposed (`gemini`, which has no adapter and needs Ad Council IT approval). Proposed providers must stay `enabled: false`.
+**Skipped cells.** A cell is skipped, not failed, when its key is missing (`anthropic` needs `ANTHROPIC_API_KEY`, OPEN-2; `openai` needs `OPENAI_API_KEY`, OPEN-1; `gemini` needs `GEMINI_API_KEY`, D25), when its provider is the `bedrock` stub, or when the cell is `enabled: false` (add a `note` saying why).
 
 ## Known behavior
 - **Bot-protected recipe sites return `upstream_error` (502).** For example, Allrecipes and Simply Recipes return 403 to our user agent. Use sites that serve JSON-LD for demos and evals, such as cookieandkate.com or budgetbytes.com.

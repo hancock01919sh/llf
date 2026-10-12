@@ -11,7 +11,6 @@ import {
   ArenaMatrix,
   cellLabel,
   missingFor,
-  PROPOSED_PROVIDERS,
   renderArenaMarkdown,
   runArena,
   type ArenaCell,
@@ -34,7 +33,7 @@ const USAGE = `Usage: pnpm arena [options]
 
 Runs the labeled set through every enabled cell of a provider × model × effort matrix and
 writes one scorecard (BD3244-37, TDD §7.7, OPEN-1). Cells without a key are skipped, not failed.
-Keys come from the same env as the service (ANTHROPIC_API_KEY, OPENAI_API_KEY).
+Keys come from the same env as the service (ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY).
 
 Options:
   --matrix <file>      Arena matrix (default: eval/arena.example.json)
@@ -114,6 +113,7 @@ async function main(): Promise<void> {
     return createProvider(cell.provider, {
       anthropicApiKey: config.anthropicApiKey,
       openaiApiKey: config.openaiApiKey,
+      geminiApiKey: config.geminiApiKey,
     });
   };
 
@@ -126,11 +126,9 @@ async function main(): Promise<void> {
   if (values['dry-run']) {
     for (const cell of matrix.cells) {
       const label = cellLabel(cell);
-      const proposed = (PROPOSED_PROVIDERS as readonly string[]).includes(cell.provider);
-      const reason =
-        !cell.enabled || proposed
-          ? (cell.note ?? 'disabled in the matrix')
-          : missingFor(cell.provider as ProviderName, config);
+      const reason = !cell.enabled
+        ? (cell.note ?? 'disabled in the matrix')
+        : missingFor(cell.provider, config);
       const capNote = cell.budgetUsd === undefined ? '' : ` (cap $${cell.budgetUsd.toFixed(2)})`;
       write(
         `  ${reason === undefined ? 'run ' : 'skip'} ${label}${capNote}${reason ? `: ${reason}` : ''}`,

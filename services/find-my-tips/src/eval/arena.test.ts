@@ -78,19 +78,20 @@ describe('ArenaMatrix', () => {
     expect(m.cells[0]?.enabled).toBe(true);
   });
 
-  it('rejects an enabled proposed provider', () => {
-    const parsed = ArenaMatrix.safeParse({
-      cells: [{ provider: 'gemini', model: 'gemini-2.5-flash-lite', pricing: FREE }],
+  it('accepts an enabled gemini cell', () => {
+    const m = matrix({
+      cells: [
+        { provider: 'gemini', model: 'gemini-2.5-flash-lite', effort: 'none', pricing: FREE },
+      ],
     });
-    expect(parsed.success).toBe(false);
-    expect(parsed.error?.issues[0]?.path).toEqual(['cells', 0, 'enabled']);
+    expect(m.cells[0]).toMatchObject({ provider: 'gemini', enabled: true });
   });
 
-  it('accepts a disabled proposed provider', () => {
-    const m = matrix({
-      cells: [{ provider: 'gemini', model: 'g', pricing: FREE, enabled: false }],
-    });
-    expect(m.cells).toHaveLength(1);
+  it('rejects an unknown provider', () => {
+    expect(
+      ArenaMatrix.safeParse({ cells: [{ provider: 'mistral', model: 'm', pricing: FREE }] })
+        .success,
+    ).toBe(false);
   });
 
   it('rejects duplicate cell labels', () => {
@@ -133,6 +134,9 @@ describe('missingFor', () => {
   it('names the missing key and its open question', () => {
     expect(missingFor('anthropic', {})).toBe('no ANTHROPIC_API_KEY (OPEN-2)');
     expect(missingFor('openai', { anthropicApiKey: 'k' })).toBe('no OPENAI_API_KEY (OPEN-1)');
+    expect(missingFor('gemini', { anthropicApiKey: 'k', openaiApiKey: 'k' })).toBe(
+      'no GEMINI_API_KEY',
+    );
     expect(missingFor('bedrock', { anthropicApiKey: 'k', openaiApiKey: 'k' })).toMatch(/stub/);
   });
 
@@ -140,6 +144,7 @@ describe('missingFor', () => {
     expect(missingFor('mock', {})).toBeUndefined();
     expect(missingFor('openai', { openaiApiKey: 'k' })).toBeUndefined();
     expect(missingFor('anthropic', { anthropicApiKey: 'k' })).toBeUndefined();
+    expect(missingFor('gemini', { geminiApiKey: 'k' })).toBeUndefined();
   });
 });
 
@@ -162,7 +167,7 @@ describe('runArena', () => {
     expect(result.budgetUsd).toBeUndefined();
   });
 
-  it('skips disabled and proposed cells with their note', async () => {
+  it('skips disabled cells with their note', async () => {
     const m = matrix({
       cells: [
         { provider: 'mock', model: 'm', pricing: FREE },
@@ -172,7 +177,7 @@ describe('runArena', () => {
           model: 'g',
           pricing: FREE,
           enabled: false,
-          note: 'needs IT approval',
+          note: 'parked for this run',
         },
       ],
     });
@@ -180,7 +185,7 @@ describe('runArena', () => {
     expect(result.cells.map((c) => c.label)).toEqual(['mock/m']);
     expect(result.skipped).toEqual([
       { label: 'openai/x', reason: 'disabled in the matrix' },
-      { label: 'gemini/g', reason: 'needs IT approval' },
+      { label: 'gemini/g', reason: 'parked for this run' },
     ]);
   });
 

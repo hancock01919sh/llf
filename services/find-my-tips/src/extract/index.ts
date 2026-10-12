@@ -3,6 +3,7 @@ import { ExtractionResult } from '@llf/contracts/find-tips';
 import type { ProviderName } from '../config';
 import { ToolError } from '../http';
 import { createAnthropicProvider } from './anthropic';
+import { createGeminiProvider } from './gemini';
 import { createMockProvider } from './mock';
 import { createOpenAIProvider } from './openai';
 import { createBedrockProvider } from './stubs';
@@ -14,6 +15,7 @@ import type {
 } from './types';
 
 export { createAnthropicProvider } from './anthropic';
+export { createGeminiProvider } from './gemini';
 export { MOCK_IMAGE_RESULT, createMockProvider } from './mock';
 export { createOpenAIProvider } from './openai';
 export * from './types';
@@ -21,6 +23,7 @@ export * from './types';
 export type ProviderOptions = {
   anthropicApiKey?: string | undefined;
   openaiApiKey?: string | undefined;
+  geminiApiKey?: string | undefined;
   fetch?: typeof fetch;
 };
 
@@ -39,6 +42,11 @@ export function createProvider(
     case 'openai':
       return createOpenAIProvider({
         apiKey: options.openaiApiKey,
+        ...(options.fetch ? { fetch: options.fetch } : {}),
+      });
+    case 'gemini':
+      return createGeminiProvider({
+        apiKey: options.geminiApiKey,
         ...(options.fetch ? { fetch: options.fetch } : {}),
       });
     case 'bedrock':

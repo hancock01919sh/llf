@@ -11,6 +11,7 @@ describe('loadConfig', () => {
       promptVersion: 'p1',
       anthropicApiKey: undefined,
       openaiApiKey: undefined,
+      geminiApiKey: undefined,
       reasoningEffort: undefined,
       port: 8787,
       catalogUrl: undefined,
@@ -66,6 +67,16 @@ describe('loadConfig', () => {
     expect(() => loadConfig({ OPENAI_API_KEY: 'sk-proj-secret', PORT: 'abc' })).not.toThrow(
       /sk-proj-secret/,
     );
+  });
+
+  it('reads the Gemini key without echoing it on errors', () => {
+    expect(loadConfig({ GEMINI_API_KEY: ' g-test ' }).geminiApiKey).toBe('g-test');
+    expect(loadConfig({ GEMINI_API_KEY: '' }).geminiApiKey).toBeUndefined();
+    expect(() => loadConfig({ GEMINI_API_KEY: 'g-secret', PORT: 'abc' })).not.toThrow(/g-secret/);
+  });
+
+  it('accepts gemini as AI_PROVIDER', () => {
+    expect(loadConfig({ AI_PROVIDER: 'gemini' }).provider).toBe('gemini');
   });
 
   it('parses AI_REASONING_EFFORT', () => {

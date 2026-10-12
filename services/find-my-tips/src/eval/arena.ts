@@ -18,34 +18,20 @@ import { count, dollars, pct, usd } from './report';
 import { runEval } from './runner';
 import type { EvalRun } from './runner';
 
-/** Providers we want to compare but have no adapter or IT approval for yet. */
-export const PROPOSED_PROVIDERS = ['gemini'] as const;
-const ARENA_PROVIDERS = [...PROVIDERS, ...PROPOSED_PROVIDERS] as const;
-
 const usdAmount = z.number().nonnegative();
 
-export const ArenaCell = z
-  .object({
-    label: z.string().min(1).optional(),
-    provider: z.enum(ARENA_PROVIDERS),
-    model: z.string().min(1),
-    effort: z.enum(REASONING_EFFORTS).optional(),
-    /** USD per million tokens, from the provider's public price list on the run date. */
-    pricing: z.object({ inputPerMTok: usdAmount, outputPerMTok: usdAmount }),
-    /** Per-cell spend cap in USD. */
-    budgetUsd: usdAmount.optional(),
-    enabled: z.boolean().default(true),
-    note: z.string().optional(),
-  })
-  .superRefine((cell, ctx) => {
-    if (cell.enabled && (PROPOSED_PROVIDERS as readonly string[]).includes(cell.provider)) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['enabled'],
-        message: `${cell.provider} has no adapter yet (TDD §7.7 [PROPOSED]); set enabled: false`,
-      });
-    }
-  });
+export const ArenaCell = z.object({
+  label: z.string().min(1).optional(),
+  provider: z.enum(PROVIDERS),
+  model: z.string().min(1),
+  effort: z.enum(REASONING_EFFORTS).optional(),
+  /** USD per million tokens, from the provider's public price list on the run date. */
+  pricing: z.object({ inputPerMTok: usdAmount, outputPerMTok: usdAmount }),
+  /** Per-cell spend cap in USD. */
+  budgetUsd: usdAmount.optional(),
+  enabled: z.boolean().default(true),
+  note: z.string().optional(),
+});
 export type ArenaCell = z.infer<typeof ArenaCell>;
 
 export const ArenaMatrix = z
@@ -88,12 +74,14 @@ export function cellLabel(
 export type ProviderKeys = {
   anthropicApiKey?: string | undefined;
   openaiApiKey?: string | undefined;
+  geminiApiKey?: string | undefined;
 };
 
 /** Why a live cell can't run here, or undefined if it can. */
 export function missingFor(provider: ProviderName, keys: ProviderKeys): string | undefined {
   if (provider === 'anthropic' && !keys.anthropicApiKey) return 'no ANTHROPIC_API_KEY (OPEN-2)';
   if (provider === 'openai' && !keys.openaiApiKey) return 'no OPENAI_API_KEY (OPEN-1)';
+  if (provider === 'gemini' && !keys.geminiApiKey) return 'no GEMINI_API_KEY';
   if (provider === 'bedrock') return 'bedrock adapter is a stub until OPEN-1';
   return undefined;
 }
@@ -132,9 +120,6 @@ export type ArenaResult = {
   budgetUsd?: number;
 };
 
-const isProposed = (cell: ArenaCell): boolean =>
-  (PROPOSED_PROVIDERS as readonly string[]).includes(cell.provider);
-
 /** Runs the enabled cells one at a time, so the global cap holds across cells. */
 export async function runArena(options: ArenaOptions): Promise<ArenaResult> {
   const { matrix } = options;
@@ -145,7 +130,7 @@ export async function runArena(options: ArenaOptions): Promise<ArenaResult> {
 
   for (const cell of matrix.cells) {
     const label = cellLabel(cell);
-    if (!cell.enabled || isProposed(cell)) {
+    if (!cell.enabled) {
       skipped.push({ label, reason: cell.note ?? 'disabled in the matrix' });
       continue;
     }

@@ -32,6 +32,7 @@ const app = createApp({
   provider: createProvider(config.provider, {
     anthropicApiKey: config.anthropicApiKey,
     openaiApiKey: config.openaiApiKey,
+    geminiApiKey: config.geminiApiKey,
   }),
   cache: new MemoryCacheStore(),
   counters: new MemoryCounterStore(),
