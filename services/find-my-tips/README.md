@@ -143,6 +143,6 @@ pnpm arena -- -h          # all options
 **Skipped cells.** A cell is skipped, not failed, when its key is missing (`anthropic` needs `ANTHROPIC_API_KEY`, OPEN-2; `openai` needs `OPENAI_API_KEY`, OPEN-1; `gemini` needs `GEMINI_API_KEY`, D25), when its provider is the `bedrock` stub, or when the cell is `enabled: false` (add a `note` saying why).
 
 ## Known behavior
-- **Bot-protected recipe sites return `upstream_error` (502).** For example, Allrecipes and Simply Recipes return 403 to our user agent. Use sites that serve JSON-LD for demos and evals, such as cookieandkate.com or budgetbytes.com.
+- **Bot-protected recipe sites return `source_unavailable` (424).** For example, Allrecipes and Simply Recipes return 403 to our user agent. Origin 401/403/429/451, a `cf-mitigated: challenge` header, or a small 200/503 page with a known challenge marker (Cloudflare, Imperva, DataDome, PerimeterX, Akamai) counts as blocked (`src/url/blocked.ts`). The web client shows "Site blocked" copy and never retries. Other failures stay `upstream_error` (502) or `timeout` (504). Use sites that serve JSON-LD for demos and evals, such as cookieandkate.com or budgetbytes.com.
 - The in-memory cache, counters, and rate limits reset on restart. Shared stores replace them on Render and AWS behind the same interfaces (`src/cache.ts`).
 - `src/lambda.ts` is the Phase B entry point for API Gateway and Lambda. `src/server.ts` is the Node http entry point for local and Render.

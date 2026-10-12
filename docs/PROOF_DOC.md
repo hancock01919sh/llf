@@ -22,7 +22,7 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 
 | ID | Jira | Spike | TDD | Owner | Due | Status |
 |---|---|---|---|---|---|---|
-| P1 | [BD3244-23](https://dotdotdash.atlassian.net/browse/BD3244-23) | Strapi relation semantics | §5.1, §5.2 | Art | Oct 14 | ⏳ |
+| P1 | [BD3244-23](https://dotdotdash.atlassian.net/browse/BD3244-23) | Strapi relation semantics | §5.1, §5.2 | Art | Oct 14 | ✅ (admin UI picker unchecked) |
 | P2 | [BD3244-13](https://dotdotdash.atlassian.net/browse/BD3244-13) | Strapi 5 in a pnpm workspace | §4.4 | Art | Oct 12 | ✅ |
 | P3 | [BD3244-22](https://dotdotdash.atlassian.net/browse/BD3244-22) | Static export routing and `?i=` | §6.2 | Art | Oct 15 | ✅ |
 | P4 | [BD3244-28](https://dotdotdash.atlassian.net/browse/BD3244-28) | Render client-IP header for the admin allow-list | §5.4, §10 | James S + Art | Oct 14 | ⏳ |
@@ -30,7 +30,7 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 | P6 | [BD3244-30](https://dotdotdash.atlassian.net/browse/BD3244-30) | Scrape → seed pipeline | §5.5 | China team + Art | Oct 21 | ⏳ |
 | P7 | [BD3244-34](https://dotdotdash.atlassian.net/browse/BD3244-34) | `strapi transfer` between environments (incl. media) | §5.5, §12.2 | James S + Art | Oct 21 | ⏳ |
 | P8 | [BD3244-32](https://dotdotdash.atlassian.net/browse/BD3244-32) | JSON-LD hit rate on real recipe URLs | §7.4 | Art | Oct 16 | ✅ |
-| P9 | [BD3244-33](https://dotdotdash.atlassian.net/browse/BD3244-33), [BD3244-37](https://dotdotdash.atlassian.net/browse/BD3244-37) (arena) | Model eval baseline and cross-vendor arena | §7.7, §7.9 | Art | Oct 16 (baseline), Nov 13 (pick) | 🔬 harness + arena built / blocked |
+| P9 | [BD3244-33](https://dotdotdash.atlassian.net/browse/BD3244-33), [BD3244-37](https://dotdotdash.atlassian.net/browse/BD3244-37) (arena) | Model eval baseline and cross-vendor arena | §7.7, §7.9 | Art | Oct 16 (baseline), Nov 13 (pick) | 🔬 harness + arena built; preliminary live run done |
 | P10 | [BD3244-31](https://dotdotdash.atlassian.net/browse/BD3244-31) | WAF Challenge / JS integration with the tool API | §7.6 | James S + Art | Nov 6 | ⏳ |
 | P11 | [BD3244-35](https://dotdotdash.atlassian.net/browse/BD3244-35) | Render → AWS parity | §12.2 | James S + Art | Nov 13 | ⏳ |
 | P12 | [BD3244-29](https://dotdotdash.atlassian.net/browse/BD3244-29) | CMS fully IP-only (build in CodeBuild inside the VPC) | §9.2 | James S | Only if IT requires | ⏳ |
@@ -41,8 +41,14 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 ### P1. Strapi relation semantics
 - **Hypothesis:** The one-way `oneToOne` (Tip → taxonomy) and `oneToMany` (Category → ingredients/tips, component relations) declarations in the inherited schema **prevent** the same target from being linked by more than one source, which breaks the intended model.
 - **Method:** Local Strapi on Postgres with the inherited schema. Link two Tips to the same Tip Type; add one Ingredient to two Categories; check the admin UI, the REST API, and the join-table constraints.
-- **Result:** _TBD_
-- **Decision:** Redeclare each relation to match intent (manyToOne / manyToMany) using the two-phase migration in TDD §5.2, whatever the result.
+- **Result:** ✅ **Confirmed in part** (Oct 12, Strapi 5.45.0, Postgres 16, empty database, inherited schema first and then the fixed one). The static review was right about the declarations, but the runtime doesn't enforce what the hypothesis feared.
+  - **Findings checked against the schema files:** all four hold. Tip `tip_type`, `tip_behavior`, and `tip_motivator` were one-way `oneToOne`. Category `ingredients` and `tips` were one-way `oneToMany`. `carousel.categories`, `link-list.pages`, and `tip-list.tips` were one-way `oneToMany`. `shared.cta.page` was `oneToOne`. **One more found:** `Page.featured` was one-way `oneToMany`.
+  - **Behavior of the inherited schema:** nothing was blocked. `scripts/check-cms-relations.mjs` (REST, full-access token) linked one target from several sources and read every link back: 3 Tips on one taxonomy term (each of the three taxonomies), one Ingredient and one Tip in two Categories, the same Categories, Pages, and Tips in carousel, link-list, and tip-list blocks on two Pages, one CTA target on two Pages, and one Category featured on two Pages. All 7 checks passed. The join tables (`*_lnk`) carry a unique index on the **(source, target) pair only**, never on the target alone. The one-way declared type only decides the cardinality the admin and API validate, not a database constraint.
+  - **Fix applied:** Tip taxonomies and `shared.cta.page` → `manyToOne`. Category `ingredients`/`tips`, `Page.featured`, and the carousel, link-list, and tip-list relations → `manyToMany`. `tip_motivator` is `manyToOne` for now (TDD §5.2 leaves manyToMany for content to decide).
+  - **Data safety:** a `pg_dump -s` before and after the edit and a Strapi restart are **identical**: no table, column, or index changed. No data moves, so the expand/contract migration wasn't needed. Re-running the same 7 checks on the fixed schema passes, and `pnpm seed` (fixtures, then again for idempotency) verifies against the site schemas. Several Tips share a taxonomy row in the join table (for example one Tip Type on 6 Tips).
+  - **API shape:** unchanged. Single-target relations stay objects (`tip_type`, `cta.page`) and multi-target ones stay arrays, so `packages/contracts`, the seed, and the web app needed no changes.
+  - **Not tested:** the admin UI relation picker (whether it hides already-linked targets). Check it by hand on Render dev at the next admin session. This run also used a Homebrew `postgresql@16` binary on a private port because the Docker daemon wasn't running. The engine and major version match compose.
+- **Decision:** Redeclare each relation to match intent (manyToOne / manyToMany), edited in place (TDD D26). **Assumption:** the only data in any existing environment is seed data (TDD §5.2 says real content starts about end of Oct), and the DDL is unchanged, so in-place is safe even if an environment has data. **Follow-up:** any environment that already ran the inherited schema picks up the change on the next boot with no DDL. Run `scripts/check-cms-relations.mjs` once on Render dev after the deploy. Phase 2 doesn't apply here. Keep expand/contract for changes that alter tables or columns, such as the planned Tip `ingredients` manyToMany (OPEN-14).
 
 ### P2. Strapi 5 in a pnpm workspace
 - **Hypothesis:** Strapi 5 builds and runs (`develop`, `build`, Docker image) as `apps/cms` inside a pnpm workspace without hoisting hacks.
@@ -109,7 +115,7 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
   - **Plan for a 40–50% URL failure rate.** Real traffic probably leans toward allrecipes, the largest US recipe site. A blocked site needs its own Tool Copy that suggests pasting the ingredients or uploading a photo instead, with **no retry** (it would fail the same way). Added to the §7.10 states, to OPEN-34 for design, and as risk R20.
   - **AI cost (§9.5):** URL requests cost about $0 in model calls. The model fallback only runs for 200 pages without JSON-LD, which was 0% here. AI cost is driven by photo and typed-text input.
   - **Eval mix (§7.9):** non-JSON-LD pages are rare in practice, so the eval uses **synthesized** non-JSON-LD pages to cover the fallback, plus blocked-site and timeout error cases.
-  - **Watch in production:** the `upstream_error` and `timeout` rate on URL input, from the existing error metrics (error code and input type only; no URLs or domains are logged, TDD §7.6). A distinct error code for blocked recipe pages is proposed in TDD §7.10 (BD3244-36).
+  - **Watch in production:** the `upstream_error` and `timeout` rate on URL input, from the existing error metrics (error code and input type only; no URLs or domains are logged, TDD §7.6). A distinct error code for blocked recipe pages, `source_unavailable` (HTTP 424, no auto-retry, "Site blocked" copy), is implemented (BD3244-36), so blocked pages no longer count toward `upstream_error`.
 
 ### P9. Model eval baseline
 - **Hypothesis:** A current Anthropic model on ddd's dev key reaches the G2 target (precision ≥ 0.9, recall ≥ 0.8) on receipts and lists, with a 100% injection pass rate.
@@ -124,8 +130,14 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
   - **Matrix `arena-v0`** ($20 global budget): mock; `claude-haiku-4-5`; `gpt-5-mini` and `gpt-5-nano` at reasoning `minimal` and `low`; `gemini-2.5-flash-lite` (enabled; ddd's key, test data only). Prices are assumed list prices and must be re-checked on the run date.
   - **Labeled sets** now carry provenance (source, rights, PII-checked). Every image case must name a source, and the loader refuses a set with an unknown or un-reviewed source. See [`eval/sets/README.md`](../eval/sets/README.md).
   - **Mock smoke:** $0 spent; it ran the mock cell, skipped the others with reasons, and the mock failed the bar on injection (50%), as designed.
-  - **Blocked on:** the Anthropic dev key (OPEN-2) and TBWA's OpenAI test key; the labeled set and the CMS ingredient catalog; and ≤1 MP image resize before image cases are run, so the measured tokens per image are realistic.
+  - **Blocked on:** the Anthropic dev key (OPEN-2) and TBWA's OpenAI test key; the labeled set and the CMS ingredient catalog; and rights-cleared images for image cases. (The ≤1 MP resize is now built.)
   - Drafts for the client, Legal, and IT are in [`docs/eval/arena/`](eval/arena/README.md).
+- **Preliminary live arena (Oct 12, BD3244-37 / BD3244-33):** ✅ ran all 7 cells, no cell failed, **$0.04 spent** of a $3 cap. **PRELIMINARY: 15 synthetic text cases (only 2 injection cases); the 80–120 item labeled set is still pending (OPEN-8).** Report: [`eval/reports/arena-2026-10-12T205919Z.md`](../eval/reports/arena-2026-10-12T205919Z.md). Command: `pnpm arena -- --budget 3`. Prices are assumed list prices (Oct 2025), not re-checked.
+  - Meets the G2 bar on this set: `claude-haiku-4-5` (100% / 100%, injection 100%, $0.0017/call, $83.76/mo at 50K), `gpt-5-mini` minimal (100% / 100%, 100%, $0.0002/call, $10.80/mo) and low (100% / 100%, 100%, $0.0004/call, $21.87/mo).
+  - Misses: `gpt-5-nano` minimal (91.2% / 96.9%, injection 0%) and low (91.4% / 100%, injection 0%); `gemini-2.5-flash-lite` (91.4% / 100%, injection 50%, $0.0001/call). The mock baseline fails as designed.
+  - Every cell is within the $500/month cap at 25K and 50K uses. Latency p50: 0.6–3.0 s.
+  - **Built:** ≤1 MP image downscale before every model call (`downscaleImage` in `image.ts`, `sharp`, in memory only; applied in `extractIngredients` so all providers share it). Image cases are not yet run: they need rights-cleared images.
+  - This is not a recommendation; OPEN-1 is Ad Council's decision.
 - **Decision:** Baseline for the production provider decision (OPEN-1, Nov 13). The pick is the cheapest arena cell that meets G2 with 100% injection resistance and fits the monthly cap (TDD D24). The Bedrock adapter stays a stub until OPEN-1 is decided.
 
 ### P10. WAF Challenge with the tool API

@@ -7,7 +7,7 @@
 | **Delivery** | dotdotdash (ddd) |
 | **Owner / author** | Art Longbottom (tech lead) |
 | **Reviewers** | James Calhoun (tech lead), James Steele (AWS/DevOps), Adam Paikowsky (analytics), Danish Aziz (PM), China dev team (Eva Fan, Alessandro Grena, Maggie Ding) |
-| **Status** | **DRAFT v0.3.12.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
+| **Status** | **DRAFT v0.3.13.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
 | **Last updated** | 2026-10-08 |
 | **Go-live** | **Friday, January 8, 2027** (go/no-go Thursday, January 7). There's **no contingency** after final QA |
 
@@ -441,22 +441,22 @@ Repo: `AdCouncil/ending-wasted-food-strapi`, commit `f753967` ("initial checkin"
 **Content types** (all of them have Draft & Publish turned on)
 | Type | Fields as built | Different from PROJECT.md §5 |
 |---|---|---|
-| **Category** | `title`, `slug` (*string*), `description`, `image`, `mode` enum [`Ingredients`, `Tips`], `ingredients` (one-way oneToMany → Ingredient, shown only when mode=Ingredients), `tips` (one-way oneToMany → Tip, shown only when mode=Tips), `group` (manyToOne ↔ Group.categories), `seo` | `slug` is a plain string, so uniqueness and format aren't enforced |
+| **Category** | `title`, `slug` (*string*), `description`, `image`, `mode` enum [`Ingredients`, `Tips`], `ingredients` (one-way manyToMany → Ingredient, shown only when mode=Ingredients), `tips` (one-way manyToMany → Tip, shown only when mode=Tips), `group` (manyToOne ↔ Group.categories), `seo` | `slug` is a plain string, so uniqueness and format aren't enforced |
 | **Group** | `title`, `description` (required), `categories` (oneToMany, mappedBy `group`) | **No slug.** A category can belong to only one group |
 | **Ingredient** | **`title`**, `type` **enum** [Baked Goods, Dairy, Dry Foods, Fresh Herbs, Leafy Greens, Produce, Protein], **`synonyms` (one `string`)**, `wasted` int 1–5 (required, default 3), `image`, `tips` (oneToMany, mappedBy `ingredient`) | The notes say `name`. **Synonyms are one string**, not a list. **No slug** |
 | **Ingredient Type** | `title` | **Not used anywhere.** It duplicates the `Ingredient.type` enum |
-| **Tip** | `title`, `description` (**plain text**, not rich), `ingredient` (manyToOne ↔ Ingredient.tips), `tip_type`, `tip_behavior`, and `tip_motivator` (all **one-way oneToOne**) | **A tip can belong to only one ingredient.** No slug, image, or priority. The taxonomy relations are declared oneToOne, but the intent is manyToOne (see the note below) |
+| **Tip** | `title`, `description` (**plain text**, not rich), `ingredient` (manyToOne ↔ Ingredient.tips), `tip_type`, `tip_behavior`, and `tip_motivator` (all **one-way manyToOne**) | **A tip can belong to only one ingredient.** No slug, image, or priority. The taxonomy relations were inherited as oneToOne and are now manyToOne (see the note below) |
 | **Tip Behavior / Tip Motivator / Tip Type** | `title` only | No slug or description. The 7 coalition behaviors aren't seeded |
 | **Page** | `title`, `path` (string, unique), `main` dynamic zone, `seo` | Exists, as described |
 
-> **About the relations** [VERIFIED in the schema files; runtime behavior to be confirmed in a spike]:
-> - **Tip → `tip_type`, `tip_behavior`, `tip_motivator`** are declared **one-way `oneToOne`**. The intent is clearly "many tips share one type."
-> - **Category → `ingredients` and Category → `tips`** are **one-way `oneToMany`**. The intent is that an ingredient or tip can appear in several categories, which means **manyToMany**.
+> **About the relations** [VERIFIED in the schema files; runtime behavior VERIFIED in spike P1, Oct 12]. The inherited schema declared these as follows, and they are now redeclared to match intent (decision D26):
+> - **Tip → `tip_type`, `tip_behavior`, `tip_motivator`** were declared **one-way `oneToOne`**. The intent is clearly "many tips share one type."
+> - **Category → `ingredients` and Category → `tips`** were **one-way `oneToMany`**. The intent is that an ingredient or tip can appear in several categories, which means **manyToMany**.
 > - The same pattern shows up in the components:
->   - `component.carousel.categories`, `component.link-list.pages`, and `custom.tip-list.tips` are one-way `oneToMany`.
->   - `shared.cta.page` is `oneToOne`.
+>   - `component.carousel.categories`, `component.link-list.pages`, and `custom.tip-list.tips` were one-way `oneToMany`.
+>   - `shared.cta.page` was `oneToOne`, and `Page.featured` was one-way `oneToMany`.
 >
-> Strapi's join tables may or may not enforce uniqueness on the target side for these declared types. **The relation spike in tech validation checks what the admin and the database actually allow** ([`PROOF_DOC.md`](./PROOF_DOC.md)). Either way, we'll redeclare every relation to match its intent with the two-phase migration in §5.2, and we won't depend on behavior the declared type doesn't promise.
+> **Spike P1 result** ([`PROOF_DOC.md`](./PROOF_DOC.md)): on Strapi 5.45 and Postgres, the join tables of **one-way** relations have a unique key on the (source, target) pair only, so the inherited declarations did **not** block sharing a target. The redeclaration is still made because the declared type is the contract (admin UI, API validation, future bidirectional links), and we don't depend on behavior the declared type doesn't promise. It changes **no table DDL**, so no data migration was needed and the two-phase migration (§5.2) wasn't required. `Page.featured` had the same pattern and is now manyToMany too. `scripts/check-cms-relations.mjs` is the regression check.
 
 **Components (modules)**
 | Component | Fields as built | Figma / notes status |
@@ -468,7 +468,7 @@ Repo: `AdCouncil/ending-wasted-food-strapi`, commit `f753967` ("initial checkin"
 | `custom.search` | `placeholder` (default "Search 100+ ingredients") | ✓ Copy only. All behavior lives in the frontend |
 | `custom.tool` | `url_label`, `url_placeholder`, `upload_label`, `upload_placeholder`, `description`, `cta_label` | **No pasted-text input fields and no copy for any UX state** (FR-5) |
 | `custom.tip-list` | `title`, `description`, `tips` (relation), `layout` [Basic, Single] | ✓ |
-| `shared.cta` | `label`, `href`, `page` (oneToOne) | Internal-or-external links ✓. No variant, target, or tracking label |
+| `shared.cta` | `label`, `href`, `page` (manyToOne) | Internal-or-external links ✓. No variant, target, or tracking label |
 | `shared.seo` | `metaTitle`, `metaKeywords`, `metaDescription` | **No canonical, OG image, or noindex.** Search engines ignore keywords |
 | `shared.title` | `copy`, `header` enum h1–h6 (default h3) | Editor-chosen heading level ✓ (matches the a11y requirement) |
 
@@ -502,9 +502,9 @@ erDiagram
 | Ingredient | Add `searchable` boolean (default true), add `plural` (optional string) | Hide pantry staples from search. Better handling of plurals |
 | Tip | Add `slug` (uid), `priority` int (default 0) | Stable IDs and sort order within an ingredient |
 | Tip | `description` → **blocks** (rich text) | Figma tip cards and the Tip Modal (`1:10735`) show a headline plus a formatted body. [VERIFIED] (Figma audit) |
-| Tip | `tip_type` / `tip_behavior` → explicit **manyToOne**. `tip_motivator` → **manyToMany** (to be decided with content) | Make the relationships match how they're meant to work (§5.1 note) |
-| Category | `ingredients` and `tips` → **manyToMany** (one-way is fine) | One ingredient or tip can appear in several categories (§5.1 note) |
-| Components | `carousel.categories`, `link-list.pages`, `tip-list.tips` → **manyToMany**. `shared.cta.page` → **manyToOne** | Many modules can point at the same page, category, or tip |
+| Tip | `tip_type` / `tip_behavior` → explicit **manyToOne** (done, P1). `tip_motivator` → **manyToOne** (done, P1); revisit as manyToMany only if content needs several motivators per tip | Make the relationships match how they're meant to work (§5.1 note) |
+| Category | `ingredients` and `tips` → **manyToMany** (one-way is fine; done, P1) | One ingredient or tip can appear in several categories (§5.1 note) |
+| Components | `carousel.categories`, `link-list.pages`, `tip-list.tips` → **manyToMany**. `shared.cta.page` → **manyToOne**. `Page.featured` → **manyToMany**. All done in P1 | Many modules can point at the same page, category, or tip |
 | Tip | *Option:* `ingredients` manyToMany in place of the single `ingredient` | Generic tips such as "freeze bread" apply to many ingredients. **Decide with the content team (OPEN-14, due Oct 14, before the seed format is locked).** The default is to keep manyToOne for simplicity. A later "yes" doesn't block: `ingredients` is added **additively** as the expand step below, and the seed JSON already stores tip → ingredient links as a list |
 | Category, Group | `slug` → **uid**. Add `slug` to Group | URLs and uniqueness |
 | Group | Add `layout` enum [carousel, image-cards, emoji-cards, list, featured] and `order` int (additive) | The Library page in Figma (`1:1310`) stacks about 10 Group sections in different layouts (Ingredient Reputations, Cuisine, Easy to Miss, Weeknight Staples, Grocery Aisles, and others). Editors pick the layout and order, and code owns how each layout looks (§6.4) |
@@ -947,6 +947,7 @@ type ExtractResponse = {
 | 429 | Blocked by the WAF or the in-app rate limit | Rate-limited |
 | 503 | Kill switch is `off`, or the daily quota is used up for this input type | **Unavailable** (FR-5) |
 | 502 / 504 | Upstream site, model, or timeout failure | Error with a retry option |
+| 424 | `source_unavailable`: the recipe site refused or challenged our fetch (origin 401/403/429/451, or a Cloudflare/Akamai/Imperva/DataDome/PerimeterX challenge page). **Built** (BD3244-36) | "Site blocked" copy, no retry option, never auto-retried |
 
 **Why the response sends slugs and not tips:** tip content already ships as static JSON for each ingredient **in the same release**, so the API response stays tiny and can't drift from published content. If `catalogVersion` doesn't match the page's build ID, the client reloads the page data (§5.3).
 
@@ -1011,7 +1012,7 @@ match(term, catalog):
 | **Daily quota** (backend) | Key Value counter | DynamoDB atomic counter **per input type per UTC day** (for example, 3,000 model calls; we set the real number from the eval's cost per request and the budget). When the quota runs out, the API **switches to `jsonld-only`** for the rest of the day, and an alert fires |
 | **Size and type limits** | Same | Client: reject non-images and files over 25 MB before decoding, then resize to ≤ 1600 px JPEG at q≈0.8. Server: body ≤ **4 MB** (Lambda's sync payload limit is 6 MB, and base64 adds about 33%), decoded image ≤ 3 MB. Check magic bytes. Text ≤ 5,000 chars. URL ≤ 2,048 chars |
 | **SSRF (`safeFetch`)** | Same code | Only `http`/`https` on ports 80 and 443. **Resolve DNS, then block** private, loopback, link-local (169.254.0.0/16, including IMDS), CGNAT, multicast, and IPv6 ULA/link-local. **Connect to the resolved IP** (stops DNS rebinding). **At most 3 redirects, each checked again.** **3 MB** response cap. **5 s** total timeout. `text/html` only. Custom User-Agent. On AWS the Lambda runs **outside a VPC**, so there's nothing internal to reach |
-| **Timeouts** | Same | Model 15 s, handler 25 s. API Gateway's default integration timeout is about 29–30 s, and we design to stay under it rather than asking for more. The client aborts at 35 s, shows progress, and retries **once**, only on 502/504. The local static server's `/api` proxy times out at 40 s so it never cuts off the client first. [PROPOSED] A blocked recipe page gets its own error code and is never auto-retried, since a retry fails the same way (§7.10, BD3244-36) |
+| **Timeouts** | Same | Model 15 s, handler 25 s. API Gateway's default integration timeout is about 29–30 s, and we design to stay under it rather than asking for more. The client aborts at 35 s, shows progress, and retries **once**, only on 502/504. The local static server's `/api` proxy times out at 40 s so it never cuts off the client first. A blocked recipe page gets its own error code, `source_unavailable` (HTTP 424), and is never auto-retried, since a retry fails the same way (§7.10, BD3244-36, built) |
 | **Spend backstops** | ddd's Anthropic workspace **spend limit** and alerts | The client provider's budget alerts plus **AWS Budgets** alarms. **These alert. They aren't hard caps.** The hard limits are the quota and the kill switch above. Reserved Lambda concurrency (for example, 50) limits throughput, not total spend |
 | **Prompt injection** | Same | The input is wrapped as untrusted data. The system prompt says to *extract only*. The output is a forced, schema-locked tool call, and the closed-catalog match is the final filter (§7.1). The eval set includes injection cases (§7.9) |
 | **Logging** | Same | `requestId`, input type, source, match and unmatched counts, latency, provider/model/prompt version, and token usage. **No URLs from users** (only a hash), **no images, no text, and no terms**. **Edge logs too:** user text never goes in a URL (site search uses a `#q=` fragment, §6.1, and tool input goes in POST bodies, which CloudFront doesn't log). **WAF logging redacts** the query string and the `authorization` and `cookie` headers. CloudFront and WAF logs are kept 30 days |
@@ -1062,7 +1063,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 - **Runner** (built, BD3244-33; usage in the [`find-my-tips` README](../services/find-my-tips/README.md#model-eval-p9)): `pnpm eval -- --provider anthropic --model X --price-in <USD/Mtok> --price-out <USD/Mtok> --budget 2.00`. It **stops at the budget** and writes `eval/runs/<stamp>.json` (git-ignored) plus `eval/reports/<stamp>.md`, the summary that's committed in PRs. `--strict` exits non-zero when a run misses the targets. The checked-in `eval/sets/v0-synthetic.json` is a 15-case **smoke set** (text only, our own data), not the G2 gate; the mock provider scores 11/15 on it, which proves the harness catches misses. The `eval.yml` workflow isn't built yet.
 - **Arena** (built, BD3244-37; usage in the [`find-my-tips` README](../services/find-my-tips/README.md#arena-bd3244-37)): `pnpm arena` runs every enabled cell (provider × model × reasoning effort) in a **matrix file** (`eval/arena.example.json`) on the same set and prompt. Each cell has its own budget, and a **global budget** stops the whole run. `--dry-run` lists what would run and why cells are skipped (missing key, no adapter). It writes `eval/runs/arena-<stamp>.json` (git-ignored) and an `eval/reports/arena-<stamp>.md` **scorecard**: precision, recall, not-food rejection, injection, p50/p95, $/call, $/month at each volume, whether the cap holds over 12 months, and the G2 bar. The matrix prices are list prices and must be re-checked on the run date.
 - **Set provenance:** every image case **must** name a `source` (text cases should), and the set's `sources` map records the description, license, and PII review for each one. The loader **refuses** a set with an unsourced image case, an unknown source, or a source that hasn't been PII-reviewed. How to build a set: [`eval/sets/README.md`](../eval/sets/README.md). The Oct 8 meeting proposed a **~20-item pilot**, growing toward **~500** for the final call. That's larger than the 80–120 / 150+ target above; we'll settle the size when the set's owner is named.
-- **Not built yet:** resizing images to **≤1 MP** before the model call. Image token counts are also unmeasured: a figure of ~27K tokens per image was quoted, but the published rates suggest ~1–2K. The first live image run must record tokens per image before the forecast is trusted.
+- **Built (BD3244-37):** images above **1 MP** are downscaled in memory before every model call, for every provider (`downscaleImage`, applied inside `extractIngredients`), using `sharp` (local native library, no external calls, no new service; added to `services/find-my-tips` only). Bytes are never persisted or logged. Image token counts are still unmeasured: a figure of ~27K tokens per image was quoted, but the published rates suggest ~1–2K. The first live image run must record tokens per image before the forecast is trusted.
 - **Runs only on purpose**, manually or with `workflow_dispatch`. **Never on push.** Any change to the prompt, schema, model, or matcher must include an eval summary in the PR.
 - TBWA's `index.mjs` and its sample receipts are **reference only**. We'll confirm we have the rights to the samples before adding them.
 
@@ -1078,7 +1079,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 | Unreadable | `readable = false` | Tips for getting a better photo, and a retry button (copy is OPEN-8) |
 | Rate-limited | 429 or a WAF block | Copy from Tool Copy. Retry is disabled for a short time |
 | Unavailable | 503, or `/status` says `off` | The tool is replaced with a message from Tool Copy and links to the library and search. With `jsonld-only`, only the URL input is shown |
-| Site blocked | [PROPOSED] `source_unavailable` (the recipe site refused or failed the fetch, Spike P8) | Copy from Tool Copy suggests pasting the ingredients or uploading a photo instead. No auto-retry (BD3244-36) |
+| Site blocked | `source_unavailable` (HTTP 424; the recipe site refused or challenged the fetch, Spike P8; built in BD3244-36) | Copy from Tool Copy suggests pasting the ingredients or uploading a photo instead. No auto-retry (BD3244-36) |
 | Error | 4xx/5xx/timeout | Specific copy for each error. One retry for 5xx, except Site blocked |
 
 **Designed in Figma** (audit, Oct 6): Idle (both modes), the input-level errors (wrong file type, upload failed, invalid link; Tool Function Card `1:7980`, Mobile Input `1:8830`), Loading (`1:1791` / `1:4708`), and Success. **Not designed** (OPEN-34, Colleen): the 10-second "still working" message and Cancel, Partial, Likely (dish) chips, No match, Unreadable, Rate-limited, Unavailable, and Site blocked. Until they arrive we build them from the existing components with Tool Copy text, and Colleen reviews them on the Render preview.
@@ -1113,7 +1114,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 | `tips_tool_result` | `input_type`, `source`, `ingredients_matched`, `unmatched_count`, `tips_shown`, `latency_ms`, `catalog_version` |
 | `tips_tool_no_match` | `input_type`, `readable` |
 | `tips_tool_unavailable` | `mode` (`off`, `jsonld-only`) |
-| `tips_tool_error` | `input_type`, `reason` (`rate_limited`, `challenge`, `timeout`, `invalid_url`, `too_large`, `server`) |
+| `tips_tool_error` | `input_type`, `reason` (`rate_limited`, `challenge`, `timeout`, `invalid_url`, `too_large`, `site_blocked`, `server`) |
 | `tip_view` | `tip_slug`, `ingredient_slug` |
 | `tip_interaction` | `tip_slug`, `action` (expand, share, copy, save, unsave) |
 
@@ -1552,6 +1553,7 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | D23 | **Scaffold conventions** (BD3244-16). CI runs on GitHub Actions with the mock AI provider and CMS fixtures, no secrets, read-only permissions, and SHA-pinned actions. One root `.env`, with `apps/cms/.env` generated locally. Fonts are self-hosted with Fontsource instead of `next/font`. No Turborepo until build times need it | TL DECISION | CI can run on forks and PRs without secrets. Fontsource builds offline and gives the same no-Google-calls result. Fewer tools for the China team to learn |
 | D24 | **Model arena for provider-neutral model selection** (BD3244-37). Every candidate (vendor × model × settings) runs the same labeled set, prompt, and harness (`pnpm arena`, §7.9). The pick is the **cheapest cell that meets G2** (precision ≥ 0.9, recall ≥ 0.8; bar still to agree, OPEN-8) **with 100% injection resistance, and** whose forecast stays under the monthly AI cap at 25K–50K uses. Feeds the OPEN-1 recommendation | TL DECISION | Same inputs across vendors make the comparison fair. Per-cell and global budgets cap eval spend. Tying the forecast to the client's budget keeps the choice honest about cost, not only accuracy |
 | D25 | **Gemini on ddd's own key for dev and eval** (BD3244-37). The `gemini` adapter runs in the arena and on Render dev with test data only, pending acceptance, the same footing as Anthropic (OPEN-2) | TL DECISION | A cheap comparison point in the arena without waiting on a new-vendor approval. No production use without Ad Council IT approval |
+| D26 | **Relations redeclared in place** (BD3244-23, spike P1). Tip taxonomy → manyToOne, Category `ingredients`/`tips`, `Page.featured`, and the carousel, link-list, and tip-list relations → manyToMany, `shared.cta.page` → manyToOne. Done as a direct schema edit, not expand/contract | TL DECISION | Strapi 5.45 generates identical join-table DDL for old and new declarations, so no data moves and nothing can be dropped. Two-phase (§5.2) stays the rule for any change that alters tables or columns |
 
 Bigger decisions get a short ADR in `docs/adr/NNNN-title.md` once they're approved.
 
@@ -1655,3 +1657,4 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.3.10 | 2026-10-07 | Art Longbottom (with Copilot) | **Spike P9 harness built** (BD3244-33). The `anthropic` adapter (forced `report_ingredients` tool call, Zod-checked), prompt `p1`, and a `PROMPT_VERSION` setting. `pnpm eval` runs a labeled set within a budget and writes a JSON run plus a markdown report. The 15-case `v0-synthetic` smoke set scores 11/15 on the mock. §4.2, §4.4, §7.7, §7.9, and §9.3 updated. The spike itself is blocked on the dev key (OPEN-2), the 80–120 item labeled set, budget approval, and the accuracy bar (OPEN-8). `eval.yml` is still to build |
 | 0.3.11 | 2026-10-08 | Art Longbottom (with Copilot) | **Arena eval prep** (BD3244-37). Built the `openai` adapter (strict JSON schema, Zod, `AI_REASONING_EFFORT`) and added a [PROPOSED] `gemini` row (§7.7) and a "needs IT approval" note on the approved-vendor list (§3). `pnpm arena` runs a budget-capped matrix of vendor × model × settings and writes a scorecard with a $/month forecast at 25K/50K uses vs the ~$500 cap. Labeled sets now carry provenance and a PII gate (§7.9). Added D24, OPEN-1 progress, and the §9.5 OpenAI test-key and forecast notes. ≤1 MP image resize is not built yet |
 | 0.3.12 | 2026-10-08 | Art Longbottom (with Copilot) | **Gemini adapter** (BD3244-37). Built `gemini` (`generateContent` with a JSON response schema, Zod-checked; `AI_REASONING_EFFORT` maps to `thinkingBudget`) and enabled its arena cell. Updated §3 vendors and §7.7, and added D25 (ddd's own key, dev/eval and test data only, pending acceptance). |
+| 0.3.13 | 2026-10-12 | Art Longbottom (with Copilot) | **≤1 MP image downscale** (BD3244-37) built with `sharp` in `services/find-my-tips` (local, in memory, §7.9). First **preliminary** live arena run on the 15-case synthetic set ($0.04; see PROOF_DOC P9). **Relations redeclared in place** (BD3244-23, P1): added D26 and updated §5.1–5.2. **Blocked recipe sites** (BD3244-36) now return `source_unavailable` (HTTP 424, no retry, "Site blocked" copy); updated §7.3, §7.6, §7.10, and the analytics reasons. |
