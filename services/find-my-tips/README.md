@@ -91,6 +91,7 @@ pnpm eval -- --provider openai --model <model-id> --effort minimal \
 | `--provider`, `--model`, `--prompt` | Override `AI_PROVIDER`, `AI_MODEL`, and `PROMPT_VERSION` from `.env` |
 | `--effort <level>` | Reasoning effort for OpenAI reasoning models. Overrides `AI_REASONING_EFFORT` |
 | `--set <file>` | Labeled set. Defaults to `eval/sets/v0-synthetic.json` |
+| `--catalog <file>` | Catalog to score against. Defaults to `src/fixtures/catalog.json`; use `eval/catalogs/eval-v1.json` for real sets |
 | `--price-in`, `--price-out` | USD per million tokens. Required for live providers so the run can report cost |
 | `--budget <usd>` | Stops before the next case once spend reaches this. Keep it well under the $100/month dev cap |
 | `--out <dir>` | Output root. Defaults to `eval/` |
@@ -131,6 +132,7 @@ pnpm arena -- -h          # all options
 |---|---|
 | `--matrix <file>` | Matrix to run. Defaults to `eval/arena.example.json` |
 | `--set <file>` | Labeled set. Defaults to the matrix `setPath`, then `eval/sets/v0-synthetic.json` |
+| `--catalog <file>` | Catalog to score against. Defaults to `src/fixtures/catalog.json`; use `eval/catalogs/eval-v1.json` for real sets |
 | `--prompt <version>` | Prompt version for every cell. Defaults to `PROMPT_VERSION` |
 | `--budget <usd>` | Spend cap across all cells. Overrides the matrix `budgetUsd` |
 | `--out <dir>` | Output root. Defaults to `eval/` |

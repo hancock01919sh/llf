@@ -31,6 +31,7 @@ Options:
   --prompt <version>   Prompt version (${promptVersions().join(', ')})
   --effort <level>     Reasoning effort (${REASONING_EFFORTS.join(' | ')}; OpenAI and Gemini)
   --set <file>         Labeled set (default: eval/sets/v0-synthetic.json)
+  --catalog <file>     Catalog to score against (default: the bundled fixture catalog)
   --budget <usd>       Stop before the next case once spend reaches this
   --price-in <usd>     USD per million input tokens (required for live providers)
   --price-out <usd>    USD per million output tokens (required for live providers)
@@ -102,6 +103,7 @@ async function main(): Promise<void> {
       prompt: { type: 'string' },
       effort: { type: 'string' },
       set: { type: 'string' },
+      catalog: { type: 'string' },
       budget: { type: 'string' },
       'price-in': { type: 'string' },
       'price-out': { type: 'string' },
@@ -143,7 +145,7 @@ async function main(): Promise<void> {
   const setPath = values.set ? fromCwd(values.set) : DEFAULT_SET;
   const set = await loadLabeledSet(setPath);
   const { catalogVersion, matcher } = catalogFromData(
-    JSON.parse(await readFile(FIXTURE_CATALOG, 'utf8')),
+    JSON.parse(await readFile(values.catalog ? fromCwd(values.catalog) : FIXTURE_CATALOG, 'utf8')),
   );
 
   write(

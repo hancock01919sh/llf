@@ -6,6 +6,7 @@ Labeled sets feed the model eval (`pnpm eval`) and the arena (`pnpm arena`, BD32
 | File | Purpose |
 |---|---|
 | `v0-synthetic.json` | 15 hand-written text cases. Use it for smoke tests and CI only. It is **not** the G2 gate. |
+| `v1-n5k-dishes.json` | 94 plated-dish photos from Nutrition5k (Google, CC BY 4.0, via `arunapb/nutrition5k-foodseg103` test split). Labels come from the dataset's own ingredient lists, mapped to `eval-v1` slugs. Score it with `--catalog eval/catalogs/eval-v1.json`. Covers `dish` only. |
 
 ## Rules for real sets
 - **Only use rights-cleared items.** Every image case must point at a `sources` entry that names its license (the loader refuses an image case without one). Text cases should too. Don't use scraped photos without a license, stock images whose terms forbid ML use, or anything without clear provenance.
@@ -41,7 +42,7 @@ Labeled sets feed the model eval (`pnpm eval`) and the arena (`pnpm arena`, BD32
 }
 ```
 
-Text cases use `text` instead of `imagePath`. `expectedSlugs` has to use slugs from the catalog the run is scored against. The arena currently scores against the fixture catalog (`services/find-my-tips/src/fixtures/catalog.json`) until the Strapi catalog is ready (BD3244-37).
+Text cases use `text` instead of `imagePath`. `expectedSlugs` has to use slugs from the catalog the run is scored against. By default `pnpm eval` and `pnpm arena` score against the 6-item fixture catalog (`services/find-my-tips/src/fixtures/catalog.json`). Pass `--catalog eval/catalogs/eval-v1.json` to score against the 103-item eval catalog, which stands in for the Strapi catalog until it's ready (OPEN-8). It's eval-only and isn't content.
 
 ## Coverage targets
 Build the set in two steps. Start with a **20-item pilot** to prove that labeling, licensing, and scoring work end to end. Then grow it toward the **~500 items** that BD3244-37 calls for. TDD §7.9 sets the floor at 80–120 for the G2 gate and 150+ before UAT.
@@ -62,5 +63,5 @@ Injection probes must return no unexpected slugs. The metrics count any leak as 
 
 ## Adding a set
 1. Add the images under `eval/sets/<set-name>/images/` and the JSON file at `eval/sets/<set-name>.json`.
-2. Run `pnpm eval -- --set eval/sets/<set-name>.json`. With the mock provider this checks that the set loads and scores.
+2. Run `pnpm eval -- --set eval/sets/<set-name>.json --catalog <catalog>.json`. With the mock provider this checks that the set loads and scores.
 3. Point the arena at it with `pnpm arena -- --set eval/sets/<set-name>.json`, or set `setPath` in the matrix.

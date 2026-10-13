@@ -1,0 +1,544 @@
+{
+  "catalogVersion": "eval-v1",
+  "ingredients": [
+    {
+      "slug": "apple",
+      "title": "Apple",
+      "synonyms": ["apples"]
+    },
+    {
+      "slug": "asparagus",
+      "title": "Asparagus",
+      "synonyms": []
+    },
+    {
+      "slug": "avocado",
+      "title": "Avocado",
+      "synonyms": ["avocados"]
+    },
+    {
+      "slug": "bacon",
+      "title": "Bacon",
+      "synonyms": []
+    },
+    {
+      "slug": "banana",
+      "title": "Banana",
+      "synonyms": ["bananas"]
+    },
+    {
+      "slug": "basil",
+      "title": "Basil",
+      "synonyms": []
+    },
+    {
+      "slug": "bean-sprouts",
+      "title": "Bean Sprouts",
+      "synonyms": ["mung bean sprouts", "soybean sprouts"]
+    },
+    {
+      "slug": "beans",
+      "title": "Beans",
+      "synonyms": ["kidney beans", "black beans", "chickpeas", "red beans", "edamame", "soybeans"]
+    },
+    {
+      "slug": "beef",
+      "title": "Beef",
+      "synonyms": ["steak", "ground beef", "brisket", "beef slices"]
+    },
+    {
+      "slug": "bell-pepper",
+      "title": "Bell Pepper",
+      "synonyms": ["bell peppers", "capsicum", "sweet pepper", "green pepper", "red pepper"]
+    },
+    {
+      "slug": "blueberry",
+      "title": "Blueberry",
+      "synonyms": ["blueberries"]
+    },
+    {
+      "slug": "bok-choy",
+      "title": "Bok Choy",
+      "synonyms": ["pak choi", "baby bok choy"]
+    },
+    {
+      "slug": "bread",
+      "title": "Bread",
+      "synonyms": ["toast", "loaf", "baguette", "bun", "buns"]
+    },
+    {
+      "slug": "broccoli",
+      "title": "Broccoli",
+      "synonyms": []
+    },
+    {
+      "slug": "butter",
+      "title": "Butter",
+      "synonyms": []
+    },
+    {
+      "slug": "cabbage",
+      "title": "Cabbage",
+      "synonyms": ["napa cabbage", "chinese cabbage", "green cabbage"]
+    },
+    {
+      "slug": "carrot",
+      "title": "Carrot",
+      "synonyms": ["carrots"]
+    },
+    {
+      "slug": "cauliflower",
+      "title": "Cauliflower",
+      "synonyms": []
+    },
+    {
+      "slug": "celery",
+      "title": "Celery",
+      "synonyms": []
+    },
+    {
+      "slug": "cereal",
+      "title": "Cereal",
+      "synonyms": ["granola"]
+    },
+    {
+      "slug": "cheese",
+      "title": "Cheese",
+      "synonyms": ["cheddar", "mozzarella", "parmesan"]
+    },
+    {
+      "slug": "chicken",
+      "title": "Chicken",
+      "synonyms": ["chicken breast", "chicken thigh", "chicken wings", "drumsticks"]
+    },
+    {
+      "slug": "chili-pepper",
+      "title": "Chili Pepper",
+      "synonyms": ["chili peppers", "chilli", "chilies", "dried chili", "hot pepper", "jalapeno"]
+    },
+    {
+      "slug": "chocolate",
+      "title": "Chocolate",
+      "synonyms": []
+    },
+    {
+      "slug": "cilantro",
+      "title": "Cilantro",
+      "synonyms": ["coriander", "coriander leaves"]
+    },
+    {
+      "slug": "clams",
+      "title": "Clams",
+      "synonyms": ["shellfish", "mussels", "oysters", "scallops"]
+    },
+    {
+      "slug": "coconut",
+      "title": "Coconut",
+      "synonyms": ["coconut milk"]
+    },
+    {
+      "slug": "cooking-oil",
+      "title": "Cooking Oil",
+      "synonyms": ["oil", "vegetable oil", "olive oil", "chili oil"]
+    },
+    {
+      "slug": "corn",
+      "title": "Corn",
+      "synonyms": ["sweet corn", "corn kernels", "maize", "corn on the cob"]
+    },
+    {
+      "slug": "crab",
+      "title": "Crab",
+      "synonyms": ["crabs"]
+    },
+    {
+      "slug": "cream",
+      "title": "Cream",
+      "synonyms": ["whipped cream"]
+    },
+    {
+      "slug": "cucumber",
+      "title": "Cucumber",
+      "synonyms": ["cucumbers"]
+    },
+    {
+      "slug": "duck",
+      "title": "Duck",
+      "synonyms": []
+    },
+    {
+      "slug": "dumpling-wrappers",
+      "title": "Dumpling Wrappers",
+      "synonyms": ["dumplings", "wonton", "wontons", "jiaozi", "dumpling skin"]
+    },
+    {
+      "slug": "egg",
+      "title": "Egg",
+      "synonyms": ["eggs", "fried egg", "boiled egg", "scrambled eggs", "egg whites"]
+    },
+    {
+      "slug": "eggplant",
+      "title": "Eggplant",
+      "synonyms": ["aubergine"]
+    },
+    {
+      "slug": "fish",
+      "title": "Fish",
+      "synonyms": ["fish fillet", "whole fish", "salmon", "cod", "tilapia"]
+    },
+    {
+      "slug": "flatbread",
+      "title": "Flatbread",
+      "synonyms": ["tortilla", "pancake", "scallion pancake", "naan", "pita"]
+    },
+    {
+      "slug": "flour",
+      "title": "Flour",
+      "synonyms": []
+    },
+    {
+      "slug": "garlic",
+      "title": "Garlic",
+      "synonyms": ["garlic cloves"]
+    },
+    {
+      "slug": "garlic-scape",
+      "title": "Garlic Scape",
+      "synonyms": ["garlic scapes", "garlic sprouts"]
+    },
+    {
+      "slug": "ginger",
+      "title": "Ginger",
+      "synonyms": []
+    },
+    {
+      "slug": "glutinous-rice",
+      "title": "Glutinous Rice",
+      "synonyms": ["sticky rice", "rice cakes", "tangyuan", "mochi"]
+    },
+    {
+      "slug": "grape",
+      "title": "Grape",
+      "synonyms": ["grapes"]
+    },
+    {
+      "slug": "green-beans",
+      "title": "Green Beans",
+      "synonyms": ["string beans", "long beans"]
+    },
+    {
+      "slug": "ham",
+      "title": "Ham",
+      "synonyms": []
+    },
+    {
+      "slug": "herbs",
+      "title": "Herbs",
+      "synonyms": ["parsley", "mint", "dill", "thyme", "rosemary"]
+    },
+    {
+      "slug": "honey",
+      "title": "Honey",
+      "synonyms": []
+    },
+    {
+      "slug": "hot-sauce",
+      "title": "Hot Sauce",
+      "synonyms": ["chili sauce", "sriracha", "doubanjiang"]
+    },
+    {
+      "slug": "kale",
+      "title": "Kale",
+      "synonyms": []
+    },
+    {
+      "slug": "ketchup",
+      "title": "Ketchup",
+      "synonyms": ["tomato sauce"]
+    },
+    {
+      "slug": "lamb",
+      "title": "Lamb",
+      "synonyms": ["mutton"]
+    },
+    {
+      "slug": "leafy-greens",
+      "title": "Leafy Greens",
+      "synonyms": [
+        "greens",
+        "choy sum",
+        "water spinach",
+        "lettuce",
+        "mixed greens",
+        "salad greens",
+        "romaine",
+        "caesar salad"
+      ]
+    },
+    {
+      "slug": "leek",
+      "title": "Leek",
+      "synonyms": ["leeks"]
+    },
+    {
+      "slug": "lemon",
+      "title": "Lemon",
+      "synonyms": ["lemons"]
+    },
+    {
+      "slug": "lime",
+      "title": "Lime",
+      "synonyms": ["limes"]
+    },
+    {
+      "slug": "lotus-root",
+      "title": "Lotus Root",
+      "synonyms": []
+    },
+    {
+      "slug": "mango",
+      "title": "Mango",
+      "synonyms": ["mangoes", "mangos"]
+    },
+    {
+      "slug": "mayonnaise",
+      "title": "Mayonnaise",
+      "synonyms": ["mayo"]
+    },
+    {
+      "slug": "melon",
+      "title": "Melon",
+      "synonyms": ["honeydew", "honeydew melon", "cantaloupe"]
+    },
+    {
+      "slug": "milk",
+      "title": "Milk",
+      "synonyms": []
+    },
+    {
+      "slug": "millet",
+      "title": "Millet",
+      "synonyms": ["millet porridge"]
+    },
+    {
+      "slug": "mushroom",
+      "title": "Mushroom",
+      "synonyms": ["mushrooms", "shiitake", "enoki", "button mushroom", "wood ear", "black fungus"]
+    },
+    {
+      "slug": "noodles",
+      "title": "Noodles",
+      "synonyms": [
+        "noodle",
+        "ramen",
+        "instant noodles",
+        "udon",
+        "rice noodles",
+        "vermicelli",
+        "glass noodles"
+      ]
+    },
+    {
+      "slug": "nuts",
+      "title": "Nuts",
+      "synonyms": ["walnuts", "almonds", "cashews", "almond"]
+    },
+    {
+      "slug": "oats",
+      "title": "Oats",
+      "synonyms": ["oatmeal", "porridge oats"]
+    },
+    {
+      "slug": "offal",
+      "title": "Offal",
+      "synonyms": ["tripe", "liver", "intestines", "gizzard", "kidney"]
+    },
+    {
+      "slug": "okra",
+      "title": "Okra",
+      "synonyms": []
+    },
+    {
+      "slug": "olives",
+      "title": "Olives",
+      "synonyms": ["olive", "black olives", "green olives", "kalamata"]
+    },
+    {
+      "slug": "onion",
+      "title": "Onion",
+      "synonyms": ["onions", "red onion", "yellow onion"]
+    },
+    {
+      "slug": "orange",
+      "title": "Orange",
+      "synonyms": ["oranges", "mandarin", "tangerine", "mandarin oranges", "clementine"]
+    },
+    {
+      "slug": "pasta",
+      "title": "Pasta",
+      "synonyms": ["spaghetti", "penne", "macaroni"]
+    },
+    {
+      "slug": "peanuts",
+      "title": "Peanuts",
+      "synonyms": ["peanut"]
+    },
+    {
+      "slug": "pear",
+      "title": "Pear",
+      "synonyms": ["pears"]
+    },
+    {
+      "slug": "peas",
+      "title": "Peas",
+      "synonyms": ["green peas", "snow peas", "sugar snap peas"]
+    },
+    {
+      "slug": "persimmon",
+      "title": "Persimmon",
+      "synonyms": ["persimmons"]
+    },
+    {
+      "slug": "pineapple",
+      "title": "Pineapple",
+      "synonyms": []
+    },
+    {
+      "slug": "pizza-dough",
+      "title": "Pizza Dough",
+      "synonyms": ["pizza crust", "pizza", "pizza base"]
+    },
+    {
+      "slug": "pork",
+      "title": "Pork",
+      "synonyms": [
+        "pork belly",
+        "pork ribs",
+        "spare ribs",
+        "ground pork",
+        "minced pork",
+        "pork chop"
+      ]
+    },
+    {
+      "slug": "potato",
+      "title": "Potato",
+      "synonyms": ["potatoes"]
+    },
+    {
+      "slug": "pumpkin",
+      "title": "Pumpkin",
+      "synonyms": ["squash", "winter squash", "kabocha"]
+    },
+    {
+      "slug": "radish",
+      "title": "Radish",
+      "synonyms": ["daikon", "white radish"]
+    },
+    {
+      "slug": "rice",
+      "title": "Rice",
+      "synonyms": ["white rice", "fried rice", "cooked rice", "brown rice"]
+    },
+    {
+      "slug": "sausage",
+      "title": "Sausage",
+      "synonyms": ["sausages", "chinese sausage", "hot dog", "pepperoni", "chicken apple sausage"]
+    },
+    {
+      "slug": "scallion",
+      "title": "Scallion",
+      "synonyms": ["scallions", "green onion", "spring onion"]
+    },
+    {
+      "slug": "seaweed",
+      "title": "Seaweed",
+      "synonyms": ["nori", "kelp", "laver"]
+    },
+    {
+      "slug": "sesame-seeds",
+      "title": "Sesame Seeds",
+      "synonyms": ["sesame"]
+    },
+    {
+      "slug": "shrimp",
+      "title": "Shrimp",
+      "synonyms": ["prawns", "prawn"]
+    },
+    {
+      "slug": "soy-sauce",
+      "title": "Soy Sauce",
+      "synonyms": []
+    },
+    {
+      "slug": "spices",
+      "title": "Spices",
+      "synonyms": ["cumin", "star anise", "cinnamon", "peppercorns", "sichuan peppercorns"]
+    },
+    {
+      "slug": "spinach",
+      "title": "Spinach",
+      "synonyms": []
+    },
+    {
+      "slug": "squid",
+      "title": "Squid",
+      "synonyms": ["calamari", "octopus"]
+    },
+    {
+      "slug": "strawberry",
+      "title": "Strawberry",
+      "synonyms": ["strawberries"]
+    },
+    {
+      "slug": "sugar",
+      "title": "Sugar",
+      "synonyms": []
+    },
+    {
+      "slug": "sweet-potato",
+      "title": "Sweet Potato",
+      "synonyms": ["sweet potatoes", "yam"]
+    },
+    {
+      "slug": "taro",
+      "title": "Taro",
+      "synonyms": []
+    },
+    {
+      "slug": "tofu",
+      "title": "Tofu",
+      "synonyms": ["bean curd", "dried tofu", "tofu skin"]
+    },
+    {
+      "slug": "tomato",
+      "title": "Tomato",
+      "synonyms": ["tomatoes", "cherry tomatoes", "cherry tomato", "grape tomatoes"]
+    },
+    {
+      "slug": "vinegar",
+      "title": "Vinegar",
+      "synonyms": []
+    },
+    {
+      "slug": "watermelon",
+      "title": "Watermelon",
+      "synonyms": []
+    },
+    {
+      "slug": "winter-melon",
+      "title": "Winter Melon",
+      "synonyms": []
+    },
+    {
+      "slug": "yogurt",
+      "title": "Yogurt",
+      "synonyms": ["yoghurt"]
+    },
+    {
+      "slug": "zucchini",
+      "title": "Zucchini",
+      "synonyms": ["courgette"]
+    }
+  ]
+}

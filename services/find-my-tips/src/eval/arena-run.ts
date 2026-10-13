@@ -38,6 +38,7 @@ Keys come from the same env as the service (ANTHROPIC_API_KEY, OPENAI_API_KEY, G
 Options:
   --matrix <file>      Arena matrix (default: eval/arena.example.json)
   --set <file>         Labeled set (default: the matrix setPath, else eval/sets/v0-synthetic.json)
+  --catalog <file>     Catalog to score against (default: the bundled fixture catalog)
   --prompt <version>   Prompt version (${promptVersions().join(', ')})
   --budget <usd>       Global spend cap across all cells (overrides the matrix budgetUsd)
   --out <dir>          Writes runs/arena-<stamp>.json (git-ignored) and reports/arena-<stamp>.md (default: eval/)
@@ -76,6 +77,7 @@ async function main(): Promise<void> {
     options: {
       matrix: { type: 'string' },
       set: { type: 'string' },
+      catalog: { type: 'string' },
       prompt: { type: 'string' },
       budget: { type: 'string' },
       out: { type: 'string' },
@@ -104,7 +106,7 @@ async function main(): Promise<void> {
       : DEFAULT_SET;
   const set = await loadLabeledSet(setPath);
   const { catalogVersion, matcher } = catalogFromData(
-    JSON.parse(await readFile(FIXTURE_CATALOG, 'utf8')),
+    JSON.parse(await readFile(values.catalog ? fromCwd(values.catalog) : FIXTURE_CATALOG, 'utf8')),
   );
 
   const providerFor = (cell: ArenaCell & { provider: ProviderName }): ProviderChoice => {
