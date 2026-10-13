@@ -7,6 +7,8 @@ Labeled sets feed the model eval (`pnpm eval`) and the arena (`pnpm arena`, BD32
 |---|---|
 | `v0-synthetic.json` | 15 hand-written text cases. Use it for smoke tests and CI only. It is **not** the G2 gate. |
 | `v1-n5k-dishes.json` | 94 plated-dish photos from Nutrition5k (Google, CC BY 4.0, via `arunapb/nutrition5k-foodseg103` test split). Labels come from the dataset's own ingredient lists, mapped to `eval-v1` slugs. Score it with `--catalog eval/catalogs/eval-v1.json`. Covers `dish` only. |
+| `v1-nonfood/` | 32 people-free non-food images from Wikimedia Commons (public domain / CC0, credits in `v1-nonfood/CREDITS.md`): objects, scenes, animals, documents, and hard negatives such as empty plates, cutlery, and a kitchen. |
+| `v1-mixed.json` | `v1-n5k-dishes` plus `v1-nonfood` (126 cases). Non-food cases have `detectedType: unknown`, `expectedReadable: false`, and no slugs, so the report's **Not-food rejected** column is populated. Use this for arena runs. |
 
 ## Rules for real sets
 - **Only use rights-cleared items.** Every image case must point at a `sources` entry that names its license (the loader refuses an image case without one). Text cases should too. Don't use scraped photos without a license, stock images whose terms forbid ML use, or anything without clear provenance.
