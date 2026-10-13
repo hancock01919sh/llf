@@ -138,6 +138,12 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
   - Every cell is within the $500/month cap at 25K and 50K uses. Latency p50: 0.6–3.0 s.
   - **Built:** ≤1 MP image downscale before every model call (`downscaleImage` in `image.ts`, `sharp`, in memory only; applied in `extractIngredients` so all providers share it). Image cases are not yet run: they need rights-cleared images.
   - This is not a recommendation; OPEN-1 is Ad Council's decision.
+- **Arena v1, Oct 2026 model audit (Oct 13, BD3244-37):** ✅ 12 candidates and 1 reference, **$2.86 spent**. Set `v1-mixed` (94 Nutrition5k dishes + 32 non-food images), catalog `eval-v1`, prompt `p1`, matrix [`eval/arena-v1.json`](../eval/arena-v1.json) with official list prices from Oct 13, 2026. Report: [`eval/reports/arena-2026-10-13T232648Z-v1.md`](../eval/reports/arena-2026-10-13T232648Z-v1.md) (Opus ran separately and was merged).
+  - **Reference:** `claude-opus-5-5` (Art's call: a quality yardstick, not a candidate), precision 73.5%, recall 96.9%, not-food rejected 100%, $389/mo at 50K. Its low precision mostly reflects extra plausible ingredients the Nutrition5k labels leave out, so it's a recall ceiling, not ground truth.
+  - **Best within the cap:** `gemini-3.5-flash-lite`, 88.6% / 90.2%, not-food rejected 96.9%, $28/mo at 50K. Next: `gemini-3.8-flash` (79.0% / 94.5%, 100%, $91/mo) and `gemini-3.1-flash-lite` (82.0% / 89.6%, 87.5%, $21/mo). No cell meets G2; precision is the gap.
+  - The report's new **What the budget buys** / **What it misses out on** sections show the gap to the reference: 3.5 Flash-Lite misses 11 ingredients Opus found (mostly cheese and egg) and accepts 1 non-food image Opus rejected.
+  - **Adapter fix:** Sonnet 5.5, Opus 5.5 and Fable 5.1 reject a forced `tool_choice`, so the Anthropic adapter now uses structured outputs (TDD §7.4). `gpt-6.1-sol` rejects effort `none`.
+  - Gemini and Anthropic are dev/eval keys pending IT (OPEN-2). Not a recommendation; OPEN-1 is Ad Council's decision.
 - **Decision:** Baseline for the production provider decision (OPEN-1, Nov 13). The pick is the cheapest arena cell that meets G2 with 100% injection resistance and fits the monthly cap (TDD D24). The Bedrock adapter stays a stub until OPEN-1 is decided.
 
 ### P10. WAF Challenge with the tool API

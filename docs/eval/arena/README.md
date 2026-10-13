@@ -2,6 +2,8 @@
 
 **Status:** the harness is built, the ≤1 MP image resize is built, and a **PRELIMINARY live run** (Oct 12, 15 synthetic text cases, $0.04) is done: [`eval/reports/arena-2026-10-12T205919Z.md`](../../../eval/reports/arena-2026-10-12T205919Z.md). On this set Claude Haiku 4.5 and GPT-5 mini (minimal, low) meet the G2 bar; GPT-5 nano and Gemini 2.5 Flash-Lite do not (injection, precision). The set is too small and synthetic to pick from; the 80–120 item labeled set is still pending (OPEN-8). No recommendation is made here (OPEN-1 is Ad Council's decision).
 
+**Latest (Oct 13, arena-v1):** 12 current models plus Claude Opus 5.5 as the reference on `v1-mixed` (126 cases, $2.86): [`eval/reports/arena-2026-10-13T232648Z-v1.md`](../../../eval/reports/arena-2026-10-13T232648Z-v1.md). Best within the cap: Gemini 3.5 Flash-Lite (88.6% / 90.2%, $28/month at 50K). No cell meets G2 yet. See PROOF_DOC P9.
+
 This folder holds the working drafts for the Oct 8 arena action items. They feed the production provider recommendation (OPEN-1), which is due **before Nov 13**.
 
 - **How we pick:** TDD [D24](../../TDD.md#14-decision-log). The pick is the cheapest cell that meets G2 (precision ≥ 0.9, recall ≥ 0.8; bar still to agree, OPEN-8), resists 100% of injection cases, and forecasts under the ~$500/month cap at 25K–50K uses.
