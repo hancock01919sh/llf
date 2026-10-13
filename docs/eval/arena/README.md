@@ -7,7 +7,8 @@ This folder holds the working drafts for the Oct 8 arena action items. They feed
 - **How we pick:** TDD [D24](../../TDD.md#14-decision-log). The pick is the cheapest cell that meets G2 (precision ≥ 0.9, recall ≥ 0.8; bar still to agree, OPEN-8), resists 100% of injection cases, and forecasts under the ~$500/month cap at 25K–50K uses.
 - **Provider adapters:** TDD [§7.7](../../TDD.md#77-provider-abstraction). **Eval harness:** TDD §7.9 in [`TDD.md`](../../TDD.md). **Spike log:** [`PROOF_DOC.md`](../../PROOF_DOC.md) P9.
 - **How to run it:** the arena section of the [Find My Tips README](../../../services/find-my-tips/README.md#arena-bd3244-37).
-- **Matrix:** [`eval/arena.example.json`](../../../eval/arena.example.json) (`arena-v0`). **Labeled sets and provenance:** [`eval/sets/README.md`](../../../eval/sets/README.md).
+- **Matrix:** [`eval/arena-v1.json`](../../../eval/arena-v1.json) (`arena-v1`, Oct 2026 model audit: cheap and mid tiers, two `arena-v0` baselines, Claude Opus 5.5 as the reference). The original [`eval/arena.example.json`](../../../eval/arena.example.json) (`arena-v0`) is still the default. **Labeled sets and provenance:** [`eval/sets/README.md`](../../../eval/sets/README.md).
+- **Reference cell:** a cell with `"reference": true` is a quality yardstick, not a candidate, and runs whatever it costs. The report adds **What the budget buys**, which puts every candidate next to the reference with the quality gap and monthly cost. It also adds **What it misses out on** for the best in-budget pick: ingredients it misses, wrong ingredients it adds, and non-food images it accepts, all compared with the reference, plus the largest gaps by case. This shows the client what the $500/month cap buys and what it gives up.
 
 ## Deliverables
 

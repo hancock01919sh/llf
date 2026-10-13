@@ -7,7 +7,14 @@ import { catalogFromData } from '../catalog';
 import { createMockProvider } from '../extract';
 import type { ExtractionProvider } from '../extract';
 import type { ArenaOptions } from './arena';
-import { ArenaMatrix, cellLabel, missingFor, renderArenaMarkdown, runArena } from './arena';
+import {
+  ArenaMatrix,
+  cellLabel,
+  compareToReference,
+  missingFor,
+  renderArenaMarkdown,
+  runArena,
+} from './arena';
 import { LabeledSet } from './labeled-set';
 
 const fixture: unknown = JSON.parse(
@@ -289,5 +296,123 @@ describe('renderArenaMarkdown', () => {
     expect(md).toContain('No cells ran.');
     expect(md).toContain('(no global cap)');
     expect(md).not.toContain('| Cell |');
+  });
+});
+
+describe('reference cells', () => {
+  const meta = { date: '2026-10-13', promptVersion: 'p1', setVersion: 's1', catalogVersion: 'c1' };
+  const REF_SET = LabeledSet.parse({
+    version: 'ref',
+    cases: [
+      textCase('dish-1', 'banana bread', ['banana', 'bread']),
+      textCase('dish-2', 'banana spinach', ['banana', 'spinach']),
+      {
+        id: 'chair',
+        kind: 'text',
+        text: 'a wooden chair',
+        detectedType: 'unknown',
+        expectedReadable: false,
+        expectedSlugs: [],
+      },
+    ],
+  });
+  const item = (term: string) => ({ term, isFood: true, inferred: false });
+
+  /** Gets everything right at $1/call. */
+  const strong: ExtractionProvider = {
+    name: 'strong',
+    extract: (input) => {
+      const text = input.kind === 'text' ? input.text : '';
+      const food = !text.includes('chair');
+      return Promise.resolve({
+        result: {
+          readable: food,
+          detectedType: food ? ('shopping_list' as const) : ('unknown' as const),
+          items: food ? text.split(' ').map(item) : [],
+        },
+        usage: { inputTokens: 1_000_000, outputTokens: 0 },
+      });
+    },
+  };
+  /** Finds only bananas, adds milk, and calls the chair food, at $0.001/call. */
+  const weak: ExtractionProvider = {
+    name: 'weak',
+    extract: () =>
+      Promise.resolve({
+        result: {
+          readable: true,
+          detectedType: 'shopping_list' as const,
+          items: [item('banana'), item('milk')],
+        },
+        usage: { inputTokens: 1_000, outputTokens: 0 },
+      }),
+  };
+  const refMatrix = () =>
+    matrix({
+      usesPerMonth: [25_000],
+      monthlyCapUsd: 500,
+      cells: [
+        { provider: 'mock', model: 'mock-1', pricing: FREE },
+        { provider: 'anthropic', model: 'big', reference: true, pricing: DOLLAR },
+        { provider: 'openai', model: 'small', pricing: DOLLAR },
+      ],
+    });
+  const refOptions = () =>
+    options(refMatrix(), {
+      set: REF_SET,
+      providerFor: (cell) =>
+        cell.provider === 'mock' ? createMockProvider() : cell.model === 'big' ? strong : weak,
+    });
+
+  it('defaults to false', () => {
+    const m = matrix({ cells: [{ provider: 'mock', model: 'm', pricing: FREE }] });
+    expect(m.cells[0]?.reference).toBe(false);
+  });
+
+  it('lists what the candidate misses that the reference gets right', async () => {
+    const result = await runArena(refOptions());
+    const [, ref, small] = result.cells;
+    if (ref === undefined || small === undefined) throw new Error('expected two live cells');
+    const m = compareToReference(small.run, ref.run);
+    expect(m.missed).toEqual([
+      { caseId: 'dish-1', slug: 'bread' },
+      { caseId: 'dish-2', slug: 'spinach' },
+    ]);
+    expect(m.added).toEqual([
+      { caseId: 'dish-1', slug: 'milk' },
+      { caseId: 'dish-2', slug: 'milk' },
+      { caseId: 'chair', slug: 'banana' },
+      { caseId: 'chair', slug: 'milk' },
+    ]);
+    expect(m.nonFoodAccepted).toEqual(['chair']);
+    expect(m.failed).toEqual([]);
+    expect(m.candidateOnly).toEqual({ found: 0, avoided: 0, nonFoodRejected: 0 });
+  });
+
+  it('renders what the budget buys and what it misses out on', async () => {
+    const md = renderArenaMarkdown(meta, await runArena(refOptions()));
+    expect(md).toContain('| anthropic/big (reference) | anthropic / big / — |');
+    expect(md).toContain('## What the budget buys');
+    expect(md).toContain('Reference: **anthropic/big**, precision 100.0%, recall 100.0%');
+    expect(md).toContain('(over the $500.00/month cap)');
+    expect(md).toContain('Best within the $500.00/month cap: **openai/small**');
+    expect(md).toContain('(−50.0 pp)');
+    expect(md).toContain('| **anthropic/big** (reference) |');
+    expect(md).not.toContain('| mock/mock-1 | 0.0%');
+    expect(md).toContain('### What openai/small misses out on');
+    expect(md).toContain('**Ingredients missed** that the reference found: 2 (`bread`, `spinach`)');
+    expect(md).toContain(
+      '**Wrong ingredients added** that the reference avoided: 4 (`milk` ×3, `banana`)',
+    );
+    expect(md).toContain(
+      '**Non-food images treated as food** that the reference rejected: 1 (`chair`)',
+    );
+    expect(md).toContain('| `chair` | — | `banana`, `milk` |');
+  });
+
+  it('leaves the section out without a reference cell', async () => {
+    const m = matrix({ cells: [{ provider: 'openai', model: 'small', pricing: DOLLAR }] });
+    const md = renderArenaMarkdown(meta, await runArena(options(m, { set: REF_SET })));
+    expect(md).not.toContain('What the budget buys');
   });
 });

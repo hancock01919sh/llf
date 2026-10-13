@@ -30,6 +30,11 @@ export const ArenaCell = z.object({
   /** Per-cell spend cap in USD. */
   budgetUsd: usdAmount.optional(),
   enabled: z.boolean().default(true),
+  /**
+   * A quality yardstick, not a production candidate: runs regardless of the
+   * monthly cap, and the report measures every candidate against it.
+   */
+  reference: z.boolean().default(false),
   note: z.string().optional(),
 });
 export type ArenaCell = z.infer<typeof ArenaCell>;
@@ -187,6 +192,211 @@ export type ArenaMeta = {
 };
 
 const rate = (value: number | null): string => (value === null ? 'n/a' : pct(value));
+
+/** Signed gap in percentage points, e.g. "−4.2 pp". */
+function gap(value: number | null, reference: number | null): string {
+  if (value === null || reference === null) return 'n/a';
+  const pp = (value - reference) * 100;
+  if (Math.abs(pp) < 0.05) return '±0.0 pp';
+  return `${pp > 0 ? '+' : '−'}${Math.abs(pp).toFixed(1)} pp`;
+}
+
+const f1 = (precision: number, recall: number): number =>
+  precision + recall === 0 ? 0 : (2 * precision * recall) / (precision + recall);
+
+const withinCap = (c: ArenaCellResult): boolean => c.forecast.rows.every((r) => r.withinCap);
+
+function tally(slugs: string[], limit = 8): string {
+  const counts = new Map<string, number>();
+  for (const slug of slugs) counts.set(slug, (counts.get(slug) ?? 0) + 1);
+  return [...counts]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, limit)
+    .map(([slug, n]) => (n > 1 ? `\`${slug}\` ×${n}` : `\`${slug}\``))
+    .join(', ');
+}
+
+export type MissComparison = {
+  /** Correct ingredients the reference found and the candidate did not. */
+  missed: { caseId: string; slug: string }[];
+  /** Wrong ingredients the candidate reported and the reference did not. */
+  added: { caseId: string; slug: string }[];
+  /** Non-food images the reference rejected and the candidate treated as food. */
+  nonFoodAccepted: string[];
+  /** Cases the reference answered and the candidate failed outright. */
+  failed: string[];
+  /** The other direction, so the gap is not overstated. */
+  candidateOnly: { found: number; avoided: number; nonFoodRejected: number };
+};
+
+/** Case-by-case: what the candidate gets wrong that the reference gets right. */
+export function compareToReference(candidate: EvalRun, reference: EvalRun): MissComparison {
+  const ref = new Map(reference.scores.map((score) => [score.id, score]));
+  const out: MissComparison = {
+    missed: [],
+    added: [],
+    nonFoodAccepted: [],
+    failed: [],
+    candidateOnly: { found: 0, avoided: 0, nonFoodRejected: 0 },
+  };
+  for (const c of candidate.scores) {
+    const r = ref.get(c.id);
+    if (r === undefined) continue;
+    if (c.errorCode !== undefined && r.errorCode === undefined) out.failed.push(c.id);
+    if (!c.expectedReadable) {
+      if (!c.readableCorrect && r.readableCorrect) out.nonFoodAccepted.push(c.id);
+      if (c.readableCorrect && !r.readableCorrect) out.candidateOnly.nonFoodRejected += 1;
+    }
+    const refCorrect = new Set(r.matchedSlugs.filter((slug) => !r.extraSlugs.includes(slug)));
+    const candCorrect = new Set(c.matchedSlugs.filter((slug) => !c.extraSlugs.includes(slug)));
+    for (const slug of c.missingSlugs) {
+      if (refCorrect.has(slug)) out.missed.push({ caseId: c.id, slug });
+    }
+    for (const slug of r.missingSlugs) if (candCorrect.has(slug)) out.candidateOnly.found += 1;
+    for (const slug of c.extraSlugs) {
+      if (!r.extraSlugs.includes(slug)) out.added.push({ caseId: c.id, slug });
+    }
+    for (const slug of r.extraSlugs)
+      if (!c.extraSlugs.includes(slug)) out.candidateOnly.avoided += 1;
+  }
+  return out;
+}
+
+function missesSection(
+  candidate: ArenaCellResult,
+  reference: ArenaCellResult,
+  examples = 5,
+): string[] {
+  const m = compareToReference(candidate.run, reference.run);
+  const name = escapeCell(candidate.label);
+  const lines = [`### What ${name} misses out on`, ''];
+  lines.push(
+    `- **Ingredients missed** that the reference found: ${m.missed.length}` +
+      (m.missed.length > 0 ? ` (${tally(m.missed.map((x) => x.slug))})` : ''),
+    `- **Wrong ingredients added** that the reference avoided: ${m.added.length}` +
+      (m.added.length > 0 ? ` (${tally(m.added.map((x) => x.slug))})` : ''),
+    `- **Non-food images treated as food** that the reference rejected: ${m.nonFoodAccepted.length}` +
+      (m.nonFoodAccepted.length > 0
+        ? ` (${m.nonFoodAccepted.map((id) => `\`${id}\``).join(', ')})`
+        : ''),
+    `- **Failed calls** where the reference answered: ${m.failed.length}`,
+    `- In the other direction, ${name} found ${m.candidateOnly.found} ingredient(s) the reference missed, ` +
+      `avoided ${m.candidateOnly.avoided} wrong one(s) the reference added, and rejected ` +
+      `${m.candidateOnly.nonFoodRejected} non-food image(s) the reference accepted.`,
+  );
+
+  const perCase = new Map<string, { missed: string[]; added: string[] }>();
+  for (const { caseId, slug } of m.missed) {
+    const entry = perCase.get(caseId) ?? { missed: [], added: [] };
+    entry.missed.push(slug);
+    perCase.set(caseId, entry);
+  }
+  for (const { caseId, slug } of m.added) {
+    const entry = perCase.get(caseId) ?? { missed: [], added: [] };
+    entry.added.push(slug);
+    perCase.set(caseId, entry);
+  }
+  const worst = [...perCase]
+    .sort(
+      (a, b) =>
+        b[1].missed.length + b[1].added.length - (a[1].missed.length + a[1].added.length) ||
+        a[0].localeCompare(b[0]),
+    )
+    .slice(0, examples);
+  if (worst.length > 0) {
+    lines.push(
+      '',
+      'Largest gaps by case:',
+      '',
+      '| Case | Missed | Wrongly added |',
+      '|---|---|---|',
+    );
+    for (const [caseId, entry] of worst) {
+      const list = (slugs: string[]) =>
+        slugs.length === 0 ? '—' : slugs.map((x) => `\`${x}\``).join(', ');
+      lines.push(`| \`${caseId}\` | ${list(entry.missed)} | ${list(entry.added)} |`);
+    }
+  }
+  lines.push('');
+  return lines;
+}
+
+/**
+ * "What the budget buys": every candidate next to the reference cell, with the
+ * quality gap and the monthly cost, so the client can weigh cost against quality.
+ */
+function budgetSection(cells: ArenaCellResult[]): string[] {
+  const reference = cells.find((c) => c.cell.reference && !c.run.stoppedEarly);
+  if (reference === undefined) return [];
+  const candidates = cells
+    .filter((c) => !c.cell.reference && c.cell.provider !== 'mock' && !c.run.stoppedEarly)
+    .sort((a, b) => a.run.report.overall.costPerCallUsd - b.run.report.overall.costPerCallUsd);
+  if (candidates.length === 0) return [];
+
+  const ref = reference.run.report.overall;
+  const score = (c: ArenaCellResult) =>
+    f1(c.run.report.overall.precision, c.run.report.overall.recall);
+  const best = candidates.filter(withinCap).sort((a, b) => score(b) - score(a))[0];
+  const volumes = reference.forecast.rows.map((r) => `$/mo @ ${count(r.usesPerMonth)}`);
+  const cap = dollars(reference.forecast.monthlyCapUsd);
+
+  const lines = ['## What the budget buys', ''];
+  lines.push(
+    `Reference: **${escapeCell(reference.label)}**, precision ${pct(ref.precision)}, recall ${pct(ref.recall)}, ` +
+      `not-food rejected ${rate(ref.nonFoodRejectionRate)}, ` +
+      `${reference.forecast.rows.map((r) => `${dollars(r.monthlyUsd)}/mo @ ${count(r.usesPerMonth)}`).join(', ')}` +
+      `${withinCap(reference) ? '' : ` (over the ${cap}/month cap)`}.`,
+  );
+  if (best === undefined) {
+    lines.push('', `No candidate stays within the ${cap}/month cap.`);
+  } else {
+    const b = best.run.report.overall;
+    lines.push(
+      '',
+      `Best within the ${cap}/month cap: **${escapeCell(best.label)}**, precision ${pct(b.precision)} (${gap(b.precision, ref.precision)}), ` +
+        `recall ${pct(b.recall)} (${gap(b.recall, ref.recall)}), ` +
+        `${best.forecast.rows.map((r) => `${dollars(r.monthlyUsd)}/mo @ ${count(r.usesPerMonth)}`).join(', ')}.`,
+    );
+  }
+  lines.push('');
+
+  const head = [
+    'Cell',
+    'Precision',
+    'vs ref',
+    'Recall',
+    'vs ref',
+    'Not-food rejected',
+    'vs ref',
+    ...volumes,
+    'Within cap',
+  ];
+  lines.push(`| ${head.join(' | ')} |`, `|${head.map(() => '---').join('|')}|`);
+  const row = (c: ArenaCellResult, isReference: boolean) => {
+    const s = c.run.report.overall;
+    const same = (text: string) => (isReference ? '—' : text);
+    return `| ${[
+      isReference ? `**${escapeCell(c.label)}** (reference)` : escapeCell(c.label),
+      pct(s.precision),
+      same(gap(s.precision, ref.precision)),
+      pct(s.recall),
+      same(gap(s.recall, ref.recall)),
+      rate(s.nonFoodRejectionRate),
+      same(gap(s.nonFoodRejectionRate, ref.nonFoodRejectionRate)),
+      ...c.forecast.rows.map((r) => dollars(r.monthlyUsd)),
+      withinCap(c) ? '✅' : '❌',
+    ].join(' | ')} |`;
+  };
+  lines.push(row(reference, true));
+  for (const c of candidates) lines.push(row(c, false));
+  lines.push(
+    '',
+    'Candidates are sorted by cost. "Best" is the highest F1 (precision and recall combined) among candidates within the cap. The reference shows what quality is possible, whatever it costs.',
+    '',
+  );
+  if (best !== undefined) lines.push(...missesSection(best, reference));
+  return lines;
+}
 const escapeCell = (value: string): string => value.replaceAll('|', '\\|');
 
 export function renderArenaMarkdown(meta: ArenaMeta, result: ArenaResult): string {
@@ -236,7 +446,7 @@ export function renderArenaMarkdown(meta: ArenaMeta, result: ArenaResult): strin
         ? `${s.cases} (stopped, ${run.skipped} left)`
         : String(s.cases);
       const row = [
-        escapeCell(label),
+        escapeCell(cell.reference ? `${label} (reference)` : label),
         escapeCell([cell.provider, cell.model, cell.effort ?? '—'].join(' / ')),
         scored,
         pct(s.precision),
@@ -253,6 +463,8 @@ export function renderArenaMarkdown(meta: ArenaMeta, result: ArenaResult): strin
     }
     lines.push('');
   }
+
+  lines.push(...budgetSection(result.cells));
 
   const stopped = result.cells.filter((c) => c.run.stoppedEarly);
   if (stopped.length > 0) {

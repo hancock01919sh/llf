@@ -1,0 +1,155 @@
+{
+  "version": "arena-v1",
+  "description": "BD3244-37 lineup from the Oct 2026 model audit: cheap and mid tiers plus two arena-v0 baselines. Opus 5.5 is a quality reference for comparison (Art), not a candidate, regardless of cost. Fable 5.1 and gpt-6-astra left out; they exceed the $500/month cap at 50K uses. Prices are official list prices in USD per million tokens as of Oct 13, 2026; re-check on the run date. Anthropic and Gemini run on ddd keys (dev/eval only, test data only; TDD D25). Run with --catalog catalogs/eval-v1.json.",
+  "setPath": "sets/v1-mixed.json",
+  "budgetUsd": 20,
+  "monthlyCapUsd": 500,
+  "usesPerMonth": [25000, 50000],
+  "callsPerUse": 1,
+  "cells": [
+    {
+      "label": "mock",
+      "provider": "mock",
+      "model": "mock-1",
+      "pricing": {
+        "inputPerMTok": 0,
+        "outputPerMTok": 0
+      },
+      "note": "Baseline: proves the harness, never a candidate."
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "effort": "none",
+      "pricing": {
+        "inputPerMTok": 0.1,
+        "outputPerMTok": 0.5
+      },
+      "budgetUsd": 1,
+      "note": "Cheap tier."
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5",
+      "pricing": {
+        "inputPerMTok": 0.1,
+        "outputPerMTok": 0.5
+      },
+      "budgetUsd": 1,
+      "note": "Cheap tier. $0.10/$0.50 applies to prompts up to 100K tokens."
+    },
+    {
+      "provider": "gemini",
+      "model": "gemini-3.1-flash-lite",
+      "pricing": {
+        "inputPerMTok": 0.25,
+        "outputPerMTok": 1.5
+      },
+      "budgetUsd": 1,
+      "note": "Cheap tier."
+    },
+    {
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "pricing": {
+        "inputPerMTok": 0.3,
+        "outputPerMTok": 2.5
+      },
+      "budgetUsd": 1,
+      "note": "Cheap tier."
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.4-nano",
+      "pricing": {
+        "inputPerMTok": 0.2,
+        "outputPerMTok": 1.25
+      },
+      "budgetUsd": 1,
+      "note": "Cheap tier."
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.4-mini",
+      "pricing": {
+        "inputPerMTok": 0.75,
+        "outputPerMTok": 4.5
+      },
+      "budgetUsd": 1,
+      "note": "Mid tier."
+    },
+    {
+      "provider": "gemini",
+      "model": "gemini-3.8-flash",
+      "pricing": {
+        "inputPerMTok": 0.75,
+        "outputPerMTok": 3.75
+      },
+      "budgetUsd": 1,
+      "note": "Mid tier. Promo price through Dec 31, 2026; $1.50/$7.50 after."
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-6.1-sol",
+      "effort": "low",
+      "pricing": {
+        "inputPerMTok": 2,
+        "outputPerMTok": 10
+      },
+      "budgetUsd": 2,
+      "note": "Mid tier. Rejects effort none; low is the floor."
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-sonnet-5-5",
+      "pricing": {
+        "inputPerMTok": 2,
+        "outputPerMTok": 10
+      },
+      "budgetUsd": 2,
+      "note": "Mid tier."
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-opus-5-5",
+      "reference": true,
+      "pricing": {
+        "inputPerMTok": 4,
+        "outputPerMTok": 20
+      },
+      "budgetUsd": 3,
+      "note": "Quality reference, not a production candidate (Art). Runs whatever it costs; the report's \"What the budget buys\" section measures every candidate against it."
+    },
+    {
+      "provider": "gemini",
+      "model": "gemini-4-argon",
+      "pricing": {
+        "inputPerMTok": 2,
+        "outputPerMTok": 10
+      },
+      "budgetUsd": 2,
+      "note": "Mid tier."
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5-mini",
+      "effort": "minimal",
+      "pricing": {
+        "inputPerMTok": 0.25,
+        "outputPerMTok": 2
+      },
+      "budgetUsd": 1,
+      "note": "arena-v0 baseline."
+    },
+    {
+      "provider": "gemini",
+      "model": "gemini-2.5-flash-lite",
+      "pricing": {
+        "inputPerMTok": 0.1,
+        "outputPerMTok": 0.4
+      },
+      "budgetUsd": 1,
+      "note": "arena-v0 baseline."
+    }
+  ]
+}
