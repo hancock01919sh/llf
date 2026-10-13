@@ -978,8 +978,8 @@ type ExtractResponse = {
     - enums
     - `maxItems: 60`
     - no `oneOf` and no formats
-  - Each provider gets a **forced tool call**:
-    - Anthropic: `tool_choice: { type: 'tool', name: 'report_ingredients' }`
+  - Each provider is held to the schema with a **forced tool call or structured output**:
+    - Anthropic: structured outputs (`output_config.format: json_schema`). Sonnet 5.5, Opus 5.5 and Fable 5.1 reject a forced `tool_choice`, and the API rejects `maxItems`, so that one keyword is dropped from the schema sent to Anthropic. The 60-item cap is still enforced by Zod.
     - OpenAI: `strict: true` function or `json_schema`
     - Bedrock Converse: `toolChoice: { tool: { name } }`
   - Output is capped at about 1,000 tokens, and the model times out after about **15 s**.

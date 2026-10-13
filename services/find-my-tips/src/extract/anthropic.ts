@@ -10,8 +10,10 @@ import {
 } from './types';
 
 // Anthropic Messages API adapter (TDD §7.4). Sends only the input and the
-// system prompt, forces the report_ingredients tool call, and never logs the
-// input, the model output, or the response body.
+// system prompt, constrains the reply to the report_ingredients JSON schema
+// with structured outputs, and never logs the input, the model output, or the
+// response body. Structured outputs rather than a forced tool call, because
+// Sonnet 5.5, Opus 5.5 and Fable 5.1 reject tool_choice "tool" and "any".
 export const ANTHROPIC_API_VERSION = '2023-06-01';
 export const ANTHROPIC_MAX_TOKENS = 1000;
 
@@ -23,14 +25,23 @@ export interface AnthropicProviderOptions {
 
 interface ContentBlock {
   type: string;
-  name?: string;
-  input?: unknown;
+  text?: string;
 }
 
 interface MessagesResponse {
   content?: ContentBlock[];
+  stop_reason?: string;
   usage?: { input_tokens?: number; output_tokens?: number };
 }
+
+// Structured outputs reject maxItems. The cap is still enforced by the Zod
+// validation every provider result goes through.
+const { maxItems: _maxItems, ...anthropicItems } =
+  REPORT_INGREDIENTS_TOOL.inputSchema.properties.items;
+export const ANTHROPIC_OUTPUT_SCHEMA = {
+  ...REPORT_INGREDIENTS_TOOL.inputSchema,
+  properties: { ...REPORT_INGREDIENTS_TOOL.inputSchema.properties, items: anthropicItems },
+};
 
 function userContent(input: ExtractionInput): unknown[] {
   if (input.kind === 'text') {
@@ -62,14 +73,9 @@ export function buildAnthropicRequest(
     model: ctx.model,
     max_tokens: ANTHROPIC_MAX_TOKENS,
     system: systemPrompt(ctx.promptVersion),
-    tools: [
-      {
-        name: REPORT_INGREDIENTS_TOOL.name,
-        description: REPORT_INGREDIENTS_TOOL.description,
-        input_schema: REPORT_INGREDIENTS_TOOL.inputSchema,
-      },
-    ],
-    tool_choice: { type: 'tool', name: REPORT_INGREDIENTS_TOOL.name },
+    output_config: {
+      format: { type: 'json_schema', schema: ANTHROPIC_OUTPUT_SCHEMA },
+    },
     messages: [{ role: 'user', content: userContent(input) }],
   };
 }
@@ -101,15 +107,21 @@ export function createAnthropicProvider(
       }
 
       const body = (await res.json()) as MessagesResponse;
-      const block = body.content?.find(
-        (b) => b.type === 'tool_use' && b.name === REPORT_INGREDIENTS_TOOL.name,
-      );
-      if (!block) throw new Error('anthropic: no report_ingredients tool call');
+      if (body.stop_reason === 'refusal') throw new Error('anthropic: refused');
+      if (body.stop_reason === 'max_tokens') throw new Error('anthropic: output truncated');
+      const block = body.content?.find((b) => b.type === 'text' && typeof b.text === 'string');
+      if (!block?.text) throw new Error('anthropic: no structured output');
+      let result: unknown;
+      try {
+        result = JSON.parse(block.text);
+      } catch {
+        throw new Error('anthropic: output is not JSON');
+      }
 
       const inputTokens = body.usage?.input_tokens;
       const outputTokens = body.usage?.output_tokens;
       return {
-        result: block.input,
+        result,
         ...(typeof inputTokens === 'number' && typeof outputTokens === 'number'
           ? { usage: { inputTokens, outputTokens } }
           : {}),

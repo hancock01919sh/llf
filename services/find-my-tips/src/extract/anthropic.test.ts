@@ -5,6 +5,7 @@ import { ToolError } from '../http';
 import {
   ANTHROPIC_API_VERSION,
   ANTHROPIC_MAX_TOKENS,
+  ANTHROPIC_OUTPUT_SCHEMA,
   buildAnthropicRequest,
   createAnthropicProvider,
 } from './anthropic';
@@ -39,12 +40,10 @@ function ok(body: unknown): Response {
   });
 }
 
-function toolUse(input: unknown, usage?: { input_tokens: number; output_tokens: number }) {
+function structured(output: unknown, usage?: { input_tokens: number; output_tokens: number }) {
   return {
-    content: [
-      { type: 'text', text: 'ignored' },
-      { type: 'tool_use', id: 'tu_1', name: REPORT_INGREDIENTS_TOOL.name, input },
-    ],
+    content: [{ type: 'text', text: JSON.stringify(output) }],
+    stop_reason: 'end_turn',
     ...(usage ? { usage } : {}),
   };
 }
@@ -55,19 +54,16 @@ function bodyOf(call: Call | undefined): Record<string, unknown> {
 }
 
 describe('buildAnthropicRequest', () => {
-  it('forces the report_ingredients tool and sends no catalog', () => {
+  it('constrains output to the report_ingredients schema and sends no catalog', () => {
     const req = buildAnthropicRequest({ kind: 'text', text: 'milk' }, ctx);
     expect(req.model).toBe('claude-test');
     expect(req.max_tokens).toBe(ANTHROPIC_MAX_TOKENS);
     expect(req.system).toBe(systemPrompt('p1'));
-    expect(req.tools).toEqual([
-      {
-        name: REPORT_INGREDIENTS_TOOL.name,
-        description: REPORT_INGREDIENTS_TOOL.description,
-        input_schema: REPORT_INGREDIENTS_TOOL.inputSchema,
-      },
-    ]);
-    expect(req.tool_choice).toEqual({ type: 'tool', name: REPORT_INGREDIENTS_TOOL.name });
+    expect(req.output_config).toEqual({
+      format: { type: 'json_schema', schema: ANTHROPIC_OUTPUT_SCHEMA },
+    });
+    expect(req).not.toHaveProperty('tools');
+    expect(req).not.toHaveProperty('tool_choice');
     expect(JSON.stringify(req)).not.toMatch(/catalog/i);
   });
 
@@ -106,9 +102,18 @@ describe('buildAnthropicRequest', () => {
   });
 });
 
+describe('ANTHROPIC_OUTPUT_SCHEMA', () => {
+  it('is the contract schema without maxItems, which structured outputs reject', () => {
+    expect(JSON.stringify(ANTHROPIC_OUTPUT_SCHEMA)).not.toContain('maxItems');
+    const { maxItems: _cap, ...items } = REPORT_INGREDIENTS_TOOL.inputSchema.properties.items;
+    expect(ANTHROPIC_OUTPUT_SCHEMA.properties.items).toEqual(items);
+    expect(ANTHROPIC_OUTPUT_SCHEMA.required).toEqual(REPORT_INGREDIENTS_TOOL.inputSchema.required);
+  });
+});
+
 describe('createAnthropicProvider', () => {
   it('fails closed without a key and makes no request', async () => {
-    const { fetch, calls } = fakeFetch(() => ok(toolUse(RESULT)));
+    const { fetch, calls } = fakeFetch(() => ok(structured(RESULT)));
     const provider = createAnthropicProvider({ fetch });
     await expect(
       provider.extract(
@@ -120,7 +125,7 @@ describe('createAnthropicProvider', () => {
   });
 
   it('posts to the Messages API with the key, version, and signal', async () => {
-    const { fetch, calls } = fakeFetch(() => ok(toolUse(RESULT)));
+    const { fetch, calls } = fakeFetch(() => ok(structured(RESULT)));
     const provider = createAnthropicProvider({
       apiKey: KEY,
       baseUrl: 'https://proxy.test/',
@@ -139,12 +144,15 @@ describe('createAnthropicProvider', () => {
       'content-type': 'application/json',
     });
     expect(call?.init.signal).toBe(signal);
-    expect(bodyOf(call)).toMatchObject({ model: 'claude-test', tool_choice: { type: 'tool' } });
+    expect(bodyOf(call)).toMatchObject({
+      model: 'claude-test',
+      output_config: { format: { type: 'json_schema' } },
+    });
   });
 
   it('returns the tool input and maps usage', async () => {
     const { fetch } = fakeFetch(() =>
-      ok(toolUse(RESULT, { input_tokens: 420, output_tokens: 37 })),
+      ok(structured(RESULT, { input_tokens: 420, output_tokens: 37 })),
     );
     const provider = createAnthropicProvider({ apiKey: KEY, fetch });
     const output = await provider.extract(
@@ -155,7 +163,7 @@ describe('createAnthropicProvider', () => {
   });
 
   it('omits usage when the response has none', async () => {
-    const { fetch } = fakeFetch(() => ok(toolUse(RESULT)));
+    const { fetch } = fakeFetch(() => ok(structured(RESULT)));
     const provider = createAnthropicProvider({ apiKey: KEY, fetch });
     const output = await provider.extract(
       { kind: 'text', text: 'milk' },
@@ -164,15 +172,23 @@ describe('createAnthropicProvider', () => {
     expect(output).toEqual({ result: RESULT });
   });
 
-  it('errors when the model does not call the tool', async () => {
-    const { fetch } = fakeFetch(() => ok({ content: [{ type: 'text', text: 'Sure! Milk.' }] }));
+  it.each([
+    [{ content: [{ type: 'text', text: 'Sure! Milk.' }] }, 'anthropic: output is not JSON'],
+    [{ content: [] }, 'anthropic: no structured output'],
+    [{ content: [], stop_reason: 'refusal' }, 'anthropic: refused'],
+    [
+      { content: [{ type: 'text', text: '{"rea' }], stop_reason: 'max_tokens' },
+      'anthropic: output truncated',
+    ],
+  ])('errors on an unusable response (%#)', async (response, message) => {
+    const { fetch } = fakeFetch(() => ok(response));
     const provider = createAnthropicProvider({ apiKey: KEY, fetch });
     await expect(
       provider.extract(
         { kind: 'text', text: 'milk' },
         { ...ctx, signal: AbortSignal.timeout(1_000) },
       ),
-    ).rejects.toThrow('anthropic: no report_ingredients tool call');
+    ).rejects.toThrow(message);
   });
 
   it('reports only the status on HTTP errors, never the body or key', async () => {
@@ -193,14 +209,16 @@ describe('anthropic through extractIngredients', () => {
   const opts = { timeoutMs: 1_000, model: 'claude-test', promptVersion: 'p1' };
 
   it('validates and returns a well-formed result', async () => {
-    const { fetch } = fakeFetch(() => ok(toolUse(RESULT, { input_tokens: 10, output_tokens: 5 })));
+    const { fetch } = fakeFetch(() =>
+      ok(structured(RESULT, { input_tokens: 10, output_tokens: 5 })),
+    );
     const provider = createProvider('anthropic', { anthropicApiKey: KEY, fetch });
     const extraction = await extractIngredients(provider, { kind: 'text', text: 'milk' }, opts);
     expect(extraction).toEqual({ result: RESULT, usage: { inputTokens: 10, outputTokens: 5 } });
   });
 
-  it('maps malformed tool input to upstream_error', async () => {
-    const { fetch } = fakeFetch(() => ok(toolUse({ readable: true, items: 'milk' })));
+  it('maps malformed output to upstream_error', async () => {
+    const { fetch } = fakeFetch(() => ok(structured({ readable: true, items: 'milk' })));
     const provider = createProvider('anthropic', { anthropicApiKey: KEY, fetch });
     const error = await extractIngredients(provider, { kind: 'text', text: 'milk' }, opts).catch(
       (e: unknown) => e,
