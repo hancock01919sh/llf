@@ -19,6 +19,7 @@ import {
 } from './arena';
 import { loadLabeledSet } from './labeled-set';
 import { meetsTargets } from './metrics';
+import { URL_PATHS, type UrlPath } from './runner';
 
 const DEFAULT_MATRIX = fileURLToPath(
   new URL('../../../../eval/arena.example.json', import.meta.url),
@@ -41,6 +42,8 @@ Options:
   --catalog <file>     Catalog to score against (default: the bundled fixture catalog)
   --prompt <version>   Prompt version (${promptVersions().join(', ')})
   --budget <usd>       Global spend cap across all cells (overrides the matrix budgetUsd)
+  --url-path <path>    How url cases run: pipeline (default, JSON-LD first like production) or
+                       model (skip JSON-LD so the model reads every page). Url cases need network.
   --out <dir>          Writes runs/arena-<stamp>.json (git-ignored) and reports/arena-<stamp>.md (default: eval/)
   --dry-run            List the cells and why any would be skipped, without calling a model
   -h, --help           Show this message
@@ -59,6 +62,14 @@ function usd(flag: string, value: string | undefined): number | undefined {
   if (!Number.isFinite(parsed) || parsed < 0)
     throw new Error(`--${flag} must be a non-negative number`);
   return parsed;
+}
+
+function urlPathFlag(value: string | undefined): UrlPath {
+  if (value === undefined) return 'pipeline';
+  if (!(URL_PATHS as readonly string[]).includes(value)) {
+    throw new Error(`--url-path must be one of ${URL_PATHS.join(', ')}`);
+  }
+  return value as UrlPath;
 }
 
 function stamp(date: Date): string {
@@ -80,6 +91,7 @@ async function main(): Promise<void> {
       catalog: { type: 'string' },
       prompt: { type: 'string' },
       budget: { type: 'string' },
+      'url-path': { type: 'string' },
       out: { type: 'string' },
       'dry-run': { type: 'boolean', default: false },
       help: { type: 'boolean', short: 'h', default: false },
@@ -96,6 +108,7 @@ async function main(): Promise<void> {
     throw new Error(`--prompt must be one of ${promptVersions().join(', ')}`);
   }
   const budgetUsd = usd('budget', values.budget);
+  const urlPath = urlPathFlag(values['url-path']);
 
   const matrixPath = values.matrix ? fromCwd(values.matrix) : DEFAULT_MATRIX;
   const matrix = ArenaMatrix.parse(JSON.parse(await readFile(matrixPath, 'utf8')));
@@ -147,6 +160,7 @@ async function main(): Promise<void> {
     promptVersion,
     timeoutMs: config.modelTimeoutMs,
     ...(budgetUsd === undefined ? {} : { budgetUsd }),
+    urlPath,
     providerFor,
   });
 
@@ -157,6 +171,7 @@ async function main(): Promise<void> {
     setVersion: set.version,
     catalogVersion,
     ...(matrix.version === undefined ? {} : { matrixVersion: matrix.version }),
+    ...(set.cases.some((item) => item.kind === 'url') ? { urlPath } : {}),
   };
   const outDir = values.out ? fromCwd(values.out) : DEFAULT_OUT;
   const name = `arena-${stamp(date)}`;

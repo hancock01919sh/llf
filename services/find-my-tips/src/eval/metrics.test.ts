@@ -55,6 +55,15 @@ describe('scoreCase', () => {
     expect(score.extraSlugs).toEqual(['bread']);
   });
 
+  it('neither rewards nor penalizes an acceptable slug', () => {
+    const item = textCase({ acceptableSlugs: ['bread'] });
+    const withIt = scoreCase(item, success(['banana', 'milk', 'bread']), 1);
+    expect(withIt).toMatchObject({ tp: 2, fp: 0, fn: 0, slugsExact: true, passed: true });
+    expect(withIt.acceptedSlugs).toEqual(['bread']);
+    const without = scoreCase(item, success(['banana', 'milk']), 1);
+    expect(without).toMatchObject({ tp: 2, fp: 0, passed: true, acceptedSlugs: [] });
+  });
+
   it('counts a missing slug as a false negative', () => {
     const score = scoreCase(textCase(), success(['banana']), 1);
     expect(score).toMatchObject({ tp: 1, fp: 0, fn: 1, slugsExact: false, passed: false });
@@ -151,6 +160,7 @@ const score = (overrides: Partial<CaseScore>): CaseScore => ({
   matchedSlugs: [],
   missingSlugs: [],
   extraSlugs: [],
+  acceptedSlugs: [],
   unmatchedCount: 0,
   inputTokens: 0,
   outputTokens: 0,

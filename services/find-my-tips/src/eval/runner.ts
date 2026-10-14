@@ -1,10 +1,15 @@
+import type { ExtractionResult, ExtractSource } from '@llf/contracts/find-tips';
 import type { Matcher } from '@llf/matching';
 
+import { MemoryCacheStore, MemoryCounterStore } from '../cache';
 import { extractIngredients } from '../extract';
-import type { ExtractionProvider, ReasoningEffort } from '../extract';
+import type { ExtractionProvider, ExtractionUsage, ReasoningEffort } from '../extract';
 import { ToolError } from '../http';
 import { matchItems } from '../match';
-import type { LabeledSet } from './labeled-set';
+import { createQuota } from '../quota';
+import { runUrlPipeline } from '../url/pipeline';
+import type { Resolver, Transport } from '../url/safe-fetch';
+import type { LabeledCase, LabeledSet } from './labeled-set';
 import { caseInput } from './labeled-set';
 import type { CaseOutcome, CaseScore, Pricing, Report } from './metrics';
 import { aggregate, costUsd, scoreCase } from './metrics';
@@ -22,8 +27,60 @@ export type EvalOptions = {
   pricing: Pricing;
   /** Stop before the next case once spend reaches this many USD. */
   budgetUsd?: number;
+  /**
+   * How `url` cases run. `pipeline` (default) is production: JSON-LD first, the
+   * model only when a page has none. `model` skips JSON-LD so the model reads every page.
+   */
+  urlPath?: UrlPath;
+  /** Test seams for `url` cases; the defaults use real DNS and HTTPS. */
+  urlDeps?: { resolve?: Resolver; transport?: Transport };
   now?: () => number;
 };
+
+export const URL_PATHS = ['pipeline', 'model'] as const;
+export type UrlPath = (typeof URL_PATHS)[number];
+
+type Extracted = {
+  result: ExtractionResult;
+  usage?: ExtractionUsage;
+  urlSource?: ExtractSource;
+};
+
+async function extractCase(item: LabeledCase, options: EvalOptions): Promise<Extracted> {
+  const effort =
+    options.reasoningEffort === undefined ? {} : { reasoningEffort: options.reasoningEffort };
+  if (item.kind !== 'url') {
+    const input = await caseInput(item, options.setPath);
+    return extractIngredients(options.provider, input, {
+      timeoutMs: options.timeoutMs,
+      model: options.model,
+      promptVersion: options.promptVersion,
+      ...effort,
+    });
+  }
+  // A fresh cache and an unlimited quota per case, so every cell fetches and extracts on its own.
+  const page = await runUrlPipeline(item.url ?? '', {
+    cache: new MemoryCacheStore(),
+    quota: createQuota(new MemoryCounterStore(), Number.POSITIVE_INFINITY),
+    provider: options.provider,
+    config: {
+      mode: 'live',
+      model: options.model,
+      promptVersion: options.promptVersion,
+      urlCacheTtlMs: 60_000,
+      modelTimeoutMs: options.timeoutMs,
+      reasoningEffort: options.reasoningEffort,
+    },
+    skipJsonLd: options.urlPath === 'model',
+    ...(options.urlDeps?.resolve ? { resolve: options.urlDeps.resolve } : {}),
+    ...(options.urlDeps?.transport ? { transport: options.urlDeps.transport } : {}),
+  });
+  return {
+    result: { readable: page.readable, detectedType: page.detectedType, items: page.items },
+    urlSource: page.source,
+    ...(page.usage ? { usage: page.usage } : {}),
+  };
+}
 
 export type EvalRun = {
   scores: CaseScore[];
@@ -46,25 +103,21 @@ export async function runEval(options: EvalOptions): Promise<EvalRun> {
   for (const item of options.set.cases) {
     if (options.budgetUsd !== undefined && spent >= options.budgetUsd) break;
 
-    const input = await caseInput(item, options.setPath);
     const started = now();
     let outcome: CaseOutcome;
     try {
-      const { result, usage } = await extractIngredients(options.provider, input, {
-        timeoutMs: options.timeoutMs,
-        model: options.model,
-        promptVersion: options.promptVersion,
-        ...(options.reasoningEffort === undefined
-          ? {}
-          : { reasoningEffort: options.reasoningEffort }),
-      });
+      const { result, usage, urlSource } = await extractCase(item, options);
       const { matches, unmatchedCount } = matchItems(result.items, options.matcher);
       outcome = {
         ok: true,
         result,
         matchedSlugs: matches.map((match) => match.slug),
         unmatchedCount,
+        unmatchedTerms: result.items
+          .filter((entry) => entry.isFood && options.matcher.match(entry.term) === null)
+          .map((entry) => entry.term),
         ...(usage ? { usage } : {}),
+        ...(urlSource ? { urlSource } : {}),
       };
     } catch (error) {
       if (!(error instanceof ToolError)) throw error;

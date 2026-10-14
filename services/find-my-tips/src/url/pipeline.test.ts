@@ -47,6 +47,18 @@ async function codeOf(promise: Promise<unknown>): Promise<string> {
 }
 
 describe('runUrlPipeline', () => {
+  it('sends a JSON-LD page to the model when skipJsonLd is set (eval only)', async () => {
+    const { deps } = setup({ AI_MODE: 'live' });
+    const plain = await runUrlPipeline('https://recipes.test/pie', deps);
+    expect(plain.source).toBe('jsonld');
+    const skipped = await runUrlPipeline('https://recipes.test/pie', {
+      ...deps,
+      cache: new MemoryCacheStore(),
+      skipJsonLd: true,
+    });
+    expect(skipped.source).toBe('model');
+  });
+
   it('returns source_unavailable for a blocked page and never reaches the model', async () => {
     const { deps, quota } = setup();
     deps.transport = fakeTransport({ 'https://recipes.test/blocked': { status: 403 } });

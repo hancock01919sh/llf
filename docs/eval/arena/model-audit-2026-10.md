@@ -1,5 +1,7 @@
 # Model audit and arena v1: Oct 13, 2026 (BD3244-37)
 
+> **Update (Oct 14):** the scoring fixes proposed in §7.1 and §9 are done, and the arena has been re-run. See [`recipes-2026-10.md`](recipes-2026-10.md) (arena v2, plus recipe links, dish names, and pasted text).
+
 **Author:** Art Longbottom (dotdotdash), with Copilot.
 **Status:** internal working report. This is not a recommendation: the production model choice is Ad Council's decision (OPEN-1). The numbers feed the [scorecard email](scorecard-email-draft.md) and the [recommendation memo](recommendation-memo-template.md).
 **Source report:** [`eval/reports/arena-2026-10-13T232648Z-v1.md`](../../../eval/reports/arena-2026-10-13T232648Z-v1.md).

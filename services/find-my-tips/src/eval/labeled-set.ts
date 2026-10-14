@@ -9,19 +9,25 @@ import type { ExtractionInput } from '../extract';
 
 /**
  * One labeled input for the P9 eval (TDD §7.9). `expectedSlugs` are the
- * catalog ingredients a correct extraction should match. Injection cases pass
- * only if the output stays schema-valid and the slugs equal the true set.
+ * catalog ingredients a correct extraction should match. `acceptableSlugs` are
+ * also correct but optional (a garnish, an invisible cooking staple, a common
+ * variant of a named dish): matching one is neither rewarded nor penalized.
+ * Injection cases pass only if the output stays schema-valid and the slugs
+ * equal the true set. `url` cases run the real recipe-URL pipeline and need
+ * network access.
  */
 export const LabeledCase = z
   .object({
     id: z.string().regex(/^[a-z0-9][a-z0-9-]*$/),
-    kind: z.enum(['text', 'image']),
+    kind: z.enum(['text', 'image', 'url']),
     text: z.string().min(1).max(TEXT_MAX_LENGTH).optional(),
+    url: z.string().url().optional(),
     imagePath: z.string().min(1).optional(),
     mimeType: z.enum(IMAGE_MIME_TYPES).optional(),
     detectedType: z.enum(DETECTED_TYPES),
     expectedReadable: z.boolean(),
     expectedSlugs: z.array(Slug),
+    acceptableSlugs: z.array(Slug).default([]),
     injection: z.boolean().default(false),
     /** Provenance id from the set's `sources` manifest (license, consent, no-PII check). */
     source: z
@@ -32,6 +38,9 @@ export const LabeledCase = z
   .superRefine((value, ctx) => {
     if (value.kind === 'text' && value.text === undefined) {
       ctx.addIssue({ code: 'custom', path: ['text'], message: 'text cases need `text`' });
+    }
+    if (value.kind === 'url' && value.url === undefined) {
+      ctx.addIssue({ code: 'custom', path: ['url'], message: 'url cases need `url`' });
     }
     if (value.kind === 'image' && (value.imagePath === undefined || value.mimeType === undefined)) {
       ctx.addIssue({
@@ -49,6 +58,17 @@ export const LabeledCase = z
     }
     if (new Set(value.expectedSlugs).size !== value.expectedSlugs.length) {
       ctx.addIssue({ code: 'custom', path: ['expectedSlugs'], message: 'duplicate slug' });
+    }
+    if (new Set(value.acceptableSlugs).size !== value.acceptableSlugs.length) {
+      ctx.addIssue({ code: 'custom', path: ['acceptableSlugs'], message: 'duplicate slug' });
+    }
+    const both = value.acceptableSlugs.filter((slug) => value.expectedSlugs.includes(slug));
+    if (both.length > 0) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['acceptableSlugs'],
+        message: `slug(s) both expected and acceptable: ${both.join(', ')}`,
+      });
     }
   });
 export type LabeledCase = z.infer<typeof LabeledCase>;
@@ -104,8 +124,12 @@ export async function loadLabeledSet(path: string): Promise<LabeledSet> {
   return LabeledSet.parse(raw);
 }
 
-/** Builds the extraction input. Image paths are relative to the set file. */
+/**
+ * Builds the extraction input for a text or image case. Image paths are
+ * relative to the set file. `url` cases go through the URL pipeline instead.
+ */
 export async function caseInput(item: LabeledCase, setPath: string): Promise<ExtractionInput> {
+  if (item.kind === 'url') throw new Error(`case "${item.id}" is a url case`);
   if (item.kind === 'text') return { kind: 'text', text: item.text ?? '' };
   if (!item.imagePath || !item.mimeType) throw new Error(`case "${item.id}" is missing its image`);
   const bytes = await readFile(resolve(dirname(setPath), item.imagePath));

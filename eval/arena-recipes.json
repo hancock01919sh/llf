@@ -1,0 +1,73 @@
+{
+  "version": "arena-recipes-v1",
+  "description": "BD3244-37 recipe/text extension: recipe links, dish names, pasted meals and recipes. Opus 5.5 is the reference (Art); Sonnet 5.5 for comparison; the in-cap shortlist from arena-v1. Run with --catalog catalogs/eval-v2.json, once per --prompt (p1, p2) and --url-path (pipeline, model). URL cases fetch live pages.",
+  "setPath": "sets/v2-recipes.json",
+  "budgetUsd": 6,
+  "monthlyCapUsd": 500,
+  "usesPerMonth": [25000, 50000],
+  "callsPerUse": 1,
+  "cells": [
+    {
+      "label": "mock",
+      "provider": "mock",
+      "model": "mock-1",
+      "pricing": {
+        "inputPerMTok": 0,
+        "outputPerMTok": 0
+      },
+      "note": "Baseline: proves the harness, never a candidate."
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "effort": "none",
+      "pricing": {
+        "inputPerMTok": 0.1,
+        "outputPerMTok": 0.5
+      },
+      "budgetUsd": 1.5,
+      "note": "Cheap tier."
+    },
+    {
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "pricing": {
+        "inputPerMTok": 0.3,
+        "outputPerMTok": 2.5
+      },
+      "budgetUsd": 1.5,
+      "note": "Cheap tier."
+    },
+    {
+      "provider": "gemini",
+      "model": "gemini-3.8-flash",
+      "pricing": {
+        "inputPerMTok": 0.75,
+        "outputPerMTok": 3.75
+      },
+      "budgetUsd": 1.5,
+      "note": "Mid tier. Promo price through Dec 31, 2026; $1.50/$7.50 after."
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-sonnet-5-5",
+      "pricing": {
+        "inputPerMTok": 2,
+        "outputPerMTok": 10
+      },
+      "budgetUsd": 1.5,
+      "note": "Mid tier."
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-opus-5-5",
+      "reference": true,
+      "pricing": {
+        "inputPerMTok": 4,
+        "outputPerMTok": 20
+      },
+      "budgetUsd": 1.5,
+      "note": "Quality reference, not a production candidate (Art). Runs whatever it costs; the report's \"What the budget buys\" section measures every candidate against it."
+    }
+  ]
+}

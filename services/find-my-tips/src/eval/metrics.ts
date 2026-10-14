@@ -1,4 +1,9 @@
-import type { DetectedType, ErrorCode, ExtractionResult } from '@llf/contracts/find-tips';
+import type {
+  DetectedType,
+  ErrorCode,
+  ExtractionResult,
+  ExtractSource,
+} from '@llf/contracts/find-tips';
 import type { ExtractionUsage } from '../extract';
 import type { LabeledCase } from './labeled-set';
 
@@ -9,7 +14,11 @@ export type CaseOutcome =
       result: ExtractionResult;
       matchedSlugs: readonly string[];
       unmatchedCount: number;
+      /** Food terms the catalog didn't match, for label review. Eval only: the service never keeps them. */
+      unmatchedTerms?: readonly string[];
       usage?: ExtractionUsage;
+      /** For url cases: where the terms came from. */
+      urlSource?: ExtractSource;
     }
   | { ok: false; errorCode: ErrorCode };
 
@@ -30,7 +39,12 @@ export type CaseScore = {
   matchedSlugs: string[];
   missingSlugs: string[];
   extraSlugs: string[];
+  /** Matched slugs from `acceptableSlugs`: not counted as hits or misses. */
+  acceptedSlugs: string[];
   unmatchedCount: number;
+  /** Written to the git-ignored run JSON only, never to the markdown report. */
+  unmatchedTerms?: string[];
+  urlSource?: ExtractSource;
   inputTokens: number;
   outputTokens: number;
   /** Already included in outputTokens; reported separately to show what reasoning costs. */
@@ -71,6 +85,7 @@ export const TARGETS = { precision: 0.9, recall: 0.8, injectionPassRate: 1 } as 
 
 export function scoreCase(item: LabeledCase, outcome: CaseOutcome, latencyMs: number): CaseScore {
   const expected = new Set<string>(item.expectedSlugs);
+  const acceptable = new Set<string>(item.acceptableSlugs);
   const base = {
     id: item.id,
     kind: item.kind,
@@ -93,6 +108,7 @@ export function scoreCase(item: LabeledCase, outcome: CaseOutcome, latencyMs: nu
       matchedSlugs: [],
       missingSlugs: [...expected],
       extraSlugs: [],
+      acceptedSlugs: [],
       unmatchedCount: 0,
       inputTokens: 0,
       outputTokens: 0,
@@ -102,8 +118,9 @@ export function scoreCase(item: LabeledCase, outcome: CaseOutcome, latencyMs: nu
 
   const actual = new Set(outcome.matchedSlugs);
   const missingSlugs = [...expected].filter((slug) => !actual.has(slug));
-  const extraSlugs = [...actual].filter((slug) => !expected.has(slug));
-  const tp = actual.size - extraSlugs.length;
+  const acceptedSlugs = [...actual].filter((slug) => acceptable.has(slug));
+  const extraSlugs = [...actual].filter((slug) => !expected.has(slug) && !acceptable.has(slug));
+  const tp = actual.size - extraSlugs.length - acceptedSlugs.length;
   const slugsExact = missingSlugs.length === 0 && extraSlugs.length === 0;
   const readableCorrect = outcome.result.readable === item.expectedReadable;
 
@@ -118,7 +135,12 @@ export function scoreCase(item: LabeledCase, outcome: CaseOutcome, latencyMs: nu
     matchedSlugs: [...actual],
     missingSlugs,
     extraSlugs,
+    acceptedSlugs,
     unmatchedCount: outcome.unmatchedCount,
+    ...(outcome.unmatchedTerms === undefined
+      ? {}
+      : { unmatchedTerms: [...outcome.unmatchedTerms] }),
+    ...(outcome.urlSource === undefined ? {} : { urlSource: outcome.urlSource }),
     inputTokens: outcome.usage?.inputTokens ?? 0,
     outputTokens: outcome.usage?.outputTokens ?? 0,
     reasoningTokens: outcome.usage?.reasoningTokens ?? 0,

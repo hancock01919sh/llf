@@ -40,6 +40,45 @@ describe('createMatcher', () => {
     expect(matcher.match('milk chocolate')).toBeNull();
   });
 
+  it('skips plant-part words when finding the head noun', () => {
+    const herbs = createMatcher([
+      { slug: 'basil', title: 'Basil', synonyms: [] },
+      { slug: 'celery', title: 'Celery', synonyms: [] },
+    ]);
+    expect(herbs.match('¼ cup fresh basil leaves')).toMatchObject({ slug: 'basil', tier: 'good' });
+    expect(herbs.match('2 celery stalks, finely chopped')).toMatchObject({ slug: 'celery' });
+    expect(herbs.match('3 sprigs basil')).toMatchObject({ slug: 'basil' });
+    expect(herbs.match('leaves')).toBeNull();
+  });
+
+  it('reads recipe lines with trailing phrases and leading adjectives', () => {
+    expect(matcher.match('1 medium onion peeled and thinly sliced')).toMatchObject({
+      slug: 'onion',
+    });
+    expect(matcher.match('1 lb. boneless, skinless chicken breast ($5.47)')).toMatchObject({
+      slug: 'chicken-breast',
+    });
+    expect(matcher.match('2 cups milk, divided')).toMatchObject({ slug: 'milk' });
+    expect(matcher.match('1 pound strawberries on the vine (3 to 5, cut up')).toMatchObject({
+      slug: 'strawberries',
+    });
+    expect(matcher.match('salt and freshly ground black pepper')).toBeNull();
+    expect(matcher.match('boneless, skinless')).toBeNull();
+  });
+
+  it('takes the first alternative that matches on its own', () => {
+    const veg = createMatcher([
+      { slug: 'zucchini', title: 'Zucchini', synonyms: [] },
+      { slug: 'pumpkin', title: 'Pumpkin', synonyms: ['squash'] },
+      { slug: 'bell-pepper', title: 'Bell Pepper', synonyms: ['yellow pepper'] },
+      { slug: 'basil', title: 'Basil', synonyms: [] },
+    ]);
+    expect(veg.match('2 zucchini or yellow squash, diced')).toMatchObject({ slug: 'zucchini' });
+    expect(veg.match('2 red or yellow peppers')).toMatchObject({ slug: 'bell-pepper' });
+    expect(veg.match('1 pack or small bunch basil')).toMatchObject({ slug: 'basil' });
+    expect(veg.match('fresh oregano')).toBeNull();
+  });
+
   it('allows one edit for longer terms (weak), and can turn that off', () => {
     expect(matcher.match('stawberries')).toMatchObject({ slug: 'strawberries', tier: 'weak' });
     expect(matcher.match('brad')).toBeNull();

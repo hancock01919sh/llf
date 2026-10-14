@@ -16,7 +16,7 @@ import type { LabeledSet } from './labeled-set';
 import { meetsTargets } from './metrics';
 import { count, dollars, pct, usd } from './report';
 import { runEval } from './runner';
-import type { EvalRun } from './runner';
+import type { EvalRun, UrlPath } from './runner';
 
 const usdAmount = z.number().nonnegative();
 
@@ -102,6 +102,8 @@ export type ArenaOptions = {
   timeoutMs: number;
   /** Overrides matrix.budgetUsd. */
   budgetUsd?: number;
+  /** How `url` cases run (see EvalOptions.urlPath). */
+  urlPath?: UrlPath;
   /** Builds the provider for a cell, or says why the cell can't run (missing key, no adapter). */
   providerFor: (cell: ArenaCell & { provider: ProviderName }) => ProviderChoice;
   now?: () => number;
@@ -163,6 +165,7 @@ export async function runArena(options: ArenaOptions): Promise<ArenaResult> {
       matcher: options.matcher,
       pricing: cell.pricing,
       ...(budgetUsd === undefined ? {} : { budgetUsd }),
+      ...(options.urlPath === undefined ? {} : { urlPath: options.urlPath }),
       ...(options.now === undefined ? {} : { now: options.now }),
     });
     spentUsd += run.report.overall.costUsd;
@@ -189,6 +192,8 @@ export type ArenaMeta = {
   setVersion: string;
   catalogVersion: string;
   matrixVersion?: string;
+  /** Set when the run has url cases. */
+  urlPath?: UrlPath;
 };
 
 const rate = (value: number | null): string => (value === null ? 'n/a' : pct(value));
@@ -409,7 +414,8 @@ export function renderArenaMarkdown(meta: ArenaMeta, result: ArenaResult): strin
     `# Model arena: ${meta.date}`,
     '',
     `- Prompt \`${meta.promptVersion}\`, set \`${meta.setVersion}\`, catalog \`${meta.catalogVersion}\`` +
-      (meta.matrixVersion === undefined ? '' : `, matrix \`${meta.matrixVersion}\``),
+      (meta.matrixVersion === undefined ? '' : `, matrix \`${meta.matrixVersion}\``) +
+      (meta.urlPath === undefined ? '' : `, URL path \`${meta.urlPath}\``),
     `- Spent ${usd(result.spentUsd)}` +
       (result.budgetUsd === undefined
         ? ' (no global cap)'

@@ -144,6 +144,9 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
   - The report's new **What the budget buys** / **What it misses out on** sections show the gap to the reference: 3.5 Flash-Lite misses 11 ingredients Opus found (mostly cheese and egg) and accepts 1 non-food image Opus rejected.
   - **Adapter fix:** Sonnet 5.5, Opus 5.5 and Fable 5.1 reject a forced `tool_choice`, so the Anthropic adapter now uses structured outputs (TDD §7.4). `gpt-6.1-sol` rejects effort `none`.
   - Gemini and Anthropic are dev/eval keys pending IT (OPEN-2). Not a recommendation; OPEN-1 is Ad Council's decision.
+- **Arena v2 and recipe input (Oct 14, BD3244-37):** ✅ $8.14 spent. Write-up: [`docs/eval/arena/recipes-2026-10.md`](eval/arena/recipes-2026-10.md).
+  - **Label fixes** (catalog `eval-v2`, set `v2-mixed`, same images): with "tomato sauce" no longer scored as `ketchup` and with acceptable extras, **7 of 13 cells meet G2**. Precision rose 8–21 points; recall barely moved. Cheapest passing cells: `gemini-2.5-flash-lite` 92.3% / 84.3% ($4/mo, but accepts 59% of non-food images), `gpt-5-mini/minimal` 90.0% / 87.6% ($18/mo), `gemini-3.1-flash-lite` 96.4% / 87.6% ($22/mo), `gemini-3.5-flash-lite` 96.2% / 82.2% ($28/mo). Opus: 94.2% / 96.8%.
+  - **Recipes** (`v2-recipes`, 61 cases): JSON-LD recipe pages score 100% / 99% with no model call. With prompt `p2`, every cell scores ≥ 99% / ≥ 99% with 3/3 injection; `p1` misses typed dish names (recall 57–98%). `p2` is the eval candidate for the next prompt version.
 - **Decision:** Baseline for the production provider decision (OPEN-1, Nov 13). The pick is the cheapest arena cell that meets G2 with 100% injection resistance and fits the monthly cap (TDD D24). The Bedrock adapter stays a stub until OPEN-1 is decided.
 
 ### P10. WAF Challenge with the tool API

@@ -27,6 +27,8 @@ export type UrlPipelineDeps = {
   resolve?: Resolver;
   transport?: Transport;
   signal?: AbortSignal;
+  /** Eval only (`pnpm arena --url-path model`): ignore JSON-LD so the model reads every page. */
+  skipJsonLd?: boolean;
 };
 
 export type UrlPipelineResult = {
@@ -115,7 +117,7 @@ export async function runUrlPipeline(
     await deps.cache.set(valueKey(urlHash, deps), JSON.stringify(terms), ttl);
   };
 
-  const lines = extractRecipeIngredients(page.html);
+  const lines = deps.skipJsonLd ? null : extractRecipeIngredients(page.html);
   if (lines && lines.length > 0) {
     const terms = fromJsonLd(lines);
     if (terms.items.length > 0) {

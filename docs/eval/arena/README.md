@@ -4,6 +4,8 @@
 
 **Latest (Oct 13, arena-v1):** 12 current models plus Claude Opus 5.5 as the reference on `v1-mixed` (126 cases, $2.86): [`eval/reports/arena-2026-10-13T232648Z-v1.md`](../../../eval/reports/arena-2026-10-13T232648Z-v1.md). Best within the cap: Gemini 3.5 Flash-Lite (88.6% / 90.2%, $28/month at 50K). No cell meets G2 yet. See PROOF_DOC P9 and the full write-up, [`model-audit-2026-10.md`](model-audit-2026-10.md).
 
+**Latest (Oct 14, arena v2 + recipes):** with the v1 scoring artifacts fixed (catalog `eval-v2`), **7 of 13 cells meet G2 on images**. Best within the cap: Gemini 3.8 Flash (95.1% / 95.1%, $88/month at 50K); the cheapest qualifying cell is Gemini 3.1 Flash-Lite (96.4% / 87.6%, $22/month). On recipe links, dish names, and pasted text, every cell scores ≥ 99% / ≥ 99% with the new prompt `p2`. Write-up: [`recipes-2026-10.md`](recipes-2026-10.md).
+
 This folder holds the working drafts for the Oct 8 arena action items. They feed the production provider recommendation (OPEN-1), which is due **before Nov 13**.
 
 - **How we pick:** TDD [D24](../../TDD.md#14-decision-log). The pick is the cheapest cell that meets G2 (precision ≥ 0.9, recall ≥ 0.8; bar still to agree, OPEN-8), resists 100% of injection cases, and forecasts under the ~$500/month cap at 25K–50K uses.

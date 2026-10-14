@@ -16,17 +16,25 @@ export interface MatcherOptions {
   weak?: boolean;
 }
 
-/** Preparation and size words ignored when looking for the head noun. */
+/**
+ * Preparation, size, and plant-part words ignored when looking for the head
+ * noun, so "basil leaves" and "celery stalks" find basil and celery.
+ */
 const DESCRIPTORS = new Set([
   'baby',
+  'beaten',
   'boneless',
   'chilled',
   'chopped',
   'cold',
   'cooked',
+  'cored',
   'crushed',
   'cubed',
+  'deseeded',
   'diced',
+  'divided',
+  'drained',
   'extra',
   'fine',
   'finely',
@@ -39,6 +47,7 @@ const DESCRIPTORS = new Set([
   'halved',
   'jumbo',
   'large',
+  'leaf',
   'lean',
   'leftover',
   'lightly',
@@ -47,28 +56,53 @@ const DESCRIPTORS = new Set([
   'melted',
   'minced',
   'natural',
+  'optional',
   'organic',
   'packed',
   'peeled',
+  'pitted',
   'plain',
+  'quartered',
   'raw',
+  'rinsed',
   'ripe',
   'roasted',
   'rough',
   'roughly',
+  'seeded',
+  'separated',
   'shredded',
   'skinless',
   'sliced',
   'small',
   'softened',
+  'sprig',
+  'stalk',
   'thin',
   'thinly',
   'torn',
   'trimmed',
   'unsalted',
   'warm',
+  'wedge',
   'whole',
 ]);
+
+/**
+ * Words that start a trailing phrase in a recipe line ("onion, peeled and
+ * sliced", "tuna in water", "tomatoes on the vine"). The name ends before them.
+ */
+const CONNECTORS = new Set(['and', 'in', 'on', 'for', 'with', 'to', 'into', 'from']);
+
+/** Drops a trailing phrase once a real (non-descriptor) word has been seen. */
+function cutTrailing(all: string[]): string[] {
+  let seenCore = false;
+  for (const [i, token] of all.entries()) {
+    if (seenCore && CONNECTORS.has(token)) return all.slice(0, i);
+    if (!DESCRIPTORS.has(token)) seenCore = true;
+  }
+  return all;
+}
 
 interface Name {
   ingredient: CatalogIngredient;
@@ -105,40 +139,65 @@ export function createMatcher(
     tier,
   });
 
-  return {
-    match(term) {
-      const normalized = normalize(term);
-      if (!normalized) return null;
+  const matchOne = (term: string): Match | null => {
+    const normalized = normalize(term);
+    if (!normalized) return null;
 
-      const exact = byName.get(normalized);
-      if (exact) return result(exact, 'strong');
+    const exact = byName.get(normalized);
+    if (exact) return result(exact, 'strong');
 
-      const all = tokens(normalized);
-      const core = all.filter((t) => !DESCRIPTORS.has(t));
-      if (core.length === 0) return null;
-      const coreName = core.join(' ');
+    // The name is in the first comma segment that has a real word, so
+    // "1 lb boneless, skinless chicken breast" reads "skinless chicken breast".
+    let all: string[] = [];
+    let core: string[] = [];
+    const rest = term
+      .replace(/\([^)]*\)/g, ' ')
+      .split(',')
+      .slice(1)
+      .map(normalize);
+    for (const segment of [normalized, ...rest]) {
+      all = cutTrailing(tokens(segment));
+      core = all.filter((t) => !DESCRIPTORS.has(t));
+      if (core.length > 0) break;
+    }
+    if (core.length === 0) return null;
+    const coreName = core.join(' ');
 
-      // Token set: every token of the catalog name appears in the term; the longest name wins.
-      // A one-word name must be the term's head noun, so "chicken stock" doesn't match "chicken".
-      const head = core[core.length - 1];
-      const termSet = new Set(all);
-      let best: Name | undefined;
+    // Token set: every token of the catalog name appears in the term; the longest name wins.
+    // A one-word name must be the term's head noun, so "chicken stock" doesn't match "chicken".
+    const head = core[core.length - 1];
+    const termSet = new Set(all);
+    let best: Name | undefined;
+    for (const candidate of names) {
+      if (!candidate.tokens.every((t) => termSet.has(t))) continue;
+      if (candidate.tokens.length === 1 && candidate.tokens[0] !== head) continue;
+      if (!best || candidate.tokens.length > best.tokens.length) best = candidate;
+    }
+    if (best) return result(best.ingredient, 'good');
+
+    if (weak && coreName.length >= 5) {
       for (const candidate of names) {
-        if (!candidate.tokens.every((t) => termSet.has(t))) continue;
-        if (candidate.tokens.length === 1 && candidate.tokens[0] !== head) continue;
-        if (!best || candidate.tokens.length > best.tokens.length) best = candidate;
-      }
-      if (best) return result(best.ingredient, 'good');
-
-      if (weak && coreName.length >= 5) {
-        for (const candidate of names) {
-          if (candidate.name.length < 5) continue;
-          if (osaDistance(coreName, candidate.name, 1) <= 1) {
-            return result(candidate.ingredient, 'weak');
-          }
+        if (candidate.name.length < 5) continue;
+        if (osaDistance(coreName, candidate.name, 1) <= 1) {
+          return result(candidate.ingredient, 'weak');
         }
       }
-      return null;
+    }
+    return null;
+  };
+
+  return {
+    match(term) {
+      // "zucchini or yellow squash" names the first alternative that matches on
+      // its own; "red or yellow peppers" falls through to "yellow peppers".
+      const alternatives = term.split(/\bor\b/i);
+      if (alternatives.length > 1) {
+        for (const alternative of alternatives) {
+          const found = matchOne(alternative);
+          if (found) return found;
+        }
+      }
+      return matchOne(term);
     },
   };
 }

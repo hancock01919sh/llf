@@ -42,6 +42,17 @@ describe('LabeledCase', () => {
     expect(LabeledCase.parse({ ...IMAGE_CASE, injection: true }).injection).toBe(true);
   });
 
+  it('requires a url on url cases and keeps acceptable slugs apart from expected ones', () => {
+    const urlCase = { ...TEXT_CASE, kind: 'url', detectedType: 'recipe' };
+    expect(issuePaths(urlCase, LabeledCase)).toContainEqual(['url']);
+    expect(LabeledCase.parse({ ...urlCase, url: 'https://example.com/r' }).acceptableSlugs).toEqual(
+      [],
+    );
+    expect(issuePaths({ ...TEXT_CASE, acceptableSlugs: ['milk'] }, LabeledCase)).toContainEqual([
+      'acceptableSlugs',
+    ]);
+  });
+
   it('requires text on text cases', () => {
     const { text: _text, ...rest } = TEXT_CASE;
     expect(issuePaths(rest, LabeledCase)).toContainEqual(['text']);

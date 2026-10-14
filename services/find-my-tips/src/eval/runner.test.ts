@@ -7,6 +7,7 @@ import { catalogFromData } from '../catalog';
 import { createMockProvider } from '../extract';
 import type { ExtractionProvider } from '../extract';
 import { ToolError } from '../http';
+import { PUBLIC_IP, fakeResolver, fakeTransport, recipePage } from '../test-utils';
 import { LabeledSet } from './labeled-set';
 import type { EvalOptions } from './runner';
 import { runEval } from './runner';
@@ -69,7 +70,7 @@ describe('runEval', () => {
     expect(run.skipped).toBe(0);
     expect(run.scores).toHaveLength(1);
     const [score] = run.scores;
-    expect(score).toMatchObject({ id: 'ok', passed: true, latencyMs: 10 });
+    expect(score).toMatchObject({ id: 'ok', passed: true, latencyMs: 10, unmatchedTerms: [] });
     expect(score?.errorCode).toBeUndefined();
     expect(run.report.overall).toMatchObject({ cases: 1, passed: 1, precision: 1, recall: 1 });
   });
@@ -114,6 +115,29 @@ describe('runEval', () => {
       },
     ];
     await expect(runEval(options(cases))).rejects.toThrow();
+  });
+
+  it('runs url cases through the URL pipeline and records the source', async () => {
+    const urlDeps = {
+      resolve: fakeResolver({ 'recipes.test': [PUBLIC_IP] }),
+      transport: fakeTransport({
+        'https://recipes.test/pie': { html: recipePage(['2 cups whole milk', '3 bananas']) },
+      }),
+    };
+    const cases = [
+      {
+        id: 'pie',
+        kind: 'url',
+        url: 'https://recipes.test/pie',
+        detectedType: 'recipe',
+        expectedReadable: true,
+        expectedSlugs: ['banana', 'milk'],
+      },
+    ];
+    const pipeline = await runEval(options(cases, { urlDeps }));
+    expect(pipeline.scores[0]).toMatchObject({ passed: true, urlSource: 'jsonld' });
+    const model = await runEval(options(cases, { urlDeps, urlPath: 'model' }));
+    expect(model.scores[0]).toMatchObject({ urlSource: 'model' });
   });
 
   it('stops before the next case once the budget is spent', async () => {
