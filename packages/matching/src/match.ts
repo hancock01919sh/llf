@@ -66,6 +66,7 @@ const DESCRIPTORS = new Set([
   'raw',
   'rinsed',
   'ripe',
+  'roast',
   'roasted',
   'rough',
   'roughly',
@@ -163,15 +164,27 @@ export function createMatcher(
     if (core.length === 0) return null;
     const coreName = core.join(' ');
 
-    // Token set: every token of the catalog name appears in the term; the longest name wins.
+    // Token set: every token of the catalog name appears in the term. A name whose words
+    // sit together in the term beats one spread across it ("red chili pepper" is a chili
+    // pepper, not a red pepper); then the longest name wins.
     // A one-word name must be the term's head noun, so "chicken stock" doesn't match "chicken".
     const head = core[core.length - 1];
     const termSet = new Set(all);
+    const termText = ` ${all.join(' ')} `;
     let best: Name | undefined;
+    let bestAdjacent = false;
     for (const candidate of names) {
       if (!candidate.tokens.every((t) => termSet.has(t))) continue;
       if (candidate.tokens.length === 1 && candidate.tokens[0] !== head) continue;
-      if (!best || candidate.tokens.length > best.tokens.length) best = candidate;
+      const adjacent = termText.includes(` ${candidate.tokens.join(' ')} `);
+      if (
+        !best ||
+        (adjacent && !bestAdjacent) ||
+        (adjacent === bestAdjacent && candidate.tokens.length > best.tokens.length)
+      ) {
+        best = candidate;
+        bestAdjacent = adjacent;
+      }
     }
     if (best) return result(best.ingredient, 'good');
 

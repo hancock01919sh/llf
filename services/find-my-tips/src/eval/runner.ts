@@ -121,7 +121,12 @@ export async function runEval(options: EvalOptions): Promise<EvalRun> {
       };
     } catch (error) {
       if (!(error instanceof ToolError)) throw error;
-      outcome = { ok: false, errorCode: error.code };
+      const status = providerStatus(error.cause);
+      outcome = {
+        ok: false,
+        errorCode: error.code,
+        ...(status !== undefined ? { providerStatus: status } : {}),
+      };
     }
     const latencyMs = Math.round(now() - started);
 
@@ -137,4 +142,13 @@ export async function runEval(options: EvalOptions): Promise<EvalRun> {
     stoppedEarly: skipped > 0,
     skipped,
   };
+}
+
+/** The HTTP status of a provider error: SDK errors carry `status`; our fetch adapters say "HTTP 503". */
+export function providerStatus(cause: unknown): number | undefined {
+  if (!(cause instanceof Error)) return undefined;
+  const status = (cause as { status?: unknown }).status;
+  if (typeof status === 'number') return status;
+  const match = /\bHTTP (\d{3})\b/.exec(cause.message);
+  return match ? Number(match[1]) : undefined;
 }

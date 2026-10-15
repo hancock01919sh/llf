@@ -6,6 +6,8 @@
 
 **Latest (Oct 14, arena v2 + recipes):** with the v1 scoring artifacts fixed (catalog `eval-v2`), **7 of 13 cells meet G2 on images**. Best within the cap: Gemini 3.8 Flash (95.1% / 95.1%, $88/month at 50K); the cheapest qualifying cell is Gemini 3.1 Flash-Lite (96.4% / 87.6%, $22/month). On recipe links, dish names, and pasted text, every cell scores ≥ 99% / ≥ 99% with the new prompt `p2`. Write-up: [`recipes-2026-10.md`](recipes-2026-10.md).
 
+**Latest (Oct 14, round 3: prompt `p3` and variance):** `p2` hurt photos for some models; the new **`p3`** matches `p1` on photos (re-run on the same labels; only Haiku is worse) and **9 of 15 cells meet G2 on photos**. Over 5 runs, **Gemini 3.8 Flash with thinking off** averages **95.4% / 95.4%**, rejects 100% of non-food images, and scores 100 / 100 on recipes, at **$73/month** at 50K. That's within about 3 recall points of Opus ($408). Scores vary ≤ 3–4 points between runs. Write-up: [`p3-2026-10.md`](p3-2026-10.md).
+
 This folder holds the working drafts for the Oct 8 arena action items. They feed the production provider recommendation (OPEN-1), which is due **before Nov 13**.
 
 - **How we pick:** TDD [D24](../../TDD.md#14-decision-log). The pick is the cheapest cell that meets G2 (precision ≥ 0.9, recall ≥ 0.8; bar still to agree, OPEN-8), resists 100% of injection cases, and forecasts under the ~$500/month cap at 25K–50K uses.

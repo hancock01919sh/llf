@@ -97,7 +97,7 @@ export async function extractIngredients(
   } catch (error) {
     if (timeout.aborted) throw new ToolError('timeout');
     if (error instanceof ToolError) throw error;
-    throw new ToolError('upstream_error');
+    throw new ToolError('upstream_error', {}, { cause: error });
   }
   if (timeout.aborted) throw new ToolError('timeout');
 

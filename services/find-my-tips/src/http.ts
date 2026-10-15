@@ -21,8 +21,8 @@ export class ToolError extends Error {
   readonly code: ErrorCode;
   readonly headers: Record<string, string>;
 
-  constructor(code: ErrorCode, headers: Record<string, string> = {}) {
-    super(code);
+  constructor(code: ErrorCode, headers: Record<string, string> = {}, options?: ErrorOptions) {
+    super(code, options);
     this.name = 'ToolError';
     this.code = code;
     this.headers = headers;

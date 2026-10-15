@@ -40,6 +40,12 @@ describe('createMatcher', () => {
     expect(matcher.match('milk chocolate')).toBeNull();
   });
 
+  it('treats "roast" as a cooking word, not the head noun', () => {
+    expect(matcher.match('beef roast')).toMatchObject({ slug: 'beef', tier: 'good' });
+    expect(matcher.match('roast chicken')).toMatchObject({ slug: 'chicken', tier: 'good' });
+    expect(matcher.match('roast')).toBeNull();
+  });
+
   it('skips plant-part words when finding the head noun', () => {
     const herbs = createMatcher([
       { slug: 'basil', title: 'Basil', synonyms: [] },
@@ -64,6 +70,17 @@ describe('createMatcher', () => {
     });
     expect(matcher.match('salt and freshly ground black pepper')).toBeNull();
     expect(matcher.match('boneless, skinless')).toBeNull();
+  });
+
+  it('prefers a name whose words sit together in the term', () => {
+    const peppers = createMatcher([
+      { slug: 'bell-pepper', title: 'Bell Pepper', synonyms: ['red pepper'] },
+      { slug: 'chili-pepper', title: 'Chili Pepper', synonyms: [] },
+    ]);
+    expect(peppers.match('red chili pepper')).toMatchObject({ slug: 'chili-pepper' });
+    expect(peppers.match('1 green chili pepper, deseeded')).toMatchObject({ slug: 'chili-pepper' });
+    expect(peppers.match('red bell pepper')).toMatchObject({ slug: 'bell-pepper' });
+    expect(peppers.match('2 red peppers')).toMatchObject({ slug: 'bell-pepper' });
   });
 
   it('takes the first alternative that matches on its own', () => {

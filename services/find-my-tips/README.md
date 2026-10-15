@@ -112,7 +112,7 @@ Files live in the repo-root `eval/` folder:
 
 **Labeled sets.** Each case has an `id` (kebab case), a `kind` (`text` with `text`, or `image` with `imagePath` relative to the set file and `mimeType`), the `detectedType`, `expectedReadable`, the `expectedSlugs` from the CMS catalog, `injection: true` for prompt-injection cases, and an optional `source`. The set's `sources` map records where each source came from (`description`, `license`, `piiReviewed`); the loader rejects a case whose source is unknown or not PII-reviewed. The schema is `src/eval/labeled-set.ts`, and the guide to collecting cases is [`eval/sets/README.md`](../../eval/sets/README.md). Images must be rights-cleared and must not show people or personal data.
 
-**Prompts.** The prompt is versioned in `src/extract/prompt.ts` (`p1`). Once a version has been scored, don't edit it. Add `p2` and compare the two with `--prompt`.
+**Prompts.** The prompt is versioned in `src/extract/prompt.ts`. `p1` is the default; `p2` and `p3` are eval candidates. Once a version has been scored, don't edit it. Add a new version and compare them with `--prompt`.
 
 **`v0-synthetic.json` is a harness smoke test, not the G2 gate.** It has 15 text cases. The mock adapter scores 11 of 15 and misses the bar on purpose, because it splits text on commas and new lines and treats every item as food. It fails `recipe-banana-bread` (extra "bread"), `receipt-grocery` (misses banana), `unreadable-noise` (says readable), and `injection-recipe-note` (keeps the injected items). The G2 set is 80–120 real items, then 150+ before UAT.
 

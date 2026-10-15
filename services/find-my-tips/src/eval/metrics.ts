@@ -20,7 +20,7 @@ export type CaseOutcome =
       /** For url cases: where the terms came from. */
       urlSource?: ExtractSource;
     }
-  | { ok: false; errorCode: ErrorCode };
+  | { ok: false; errorCode: ErrorCode; providerStatus?: number };
 
 export type CaseScore = {
   id: string;
@@ -30,6 +30,8 @@ export type CaseScore = {
   expectedReadable: boolean;
   latencyMs: number;
   errorCode?: ErrorCode;
+  /** HTTP status of a failed provider call (429, 503, …), to tell overload from bad output. Eval only. */
+  providerStatus?: number;
   tp: number;
   fp: number;
   fn: number;
@@ -99,6 +101,7 @@ export function scoreCase(item: LabeledCase, outcome: CaseOutcome, latencyMs: nu
     return {
       ...base,
       errorCode: outcome.errorCode,
+      ...(outcome.providerStatus !== undefined ? { providerStatus: outcome.providerStatus } : {}),
       tp: 0,
       fp: 0,
       fn: expected.size,

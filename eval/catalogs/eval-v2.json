@@ -148,7 +148,16 @@
         "jalapeno",
         "red pepper flakes",
         "chili flakes",
-        "crushed red pepper"
+        "crushed red pepper",
+        "chili",
+        "chile",
+        "chiles",
+        "chile pepper",
+        "chilli pepper",
+        "serrano",
+        "habanero",
+        "thai chili",
+        "bird's eye chili"
       ]
     },
     {
@@ -643,7 +652,7 @@
     {
       "slug": "zucchini",
       "title": "Zucchini",
-      "synonyms": ["courgette"]
+      "synonyms": ["courgette", "zucchinis", "summer squash", "yellow squash", "yellow zucchini"]
     }
   ]
 }

@@ -2,6 +2,8 @@
 
 **Author:** Art Longbottom (with Copilot). **Status:** eval evidence for OPEN-1. Not a recommendation; the provider pick is Ad Council's decision.
 
+> **Update:** round 3 ([`p3-2026-10.md`](p3-2026-10.md)) found that `p2` hurts photos for some models. It replaces `p2` with prompt **`p3`**, measures run-to-run variance, and fixes more labels and matcher gaps. Its numbers supersede §§3–5 and §7 here.
+
 This follows [`model-audit-2026-10.md`](model-audit-2026-10.md) (arena v1). It does two things:
 
 1. **Fixes the scoring issues found in v1** (the `ketchup` / "tomato sauce" artifact and other label gaps) and re-runs the image arena.

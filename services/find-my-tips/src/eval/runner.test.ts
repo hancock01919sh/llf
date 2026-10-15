@@ -10,7 +10,7 @@ import { ToolError } from '../http';
 import { PUBLIC_IP, fakeResolver, fakeTransport, recipePage } from '../test-utils';
 import { LabeledSet } from './labeled-set';
 import type { EvalOptions } from './runner';
-import { runEval } from './runner';
+import { providerStatus, runEval } from './runner';
 
 const fixture: unknown = JSON.parse(
   readFileSync(new URL('../fixtures/catalog.json', import.meta.url), 'utf8'),
@@ -90,6 +90,18 @@ describe('runEval', () => {
       options([textCase('boom', 'bananas', ['banana'])], { provider: failing(new Error('nope')) }),
     );
     expect(run.scores[0]).toMatchObject({ passed: false, errorCode: 'upstream_error' });
+    expect(run.scores[0]?.providerStatus).toBeUndefined();
+  });
+
+  it('records the HTTP status of a failed provider call', async () => {
+    const run = await runEval(
+      options([textCase('busy', 'bananas', ['banana'])], {
+        provider: failing(new Error('gemini: HTTP 503')),
+      }),
+    );
+    expect(run.scores[0]).toMatchObject({ errorCode: 'upstream_error', providerStatus: 503 });
+    expect(providerStatus(Object.assign(new Error('rate limited'), { status: 429 }))).toBe(429);
+    expect(providerStatus('HTTP 500')).toBeUndefined();
   });
 
   it('scores schema-invalid output as upstream_error', async () => {

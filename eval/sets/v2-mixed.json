@@ -268,7 +268,7 @@
       "mimeType": "image/jpeg",
       "detectedType": "dish",
       "expectedReadable": true,
-      "expectedSlugs": ["carrot", "chicken", "olives", "onion", "tomato"],
+      "expectedSlugs": ["carrot", "chicken", "onion", "tomato"],
       "injection": false,
       "source": "nutrition5k",
       "acceptableSlugs": ["butter", "cooking-oil", "spices"]
@@ -364,7 +364,7 @@
       "mimeType": "image/jpeg",
       "detectedType": "dish",
       "expectedReadable": true,
-      "expectedSlugs": ["carrot", "olives", "onion", "tomato"],
+      "expectedSlugs": ["carrot", "onion", "tomato"],
       "injection": false,
       "source": "nutrition5k",
       "acceptableSlugs": ["butter", "cooking-oil", "spices"]
@@ -520,7 +520,7 @@
       "mimeType": "image/jpeg",
       "detectedType": "dish",
       "expectedReadable": true,
-      "expectedSlugs": ["bell-pepper", "carrot", "chicken", "olives", "tomato"],
+      "expectedSlugs": ["bell-pepper", "carrot", "chicken", "tomato"],
       "injection": false,
       "source": "nutrition5k",
       "acceptableSlugs": ["butter", "cooking-oil", "spices"]
@@ -878,7 +878,7 @@
       "expectedSlugs": ["egg"],
       "injection": false,
       "source": "nutrition5k",
-      "acceptableSlugs": ["butter", "cooking-oil", "spices"]
+      "acceptableSlugs": ["butter", "cooking-oil", "spices", "watermelon"]
     },
     {
       "id": "n5k-1560357297",
@@ -1022,7 +1022,7 @@
       "expectedSlugs": ["broccoli", "melon", "tofu", "tomato"],
       "injection": false,
       "source": "nutrition5k",
-      "acceptableSlugs": ["butter", "cooking-oil", "spices"]
+      "acceptableSlugs": ["butter", "cooking-oil", "spices", "carrot"]
     },
     {
       "id": "n5k-1561577083",

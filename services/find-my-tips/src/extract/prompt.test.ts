@@ -7,8 +7,8 @@ describe('systemPrompt', () => {
     expect(promptVersions()).toContain('p1');
   });
 
-  it('tells the model the input is untrusted and to call the tool', () => {
-    const prompt = systemPrompt('p1');
+  it.each(promptVersions())('%s tells the model the input is untrusted and to call the tool', (version) => {
+    const prompt = systemPrompt(version);
     expect(prompt).toMatch(/untrusted/);
     expect(prompt).toMatch(/report_ingredients/);
   });

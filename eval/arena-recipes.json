@@ -49,6 +49,28 @@
       "note": "Mid tier. Promo price through Dec 31, 2026; $1.50/$7.50 after."
     },
     {
+      "provider": "gemini",
+      "model": "gemini-3.8-flash",
+      "pricing": {
+        "inputPerMTok": 0.75,
+        "outputPerMTok": 3.75
+      },
+      "budgetUsd": 1.5,
+      "note": "Thinking budget 0 (off); default thinking is dynamic.",
+      "effort": "none"
+    },
+    {
+      "provider": "gemini",
+      "model": "gemini-3.8-flash",
+      "pricing": {
+        "inputPerMTok": 0.75,
+        "outputPerMTok": 3.75
+      },
+      "budgetUsd": 1.5,
+      "note": "Thinking budget 1024; default thinking is dynamic.",
+      "effort": "low"
+    },
+    {
       "provider": "anthropic",
       "model": "claude-sonnet-5-5",
       "pricing": {
