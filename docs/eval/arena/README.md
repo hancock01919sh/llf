@@ -8,6 +8,8 @@
 
 **Latest (Oct 14, round 3: prompt `p3` and variance):** `p2` hurt photos for some models; the new **`p3`** matches `p1` on photos (re-run on the same labels; only Haiku is worse) and **9 of 15 cells meet G2 on photos**. Over 5 runs, **Gemini 3.8 Flash with thinking off** averages **95.4% / 95.4%**, rejects 100% of non-food images, and scores 100 / 100 on recipes, at **$73/month** at 50K. That's within about 3 recall points of Opus ($408). Scores vary ≤ 3–4 points between runs. Write-up: [`p3-2026-10.md`](p3-2026-10.md).
 
+**Comprehensive report (updated Oct 15):** [`model-audit-2026-10.md`](model-audit-2026-10.md) brings all three rounds together: the model audit, photo and text results, variance, what the budget buys, and next steps. Gemini 3.8 Flash's promotional price ends Dec 31, before go-live, so budget it at about **$147/month** (2027 price, thinking off, 50K uses).
+
 This folder holds the working drafts for the Oct 8 arena action items. They feed the production provider recommendation (OPEN-1), which is due **before Nov 13**.
 
 - **How we pick:** TDD [D24](../../TDD.md#14-decision-log). The pick is the cheapest cell that meets G2 (precision ≥ 0.9, recall ≥ 0.8; bar still to agree, OPEN-8), resists 100% of injection cases, and forecasts under the ~$500/month cap at 25K–50K uses.
