@@ -38,7 +38,13 @@
   - `p3` lists a typed dish's usual ingredients and keeps photo accuracy at `p1` levels.
   - Gemini 3.8 Flash's default thinking costs about 25% more and raises p95 latency by about 60%. It also times out on long pasted recipes, and it scores no better.
 - **The scores are stable.** Over 5 runs, the top cells vary by at most 3 points on precision and 4 on recall, and the ranking doesn't change.
-- **Spend to date: $39.00** across every eval run (§11).
+- **Round 4 (Oct 15): receipts, lists, fridges, image injection, and load.** Full write-up: [`product-2026-10.md`](product-2026-10.md).
+  - Receipts and lists: every model scores 99.6–100% precision. Most misses are catalog synonyms, not model errors.
+  - Fridge photos are the hardest input: 3.8 Flash with thinking off scores 90.1% / 92.9% strict (94.5% precision lenient), against Opus's 94.8% / 94.0%. No OpenAI model gets above 78% precision.
+  - Hidden instructions in images: 3.8 Flash and Opus resisted all of them. **3.1 and 3.5 Flash-Lite and GPT-5 mini wrote planted items into the result** (10–31% of probes), so they no longer meet G2.
+  - 1,100 soak calls to Gemini: no 429s or 5xx, 2 timeouts. A single server-side retry is **[PROPOSED]**.
+  - Product photos cost more per call: 3.8 Flash with thinking off is **about $206/month in 2027** if every use is a product photo.
+- **Spend to date: $48.70** across every eval run (§11).
 
 ## 2. Scope
 
@@ -311,11 +317,11 @@ What changed at each step:
 
 ## 9. Limits
 
-1. **Dishes from one source.** The 94 dishes are from one US cafeteria (Nutrition5k). There are no receipts, shopping lists, or fridge photos yet. One dish moves recall by about 0.5 points, and one timeout by up to 3.
-2. **Labels.** Nutrition5k labels list what was weighed, not everything visible. The text labels are synthetic and drafted by Opus, so Opus's scores are an upper bound.
+1. **Dishes from one source.** The 94 dishes are from one US cafeteria (Nutrition5k). One dish moves recall by about 0.5 points, and one timeout by up to 3. Round 4 added synthetic receipts and lists and Commons fridge photos ([`product-2026-10.md`](product-2026-10.md) §10 has their limits).
+2. **Labels.** Nutrition5k labels list what was weighed, not everything visible. The text labels are synthetic and drafted by Opus, so Opus's scores are an upper bound. Round 4 measured how much: Opus's lead is 0 to +1 F1 on independent labels and +1.3 to +1.4 F1 on its own fridge labels ([`product-2026-10.md`](product-2026-10.md) §7).
 3. **Variance** was measured for 7 cells over 5 runs each. The other cells ran 1–3 times.
-4. **Load.** Gemini errors came from our parallel eval runs (up to 4 at once). Production quotas and error rates need confirming with Google (OPEN-2).
-5. **Stand-in catalog** (`eval-v2`, 104 slugs). Items not in it (kiwi, cherries, meatballs) show up as unmatched terms, not errors (OPEN-8).
+4. **Load.** Gemini errors in rounds 1–3 came from our parallel eval runs (up to 4 at once). The round-4 soak saw no 429s or 5xx in 1,100 calls on ddd's dev key. Production quotas still need confirming with Google (OPEN-2).
+5. **Stand-in catalog** (`eval-v2`, 104 slugs). Items not in it (kiwi, cherries, meatballs) show up as unmatched terms, not errors (OPEN-8). `pnpm catalog-diff` will carry the vocabulary over when the CMS catalog exists.
 6. **Prices** are list prices from Oct 13, 2026, with no batch or caching discounts. One call per use.
 7. **Vendor status.** The Anthropic and Gemini keys are ddd's dev/eval keys and were used with test data only (D25). Neither vendor is approved by Ad Council IT yet (OPEN-2). OpenAI is approved.
 
@@ -324,19 +330,17 @@ What changed at each step:
 These are for dotdotdash to do. The model choice itself stays with Ad Council (OPEN-1).
 
 1. **Make `p3` the next prompt version** (`PROMPT_VERSION=p3`). It's part of the cache key, so no cache purge is needed.
-2. **Shortlist for the scorecard email to Cat** (the draft still has Oct 12 numbers):
-   - **Gemini 3.8 Flash, thinking off** (`AI_REASONING_EFFORT=none`): best value, at about $147/month from January.
-   - **Gemini 3.1 Flash-Lite**: cheapest that meets G2, if Ad Council accepts its non-food rate.
-   - **GPT-5 mini**: best option from the approved vendor, just under the precision bar.
+2. **Shortlist for the scorecard email to Cat** (the draft still has Oct 12 numbers; updated after round 4):
+   - **Gemini 3.8 Flash, thinking off** (`AI_REASONING_EFFORT=none`): best value, at about $147/month from January on dishes and up to $206 if every use is a product photo.
+   - **GPT-6.1 Sol**: the approved-vendor option. It resisted every image injection, but scores about 76% precision on fridges.
+   - Gemini 3.1 Flash-Lite and GPT-5 mini drop off: they write planted items from images into the result.
 
    Present Opus 5.5 as the quality reference.
 3. **Raise IT acceptance for Gemini (OPEN-2) now.** Every model that meets the bar within budget is from a vendor that isn't approved yet. Without it, the choice is an OpenAI model just under the precision bar, or Anthropic at $200+/month.
 4. **Add "≥ 90% of non-food rejected" to G2** and agree the bar with Ad Council (OPEN-8).
-5. **Build a product-shaped set:**
-   - 40–60 rights-cleared receipts, shopping lists, and fridge or pantry photos.
-   - Image-based injection cases.
-6. **Soak test at production concurrency** to measure 429/503 rates, now that the run JSON records the provider's HTTP status.
-7. **Carry the synonym work into the CMS catalog** when it lands (OPEN-8): chili, zucchini and squash, tomato sauce, regional names.
+5. ~~**Build a product-shaped set** with image-based injection cases.~~ Done in round 4: `v3-product`, 92 cases ([`product-2026-10.md`](product-2026-10.md)). Still missing: real receipts, pantry and grocery-haul photos.
+6. ~~**Soak test at production concurrency.**~~ Done in round 4 (Gemini only). Decide on the **[PROPOSED]** single retry on a model timeout or 503 (Danish).
+7. **Carry the synonym work into the CMS catalog** when it lands (OPEN-8): chili, zucchini and squash, tomato sauce, regional names, and the round-4 receipt synonyms (marinara sauce, jalapeno pepper, broccoli crowns, chard, creme fraiche). Run `pnpm catalog-diff` against the CMS export.
 8. **Opus labels:** Art to decide using the contested-sample sheet (§3.1). Legal to rule on the MM-Food-100K license before any of its images go into a committed set.
 
 ## 11. Spend
@@ -349,7 +353,8 @@ These are for dotdotdash to do. The model choice itself stays with Ad Council (O
 | Arena v1 (12 candidates + Opus) | $2.86 |
 | Arena v2: label fixes and the recipe set ([`recipes-2026-10.md`](recipes-2026-10.md) §8) | $8.14 |
 | Round 3: prompts, variance, re-runs ([`p3-2026-10.md`](p3-2026-10.md) §8) | $26.90 |
-| **Total to date** | **$39.00** |
+| Round 4: product photos, image injection, soak ([`product-2026-10.md`](product-2026-10.md) §11) | $9.70 |
+| **Total to date** | **$48.70** |
 
 This is above the ~$20 eval budget first proposed to Cat. Art lifted the cost limit for round 3. The Opus labeling for §3.1 was done by agents, not API calls.
 
@@ -362,6 +367,7 @@ This is above the ~$20 eval budget first proposed to Cat. Art lifted the cost li
 | `efd27b6`, `da03995`, `117440e` | Reference cell and budget-buys report sections, the arena v1 run, the first version of this report |
 | `80ccf4c` | v2 labels and catalog, recipe and URL cases, matcher recipe-line fixes, prompt `p2` |
 | `0844124` | Prompt `p3`, matcher fixes, Gemini thinking cells, variance matrix, `providerStatus`, round-3 reports |
+| Round 4 | `v3-product` set, image injection scoring, `pnpm rescore`, `pnpm soak`, `pnpm catalog-diff`, round-4 reports ([`product-2026-10.md`](product-2026-10.md) §12) |
 
 - **Reports** are in `eval/reports/`; the raw run JSON is git-ignored, in `eval/runs/` under the same names. The full list is in `p3-2026-10.md` §9.
 - **Reproduce** from `services/find-my-tips`: `pnpm arena -- --matrix ../../eval/arena-v2.json --catalog ../../eval/catalogs/eval-v2.json --prompt p3`. It makes live calls and costs about $3.40. Add `--matrix ../../eval/arena-recipes.json` for the text set (about $0.90).

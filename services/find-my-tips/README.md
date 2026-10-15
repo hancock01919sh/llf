@@ -146,6 +146,17 @@ pnpm arena -- -h          # all options
 
 **Skipped cells.** A cell is skipped, not failed, when its key is missing (`anthropic` needs `ANTHROPIC_API_KEY`, OPEN-2; `openai` needs `OPENAI_API_KEY`, OPEN-1; `gemini` needs `GEMINI_API_KEY`, D25), when its provider is the `bedrock` stub, or when the cell is `enabled: false` (add a `note` saying why).
 
+### Soak test (BD3244-37)
+Checks error rates and limits at launch volume (25K–50K uses/month, spiky PSA bursts) without the arena's parallel load confounding the result. Images come from the labeled set (readable image cases, cycled).
+
+```sh
+pnpm soak -- --provider gemini --model gemini-3.8-flash --effort none --prompt p3 --preset smoke --budget 0.05
+pnpm soak -- --preset launch --retries 2 --input-per-mtok 0.75 --output-per-mtok 3.75 --budget 5
+pnpm soak -- --plan eval/my-plan.json --dry-run   # stages: {name, concurrency, calls} or {name, ratePerSec, durationSec}
+```
+
+Presets: `smoke` (4 calls) and `launch` (steady 0.05/s, peak 0.5/s, then bursts of 8, 16 and 32 concurrent calls). `--retries <n>` adds eval-only retries on 429/500/502/503/504 with jittered exponential backoff (`--retry-base-ms`), to show what a retry policy would buy; production has none. Writes `runs/soak-<stamp>.json` (git-ignored) and `reports/soak-<stamp>.md` with first-attempt and final error rates, latency, throughput, and cost per stage. No image bytes or model output are stored. `--budget` stops new calls once spend reaches the cap.
+
 ## Known behavior
 - **Bot-protected recipe sites return `source_unavailable` (424).** For example, Allrecipes and Simply Recipes return 403 to our user agent. Origin 401/403/429/451, a `cf-mitigated: challenge` header, or a small 200/503 page with a known challenge marker (Cloudflare, Imperva, DataDome, PerimeterX, Akamai) counts as blocked (`src/url/blocked.ts`). The web client shows "Site blocked" copy and never retries. Other failures stay `upstream_error` (502) or `timeout` (504). Use sites that serve JSON-LD for demos and evals, such as cookieandkate.com or budgetbytes.com.
 - The in-memory cache, counters, and rate limits reset on restart. Shared stores replace them on Render and AWS behind the same interfaces (`src/cache.ts`).

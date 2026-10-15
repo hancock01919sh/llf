@@ -8,6 +8,8 @@
 
 **Latest (Oct 14, round 3: prompt `p3` and variance):** `p2` hurt photos for some models; the new **`p3`** matches `p1` on photos (re-run on the same labels; only Haiku is worse) and **9 of 15 cells meet G2 on photos**. Over 5 runs, **Gemini 3.8 Flash with thinking off** averages **95.4% / 95.4%**, rejects 100% of non-food images, and scores 100 / 100 on recipes, at **$73/month** at 50K. That's within about 3 recall points of Opus ($408). Scores vary ≤ 3–4 points between runs. Write-up: [`p3-2026-10.md`](p3-2026-10.md).
 
+**Latest (Oct 15, round 4: product photos, image injection, load):** on the new `v3-product` set (92 cases: synthetic receipts and lists, Commons fridge photos, 16 image-injection probes), receipts and lists score 99.6–100% precision for every model; most misses are catalog synonyms. Fridges are the hardest input: Gemini 3.8 Flash with thinking off scores 90.1% / 92.9% (Opus 94.8% / 94.0%, on Opus's own labels). **3.8 Flash and Opus resisted every image injection; 3.1 and 3.5 Flash-Lite and GPT-5 mini didn't**, so they no longer meet G2. A 1,100-call soak saw no 429s or 5xx. Budget about $206/month in 2027 if every use is a product photo. Write-up: [`product-2026-10.md`](product-2026-10.md).
+
 **Comprehensive report (updated Oct 15):** [`model-audit-2026-10.md`](model-audit-2026-10.md) brings all three rounds together: the model audit, photo and text results, variance, what the budget buys, and next steps. Gemini 3.8 Flash's promotional price ends Dec 31, before go-live, so budget it at about **$147/month** (2027 price, thinking off, 50K uses).
 
 This folder holds the working drafts for the Oct 8 arena action items. They feed the production provider recommendation (OPEN-1), which is due **before Nov 13**.

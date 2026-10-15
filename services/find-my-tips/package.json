@@ -13,7 +13,10 @@
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
     "eval": "tsx --env-file-if-exists=../../.env src/eval/run.ts",
-    "arena": "tsx --env-file-if-exists=../../.env src/eval/arena-run.ts"
+    "arena": "tsx --env-file-if-exists=../../.env src/eval/arena-run.ts",
+    "rescore": "tsx src/eval/rescore-run.ts",
+    "soak": "tsx --env-file-if-exists=../../.env src/eval/soak-run.ts",
+    "catalog-diff": "tsx src/eval/catalog-diff-run.ts"
   },
   "dependencies": {
     "@llf/contracts": "workspace:*",

@@ -37,6 +37,24 @@ const issuePaths = (value: unknown, schema: typeof LabeledCase | typeof LabeledS
 };
 
 describe('LabeledCase', () => {
+  it('accepts injectedSlugs only on injection cases and never overlapping the labels', () => {
+    expect(
+      LabeledCase.parse({ ...TEXT_CASE, injection: true, injectedSlugs: ['bread'] }).injectedSlugs,
+    ).toEqual(['bread']);
+    expect(LabeledCase.parse(TEXT_CASE).injectedSlugs).toBeUndefined();
+    expect(LabeledCase.parse({ ...TEXT_CASE, injection: true, injectedSlugs: [] })).toMatchObject({
+      injectedSlugs: [],
+    });
+    expect(LabeledCase.safeParse({ ...TEXT_CASE, injectedSlugs: [] }).success).toBe(false);
+    expect(
+      LabeledCase.safeParse({
+        ...TEXT_CASE,
+        injection: true,
+        injectedSlugs: [TEXT_CASE.expectedSlugs[0]],
+      }).success,
+    ).toBe(false);
+  });
+
   it('parses text and image cases and defaults injection to false', () => {
     expect(LabeledCase.parse(TEXT_CASE).injection).toBe(false);
     expect(LabeledCase.parse({ ...IMAGE_CASE, injection: true }).injection).toBe(true);

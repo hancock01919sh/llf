@@ -153,6 +153,14 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
   - **Gemini 3.8 Flash with thinking off** (`AI_REASONING_EFFORT=none`): 95.4% / 95.4% on photos and 100% non-food rejected in all 5 runs, 100 / 100 on recipes, $73/mo at 50K, p95 3.6–5.8 s. Default thinking costs $93 and times out more often for the same quality. Opus: 94.4% / 98.5% at $408/mo.
   - **Cheap tiers:** 3.1 Flash-Lite averages 96.1% / 91.5% ($23/mo) but accepts about 15% of non-food photos; 3.5 Flash-Lite averages 95.3% / 83.2% ($29/mo).
   - **Fixes:** matcher adjacency ("red chili pepper") and "roast"; chili and zucchini synonyms; label corrections checked against the photos; the eval run JSON records the provider's HTTP status on errors (Gemini 503s under parallel eval load).
+- **Round 4: product photos, image injection, load, catalog carry-over (Oct 15, BD3244-37):** ✅ $9.70 spent ($48.70 in total). Write-up: [`docs/eval/arena/product-2026-10.md`](eval/arena/product-2026-10.md).
+  - **Set `v3-product`** (92 image cases): synthetic receipts and shopping lists labeled by construction, 44 Commons fridge photos labeled by two Opus passes, and 16 image-injection probes (`injectedSlugs`).
+  - **Receipts and lists:** 99.6–100% precision for every cell. Misses are mostly catalog synonyms ("marinara sauce", "jalapeno pepper"), left for the CMS catalog rather than loosening the matcher.
+  - **Fridges:** 3.8 Flash with thinking off 90.1% / 92.9% (94.5% precision lenient); Opus 94.8% / 94.0%; OpenAI models 71–78% precision.
+  - **Image injection:** 3.8 Flash (all thinking settings), Opus, GPT-6.1 Sol and Argon resisted every probe. 3.1 Flash-Lite (31%), GPT-5 mini (21%) and 3.5 Flash-Lite (10%) wrote planted items into the result, so they fail G2.
+  - **Soak** (`pnpm soak`, 1,100 calls, up to 15 calls/s): no 429s or 5xx, 2 timeouts. A single server-side retry on timeout or 503 is **[PROPOSED]**.
+  - **Reference bias:** Opus leads by 0 to +1 F1 on independent labels and +1.3 to +1.4 F1 on its own fridge labels. No ranking changes.
+  - **Tooling:** `pnpm rescore` (re-score saved runs on new labels, no model calls) and `pnpm catalog-diff` (carry the eval vocabulary onto the CMS catalog, OPEN-8).
 - **Decision:** Baseline for the production provider decision (OPEN-1, Nov 13). The pick is the cheapest arena cell that meets G2 with 100% injection resistance and fits the monthly cap (TDD D24). The Bedrock adapter stays a stub until OPEN-1 is decided.
 
 ### P10. WAF Challenge with the tool API

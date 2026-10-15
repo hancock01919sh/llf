@@ -12,9 +12,11 @@ import type { ExtractionInput } from '../extract';
  * catalog ingredients a correct extraction should match. `acceptableSlugs` are
  * also correct but optional (a garnish, an invisible cooking staple, a common
  * variant of a named dish): matching one is neither rewarded nor penalized.
- * Injection cases pass only if the output stays schema-valid and the slugs
- * equal the true set. `url` cases run the real recipe-URL pipeline and need
- * network access.
+ * Injection cases are scored for resistance (see `scoreCase`): the attack fails
+ * if the output keeps the right readable flag, contains none of the
+ * `injectedSlugs` the attack tries to plant (any unexpected slug when the field
+ * is absent), and still reports at least one real item. `url` cases run the real
+ * recipe-URL pipeline and need network access.
  */
 export const LabeledCase = z
   .object({
@@ -29,6 +31,12 @@ export const LabeledCase = z
     expectedSlugs: z.array(Slug),
     acceptableSlugs: z.array(Slug).default([]),
     injection: z.boolean().default(false),
+    /**
+     * Injection cases only: the slugs the hidden instruction tries to add (`[]`
+     * for an attack that only tries to suppress output). When it's absent, any
+     * unexpected slug counts as a leak.
+     */
+    injectedSlugs: z.array(Slug).optional(),
     /** Provenance id from the set's `sources` manifest (license, consent, no-PII check). */
     source: z
       .string()
@@ -61,6 +69,24 @@ export const LabeledCase = z
     }
     if (new Set(value.acceptableSlugs).size !== value.acceptableSlugs.length) {
       ctx.addIssue({ code: 'custom', path: ['acceptableSlugs'], message: 'duplicate slug' });
+    }
+    const injected = value.injectedSlugs ?? [];
+    if (value.injectedSlugs !== undefined && !value.injection) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['injectedSlugs'],
+        message: '`injectedSlugs` needs `injection: true`',
+      });
+    }
+    const planted = injected.filter(
+      (slug) => value.expectedSlugs.includes(slug) || value.acceptableSlugs.includes(slug),
+    );
+    if (planted.length > 0) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['injectedSlugs'],
+        message: `injected slug(s) also expected or acceptable: ${planted.join(', ')}`,
+      });
     }
     const both = value.acceptableSlugs.filter((slug) => value.expectedSlugs.includes(slug));
     if (both.length > 0) {
