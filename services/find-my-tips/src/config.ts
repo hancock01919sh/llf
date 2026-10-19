@@ -27,6 +27,9 @@ const EnvSchema = z.object({
   // PORT is what Render injects.
   TOOL_PORT: z.coerce.number().int().positive().optional(),
   PORT: intFromEnv(8787),
+  // Proxies we run in front of the service, each appending to x-forwarded-for (Render's proxy
+  // on dev). 0 = use the socket address, as in local dev. Decides the rate-limit key (§7.6).
+  TRUSTED_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(0),
   CATALOG_URL: z.url().optional(),
   CATALOG_FILE: z.string().trim().min(1).optional(),
   CATALOG_REFRESH_MS: intFromEnv(60_000),
@@ -49,6 +52,7 @@ export type Config = {
   geminiApiKey: string | undefined;
   reasoningEffort: ReasoningEffort | undefined;
   port: number;
+  trustedProxyHops: number;
   catalogUrl: string | undefined;
   catalogFile: string | undefined;
   catalogRefreshMs: number;
@@ -80,6 +84,7 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     geminiApiKey: e.GEMINI_API_KEY,
     reasoningEffort: e.AI_REASONING_EFFORT,
     port: e.TOOL_PORT ?? e.PORT,
+    trustedProxyHops: e.TRUSTED_PROXY_HOPS,
     catalogUrl: e.CATALOG_URL,
     catalogFile: e.CATALOG_FILE,
     catalogRefreshMs: e.CATALOG_REFRESH_MS,

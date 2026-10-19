@@ -20,7 +20,7 @@ James Steele and a tech lead. Danish confirms the date.
 1. Take a final export of each Render CMS that still holds content ([restore-cms](./restore-cms.md), Option A). Store it in the ddd backup location, with its key in the client's vault.
 2. Confirm AWS staging and prod have the content you need ([transfer-content](./transfer-content.md)).
 3. In Render, delete the services for each environment you're retiring: `llf-web-<env>`, `llf-tips-<env>`, `llf-cms-<env>`, `llf-db-<env>`, `llf-kv-<env>`, and the disk.
-4. Rotate or revoke every secret that lived on Render: the env groups, deploy hooks, API tokens, and basic-auth credentials ([rotate-secrets](./rotate-secrets.md)).
+4. Rotate or revoke every secret that lived on Render: the env groups, deploy hooks, API tokens, and basic-auth credentials ([rotate-secrets](./rotate-secrets.md)). Revoke the Render API key and delete the GitHub `dev` environment's `RENDER_API_KEY`, then disable the **Deploy dev** workflow.
 5. **Revoke ddd's Anthropic key** and Gemini key, once the client key is live and nobody needs them for eval.
 6. Remove the Render webhook URLs from the Strapi webhook settings (Render webhooks only).
 7. Update [`CLIENT_AUDIT.md`](../CLIENT_AUDIT.md) and the TDD as-built.

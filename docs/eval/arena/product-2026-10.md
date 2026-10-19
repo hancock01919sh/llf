@@ -277,7 +277,7 @@ Opus 5.5 is both the quality reference and a label author: it labeled the v3 fri
 - **GPT-5 mini is further from the bar:**
   - 78% precision on fridges;
   - 77% injection resistance.
-  - The approved-vendor fallback now has to be GPT-6.1 Sol: 100% injection, but about 76% fridge precision and $257/month at 50K. In practice none of the OpenAI models we tested meets G2 on fridge photos. This makes IT acceptance for Gemini (OPEN-2) more urgent.
+  - None of the OpenAI models we tested meets G2 on fridge photos, and OpenAI isn't an authorized vendor anyway (corrected Oct 19). The authorized vendor is Anthropic: Claude Opus 5.5 meets the bar but costs about $806/month on product photos at 50K, and Sonnet 5.5 fails image injection (94%). This makes IT approval of Gemini (OPEN-2) more urgent, with Opus as the backup.
 - **Add image injection probes to the G2 gate** (TDD §7.9 already requires 100%). Keep fridge numbers as a strict-to-lenient range until a non-Opus labeler is available.
 
 ## 10. Limits

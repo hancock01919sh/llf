@@ -36,7 +36,7 @@ Developers (local), a tech lead (Render dev).
 5. **Revoke the token** in the admin (Settings → API Tokens → delete).
 6. Create a **read-only** token if you want the web app to build from the CMS instead of fixtures. Set it as `CMS_TOKEN` in `.env`, with `CMS_URL`, and unset `CMS_FIXTURES`.
 
-For Render dev (Pending BD3244-15): run the same command with that environment's `CMS_URL` and a short-lived token created in its admin, from an allow-listed IP.
+For Render dev: run the same command with that environment's `CMS_URL` and a short-lived token created in its admin (the admin needs an allow-listed IP; the seed itself only calls `/api/*`). See [render-dev](./render-dev.md).
 
 ## Verification
 - The seed prints a verify pass. A first run against local Strapi 5.45 created 43 entries covering every block and template route.

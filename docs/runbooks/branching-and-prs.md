@@ -1,12 +1,12 @@
 # Runbook: branching and pull requests
 
-**Status:** first draft for review (BD3244-18). Branch protection settings take effect after the repo move to Ad Council's GitHub (OPEN-11).
+**Status:** in use (BD3244-15). `dev` and `main` are protected on `dotdotdashdev/3244_tbw_ad_council` as of Oct 19; `staging` and `prod` get the same rules when they're created. The settings are re-applied after the repo move to Ad Council's GitHub (OPEN-11).
 
 ## Purpose
 Make every change reviewable and traceable to a Jira ticket. Source: [TDD §9.3](../TDD.md#93-cicd-and-the-branch-model-tl-decision-for-the-branches-verified-for-ciyml-proposed-for-the-other-workflows) and [AGENTS.md](../../AGENTS.md).
 
 ## Who
-Everyone who changes the repo, including the China team (after the repo move). Art reviews for technical accuracy.
+Everyone who changes the repo, including the China team. **All work starts from `dev`** (the scaffold that follows the TDD); work done elsewhere is ported into it, not merged from another base. Art reviews for technical accuracy.
 
 ## Branch model
 | Branch | Purpose |
@@ -15,7 +15,9 @@ Everyone who changes the repo, including the China team (after the repo move). A
 | `staging` | UAT. Receives `dev` by promotion PR |
 | `prod` | Live. Receives `staging` by promotion PR, or a `hotfix/*` branch |
 
-All three are protected: a PR, green CI, 1 approving review (a tech lead for `staging` and `prod`), no force-push.
+All three are protected: a PR, green CI, 1 approving review (a tech lead for `staging` and `prod`), no force-push. `main` is legacy (the original upload) and is locked the same way; nothing new goes there.
+
+Required checks on `dev`: **Format, lint, typecheck, unit tests**, **Build and e2e (Playwright + axe)**, **CMS image build and smoke**, and **Jira key in PR title**. A code-owner review is required (`.github/CODEOWNERS`), stale approvals are dismissed on new commits, and review threads must be resolved. ddd admins can bypass in an emergency and say so on the PR.
 
 ## Prerequisites
 - Repo access. A Jira ticket (`BD3244-123`) with acceptance criteria.
@@ -40,18 +42,19 @@ All three are protected: a PR, green CI, 1 approving review (a tech lead for `st
    git commit -m "feat: add carousel keyboard controls (BD3244-123)"
    ```
    Prefixes: `feat:`, `fix:`, `chore:`, `docs:`.
+   **The PR title must start with the Jira key**, e.g. `BD3244-123: feat(web): carousel keyboard controls`. The `Jira key in PR title` check fails otherwise; edit the title and it re-runs.
 5. Push and open a PR into `dev`:
    ```sh
    git push -u origin HEAD
-   gh pr create --base dev
+   gh pr create --base dev --title "BD3244-123: feat(web): carousel keyboard controls"
    ```
    Fill every section of the PR template: summary, Jira key, target branch, screenshots (desktop and mobile for UI), the definition-of-done checklist, and any OPEN-# you touched.
-6. Wait for CI (`checks` and `e2e`). On dev PRs, Render posts a preview URL for the web app once BD3244-15 is done.
+6. Wait for CI. For a web preview, add `[render preview]` to the PR title: Render builds a temporary URL for the web app and posts it on the PR.
 7. Address review comments with new commits. Don't force-push a shared branch.
 8. A reviewer approves, and you merge (squash). Delete the branch.
 
 ## Steps: promote `dev` → `staging` → `prod`
-1. Open a PR from `dev` into `staging` (then `staging` into `prod`). Title: `chore: promote dev to staging`.
+1. Open a PR from `dev` into `staging` (then `staging` into `prod`). Title: `chore: promote dev to staging`. Promotion PRs don't need a Jira key in the title.
 2. List the included tickets in the body. A tech lead reviews and approves.
 3. After a `prod` merge: tag the release `vYYYY.MM.DD-n` and update [`RELEASE_LOG.md`](../RELEASE_LOG.md).
 
@@ -68,7 +71,7 @@ All three are protected: a PR, green CI, 1 approving review (a tech lead for `st
 
 ## Verification
 - CI is green and the PR links the Jira ticket.
-- After merge, the dev deploy succeeds (Render, after BD3244-15).
+- After merge, CI runs on `dev` and the **Deploy dev** workflow deploys that commit to Render and smoke-tests it. The run summary has the live URLs ([render-dev](./render-dev.md)).
 
 ## Rollback
 Revert the PR with `gh pr` / the GitHub **Revert** button into the same branch. For production problems, see [roll-back-release](./roll-back-release.md).

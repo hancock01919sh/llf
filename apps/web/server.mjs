@@ -11,9 +11,12 @@ import { slashRedirect } from './lib/slash-redirect.mjs';
 
 const ROOT = path.join(import.meta.dirname, 'out');
 const PORT = Number(process.env.PORT ?? 3000);
-const TIPS_URL = (
-  process.env.TIPS_URL ?? `http://localhost:${process.env.TOOL_PORT ?? '8787'}`
-).replace(/\/$/, '');
+// Render's private-network reference (`fromService.property: hostport`) has no scheme.
+const TIPS_TARGET = process.env.TIPS_URL || `localhost:${process.env.TOOL_PORT ?? '8787'}`;
+const TIPS_URL = (/^https?:\/\//.test(TIPS_TARGET) ? TIPS_TARGET : `http://${TIPS_TARGET}`).replace(
+  /\/$/,
+  '',
+);
 const NOINDEX = process.env.SITE_ENV !== 'prod';
 const BASIC_AUTH = process.env.BASIC_AUTH ?? '';
 const API_TIMEOUT_MS = 40_000;

@@ -59,3 +59,52 @@ jobs:
           name: playwright-report
           path: apps/web/playwright-report
           retention-days: 7
+
+  cms-image:
+    name: CMS image build and smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: strapi
+          POSTGRES_PASSWORD: strapi
+          POSTGRES_DB: strapi
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U strapi" --health-interval 5s --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # The same image Render runs (render.yaml). Production settings, throwaway secrets, and an
+      # empty allow-list: the admin must fail closed while the content API and health stay up.
+      - run: docker build -f apps/cms/Dockerfile -t llf-cms:ci .
+      - name: Start the image
+        run: |
+          secret() { openssl rand -base64 32; }
+          docker run -d --name cms --network host \
+            -e DATABASE_URL=postgres://strapi:strapi@127.0.0.1:5432/strapi \
+            -e APP_KEYS="$(secret),$(secret)" -e API_TOKEN_SALT="$(secret)" \
+            -e ADMIN_JWT_SECRET="$(secret)" -e JWT_SECRET="$(secret)" \
+            -e TRANSFER_TOKEN_SALT="$(secret)" -e ENCRYPTION_KEY="$(secret)" \
+            -e IS_PROXIED=true llf-cms:ci
+      - name: Smoke test
+        run: |
+          for i in $(seq 1 60); do
+            [ "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:1337/_health)" = 204 ] && break
+            sleep 3
+          done
+          check() {
+            got=$(curl -s -o /dev/null -w '%{http_code}' -H "X-Forwarded-For: $3" "http://127.0.0.1:1337$1")
+            echo "$1 (XFF $3) → $got, want $2"
+            echo "$2" | grep -qw "$got"
+          }
+          check /_health 204 203.0.113.7
+          check /admin 403 203.0.113.7
+          check /admin/login 403 '127.0.0.1, 203.0.113.7'
+          check /api/pages '401 403' 203.0.113.7
+      - if: failure()
+        run: docker logs cms 2>&1 | tail -100

@@ -20,6 +20,7 @@ Every runbook has: purpose, when to use it, who, prerequisites, steps, verificat
 | [cms-ip-allow-list](./cms-ip-allow-list.md) | Add or remove an IP for the CMS admin |
 | [strapi-patch-upgrade](./strapi-patch-upgrade.md) | Monthly Strapi patch upgrade |
 | [transfer-content](./transfer-content.md) | Move content between environments (`strapi transfer`) |
+| [render-dev](./render-dev.md) | Set up the Render dev environment, deploy it, or point it at cms-dev |
 | [render-shutdown](./render-shutdown.md) | Close out Phase A after hypercare |
 
 ## Process docs (TDD §11.4)

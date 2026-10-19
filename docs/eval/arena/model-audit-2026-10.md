@@ -28,7 +28,7 @@
 - **Cheaper tiers** don't fully meet the bar:
   - **Gemini 3.1 Flash-Lite** ($23/month): 96.1% / 91.5%, but it calls about **15% of non-food photos food** (empty plates, bowls, a mug).
   - **Gemini 3.5 Flash-Lite** ($29/month): 95.3% / 83.2%. Its recall sits close to the 80% bar because it misses sauces and cheese.
-- **No OpenAI model reliably meets G2 on photos.** OpenAI is the one vendor Ad Council IT has already approved. GPT-5 mini (88–91% precision, $19/month) and GPT-6.1 Sol (87–89%, $141/month) sit just under the precision bar. GPT-6 Luna ($6/month) scores 89% / 86%. Anthropic and Gemini still need IT acceptance (OPEN-2).
+- **No OpenAI model reliably meets G2 on photos.** OpenAI isn't an authorized vendor anyway; Anthropic is the only one (corrected Oct 19). GPT-5 mini (88–91% precision, $19/month) and GPT-6.1 Sol (87–89%, $141/month) sit just under the precision bar. GPT-6 Luna ($6/month) scores 89% / 86%. Anthropic and Gemini still need IT acceptance (OPEN-2).
 - **Text and links are solved for every model we tested.**
   - Recipe pages with structured data (JSON-LD) score 100% with no model call.
   - With prompt `p3`, every cell except 3.8 Flash with default thinking scores ≥ 99% / ≥ 98% on dish names, pasted meals, and pasted recipes.
@@ -228,7 +228,7 @@ Opus itself missed only 2 labeled ingredients (a sausage and an egg), and no can
 
 | Monthly budget | What it gets |
 |---|---|
-| **~$5** | Gemini 2.5 Flash-Lite scores well on dishes but calls 14 of 32 non-food photos food (keyboards, shoes, a laptop, empty plates). GPT-6 Luna, from the approved vendor, is just under the precision bar (89%). |
+| **~$5** | Gemini 2.5 Flash-Lite scores well on dishes but calls 14 of 32 non-food photos food (keyboards, shoes, a laptop, empty plates). GPT-6 Luna (OpenAI, not authorized) is just under the precision bar (89%). |
 | **~$20–30** | **Gemini 3.1 or 3.5 Flash-Lite.** Good precision. 3.1 accepts about 15% of non-food photos; 3.5 misses sauces and cheese (recall 83%). GPT-5 mini is the OpenAI option, just under the precision bar. |
 | **~$150** | **Gemini 3.8 Flash, thinking off.** Opus-level precision, 3 points less recall than Opus, and every non-food photo rejected in all 5 runs. |
 | **$200–400** | Argon, Sonnet or Opus. Up to 3 more points of recall, with Opus the best. Sonnet and Opus also reject every non-food photo. None of the three is better on precision. |
@@ -323,7 +323,7 @@ What changed at each step:
 4. **Load.** Gemini errors in rounds 1–3 came from our parallel eval runs (up to 4 at once). The round-4 soak saw no 429s or 5xx in 1,100 calls on ddd's dev key. Production quotas still need confirming with Google (OPEN-2).
 5. **Stand-in catalog** (`eval-v2`, 104 slugs). Items not in it (kiwi, cherries, meatballs) show up as unmatched terms, not errors (OPEN-8). `pnpm catalog-diff` will carry the vocabulary over when the CMS catalog exists.
 6. **Prices** are list prices from Oct 13, 2026, with no batch or caching discounts. One call per use.
-7. **Vendor status.** The Anthropic and Gemini keys are ddd's dev/eval keys and were used with test data only (D25). Neither vendor is approved by Ad Council IT yet (OPEN-2). OpenAI is approved.
+7. **Vendor status.** The Anthropic and Gemini keys are ddd's dev/eval keys and were used with test data only (D25). **Anthropic is authorized; Google is not yet (OPEN-2); OpenAI is not authorized** (corrected Oct 19; this report first said OpenAI was approved).
 
 ## 10. Recommended next steps
 
@@ -332,11 +332,11 @@ These are for dotdotdash to do. The model choice itself stays with Ad Council (O
 1. **Make `p3` the next prompt version** (`PROMPT_VERSION=p3`). It's part of the cache key, so no cache purge is needed.
 2. **Shortlist for the scorecard email to Cat** (the draft still has Oct 12 numbers; updated after round 4):
    - **Gemini 3.8 Flash, thinking off** (`AI_REASONING_EFFORT=none`): best value, at about $147/month from January on dishes and up to $206 if every use is a product photo.
-   - **GPT-6.1 Sol**: the approved-vendor option. It resisted every image injection, but scores about 76% precision on fridges.
+   - **Claude Opus 5.5**: the authorized-vendor option and the quality reference. It resisted every image injection, but costs about $806/month on product photos at 50K, over the cap, so it fits best as the **backup** model.
    - Gemini 3.1 Flash-Lite and GPT-5 mini drop off: they write planted items from images into the result.
 
    Present Opus 5.5 as the quality reference.
-3. **Raise IT acceptance for Gemini (OPEN-2) now.** Every model that meets the bar within budget is from a vendor that isn't approved yet. Without it, the choice is an OpenAI model just under the precision bar, or Anthropic at $200+/month.
+3. **Raise IT acceptance for Gemini (OPEN-2) now.** Every model that meets the bar within budget is from a vendor that isn't approved yet. Without it, the choice is Claude Opus 5.5 over the cap on product photos, or Claude Sonnet 5.5 (about $351/month, 90% fridge precision, but 94% image-injection resistance).
 4. **Add "≥ 90% of non-food rejected" to G2** and agree the bar with Ad Council (OPEN-8).
 5. ~~**Build a product-shaped set** with image-based injection cases.~~ Done in round 4: `v3-product`, 92 cases ([`product-2026-10.md`](product-2026-10.md)). Still missing: real receipts, pantry and grocery-haul photos.
 6. ~~**Soak test at production concurrency.**~~ Done in round 4 (Gemini only). Decide on the **[PROPOSED]** single retry on a model timeout or 503 (Danish).

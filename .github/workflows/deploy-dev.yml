@@ -1,0 +1,55 @@
+# Deploys `dev` to Render after CI passes on a push (TDD §9.3, D27). Render's own auto-deploy is off
+# in render.yaml, so a red build never reaches the dev URL. Each service gets the exact commit CI
+# tested, then scripts/render-deploy.mjs smoke-tests the live URLs.
+#
+# Setup (docs/runbooks/render-dev.md): GitHub environment `dev` with secret RENDER_API_KEY and
+# variables RENDER_SERVICE_ID_CMS_DEV, RENDER_SERVICE_ID_TIPS_DEV, RENDER_SERVICE_ID_WEB_DEV.
+name: Deploy dev
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Render dev
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment:
+      name: dev
+      url: ${{ steps.deploy.outputs.web_url }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - id: deploy
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          DEPLOY_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+          RENDER_SERVICE_ID_CMS: ${{ vars.RENDER_SERVICE_ID_CMS_DEV }}
+          RENDER_SERVICE_ID_TIPS: ${{ vars.RENDER_SERVICE_ID_TIPS_DEV }}
+          RENDER_SERVICE_ID_WEB: ${{ vars.RENDER_SERVICE_ID_WEB_DEV }}
+        run: |
+          if [ -z "$RENDER_API_KEY" ]; then
+            echo "RENDER_API_KEY is not set on the dev environment yet; skipping (docs/runbooks/render-dev.md)." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          node scripts/render-deploy.mjs

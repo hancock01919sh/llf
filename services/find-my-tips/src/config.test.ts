@@ -14,6 +14,7 @@ describe('loadConfig', () => {
       geminiApiKey: undefined,
       reasoningEffort: undefined,
       port: 8787,
+      trustedProxyHops: 0,
       catalogUrl: undefined,
       catalogFile: undefined,
       catalogRefreshMs: 60_000,

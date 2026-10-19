@@ -7,6 +7,8 @@ FROM base AS build
 WORKDIR /repo
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/cms/package.json apps/cms/
+# pnpm deploy resolves the root importer, whose devDependency @llf/config must exist in the workspace.
+COPY packages/config/package.json packages/config/
 RUN pnpm fetch
 COPY apps/cms apps/cms
 RUN pnpm install --frozen-lockfile --offline --filter @llf/cms...

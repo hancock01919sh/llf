@@ -24,7 +24,7 @@ A tech lead. Choosing the **production** provider is Ad Council's decision (OPEN
 |---|---|---|
 | `mock` | Local and CI (default) | none |
 | `anthropic` | Dev, on ddd's key | `ANTHROPIC_API_KEY` |
-| `openai` | Planned production provider; arena and eval | `OPENAI_API_KEY` |
+| `openai` | Arena and eval only (not an authorized vendor) | `OPENAI_API_KEY` |
 | `gemini` | Comparison; dev and eval with test data only | `GEMINI_API_KEY` |
 | `bedrock` | Stub until OPEN-1 | TODO(OPEN-1) |
 

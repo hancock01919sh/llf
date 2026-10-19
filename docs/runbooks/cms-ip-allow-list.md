@@ -1,6 +1,6 @@
 # Runbook: add an IP to the CMS admin allow-list
 
-**Status:** first draft for review (BD3244-18). The allow-list isn't built yet. Phase A middleware: pending BD3244-15 and the spoofing spike in [`PROOF_DOC.md`](../PROOF_DOC.md). Phase B WAF IP set: pending BD3244-6. Which IPs go on the list is OPEN-17 (due Oct 30).
+**Status:** Phase A middleware **built** (BD3244-15, `apps/cms/src/middlewares/admin-ip-allowlist.js`); the header-spoofing spike on Render is still to run ([`PROOF_DOC.md`](../PROOF_DOC.md)). Phase B WAF IP set: pending BD3244-6. Which IPs go on the list is OPEN-17 (due Oct 30).
 
 ## Purpose
 Let a person reach the Strapi admin from a new network, or remove someone who no longer needs it. The admin is **never public** ([AGENTS.md](../../AGENTS.md)).
@@ -19,18 +19,23 @@ A tech lead makes the change. Ad Council IT approves editor IPs. Don't add an IP
 - Access to the allow-list setting for that environment.
 
 ## What the allow-list covers
-Everything on the CMS **except** `/api/*` (token required) and `/_health`.
+Everything on the CMS **except** `/api/*` (token required), `/uploads/*` (the media the site's pages load in Phase A) and `/_health`. Blocked requests get `403 Forbidden`.
 
 ## Steps
 
 ### Phase A: Render (dev and staging)
-The allow-list is the `ADMIN_IP_ALLOWLIST` environment variable, read by a small Strapi middleware ([TDD §5.4](../TDD.md#54-hosting-and-operations)).
+The allow-list is the `ADMIN_IP_ALLOWLIST` environment variable on the `llf-cms-<env>` service, read by a Strapi middleware that runs before everything else ([TDD §5.4](../TDD.md#54-hosting-and-operations)).
 
-> Pending BD3244-15: the middleware isn't in `apps/cms/config/middlewares.js` yet, so there's nothing enforcing the list today. The variable's exact format (comma-separated CIDRs is the expected form) is set when it's built. TODO(OPEN-17): the starting list of IPs.
+- **Format:** IPs and CIDR ranges separated by commas or spaces, e.g. `203.0.113.7, 198.51.100.0/24, 2001:db8::/48`. An invalid entry or a `/0` range stops the CMS from starting, so a typo never opens the admin.
+- **Empty list = admin blocked for everyone** (fail closed) whenever `NODE_ENV=production`, which is how Render runs it. `/api/*`, `/uploads/*` and `/_health` stay up.
+- **Client IP:** the right-most `X-Forwarded-For` entry (`ADMIN_IP_HEADER=x-forwarded-for`, `ADMIN_IP_TRUSTED_HOPS=1`). Render's proxy appends the real address there; entries to its left come from the client and are ignored.
+- **Locally** there's no list and no enforcement, so the admin is open on `localhost`. Set `ADMIN_IP_ALLOWLIST` in `apps/cms/.env` (and `ADMIN_IP_HEADER=socket`) to try it.
 
-1. In Render, open the `llf-<env>` environment group.
+TODO(OPEN-17): the starting list of IPs.
+
+1. In Render, open `llf-cms-<env>` → **Environment**.
 2. Add the new address or range to `ADMIN_IP_ALLOWLIST`. Keep a note of the ticket next to the change.
-3. Save. Render restarts `llf-cms-<env>`.
+3. Save. Render restarts `llf-cms-<env>`. A bad value fails the deploy and the previous one stays live; fix the value and save again.
 
 ### Phase B: AWS (staging and production)
 The CMS domain is behind CloudFront with a WAF **IP set** ([TDD §4.3](../TDD.md#43-environments-and-network)). The list belongs in the CDK code, so the change is reviewed.
@@ -44,8 +49,9 @@ The CMS domain is behind CloudFront with a WAF **IP set** ([TDD §4.3](../TDD.md
 
 ## Verification
 1. Ask the person to open the admin URL. They should see the login page.
-2. From a network that's **not** on the list, the admin must be blocked (Phase A: the middleware's block response. Phase B: a WAF 403).
-3. Check `/api/*` still needs a token, and that `/_health` answers.
+2. From a network that's **not** on the list, the admin must be blocked (Phase A: `403 Forbidden` from the middleware. Phase B: a WAF 403). Also try a forged header from that network: `curl -sI -H 'X-Forwarded-For: <an allowed IP>' https://<cms-url>/admin` must still return 403.
+   The `Deploy dev` workflow checks `/admin` returns 403 from GitHub's runners after every deploy.
+3. Check `/api/*` still needs a token (401 or 403 without one), and that `/_health` returns 204.
 
 ## Removing an IP
 Do the same steps in reverse. Remove it, then verify the person is blocked.

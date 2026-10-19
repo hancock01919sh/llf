@@ -21,7 +21,7 @@ All keys are optional and every one has a default. Empty values are treated as u
 | `AI_PROVIDER` | `mock` | `mock` \| `anthropic` \| `openai` \| `gemini` \| `bedrock`. `anthropic`, `openai`, and `gemini` are live (`src/extract/anthropic.ts`, `src/extract/openai.ts`, `src/extract/gemini.ts`). `bedrock` is a stub until OPEN-1 is decided. |
 | `AI_MODEL` | `mock-1` | Passed to the provider and included in the URL cache key. |
 | `PROMPT_VERSION` | `p1` | System prompt version (`src/extract/prompt.ts`). Add a new version instead of editing one that an eval has scored. |
-| `ANTHROPIC_API_KEY` | unset | Dev only: ddd's key, on Render dev and for `pnpm eval` (OPEN-2). Without it, `anthropic` returns `upstream_error`. Never logged. |
+| `ANTHROPIC_API_KEY` | unset | Dev only: ddd's key, on Render dev and for `pnpm eval` (D17). Without it, `anthropic` returns `upstream_error`. Never logged. |
 | `OPENAI_API_KEY` | unset | TBWA's capped test key, for Render dev, `pnpm eval`, and `pnpm arena` only (OPEN-1). Without it, `openai` returns `upstream_error`. Never logged. |
 | `GEMINI_API_KEY` | unset | ddd's own key, for Render dev, `pnpm eval`, and `pnpm arena` only, with test data only (TDD D25). Without it, `gemini` returns `upstream_error`. Never logged. |
 | `AI_REASONING_EFFORT` | unset | `none` \| `minimal` \| `low` \| `medium` \| `high`. Sent to OpenAI as `reasoning_effort`; mapped to a Gemini `thinkingBudget` (0 / 0 / 1024 / 8192 / 24576). Anthropic and the mock ignore it. Unset uses the model's default. |
@@ -76,7 +76,7 @@ The eval runs a labeled set through the same extraction and matching path as the
 pnpm eval                 # mock adapter, synthetic set, no key, $0
 pnpm eval -- -h           # all options
 
-# Live run (needs ANTHROPIC_API_KEY in the root .env, OPEN-2)
+# Live run (needs ANTHROPIC_API_KEY in the root .env, D17)
 pnpm eval -- --provider anthropic --model <model-id> \
   --price-in <usd-per-Mtok> --price-out <usd-per-Mtok> --budget 5 \
   --set eval/sets/<set>.json
@@ -144,7 +144,7 @@ pnpm arena -- -h          # all options
 
 **Reference cell.** Mark one cell `"reference": true` (for example Claude Opus 5.5) to use it as a quality yardstick rather than a candidate. It runs whatever it costs. The report then adds **What the budget buys**: every candidate (not the mock) sorted by cost, with precision, recall, and not-food rejection next to the reference, plus each one's gap in percentage points and monthly cost. It names the best in-budget pick (highest F1 within the cap) and adds **What it misses out on**: correct ingredients the reference found and the pick missed, wrong ingredients the pick added, non-food images it accepted, failed calls, the reverse direction, and the five cases with the largest gaps. Only catalog slugs and case IDs appear, never model text.
 
-**Skipped cells.** A cell is skipped, not failed, when its key is missing (`anthropic` needs `ANTHROPIC_API_KEY`, OPEN-2; `openai` needs `OPENAI_API_KEY`, OPEN-1; `gemini` needs `GEMINI_API_KEY`, D25), when its provider is the `bedrock` stub, or when the cell is `enabled: false` (add a `note` saying why).
+**Skipped cells.** A cell is skipped, not failed, when its key is missing (`anthropic` needs `ANTHROPIC_API_KEY`, D17; `openai` needs `OPENAI_API_KEY`, OPEN-1; `gemini` needs `GEMINI_API_KEY`, D25), when its provider is the `bedrock` stub, or when the cell is `enabled: false` (add a `note` saying why).
 
 ### Soak test (BD3244-37)
 Checks error rates and limits at launch volume (25K–50K uses/month, spiky PSA bursts) without the arena's parallel load confounding the result. Images come from the labeled set (readable image cases, cycled).

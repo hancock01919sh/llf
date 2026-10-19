@@ -15,7 +15,7 @@
 > - **Tailwind CSS + shadcn/ui**, WCAG 2.1 AA.
 > - **CMS admin on its own domain behind an IP allow-list.**
 > - **Branches `dev` → `staging` → `prod`.** The repo moves to Ad Council's GitHub by Oct 16; the China team works from Jira tickets.
-> - **AI in dev runs on ddd's Anthropic key** (pending IT acceptance, OPEN-2); the production provider is still OPEN-1 ("most likely Anthropic" at kickoff).
+> - **AI in dev runs on ddd's Anthropic key** (Anthropic is the only authorized AI vendor, confirmed Oct 19; OpenAI is not); the production provider is still OPEN-1 ("most likely Anthropic" at kickoff).
 > - **Hybrid content model (D21).** The CMS holds collections, Global, Tool Copy, long-form rich text, and asset slots (such as hero images). Site strings live in typed files in `apps/web/content/`; designed routes use code templates; a dynamic zone of blocks is used only for generic pages. There's **no Microcopy type**. Copy changes to strings go issue → Copilot coding agent → PR → Render preview (OPEN-32). This supersedes the Strings and Page notes in §5 below.
 > - The **V2 timeline**, QA rounds, and decision deadlines are in [TDD §12](./TDD.md#12-delivery-plan).
 
@@ -64,7 +64,7 @@ A consumer website, **longlivefood.org**, that helps households waste less food.
 | **Strapi environment** | Not deployed yet. We'll need to stand it up in AWS. The China team needs CMS access. [CONFIRMED] Strapi is self-hosted, so access means admin accounts on our cms-dev instance (Super Admin for team leads, Editor for the rest), not invites to a SaaS platform. Schema changes and migrations go through code and deploys. [PROPOSED] |
 | **OpenAI** | **There's no production account.** We only have TBWA's **test key with a $20 spending cap**. Ad Council IT has to approve OpenAI before Ad Council creates an account. [CONFIRMED] Which provider we use is still **[OPEN]** (see §7). |
 | **Project tracking** | ddd uses Jira for development and QA, and Ad Council can get visibility into it. Ad Council uses Asana and Slack (Slack Connect with ddd). [CONFIRMED] |
-| **New tools** | Any new SaaS or tool needs **Ad Council IT approval** first. So far: GitHub, AWS, Strapi, and OpenAI. **Don't add third-party services** without flagging them. [CONFIRMED] |
+| **New tools** | Any new SaaS or tool needs **Ad Council IT approval** first. So far: GitHub, AWS, Strapi, and Anthropic. **OpenAI is not authorized** (corrected Oct 19). **Don't add third-party services** without flagging them. [CONFIRMED] |
 
 **Rules for agents:**
 - Never commit secrets. Locally, use `.env` files that are git-ignored. In AWS, keys go in **Secrets Manager**. [PROPOSED]
@@ -180,7 +180,7 @@ type ExtractionResult = {
 Use the provider's strict structured-output / JSON-schema mode, and validate the response with Zod before using it.
 
 ### 7.4 Model provider [OPEN]
-- **Default plan: OpenAI**, because the prototype used it. We've recommended a mid-tier model and will benchmark it against a cheaper tier using an evaluation set, then use **the cheapest model that meets the quality bar**.
+- **Default plan: OpenAI**, because the prototype used it. *(Superseded: OpenAI isn't authorized; see TDD OPEN-1.)* We've recommended a mid-tier model and will benchmark it against a cheaper tier using an evaluation set, then use **the cheapest model that meets the quality bar**.
 - **Alternative: Anthropic Claude.** Ad Council already uses Claude internally, so it may get through IT approval faster. It could run through AWS Bedrock in their account.
 - **Requirement:** put every model call behind **one provider-agnostic interface**, for example `extractIngredients(input): Promise<ExtractionResult>`, with an adapter per provider. Choose the model with configuration, not by changing code.
 
@@ -222,7 +222,7 @@ Loading (extraction can take seconds), success, **partial match**, **no match**,
 ---
 
 ## 10. Open questions (flag these; don't guess)
-1. Which AI provider (OpenAI or Claude/Bedrock), and when will IT approve it?
+1. Which AI provider (OpenAI or Claude/Bedrock), and when will IT approve it? *(Oct 19: Anthropic is the only authorized vendor; OpenAI is not.)*
 2. Is there an interim development key so the China team isn't blocked on Oct 8?
 3. What AWS permissions will we have, and how will the DevOps partner transition affect deployment?
 4. Where will the frontend be hosted?

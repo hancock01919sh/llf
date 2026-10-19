@@ -22,8 +22,8 @@ Status key: ✅ usable · ⚠️ partial or blocked · ❌ missing · ➖ not ne
 | **AWS** | Ad Council account. TBWA planned CodePipeline → Elastic Beanstalk. **Nothing deployed** | James C has a **real IAM user** (not SSO): it can create a CodeBuild project but **can't list users or pipelines**. James S is checking whether his account has admin. Danish's account is on hold | Scoped access: SSO ReadOnly + tag-scoped project admin, GitHub OIDC deploy role, DNS contact (OPEN-3, TDD §9.1). Asked via Danish → Cat. The China team doesn't need AWS for weeks | Ad Council IT | ⚠️ |
 | **Strapi environments** | None deployed | — | Phase A: Render (ddd). Phase B: Ad Council AWS | ddd / James S | ❌ |
 | **Render** | ddd workspace | ddd admin | Ad Council IT to accept dev/staging on ddd's account with test content (OPEN-23). **PR previews** on the dev web service give the China team a shareable link per PR; Render seats for logs only when needed (TDD §9.1) | ddd | ⚠️ |
-| **AI: OpenAI** | TBWA's test key, **$20 hard cap**. No client production account | Test key only | IT approval + client account. Production provider decision due Nov 13 (OPEN-1) | Ad Council | ⚠️ |
-| **AI: Anthropic** | ddd's own account | ddd admin | IT to accept dev use with test inputs only (OPEN-2) | ddd | ⚠️ |
+| **AI: OpenAI** | TBWA's test key, **$20 hard cap**. No client production account | Test key only | **Not authorized** by Ad Council IT (confirmed Oct 19). Eval only | Ad Council | ➖ |
+| **AI: Anthropic** | ddd's own account | ddd admin | **Authorized** (confirmed Oct 19). Client account and production key (OPEN-1) | ddd | ✅ |
 | **DNS** | `longlivefood.org` and the finishthefridge domains | None | Named contact or Route 53 delegation; CMS domain name (OPEN-20) | Ad Council IT | ❌ |
 | **Analytics** | Unknown whether a GTM container / GA4 property exists | None | Ownership, consent, and scope beyond the basic embed (OPEN-18, OPEN-27). The Figma footer has a "Manage Preferences" link, which implies a consent manager | Ad Council + Adam P | ❌ |
 | **Jira** | ddd Jira project **BD3244** for dev and QA ([board](https://dotdotdash.atlassian.net/jira/software/projects/BD3244/boards/873/backlog)). Epics, starter tickets, and spike tickets created Oct 6 | ddd admin | Ad Council / coalition feedback format (OPEN-29) | ddd | ✅ |
@@ -34,7 +34,7 @@ Status key: ✅ usable · ⚠️ partial or blocked · ❌ missing · ➖ not ne
 
 ## 2. Approved vendors
 
-Any new SaaS or tool needs **Ad Council IT approval** first [CONFIRMED]. Approved so far: **GitHub, AWS, Strapi, OpenAI** (account pending). Pending acceptance for development only: **Render** and **Anthropic** on ddd's accounts. Don't add any other third-party runtime service without raising it in the TDD first.
+Any new SaaS or tool needs **Ad Council IT approval** first [CONFIRMED]. Approved so far: **GitHub, AWS, Strapi, Anthropic** (the only authorized AI vendor). **OpenAI is not authorized** (confirmed Oct 19; earlier drafts said it was). Pending: **Render** for development, and **Google (Gemini)** for any use beyond ddd's dev/eval key (OPEN-2). Don't add any other third-party runtime service without raising it in the TDD first.
 
 ## 3. Strapi repo findings (summary)
 

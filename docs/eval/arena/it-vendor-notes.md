@@ -1,23 +1,22 @@
 # IT vendor notes
 
-Working notes for Ad Council IT approval (BD3244-37). Cat has a questionnaire for OpenAI; once we have it, we answer it for each vendor in parallel.
+Working notes for Ad Council IT approval (BD3244-37). Cat has a questionnaire for AI vendors; once we have it, we answer it for each vendor in parallel. **Anthropic is the only authorized AI vendor; OpenAI is not** (confirmed Oct 19).
 
 ## Vendor status
 
 | Vendor | Use | Approval for this use | Next step |
 |---|---|---|---|
-| OpenAI | Candidate for production; TBWA test key for the arena | Planned production provider; questionnaire in progress | Get Cat's questionnaire and TBWA's capped test key |
-| Anthropic | Dev and Phase A on ddd's key; arena candidate | Pending (OPEN-2). Internal staff use only today | IT acceptance of ddd's dev key |
-| Google (Gemini) | Arena candidate on ddd's own key (dev/eval, test data only) | Pending (like Anthropic). Not approved for production | IT acceptance of ddd's key for eval; IT approval before any production use |
+| Anthropic | Dev and Phase A on ddd's key; recommended backup model (Claude Opus 5.5) | **Authorized** (confirmed Oct 19) | Client account and production key (OPEN-1) |
+| Google (Gemini) | Recommended primary model (Gemini 3.8 Flash); ddd's own key for dev/eval, test data only | **Not authorized** for production | IT approval (OPEN-2) |
+| OpenAI | Arena comparison only, on TBWA's capped test key | **Not authorized** | None unless Ad Council asks |
 | AWS Bedrock | Option to run models in Ad Council's AWS | AWS is approved; model terms vary | Decide after OPEN-1 |
 
 ## Questionnaire tracker
 
 | Vendor | Sent | Answers drafted | Returned to IT | Notes |
 |---|---|---|---|---|
-| OpenAI | | | | Cat's template |
-| Anthropic | | | | |
-| Google | | | | Only if Gemini is considered for production |
+| Google | | | | Primary model candidate |
+| Anthropic | | | | Authorized; confirm production terms |
 
 ## Answers we can give for our side
 

@@ -1,0 +1,130 @@
+# Render Blueprint, Phase A dev environment (TDD §9.1, D27). ddd's Render account only;
+# production never runs on Render. Setup and secrets: docs/runbooks/render-dev.md.
+#
+# - Every service tracks `dev` with auto-deploy off. `.github/workflows/deploy-dev.yml` deploys
+#   the exact commit after CI passes on `dev`, then smoke-tests the live URLs.
+# - Values marked `sync: false` are secrets. Render asks for them once, when the Blueprint is
+#   first applied; they never live in this file.
+# - staging gets the same services with `-staging` names when the `staging` branch exists.
+
+envVarGroups:
+  # Non-secret tool settings shared by the dev tool service. Swap the provider or model here
+  # (AGENTS.md: env config, never code changes).
+  - name: llf-dev-tool
+    envVars:
+      - key: AI_PROVIDER
+        value: gemini
+      - key: AI_MODEL
+        value: gemini-3.8-flash
+      - key: AI_REASONING_EFFORT
+        value: none
+      # Arena candidate on dev (PROOF_DOC P9). The code default stays p1.
+      - key: PROMPT_VERSION
+        value: p3
+      - key: FIND_TIPS_MODE
+        value: live
+      - key: QUOTA_DAILY_MODEL_CALLS
+        value: '500'
+
+databases:
+  - name: llf-db-dev
+    plan: 0.1c-256mb
+    postgresMajorVersion: '16'
+    databaseName: llf_cms
+    # No entries: private-network connections only (TDD §5.4).
+    ipAllowList: []
+
+services:
+  - type: web
+    name: llf-cms-dev
+    runtime: docker
+    plan: 1c-2g
+    branch: dev
+    autoDeployTrigger: off
+    dockerfilePath: ./apps/cms/Dockerfile
+    dockerContext: .
+    healthCheckPath: /_health
+    disk:
+      name: uploads
+      mountPath: /app/public/uploads
+      sizeGB: 5
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: IS_PROXIED
+        value: 'true'
+      - key: DATABASE_URL
+        fromDatabase:
+          name: llf-db-dev
+          property: connectionString
+      - key: DATABASE_SSL
+        value: 'false'
+      # Admin allow-list (TDD §5.4). Comma-separated IPs/CIDRs of ddd, TBWA and Ad Council
+      # editors. Empty = admin blocked for everyone (fail closed); /api, /uploads, /_health stay up.
+      - key: ADMIN_IP_ALLOWLIST
+        sync: false
+      - key: ADMIN_IP_HEADER
+        value: x-forwarded-for
+      - key: ADMIN_IP_TRUSTED_HOPS
+        value: '1'
+      - key: APP_KEYS
+        generateValue: true
+      - key: API_TOKEN_SALT
+        generateValue: true
+      - key: ADMIN_JWT_SECRET
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: TRANSFER_TOKEN_SALT
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
+
+  # Private service: reachable only from other services on the Render private network, so the
+  # model endpoint is never public. The web service proxies /api/* to it.
+  - type: pserv
+    name: llf-tips-dev
+    runtime: node
+    plan: 0.5c-512mb
+    branch: dev
+    autoDeployTrigger: off
+    buildCommand: npx --yes pnpm@9.15.2 install --frozen-lockfile --filter @llf/find-my-tips...
+    startCommand: cd services/find-my-tips && node_modules/.bin/tsx src/server.ts
+    envVars:
+      - fromGroup: llf-dev-tool
+      # Render's proxy appends the visitor's IP to x-forwarded-for and server.mjs passes it on.
+      - key: TRUSTED_PROXY_HOPS
+        value: '1'
+      # ddd's Gemini key (dev only, TDD D25). Never commit a value.
+      - key: GEMINI_API_KEY
+        sync: false
+
+  - type: web
+    name: llf-web-dev
+    runtime: node
+    plan: 0.5c-512mb
+    branch: dev
+    autoDeployTrigger: off
+    buildCommand: >-
+      npx --yes pnpm@9.15.2 install --frozen-lockfile --filter @llf/web... &&
+      npx --yes pnpm@9.15.2 --filter @llf/web... build
+    startCommand: node apps/web/server.mjs
+    healthCheckPath: /healthz
+    # Manual previews: add "[render preview]" to a PR title to get a temporary URL (TDD §9.1).
+    previews:
+      generation: manual
+    envVars:
+      - key: SITE_ENV
+        value: dev
+      # Builds from fixture content until cms-dev is seeded. Then delete CMS_FIXTURES and set
+      # CMS_URL + CMS_TOKEN (read-only token) in the dashboard (docs/runbooks/render-dev.md).
+      - key: CMS_FIXTURES
+        value: '1'
+      - key: TIPS_URL
+        fromService:
+          name: llf-tips-dev
+          type: pserv
+          property: hostport
+      # "user:pass" for the whole dev site. Share it directly, never in Jira, Slack or a PR.
+      - key: BASIC_AUTH
+        sync: false

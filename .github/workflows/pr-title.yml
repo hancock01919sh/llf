@@ -1,0 +1,33 @@
+# Every PR title starts with its Jira key, e.g. "BD3244-123: feat(web): hero block" (AGENTS.md,
+# TDD §9.3). Promotion PRs (dev → staging, staging → prod) are exempt. Required check on dev.
+name: PR title
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches: [dev, staging, prod]
+
+permissions: {}
+
+jobs:
+  jira-key:
+    name: Jira key in PR title
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - env:
+          # Through env, never inline in the script: the title is user input.
+          TITLE: ${{ github.event.pull_request.title }}
+          HEAD: ${{ github.event.pull_request.head.ref }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+        run: |
+          if { [ "$BASE" = staging ] && [ "$HEAD" = dev ]; } || { [ "$BASE" = prod ] && [ "$HEAD" = staging ]; }; then
+            echo "Promotion PR ($HEAD → $BASE): no Jira key needed."
+            exit 0
+          fi
+          if printf '%s' "$TITLE" | grep -Eq '^BD3244-[0-9]+[:[:space:]]'; then
+            echo "OK: $TITLE"
+            exit 0
+          fi
+          echo "::error title=PR title needs a Jira key::Start the title with the ticket, e.g. 'BD3244-123: feat(web): hero block'. Board: https://dotdotdash.atlassian.net/jira/software/projects/BD3244/boards/873"
+          exit 1

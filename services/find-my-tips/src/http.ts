@@ -59,9 +59,17 @@ function requestIdOf(body: unknown): string {
   return '';
 }
 
-/** First hop of `x-forwarded-for`, else the socket address supplied by the adapter. */
-export function clientIp(req: Request, fallback = 'unknown'): string {
-  const forwarded = req.headers.get('x-forwarded-for');
-  const first = forwarded?.split(',')[0]?.trim();
-  return first || fallback;
+/**
+ * Client address for rate limits. Each proxy we run appends the address it received the request
+ * from to `x-forwarded-for`, so with `trustedHops` proxies in front of the service the client is
+ * that many entries from the right. Entries further left come from the client and can be forged.
+ * With no trusted proxies (local dev), the socket address supplied by the adapter is used.
+ */
+export function clientIp(req: Request, fallback = 'unknown', trustedHops = 0): string {
+  if (trustedHops < 1) return fallback;
+  const hops = (req.headers.get('x-forwarded-for') ?? '')
+    .split(',')
+    .map((hop) => hop.trim())
+    .filter(Boolean);
+  return hops[hops.length - trustedHops] ?? fallback;
 }

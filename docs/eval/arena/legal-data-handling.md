@@ -31,4 +31,4 @@ Draft for Ad Council Legal (BD3244-37). James Calhoun owns it; Art reviews it. F
 | Abuse-monitoring access to inputs | | | | |
 | Already approved by Ad Council for this use? | | | | |
 
-> Claude and Copilot are approved for internal staff use only. Every provider, including those two, needs approval for this public use case.
+> **Anthropic (Claude) is the only authorized AI vendor; OpenAI is not** (confirmed Oct 19). Google needs Ad Council IT approval before production use.

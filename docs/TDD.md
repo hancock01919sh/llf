@@ -7,8 +7,8 @@
 | **Delivery** | dotdotdash (ddd) |
 | **Owner / author** | Art Longbottom (tech lead) |
 | **Reviewers** | James Calhoun (tech lead), James Steele (AWS/DevOps), Adam Paikowsky (analytics), Danish Aziz (PM), China dev team (Eva Fan, Alessandro Grena, Maggie Ding) |
-| **Status** | **DRAFT v0.3.16.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
-| **Last updated** | 2026-10-15 |
+| **Status** | **DRAFT v0.3.18.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
+| **Last updated** | 2026-10-19 |
 | **Go-live** | **Friday, January 8, 2027** (go/no-go Thursday, January 7). There's **no contingency** after final QA |
 
 > **How to read this document.** Every significant statement has a label:
@@ -122,7 +122,7 @@ We're building **longlivefood.org**, a fast, accessible, SEO-friendly content si
 - Rendering mode (OPEN-4)
 - The GitHub org and migration date (OPEN-11)
 - Whether launch needs Spanish (OPEN-12)
-- Whether Ad Council IT accepts Render and Anthropic for development (OPEN-23, OPEN-2)
+- Whether Ad Council IT accepts Render for development (OPEN-23), and Google (Gemini) as an AI vendor (OPEN-2)
 - Whether the Copilot coding agent can be used in Ad Council's GitHub and Jira for copy changes (OPEN-32)
 - Confirming the TBWA Worldwide copy of the Figma file is the single design source, and freezing the original (OPEN-33)
 - Whether the tool accepts video links, which the Figma input copy shows (OPEN-35)
@@ -179,6 +179,10 @@ See [§12.3](#123-decision-deadlines).
 | Cost | **Pro-bono / at cost.** Choose the cheapest option that meets these requirements. Estimates are in [§9.5](#95-cost-estimate). AI spend is limited by an in-app daily quota and kill switch, with provider budget alerts as a backstop (§7.6) |
 | Maintainability | IaC for everything on AWS. Runbooks. Can be handed to the new DevOps partner. The repo lives in Ad Council's GitHub org |
 | Browser support | The last 2 versions of evergreen browsers, plus iOS Safari 16+ |
+| One codebase | **All work happens in this repo, starting from the `dev` scaffold** (§4.4, D29). Work started anywhere else is **ported into the scaffold** to match this TDD (templates, blocks, `packages/ui`, `content/`, Zod contracts, schema as code), not merged in from a separate base. No parallel apps, no second CMS |
+| Hosting during the build | Code, content, and CMS instances run **only** locally, on ddd's Render account (dev, staging), or in Ad Council's AWS. **No other hosting**, including team-run servers or third-party Strapi hosts, even for demos (D29) |
+| Change control | Every change reaches `dev`, `staging`, and `prod` by **PR only**: green CI, 1 approving code-owner review, resolved threads, and a **title that starts with its Jira key** (`BD3244-123: …`). No direct or force pushes (§9.3, D28) |
+| Review link | A **stable dev URL** on Render for client and team review, behind basic auth and `noindex`, updated only from commits that passed CI (§9.1, D27) |
 
 ---
 
@@ -192,11 +196,12 @@ See [§12.3](#123-decision-deadlines).
   - The **Toolkit** page is desktop-only for now. ddd is adapting it for mobile, and it still needs coalition approval.
   - Copy and images can still change.
 - **New SaaS or vendors need Ad Council IT approval.**
-  - Approved so far: GitHub, AWS, Strapi, and OpenAI (account pending).
+  - Approved so far: GitHub, AWS, Strapi, and **Anthropic**, the **only authorized AI vendor** [CONFIRMED (Art, Oct 19)].
+  - **OpenAI is not authorized.** Earlier drafts listed it as approved; that was wrong. TBWA's capped OpenAI test key is used for the eval only.
   - Dev/eval only, pending acceptance: **Gemini** (Google) on ddd's own key, for the model arena with test data only (§7.7, D25). Production use would still need IT approval.
   - That's why production uses AWS-native services, for example WAF Bot Control instead of reCAPTCHA or Turnstile.
 - **There's no production AI account yet.**
-  - The client-owned OpenAI account is pending.
+  - No client-owned Anthropic account or production key exists yet (OPEN-1).
   - Before go-live, **US-only data storage and usage/spend controls** must be validated (weekly status). What "US-only" covers is in §2.4 and OPEN-31.
 - **Budget is pro-bono / at cost.**
 - The **China dev team** kicks off **Oct 8**. Mainland China can't reach the OpenAI or Anthropic APIs without a proxy.
@@ -210,7 +215,7 @@ See [§12.3](#123-decision-deadlines).
 - **A4:** Ad Council controls DNS for longlivefood.org and the finishthefridge domains. They'll create or delegate records when we ask (OPEN-20).
 - **A5:** Visitors don't log in. The only logged-in users are CMS editors.
 - **A6:** Render is acceptable for **development and preview hosting on ddd's own account**, using seed and test content only, with no visitor data. We still need to confirm this with Ad Council IT (OPEN-23).
-- **A7:** Using **ddd's Anthropic keys in development**, with test inputs only, is acceptable (OPEN-2). The production provider and key belong to Ad Council (OPEN-1).
+- **A7:** Using **ddd's Anthropic keys in development**, with test inputs only, is acceptable. Anthropic is authorized (confirmed Oct 19). The production provider and key belong to Ad Council (OPEN-1).
 
 **Considerations**
 - **Image selection is a separate workstream** [CONFIRMED (kickoff)]. Colleen Miller owns it, and it takes about a month (OPEN-28). The CMS has to handle placeholder images until then.
@@ -233,10 +238,10 @@ See [§12.3](#123-decision-deadlines).
 ```mermaid
 flowchart LR
   devs([Developers<br/>incl. China team]) -->|PRs| gh[GitHub repo<br/>dev / staging / prod]
-  gh -->|auto-deploy on push<br/>dev and staging only| render
+  gh -->|CI green → Deploy dev workflow<br/>Render API, exact commit| render
   subgraph render[Render, ddd account]
     web[web: static export served by<br/>a small Node server with basic auth]
-    api[find-my-tips: Node adapter]
+    api[find-my-tips: Node adapter<br/>private service]
     cms[Strapi 5: Docker image<br/>admin allow-listed in app]
     pg[(Render Postgres)]
     disk[(Persistent disk:<br/>media uploads)]
@@ -244,7 +249,7 @@ flowchart LR
   testers([ddd, TBWA, Ad Council testers]) --> web
   web -->|/api/*| api
   api -->|catalog for current release| web
-  api -->|extraction| claude[[Anthropic API<br/>ddd dev key]]
+  api -->|extraction| claude[[AI provider via adapter<br/>ddd dev keys: Gemini, Anthropic]]
   api -->|fetch recipe page| www((Public web))
   editors([Editors on allow-listed IPs]) --> cms
   cms --> pg
@@ -389,15 +394,16 @@ A single **pnpm workspace** monorepo, so the contracts and matching code are sha
 │  └─ config/              # shared tsconfig, eslint, prettier
 ├─ infra/
 │  ├─ aws/                 # AWS CDK app (stacks per env)
-│  ├─ cloudfront-functions/ # site viewer-request function (§6.2) + unit tests
-│  └─ render.yaml          # Render Blueprint for Phase A (dev, staging)
+│  └─ cloudfront-functions/ # site viewer-request function (§6.2) + unit tests
+├─ render.yaml             # Render Blueprint for Phase A (dev now; staging later). At the root, where Render looks for it
 ├─ scripts/
 │  ├─ ensure-cms-env.mjs   # creates apps/cms/.env with random local secrets if missing (unset keys commented out)
+│  ├─ render-deploy.mjs    # deploys one commit to Render dev via the API, then smoke-tests it (D27)
 │  └─ seed/                # synthetic fixture seed: JSON → validate → upsert → publish → verify (re-runnable); the project-seed scrape lands here later
 ├─ eval/                   # sets/ (labeled sets), runs/ (git-ignored), reports/; run on demand
 ├─ docs/                   # TDD, PROJECT, companion docs, ADRs, runbooks
 ├─ docker-compose.yml      # local Postgres (and optional Strapi)
-└─ .github/workflows/      # CI, deploy, publish-triggered build
+└─ .github/workflows/      # ci.yml, deploy-dev.yml, pr-title.yml; later deploy and publish-triggered builds
 ```
 
 - **How we bring in the Strapi code:** `git subtree add` from `AdCouncil/ending-wasted-food-strapi` keeps its history. We rename the package from `test-strapi` to `@llf/cms`. **[VERIFIED] (P2, Oct 7):** Strapi 5.45 installs, builds, and runs inside the pnpm workspace with the default isolated linker and one lockfile, with no hoisting. `apps/cms/Dockerfile` is a multi-stage `node:22-alpine` build that uses `pnpm deploy --prod`. The admin bundle goes to `build/` and is built per environment, because `ADMIN_PATH` and the backend URL are baked in ([`PROOF_DOC.md`](./PROOF_DOC.md#p2-strapi-5-in-a-pnpm-workspace)).
@@ -405,11 +411,12 @@ A single **pnpm workspace** monorepo, so the contracts and matching code are sha
   1. Art scaffolds it in **ddd's GitHub** (Oct 6–9).
   2. It moves to **Ad Council's GitHub org** with GitHub's repository transfer, which keeps the history, issues, and PRs, or with a mirror push if transfer isn't allowed (OPEN-11).
   3. Branch protection, environments, and secrets are set up again in the new org.
-  4. **The China team gets access to that one repo only, and only after the move.** Until then, **Art does all repo work** (scaffolding, CI, seed tooling), and the China team does onboarding with the docs (shared outside the repo), Figma review, Jira grooming, and local tool installs. The move is targeted for **Oct 16** so their FE work isn't held up. If it slips, see R6.
-- **Branch protection:**
-  - `dev`, `staging`, and `prod` are protected.
-  - PRs need 1 approving review (a tech lead for `staging` and `prod`) and green CI.
-  - No direct pushes, and no force pushes.
+  4. **The China team works in this one repo.** *Updated Oct 19:* the move slipped (OPEN-11), so the China team has **write** access (no admin) to `dotdotdashdev/3244_tbw_ad_council` now, under the same branch protection. The scaffold is on **`dev`**, which is the default branch; **all work starts there** (D29). Their access carries over when the repo moves.
+- **Branch protection** (D28; **applied Oct 19** to `dev` and `main` in ddd's org, and re-applied after the move):
+  - `dev`, `staging`, and `prod` are protected. `main` (the original upload) is locked too; nothing new goes there.
+  - PRs need 1 approving **code-owner** review (a tech lead for `staging` and `prod`), green CI (the required checks in §9.3), and resolved review threads. New commits dismiss earlier approvals.
+  - The PR title starts with its Jira key (`BD3244-123: …`), checked by `pr-title.yml`. Promotion PRs are exempt.
+  - No direct pushes, and no force pushes. ddd admins can bypass in an emergency and note it on the PR.
   - A hotfix branches from `prod`, then merges back to `staging` and `dev`.
 - **Toolchain:** Node 22 LTS (`.nvmrc`; `engines` `>=22.12 <23`), pnpm **9.15.2** pinned by `packageManager` (Corepack), ESLint flat config (with `jsx-a11y`), Prettier (`format:check` runs in CI), Vitest, Playwright, and `@axe-core/playwright`. Turborepo isn't used yet; plain `pnpm -r` is fast enough at this size. `.github/CODEOWNERS` routes workflows, infra, `docs/`, and `packages/contracts/` to the tech lead.
 
@@ -578,8 +585,12 @@ The tool API includes `catalogVersion` in every response. If it doesn't match th
 **Phase A: Render (ddd account)** [TL DECISION]
 - One **Strapi Docker image** for each environment (cms-dev, cms-staging), each a Render web service with a **persistent disk** for uploads and its own **paid Render Postgres** instance. Free Postgres instances expire after 30 days, and services with disks need a paid plan [VERIFIED].
 - **Admin IP restriction:** Render can only set inbound IP rules on web services on its **Scale or Enterprise plans** [VERIFIED]. That's not justified for a pro-bono dev phase. So:
-  - A small **Strapi middleware** blocks every path except `/api/*` (token required) and `/_health` unless the client IP is on `ADMIN_IP_ALLOWLIST`.
-  - The client IP comes from the header that Render's proxy sets, and the spike confirms which header can't be spoofed ([`PROOF_DOC.md`](./PROOF_DOC.md)).
+  - A **Strapi middleware** (`apps/cms/src/middlewares/admin-ip-allowlist.js`, registered first) blocks every path except `/api/*` (token required), `/uploads/*`, and `/_health` with a 403 unless the client IP is on `ADMIN_IP_ALLOWLIST` (IPs and CIDRs) [**built**, BD3244-15].
+  - **`/uploads/*` stays open** because Phase A media is served by the CMS itself and the site's pages load it (Phase B moves media to S3 + CloudFront).
+  - **Fails closed:** with `NODE_ENV=production` (how Render runs it) an empty list blocks the admin for everyone. An invalid entry or a `/0` range stops Strapi from starting. Locally, with no list, the admin is open.
+  - **Client IP:** the right-most `X-Forwarded-For` entry (`ADMIN_IP_TRUSTED_HOPS=1`). Render's proxy appends the address it saw, and entries to its left are client-supplied and ignored. `cf-connecting-ip` or the socket address can be selected with `ADMIN_IP_HEADER`. A manual spike from a non-listed network confirms a forged header can't get through ([`PROOF_DOC.md`](./PROOF_DOC.md), P4).
+  - CI builds the Docker image and checks that `/admin` returns 403 with an empty list, including with a forged header. Every dev deploy repeats the check against the live URL (§9.3).
+  - `IS_PROXIED=true` makes Koa trust Render's TLS proxy so secure admin cookies work.
   - Render Postgres has **IP rules on every plan**, so we turn off external database access.
 - Backups: Render's managed Postgres backups, plus a nightly `strapi export` to the ddd backup location while real content lives on Render.
 
@@ -1032,10 +1043,10 @@ export async function extractIngredients(input, ctx): Promise<ExtractionResult> 
 | Adapter | Use | Config | Vendor status |
 |---|---|---|---|
 | `mock` | **Default for local and CI.** Returns fixtures keyed on an input hash, or a deterministic stub | `AI_PROVIDER=mock` | — |
-| `anthropic` | **Dev and Phase A**, on **ddd's Anthropic key** [TL DECISION]. **Built** (`extract/anthropic.ts`, BD3244-33): Messages API with a forced `report_ingredients` tool call, output checked with Zod. `bedrock` stays a stub until OPEN-1 | `AI_PROVIDER=anthropic`, `AI_MODEL=…`, `PROMPT_VERSION=p1`, `ANTHROPIC_API_KEY` in a Render env group | ddd's own account. Ad Council IT needs to **accept its use with test data in dev** (OPEN-2) |
-| `openai` | The client's planned production provider (PROJECT.md §7.4). **Built** (`extract/openai.ts`, BD3244-37) for the arena: Chat Completions with a strict JSON schema, output checked with Zod, and `reasoning_effort` sent only when `AI_REASONING_EFFORT` is set (`minimal`, `low`, `medium`, `high`). With no key it fails as `upstream_error` | `AI_PROVIDER=openai`, `AI_MODEL=…`, optional `AI_REASONING_EFFORT`. For eval, `OPENAI_API_KEY` is **TBWA's capped test key**, used locally and on Render dev only. Production key in Secrets Manager | **The client's OpenAI account is still pending.** IT approval of OpenAI as a vendor and the production account setup are **separate steps** (OPEN-2) |
+| `anthropic` | **Dev and Phase A**, on **ddd's Anthropic key** [TL DECISION]. **Built** (`extract/anthropic.ts`, BD3244-33): Messages API with a forced `report_ingredients` tool call, output checked with Zod. `bedrock` stays a stub until OPEN-1 | `AI_PROVIDER=anthropic`, `AI_MODEL=…`, `PROMPT_VERSION=p1`, `ANTHROPIC_API_KEY` in a Render env group | **Authorized** by Ad Council IT [CONFIRMED (Art, Oct 19)]. Dev uses ddd's account with test data (D17); production needs a client account and key (OPEN-1) |
+| `openai` | The prototype's provider (PROJECT.md §7.4), kept as an arena comparison point. **Built** (`extract/openai.ts`, BD3244-37) for the arena: Chat Completions with a strict JSON schema, output checked with Zod, and `reasoning_effort` sent only when `AI_REASONING_EFFORT` is set (`minimal`, `low`, `medium`, `high`). With no key it fails as `upstream_error` | `AI_PROVIDER=openai`, `AI_MODEL=…`, optional `AI_REASONING_EFFORT`. For eval, `OPENAI_API_KEY` is **TBWA's capped test key**, used locally and on Render dev only. No production key | **Not authorized** by Ad Council IT [CONFIRMED (Art, Oct 19)]. Eval only, on TBWA's capped key. No production use unless IT approves OpenAI |
 | `bedrock` | An alternative that runs in Ad Council's AWS with IAM-only auth | `AI_PROVIDER=bedrock`, `AI_MODEL=…`, `AWS_REGION` | **Still a vendor decision.** Anthropic models on Bedrock run in AWS-owned accounts under Anthropic's model terms. IT may treat this as a new vendor (OPEN-2) |
-| `gemini` | A cheap comparison point raised in the Oct 8 arena meeting. **Built** (`extract/gemini.ts`): `generateContent` with a JSON response schema, Zod-checked; `AI_REASONING_EFFORT` maps to `thinkingBudget` | `AI_PROVIDER=gemini`, `GEMINI_API_KEY` (ddd's key) | ddd's own account, dev/eval with test data only, pending acceptance (OPEN-2, D25). Not for production without Ad Council IT approval |
+| `gemini` | A cheap comparison point raised in the Oct 8 arena meeting. **Built** (`extract/gemini.ts`): `generateContent` with a JSON response schema, Zod-checked; `AI_REASONING_EFFORT` maps to `thinkingBudget` | `AI_PROVIDER=gemini`, `GEMINI_API_KEY` (ddd's key) | ddd's own account, dev/eval with test data only (D25). **Not authorized** for production: Google needs Ad Council IT approval (OPEN-2) |
 
 **Requirements for the production provider:** US-only processing and storage of request data (for example, a US data-residency project or a US-region Bedrock model, not a global or cross-region endpoint), no training on our data, the shortest retention available (zero data retention if possible), and a project-level spend limit. Whichever provider we pick must **show these in its contract or settings**. We record the evidence in [`CLIENT_AUDIT.md`](./CLIENT_AUDIT.md).
 
@@ -1142,7 +1153,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 
 **Phase A, Render** [TL DECISION]
 - ddd's Render **workspace** has a project `llf` with environments `dev` and `staging`. Access is through ddd's SSO/GitHub login.
-- **PR previews** [PROPOSED]: `llf-web-dev` has Render **service previews** turned on. Every PR to `dev` gets its own temporary `onrender.com` URL, which Render posts on the PR. A preview inherits the base service's environment (cms-dev content, basic auth, `noindex`), is billed at the base service's rate while it exists, and is deleted when the PR is merged or closed. Monorepo build filters limit which PRs build one. Previews cover the **web app only**: a PR that changes the CMS schema merges first (tested locally and on cms-dev), then the frontend PR that depends on it.
+- **PR previews** [TL DECISION, manual]: `llf-web-dev` has Render **service previews** in **manual** mode. A PR to `dev` whose title contains `[render preview]` gets its own temporary `onrender.com` URL, which Render posts on the PR. Manual mode keeps preview builds (and their cost) to the PRs that need one. A preview inherits the base service's environment (cms-dev content, basic auth, `noindex`), is billed at the base service's rate while it exists, and is deleted when the PR is merged or closed. Monorepo build filters limit which PRs build one. Previews cover the **web app only**: a PR that changes the CMS schema merges first (tested locally and on cms-dev), then the frontend PR that depends on it.
 - **The China team doesn't need AWS** for weeks, and may never need it: from their side, they push and things deploy. They review work on PR previews and on the dev environment, and they get **Render workspace seats** only when they need logs or build output (§11.4).
 - `render.yaml` (Blueprint) in the repo defines every service, so the setup is reviewable and repeatable:
 
@@ -1150,11 +1161,13 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 |---|---|---|
 | `llf-cms-<env>` | Web service (Docker), paid instance + persistent disk | Strapi. Admin IP allow-list middleware (§5.4) |
 | `llf-db-<env>` | Render Postgres (paid) | External access off |
-| `llf-kv-<env>` | Render Key Value | Tool cache, quota, and rate-limit counters. External access off |
-| `llf-web-<env>` | Web service (Node) | Static export served by `server.mjs` with basic auth (§6.2) |
-| `llf-tips-<env>` | Web service (Node) | Find My Tips HTTP adapter (§7.2) |
+| `llf-kv-<env>` | Render Key Value | Tool cache, quota, and rate-limit counters. External access off. **Not in the Blueprint yet:** the tool keeps them in memory on its single instance until the shared store adapter lands |
+| `llf-web-<env>` | Web service (Node) | Static export served by `server.mjs` with basic auth (§6.2). **The review link** (D27) |
+| `llf-tips-<env>` | **Private service** (Node) | Find My Tips HTTP adapter (§7.2). Reachable only from `llf-web-<env>` over Render's private network; `TIPS_URL` comes from the Blueprint. `TRUSTED_PROXY_HOPS=1` so rate limits key on the visitor's IP, not the web service's |
 
-- Each environment's services auto-deploy from their branch (`dev`, `staging`). Content publishes call the `web` **deploy hook** (§5.3).
+- **`render.yaml` is at the repo root** and defines `dev` today (`llf-db-dev`, `llf-cms-dev`, `llf-tips-dev`, `llf-web-dev`, and the `llf-dev-tool` env group). Staging gets the same services with `-staging` names when the `staging` branch exists. Secrets are `sync: false` (entered once in Render) or generated by Render; none are in the file.
+- **Deploys** (D27): every service has `autoDeployTrigger: off`. After **CI passes on a push to `dev`**, `deploy-dev.yml` deploys **that exact commit** to cms → tips → web through the Render API, waits for each to go live, and smoke-tests the live URLs. A red build never reaches the review link. Content publishes call the `web` **deploy hook** (§5.3).
+- **The review link** for TBWA and Ad Council is the `llf-web-dev` URL, behind basic auth. It always reflects the last green commit on `dev`. Setup: [`render-dev`](./runbooks/render-dev.md).
 - **Ad Council IT needs to accept** that test content and AI test inputs sit on ddd's Render account during the build (OPEN-23).
 
 **Phase B, Ad Council AWS** [PROPOSED with James Steele]
@@ -1189,7 +1202,9 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 ### 9.3 CI/CD and the branch model [TL DECISION for the branches; VERIFIED for `ci.yml`; PROPOSED for the other workflows]
 
 **Branches.** `dev` is the **default branch** (trunk). Work happens on short-lived feature branches that open PRs into `dev`. **Promotion is a PR**: `dev` → `staging` → `prod`.
-- All three branches are **protected** (§4.4): PR required, CI green, 1 approving review (a tech lead for `staging` and `prod`), and no force-push.
+- All three branches are **protected** (§4.4, D28): PR required, CI green, 1 approving code-owner review (a tech lead for `staging` and `prod`), resolved threads, and no force-push. `main` is locked the same way.
+- **Required checks on `dev`:** `Format, lint, typecheck, unit tests`, `Build and e2e (Playwright + axe)`, `CMS image build and smoke`, and `Jira key in PR title`.
+- **PR titles start with the Jira key**: `BD3244-123: feat(web): hero block`. Commits keep conventional prefixes (AGENTS.md).
 - `prod` can only receive merges from `staging` or a `hotfix/*` branch.
 - **Hotfixes** branch from `prod`, merge to `prod`, then **merge back** into `staging` and `dev` the same day.
 - Release tags (`vYYYY.MM.DD-n`) are created on `prod` merges, and the RELEASE_LOG is updated. The first `prod` merge is the **RC on Dec 23**: it deploys code and infra to prod while prod is still **dark** (no public DNS). The prod site release is built after the **Jan 4** content transfer (§11.5).
@@ -1197,7 +1212,9 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 | Workflow | Trigger | Steps |
 |---|---|---|
 | `ci.yml` (**built**) | PR to `dev`, `staging`, or `prod`; push to `dev`; manual | Two jobs with `AI_PROVIDER=mock`, `CMS_FIXTURES=1`, read-only permissions, **no secrets**, and actions pinned by SHA. **checks:** `pnpm install --frozen-lockfile` (pnpm cache) → `format:check` → `lint` → `typecheck` → `test` (unit, component, and contract tests). **e2e:** build web against **fixture content** → Playwright (Chromium) + axe with the API mocked by `page.route` → upload the report on failure. `cdk synth` is added once Phase B starts |
-| Render auto-deploy | push to `dev` / `staging` (Phase A) | Render builds each service from the Blueprint. CMS schema changes ship this way only |
+| `ci.yml` **cms-image** (**built**) | same as `ci.yml` | Builds the CMS Docker image (the one Render runs), starts it against a Postgres 16 service container with throwaway secrets and an **empty allow-list**, and checks `/_health` → 204, `/admin` → 403 (also with a forged `X-Forwarded-For`), `/api/pages` → 401/403 |
+| `pr-title.yml` (**built**) | PR to `dev`, `staging`, or `prod` (opened, edited, synchronized) | Fails unless the title starts with `BD3244-<n>`. The title is passed through `env`, never interpolated into the script. Promotion PRs (`dev` → `staging`, `staging` → `prod`) are exempt. No permissions |
+| `deploy-dev.yml` (**built**, Phase A) | `workflow_run`: CI completed **successfully** on a **push** to `dev`; manual | GitHub Environment `dev` (`RENDER_API_KEY` secret; `RENDER_SERVICE_ID_*_DEV` variables). `scripts/render-deploy.mjs` deploys the CI-tested commit to cms → tips → web, polls until live, smoke-tests (`/admin` 403, `/api` 401/403, web `/` 401), and writes the URLs to the run summary. Skips cleanly until the secret exists. One deploy at a time. CMS schema changes ship this way only |
 | `deploy-infra.yml` | push to `dev` / `staging` / `prod` (Phase B) | `cdk diff` → `cdk deploy` for that environment. **GitHub Environments** with required reviewers for `staging` and `prod` |
 | `deploy-cms.yml` | push touching `apps/cms` (Phase B) | build the Docker image → ECR → deploy to that environment's EB/ECS |
 | `deploy-site.yml` | `repository_dispatch: content-published`, push, manual | build from that environment's CMS → upload `releases/<build-id>/` → switch the pointer (§5.3). Concurrency group per environment |
@@ -1209,7 +1226,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 
 **Secrets and configuration**
 - **Local:** one root `.env` (git-ignored). `.env.example` lists every key **with no real values**. `scripts/ensure-cms-env.mjs` creates `apps/cms/.env` with random local-only Strapi secrets the first time `pnpm dev` or `pnpm dev:cms` runs. Keys with no value are written commented out (`# KEY=`), so Strapi falls back to its defaults instead of reading an empty string.
-- **Render:** **environment groups** per environment (`llf-dev`, `llf-staging`), with ddd's Anthropic key only in those groups. Nobody pastes keys into individual services.
+- **Render:** non-secret tool settings live in an **environment group** per environment (`llf-dev-tool`). Render groups can't hold Blueprint `sync: false` values, so each secret sits on the one service that needs it (`GEMINI_API_KEY` on tips, `ADMIN_IP_ALLOWLIST` on cms, `BASIC_AUTH` on web), entered once in the dashboard, and the Strapi secrets are generated by Render. The **Render API key** used by `deploy-dev.yml` is account-wide: it lives only in the GitHub `dev` environment (deployments limited to `dev`).
 - **Render deploy-hook URLs** (Phase A) are secrets. They're stored only in the Strapi webhook settings and the Render environment group, never in the repo or in Jira.
 - **AWS:** Secrets Manager for credentials (Strapi keys, DB, AI provider key, Strapi API tokens, origin-verify secret, webhook secret, and the **publish relay's GitHub App private key**, §5.3). SSM Parameter Store for non-secret configuration (kill switch, quota, model name).
 - **Rotation:**
@@ -1340,7 +1357,14 @@ See [`AGENTS.md`](../AGENTS.md) and the [PR template](../.github/pull_request_te
 - **Ticket flow:** Art writes and grooms **Jira** tickets with acceptance criteria and Figma links. The China team picks them up, and every PR links its ticket (the PR template enforces this). Daily async updates in Jira. A weekly sync with Art.
   - **Board:** Jira project **BD3244** ([backlog](https://dotdotdash.atlassian.net/jira/software/projects/BD3244/boards/873/backlog)), epics in §12.4. Keys look like `BD3244-123`.
   - **China team starter tickets (Oct 8–16):** onboarding from the docs ([BD3244-17](https://dotdotdash.atlassian.net/browse/BD3244-17)), local toolchain ([BD3244-20](https://dotdotdash.atlassian.net/browse/BD3244-20)), network check from China ([BD3244-19](https://dotdotdash.atlassian.net/browse/BD3244-19)), TDD WIP review ([BD3244-14](https://dotdotdash.atlassian.net/browse/BD3244-14)), and the Figma review, component inventory, and spec template ([BD3244-25](https://dotdotdash.atlassian.net/browse/BD3244-25)).
-- **Repo access** [TL DECISION]: the China team gets access **after the repo moves to Ad Council's GitHub**, and to **this repo only** (§4.4). The target is to finish the move **by Oct 16** (end of tech validation), so the China team isn't blocked for long (OPEN-11).
+- **Repo access** [TL DECISION, updated Oct 19]: the China team has **write** access to **this repo only** (`dotdotdashdev/3244_tbw_ad_council`), because the move to Ad Council's GitHub slipped (OPEN-11). `dev` and `main` are protected, so everything goes through a reviewed PR (D28). The plan below was the pre-move arrangement; it's kept for the record.
+- **Work from the scaffold** [TL DECISION, D29]: **`dev` is the only starting point.** Every branch is cut from `dev` and every PR targets `dev`. Work the team built before they had access (a separate frontend, a hosted Strapi with its own content types) is **ported into the scaffold**, piece by piece, under Jira tickets:
+  - **Components and pages** → `apps/web/templates/`, `apps/web/blocks/` (with registry entries) and `packages/ui`, using Tailwind + shadcn and the Figma tokens. Strings go to `apps/web/content/`. Each comes with its Zod schema, a story, and tests ([add-template-block-or-string](./runbooks/add-template-block-or-string.md)).
+  - **Content types** → `apps/cms/src` as code, additive only (§5.2), with matching Zod schemas in `packages/contracts`. No Content-Type Builder changes on a hosted instance.
+  - **CMS data access** → `apps/web/lib/cms` at build time, validated with Zod. Visitors never call Strapi.
+  - **Content** → seed JSON (`pnpm seed`) or the §5.5 pipeline, not a database copy.
+  - Nothing is merged from another base branch, and no second app or CMS lives alongside the scaffold.
+- **No team-hosted environments** (D29): the CMS runs **locally** (`pnpm dev:cms` + `pnpm seed`, or `CMS_FIXTURES=1` for frontend work) until cms-dev is up on Render. The Strapi instance the team ran on a third-party host (`ending-wasted-food-cms.proferotech.com`) is exported and **taken down** (OPEN-41), and its leaked token rotated (BD3244-43).
   - **Until the move, ddd owns all repo work.** Art owns scaffolding, CI, the fixture seed, and the template and block registries. James Steele owns the Render Blueprint ([BD3244-15](https://dotdotdash.atlassian.net/browse/BD3244-15)) and the DevOps spikes (P4, P5, P7, P10–P12). James Calhoun owns the runbooks ([BD3244-18](https://dotdotdash.atlassian.net/browse/BD3244-18)).
   - **The China team, in the same period:** onboarding from the docs (shared as a PDF/zip outside the repo), Figma review and a module-by-module component spec per Jira ticket, local tool installs (Node, pnpm, Docker, mirrors), and a network check from China.
   - **If the move slips past Oct 16** (R6): Art keeps building the foundation, and the China team writes component specs and static markup against Figma, ready to drop into `packages/ui`, templates, and blocks once they have access. We escalate the move through Danish the same day. ddd-org access for the China team is **not** a fallback (TL decision).
@@ -1348,8 +1372,8 @@ See [`AGENTS.md`](../AGENTS.md) and the [PR template](../.github/pull_request_te
 - **Seed data [VERIFIED]:** `pnpm seed` loads JSON into the local CMS. Until the validated project seed exists (P6, Oct 21), it loads the **synthetic fixture seed** (BD3244-24): made-up ingredients and tips, every block, and a page for every template route, validated against the `contracts` schemas. It's idempotent, and it verifies what it wrote. After P6, it loads the scraped set from §5.5. See [`scripts/seed/README.md`](../scripts/seed/README.md).
 - **Fixture mode:** with `CMS_FIXTURES=1`, the frontend builds entirely from `apps/web/fixtures/cms/*.json`, so frontend work doesn't depend on Strapi running. Without it, `CMS_URL` and `CMS_TOKEN` are required and the build fails fast if they're missing.
 - **Network from China:** mainland China can't reach the Anthropic or OpenAI APIs directly, and GitHub, npm, and Docker Hub can be slow. The team uses the **mock adapter** locally and the shared **dev environment on Render** (behind basic auth) for live tests. We'll ask about VPN and registry mirrors at the Oct 8 kickoff.
-- **Deploys and previews:** the China team doesn't touch AWS. They push, CI runs, and each PR gets a **Render preview link** they can share for review (§9.1). Render workspace seats for logs are added when needed.
-- **CMS access:** Strapi admin accounts on **cms-dev**: Super Admin for the team leads (to manage users) and Editor for the rest (§5.4). Schema changes and migrations ship as code through a deploy.
+- **Deploys and previews:** the China team doesn't touch AWS or the Render dashboard. They open a PR into `dev`; CI runs; after review and merge, `deploy-dev.yml` puts the commit on the **dev review link** (§9.1). A PR can get its own **Render preview link** by adding `[render preview]` to its title. Render workspace seats for logs are added when needed.
+- **CMS access:** Strapi admin accounts on **cms-dev**: Super Admin for the team leads (to manage users) and Editor for the rest (§5.4). The admin is IP-restricted, so each person sends the **public IP** they'll work from (OPEN-17). Schema changes and migrations ship as code through a deploy.
 - **Process docs** [kickoff, James Calhoun]: because of the language barrier and the time-zone gap, the standard processes are written down step by step in `docs/runbooks/`: branching and PRs, running the stack locally, adding a template, block, or string, schema changes and migrations, seeding, creating CMS users, and reading logs. Short, numbered, with commands that can be copied. James Calhoun owns them ([BD3244-18](https://dotdotdash.atlassian.net/browse/BD3244-18)), and Art reviews them for technical accuracy.
 - **Review loop:** this TDD goes to the China team as a work in progress on **Thu Oct 8**, and their input is folded into v1.0 by Oct 16. James Steele reviews the architecture and network diagrams (§4.1, §4.3) and helps with the Phase B network topology.
 
@@ -1454,7 +1478,7 @@ gantt
 | **Fri Oct 16** | Rendering mode: static export or SSR | 4 | Site hosting and the publish pipeline |
 | **Fri Oct 16** | GitHub org and the repo move | 11 | China team repo access, CI setup |
 | **Fri Oct 16** | Spanish / i18n at launch? | 12 | CMS schema v1 |
-| **Fri Oct 16** | IT accepts Render and ddd's Anthropic key for development | 23, 2 | Phase A environments |
+| **Fri Oct 16** | IT accepts Render for development (Anthropic: authorized, confirmed Oct 19) | 23 | Phase A environments |
 | **Fri Oct 16** | Seed content source | 30 | Seeding (§5.5) |
 | **Fri Oct 16** | Copilot coding agent (and its Jira integration) allowed for copy changes; who files them after handoff | 32 | Copy-change flow (§5.2), handoff plan |
 | **Fri Oct 16** | Figma: the TBWA copy confirmed as the only design source, and the original frozen | 33 | Design drift (R17) |
@@ -1514,7 +1538,7 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | R9 | Content not loaded in time (100+ ingredients, hundreds of tips) | M | H | Seeding pipeline (§5.5). Owner and volume due Oct 23 (OPEN-22). Bulk import from CSV |
 | R10 | **Images late** (≈ 1 month: lifestyle from iStock, categories stock first then AI, ingredients AI) | M | M | Placeholder images in the CMS. Images are content, so they can change after code freeze. Due Nov 30 (OPEN-28) |
 | R11 | **Toolkit design changes** after coalition review | M | M | Build it from existing blocks on the generic template, so changes are content, not code. Colleen is estimating the Oct 2 feedback. Figma has no mobile Toolkit frame yet (OPEN-39) |
-| R12 | **Ad Council IT doesn't accept Render or ddd's Anthropic key** for development | L | H | Ask on Oct 8, decide by Oct 16 (OPEN-23, OPEN-2). Fall back to local-only development plus AWS dev as soon as access allows |
+| R12 | **Ad Council IT doesn't accept Render** for development (Anthropic is authorized) | L | H | Ask on Oct 8, decide by Oct 16 (OPEN-23). Fall back to local-only development plus AWS dev as soon as access allows |
 | R13 | **Pro-bono budget** squeezes AWS and AI spend | M | M | Cheapest architecture that meets the NFRs (§9.5). Quota. Turn dev off after handoff (OPEN-24) |
 | R14 | Scope creep (detail pages, recipes, fridge photos, Spanish, broader analytics) | M | H | Decision log. Design is locked. Change requests for anything not in §2. Broader analytics is a separate scope (OPEN-27) |
 | R15 | Friday launch with weekend traffic | M | M | Dark deploy on prod Jan 4–7. DNS-only cutover. Weekend on-call |
@@ -1523,6 +1547,7 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | R18 | **Brand palette fails contrast** in places (Store It badge, light ink tints, text over photos, no focus state on dark sections), so built pages could fail WCAG AA if they copy Figma exactly | H | M | Token usage rules and code-side fixes in §6.3, axe in CI (§6.6), and the design fixes raised with Colleen (OPEN-37) |
 | R19 | **Tool-state designs arrive late** (partial, no match, unreadable, rate-limited, unavailable, dish photo) | M | M | Build them from existing components with Tool Copy text and review them on the Render preview. Ask Colleen early (OPEN-34). The tool API contract doesn't depend on them |
 | R20 | **Recipe sites block our fetcher** (Spike P8: 25 of 63 URLs got 403; Dotdash Meredith, including allrecipes, blocks by IP or TLS fingerprint) | H | M | Honest User-Agent, no spoofing (a browser UA scored worse). Clear fallback copy that suggests pasting or a photo. Monitor the error-code rate by input type (§9.4). Distinct error code with no auto-retry (BD3244-36). Design in OPEN-34 |
+| R21 | **Parallel work drifts from the scaffold** (a separate frontend and a team-hosted CMS built before repo access), so porting it late costs time or skips the TDD's rules | M | H | D29: `dev` is the only base, protected; port by ticket into templates/blocks/`packages/ui` and schema-as-code; PR review against the definition of done. Art checks the first ported module from each person |
 
 ---
 
@@ -1546,7 +1571,7 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | D14 | **Tailwind CSS + shadcn/ui**, WCAG 2.1 AA | TL DECISION | Fast, accessible primitives that we own in the repo. Tokens from Figma |
 | D15 | **Branches `dev` → `staging` → `prod`**, promotion by PR | TL DECISION | Each branch maps to one environment, and promotion is reviewable |
 | D16 | **CMS admin on its own domain, IP allow-list only** | TL DECISION | No built-in 2FA in Strapi Community. Removes the admin from the public internet |
-| D17 | **Development on ddd's Anthropic key**, test inputs only. Client key for production | TL DECISION | Unblocks development and the eval. Needs IT acceptance (OPEN-2) |
+| D17 | **Development on ddd's Anthropic key**, test inputs only. Client key for production | TL DECISION | Unblocks development and the eval. Anthropic is authorized (confirmed Oct 19) |
 | D18 | **Repo scaffolded on ddd GitHub, then moved to Ad Council's org.** China team gets access to that repo only, after the move. Work assigned through Jira | TL DECISION | Client owns the code. Limits access |
 | D19 | **Seeding by scrape → JSON → validated import**, not by hand | TL DECISION | Repeatable for every environment. No dependency on Dan's export |
 | D20 | **No user text stored** (no gap logging) at launch | PROPOSED (OPEN-5) | Receipts and free text can contain personal data |
@@ -1554,8 +1579,11 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | D22 | **Figma audit outcomes.** The Tip Modal, Save/Share, header, mobile menu, and footer are shared UI, not CMS blocks. `component.modal` is dropped and `component.scroll-lock` deferred; the Home animated sections live in the Home template (OPEN-36). Toolkit is built from `asset-list`, `jump-nav`, and `accordion` blocks. Library Groups gain `layout` and `order`. Tokens come straight from Figma variables, plus contrast rules (§6.3) | TL DECISION | The modal and animations are bound to one designed page, so blocks would add CMS surface without giving editors real choices. The contrast rules keep AA without redesigning the palette |
 | D23 | **Scaffold conventions** (BD3244-16). CI runs on GitHub Actions with the mock AI provider and CMS fixtures, no secrets, read-only permissions, and SHA-pinned actions. One root `.env`, with `apps/cms/.env` generated locally. Fonts are self-hosted with Fontsource instead of `next/font`. No Turborepo until build times need it | TL DECISION | CI can run on forks and PRs without secrets. Fontsource builds offline and gives the same no-Google-calls result. Fewer tools for the China team to learn |
 | D24 | **Model arena for provider-neutral model selection** (BD3244-37). Every candidate (vendor × model × settings) runs the same labeled set, prompt, and harness (`pnpm arena`, §7.9). The pick is the **cheapest cell that meets G2** (precision ≥ 0.9, recall ≥ 0.8; bar still to agree, OPEN-8) **with 100% injection resistance, and** whose forecast stays under the monthly AI cap at 25K–50K uses. Feeds the OPEN-1 recommendation | TL DECISION | Same inputs across vendors make the comparison fair. Per-cell and global budgets cap eval spend. Tying the forecast to the client's budget keeps the choice honest about cost, not only accuracy |
-| D25 | **Gemini on ddd's own key for dev and eval** (BD3244-37). The `gemini` adapter runs in the arena and on Render dev with test data only, pending acceptance, the same footing as Anthropic (OPEN-2) | TL DECISION | A cheap comparison point in the arena without waiting on a new-vendor approval. No production use without Ad Council IT approval |
+| D25 | **Gemini on ddd's own key for dev and eval** (BD3244-37). The `gemini` adapter runs in the arena and on Render dev with test data only. Google isn't an authorized vendor (OPEN-2) | TL DECISION | A cheap comparison point in the arena without waiting on a new-vendor approval. No production use without Ad Council IT approval |
 | D26 | **Relations redeclared in place** (BD3244-23, spike P1). Tip taxonomy → manyToOne, Category `ingredients`/`tips`, `Page.featured`, and the carousel, link-list, and tip-list relations → manyToMany, `shared.cta.page` → manyToOne. Done as a direct schema edit, not expand/contract | TL DECISION | Strapi 5.45 generates identical join-table DDL for old and new declarations, so no data moves and nothing can be dropped. Two-phase (§5.2) stays the rule for any change that alters tables or columns |
+| D27 | **Render dev deploys from GitHub Actions after CI** (BD3244-15). Blueprint at the repo root (`render.yaml`); Render auto-deploy is off. `deploy-dev.yml` deploys the CI-tested commit to cms → tips → web via the Render API, then smoke-tests the live URLs (admin 403, API 401/403, web basic auth). The tool is a Render **private service**. The `llf-web-dev` URL is the stable **review link** for TBWA and Ad Council | TL DECISION | A red build never reaches the link the client reviews. Deploying the exact SHA CI tested avoids Render building a newer commit. The smoke test proves the admin is still locked after every deploy. A private tool service keeps the model endpoint off the internet |
+| D28 | **Branch protection now, in ddd's org, and Jira keys in PR titles** (BD3244-15). `dev` and `main` are protected from Oct 19 (PR, code-owner review, required checks, resolved threads, no force-push); `staging` and `prod` get the same rules when created. PR titles start with `BD3244-<n>` (required check). `dev` is the default branch | TL DECISION | The China team has write access before the repo move, so the rules can't wait for it. Titles with keys keep every change traceable to a ticket in the GitHub UI and in Jira's development panel |
+| D29 | **One codebase, one place to run it.** All work starts from the `dev` scaffold; earlier work is ported into it to follow this TDD, not merged from another base. No environments outside local, ddd's Render, and Ad Council's AWS, so the team-hosted Strapi comes down | TL DECISION | A parallel app and CMS had drifted from the TDD (no Tailwind/shadcn, schema changed in a hosted admin, a token in the repo). One scaffold keeps the contracts, tests, and security rules in force, and keeps test content and credentials on accounts the client can audit |
 
 Bigger decisions get a short ADR in `docs/adr/NNNN-title.md` once they're approved.
 
@@ -1567,8 +1595,8 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 
 | ID | Question | Owner | Due |
 |---|---|---|---|
-| OPEN-1 | **Production AI provider, account, and key.** "Most likely Anthropic" (kickoff), direct or via Bedrock. OpenAI is the approved-vendor alternative (account pending). It must meet US-only data handling, no training, and spend controls (§7.7). **Progress (Oct 8):** the model arena is built (D24, BD3244-37) and the `anthropic` and `openai` adapters are ready; live runs wait on keys and the labeled set | Ad Council (Cat + AI lead) | Nov 13 |
-| OPEN-2 | Does Ad Council IT accept **ddd's Anthropic key for development**, with test inputs only? (Reworded: the mock adapter means the China team isn't blocked either way) | Ad Council IT | Oct 16 |
+| OPEN-1 | **Production AI provider, account, and key.** "Most likely Anthropic" (kickoff), direct or via Bedrock. **Anthropic is the only authorized AI vendor; OpenAI is not** (confirmed Oct 19). The eval's best value, Gemini 3.8 Flash, needs Google approved (OPEN-2); Claude Opus 5.5 meets G2 but costs about $806/month on product photos at 50K, over the cap. It must meet US-only data handling, no training, and spend controls (§7.7). **Progress (Oct 8):** the model arena is built (D24, BD3244-37) and the `anthropic` and `openai` adapters are ready; live runs wait on keys and the labeled set | Ad Council (Cat + AI lead) | Nov 13 |
+| OPEN-2 | ~~Does Ad Council IT accept ddd's Anthropic key for development?~~ **Answered (Oct 19):** Anthropic is authorized; OpenAI is not. **Still open:** will IT approve **Google (Gemini)** for production, as the primary model with Claude as the backup? | Ad Council IT | Nov 13 |
 | OPEN-3 | **Usable AWS access**: the current IAM users can't list users or pipelines. We need scoped access (SSO ReadOnly + project admin), GitHub OIDC deploy role, account structure, and how the DevOps partner change affects CI/CD (§9.1). Danish's account waits on this | Ad Council IT / James S (via Danish → Cat) | Oct 16 |
 | OPEN-4 | Rendering mode: static export (recommended) or SSR/ISR? Spike P3 found no blocker for static | ddd → Ad Council | Oct 16 |
 | OPEN-5 | Are uploaded images or typed text kept? (Recommendation: no.) This affects the privacy policy, FAQ, and FR-8 | Ad Council legal | Nov 13 |
@@ -1607,6 +1635,7 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | OPEN-38 | **Nav labels and placeholder copy.** The main nav says "The Tool / Tip Library / General Tips / About," but the Search and Toolkit frames say "Discover Tips / Use the Tool / Our Mission," and the Toolkit footer differs again. Lorem ipsum remains in the Category and Results subfooters, the Toolkit body, the About CTA, and the Search CTA | Colleen Miller + Ad Council | Oct 23 |
 | OPEN-39 | **Missing page designs:** General Tips (FR-7), the 404 page, and the mobile Toolkit. Until then, General Tips and the 404 use the generic template, and mobile Toolkit is adapted from desktop (OPEN-9, R11) | Colleen Miller | Oct 30 |
 | OPEN-40 | **Where are saved tips listed?** Save (spec `1:10947`) keeps tips on the device, with no accounts. Is there a Saved view or a header count, and what happens on another device? (§6.6) | Colleen Miller + Ad Council | Oct 30 |
+| OPEN-41 | **The team-hosted Strapi** (`ending-wasted-food-cms.proferotech.com`): who runs the host, what content and accounts it holds, and confirmation that it's exported (content + schema) and **taken down**. Its API token was committed and must be rotated (BD3244-43). Nothing from it moves to Render except through code (schema) and the seed (content) | China team (Feihu, Davis) → Art | Oct 20 |
 
 ---
 
@@ -1663,3 +1692,5 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.3.14 | 2026-10-14 | Art Longbottom (with Copilot) | **Eval v2 and recipe input** (BD3244-37). Fixed the eval labels (catalog `eval-v2`: "tomato sauce" no longer maps to `ketchup`; set `v2-mixed` adds `acceptableSlugs`). With the fixes, 7 of 13 arena cells meet G2 on images. New `v2-recipes` set (61 cases: recipe URLs, dish names, pasted meals and recipes, injection) and `url` eval cases. **Recipe-line matching** (§7.5): plant-part and prep words, trailing phrases, comma segments, and "or" alternatives. Prompt **p2** (eval candidate, not the default) infers ingredients for typed dish names and returns English names. Report: [`docs/eval/arena/recipes-2026-10.md`](eval/arena/recipes-2026-10.md). |
 | 0.3.15 | 2026-10-14 | Art Longbottom (with Copilot) | **Prompt p3, variance, and matcher fixes** (BD3244-37). Prompt **p3** (eval candidate) adds three rules to p2: US English names, a recipe's own ingredients only (no variations or "serve with"), and a dish's sauces and cheese. p2 hurt photos for some models; p3 doesn't, so p3 replaces p2 as the next prompt candidate. **Matcher** (§7.5): adjacent-word preference ("red chili pepper" → chili pepper) and "roast" as a cooking word. **Gemini thinking:** 3.8 Flash scores the same on photos with thinking off (`AI_REASONING_EFFORT=none`) at lower cost and latency and with fewer timeouts. **Variance:** 5 photo runs of the top cells vary ≤ 3 points on precision and ≤ 4 on recall. The eval run JSON now records the provider's HTTP status on errors. Report: [`docs/eval/arena/p3-2026-10.md`](eval/arena/p3-2026-10.md). |
 | 0.3.16 | 2026-10-15 | Art Longbottom (with Copilot) | **Product photos, image injection, load, and catalog carry-over** (BD3244-37, §7.9). New eval set `v3-product` (receipts, lists, fridges, image injection probes) and tools `pnpm rescore`, `pnpm soak`, `pnpm catalog-diff`. Receipts and lists score 99.6–100% precision for every model; fridges are the hardest input. Gemini 3.8 Flash and Opus 5.5 resist every image injection; 3.1 and 3.5 Flash-Lite and GPT-5 mini don't, so they fail the 100% injection bar. A 1,100-call Gemini soak saw no 429s or 5xx. **[PROPOSED]** one server-side retry on a model timeout or 503. Receipt synonyms (marinara sauce, jalapeno pepper, broccoli crowns, chard, creme fraiche) go to the CMS catalog rather than loosening the matcher. Report: [`docs/eval/arena/product-2026-10.md`](eval/arena/product-2026-10.md). |
+| 0.3.17 | 2026-10-19 | Art Longbottom (with Copilot) | **Render dev, protection, and the scaffold rule** (BD3244-15). New NFRs in §2.4 (one codebase, hosting during the build, change control, review link). **Admin allow-list built** (§5.4): `/uploads/*` open in Phase A, fails closed, right-most `X-Forwarded-For`; P4 manual check still to run. Blueprint moved to the repo root and `llf-tips` is a private service with `TRUSTED_PROXY_HOPS` for rate limits (§4.4, §9.1). `deploy-dev.yml` (CI-gated deploy + smoke), `pr-title.yml` (Jira key), and a CMS image smoke job in `ci.yml` (§9.3). §11.4: China team repo access is now, and all work ports into the `dev` scaffold. Added D27–D29, OPEN-41, and R21 |
+| 0.3.18 | 2026-10-19 | Art Longbottom (with Copilot) | **AI vendor correction.** Anthropic is the only authorized AI vendor; **OpenAI is not** (earlier drafts listed it as approved). Updated §3 constraints and A7, §7.7 vendor status, the Oct 16 milestone, R12, D17, D25, OPEN-1, and OPEN-2 (answered for Anthropic; still open for Google). Same fix in AGENTS.md, CLIENT_AUDIT, PROJECT, PROOF_DOC, and the arena reports |

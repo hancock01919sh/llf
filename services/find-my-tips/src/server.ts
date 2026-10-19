@@ -7,7 +7,7 @@ import { MemoryCacheStore, MemoryCounterStore } from './cache';
 import { createCatalogSource } from './catalog';
 import { loadConfig } from './config';
 import { createProvider } from './extract';
-import { errorResponse } from './http';
+import { clientIp, errorResponse } from './http';
 import { stdoutLogger } from './log';
 
 /**
@@ -84,7 +84,8 @@ const server = createServer(async (req, res) => {
       headers: toHeaders(req),
       ...(body ? { body } : {}),
     });
-    const response = await app.handle(request, { ip: req.socket.remoteAddress ?? 'unknown' });
+    const ip = clientIp(request, req.socket.remoteAddress ?? 'unknown', config.trustedProxyHops);
+    const response = await app.handle(request, { ip });
     await send(res, response, method);
   } catch (error) {
     const code = error instanceof BodyTooLargeError ? 'too_large' : 'server';
