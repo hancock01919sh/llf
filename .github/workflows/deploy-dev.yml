@@ -2,8 +2,12 @@
 # in render.yaml, so a red build never reaches the dev URL. Each service gets the exact commit CI
 # tested, then scripts/render-deploy.mjs smoke-tests the live URLs.
 #
-# Setup (docs/runbooks/render-dev.md): GitHub environment `dev` with secret RENDER_API_KEY and
-# variables RENDER_SERVICE_ID_CMS_DEV, RENDER_SERVICE_ID_TIPS_DEV, RENDER_SERVICE_ID_WEB_DEV.
+# Render builds from a deploy mirror in ddd's EMU org (dotdotdash-OMC), because its GitHub link
+# can't fetch this repo (TDD §9.1, D30). This job pushes the tested commit to the mirror first.
+#
+# Setup (docs/runbooks/render-dev.md): GitHub environment `dev` with secrets RENDER_API_KEY and
+# RENDER_MIRROR_DEPLOY_KEY, and variables RENDER_MIRROR_REPO, RENDER_SERVICE_ID_CMS_DEV,
+# RENDER_SERVICE_ID_TIPS_DEV, RENDER_SERVICE_ID_WEB_DEV.
 name: Deploy dev
 
 on:
@@ -36,10 +40,28 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
+      - name: Push the commit to the Render deploy mirror
+        env:
+          MIRROR_KEY: ${{ secrets.RENDER_MIRROR_DEPLOY_KEY }}
+          MIRROR_REPO: ${{ vars.RENDER_MIRROR_REPO }}
+          DEPLOY_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          if [ -z "$MIRROR_KEY" ] || [ -z "$MIRROR_REPO" ]; then
+            echo "Mirror not configured; skipping the push (docs/runbooks/render-dev.md)." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          umask 077
+          key="$RUNNER_TEMP/mirror_key"
+          printf '%s\n' "$MIRROR_KEY" > "$key"
+          curl -fsS https://api.github.com/meta | jq -r '.ssh_keys[] | "github.com " + .' > "$RUNNER_TEMP/known_hosts"
+          export GIT_SSH_COMMAND="ssh -i $key -o IdentitiesOnly=yes -o UserKnownHostsFile=$RUNNER_TEMP/known_hosts"
+          git push --force "git@github.com:${MIRROR_REPO}.git" "${DEPLOY_SHA}:refs/heads/dev"
+          rm -f "$key"
       - id: deploy
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}

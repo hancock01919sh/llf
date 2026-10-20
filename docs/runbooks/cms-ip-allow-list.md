@@ -28,7 +28,7 @@ The allow-list is the `ADMIN_IP_ALLOWLIST` environment variable on the `llf-cms-
 
 - **Format:** IPs and CIDR ranges separated by commas or spaces, e.g. `203.0.113.7, 198.51.100.0/24, 2001:db8::/48`. An invalid entry or a `/0` range stops the CMS from starting, so a typo never opens the admin.
 - **Empty list = admin blocked for everyone** (fail closed) whenever `NODE_ENV=production`, which is how Render runs it. `/api/*`, `/uploads/*` and `/_health` stay up.
-- **Client IP:** the right-most `X-Forwarded-For` entry (`ADMIN_IP_HEADER=x-forwarded-for`, `ADMIN_IP_TRUSTED_HOPS=1`). Render's proxy appends the real address there; entries to its left come from the client and are ignored.
+- **Client IP:** the second `X-Forwarded-For` entry from the right (`ADMIN_IP_HEADER=x-forwarded-for`, `ADMIN_IP_TRUSTED_HOPS=2`). Render appends the visitor's address and then Cloudflare's edge address; entries to their left come from the client and are ignored (verified on cms-dev, PROOF_DOC P4). Cloudflare rejects requests that send their own `CF-Connecting-IP`.
 - **Locally** there's no list and no enforcement, so the admin is open on `localhost`. Set `ADMIN_IP_ALLOWLIST` in `apps/cms/.env` (and `ADMIN_IP_HEADER=socket`) to try it.
 
 TODO(OPEN-17): the starting list of IPs.

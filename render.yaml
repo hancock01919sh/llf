@@ -65,8 +65,10 @@ services:
         sync: false
       - key: ADMIN_IP_HEADER
         value: x-forwarded-for
+      # Render appends two hops (visitor, then Cloudflare's edge), so the visitor is 2nd from the right
+      # (PROOF_DOC P4, verified on cms-dev Oct 19).
       - key: ADMIN_IP_TRUSTED_HOPS
-        value: '1'
+        value: '2'
       - key: APP_KEYS
         generateValue: true
       - key: API_TOKEN_SALT
@@ -92,9 +94,10 @@ services:
     startCommand: cd services/find-my-tips && node_modules/.bin/tsx src/server.ts
     envVars:
       - fromGroup: llf-dev-tool
-      # Render's proxy appends the visitor's IP to x-forwarded-for and server.mjs passes it on.
+      # Render's proxy appends the visitor's IP and then Cloudflare's edge IP to x-forwarded-for, and
+      # server.mjs passes it on unchanged, so the visitor is 2nd from the right (PROOF_DOC P4).
       - key: TRUSTED_PROXY_HOPS
-        value: '1'
+        value: '2'
       # ddd's Gemini key (dev only, TDD D25). Never commit a value.
       - key: GEMINI_API_KEY
         sync: false
