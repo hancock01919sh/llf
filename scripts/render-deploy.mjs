@@ -89,13 +89,23 @@ async function deploy(service) {
   return details.serviceDetails?.url;
 }
 
+// Render's edge can answer 502–504 for a short while after a deploy goes live, while traffic
+// moves to the new instance.
+const TRANSIENT = new Set([502, 503, 504]);
+const SMOKE_ATTEMPTS = 10;
+
+async function check(url) {
+  for (let attempt = 1; ; attempt++) {
+    const response = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(30_000) });
+    if (!TRANSIENT.has(response.status) || attempt === SMOKE_ATTEMPTS) return response;
+    await sleep(10_000);
+  }
+}
+
 async function smoke(service, url) {
   const failures = [];
   for (const [path, expected] of service.smoke) {
-    const response = await fetch(`${url}${path}`, {
-      redirect: 'manual',
-      signal: AbortSignal.timeout(30_000),
-    });
+    const response = await check(`${url}${path}`);
     const ok = expected.includes(response.status);
     console.log(
       `[${service.name}] ${path} → ${response.status} ${ok ? 'ok' : `(want ${expected})`}`,

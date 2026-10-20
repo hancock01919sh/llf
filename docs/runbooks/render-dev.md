@@ -25,7 +25,7 @@ Render's own auto-deploy is **off** in the Blueprint, so a red build never reach
 
 ### The deploy mirror (D30)
 Render's GitHub link can't fetch `dotdotdashdev/3244_tbw_ad_council` ("repository URL is invalid or unfetchable"), so the services build from **`dotdotdash-OMC/3244_tbw_ad_council`**, a private mirror in ddd's EMU org (the same setup as other OMC projects). Rules:
-- **Never push to the mirror by hand or open PRs there.** `dotdotdashdev` stays the only repo people work in (the China team can't join an EMU org). Deploy dev force-pushes the tested commit to the mirror's `dev`.
+- **Never push to the mirror by hand or open PRs there.** `dotdotdashdev` stays the only repo people work in (the China team can't join an EMU org). Deploy dev pushes the tested tree to the mirror's `dev` **without `.github/workflows`**, as a new commit whose message is `Deploy dotdotdashdev/3244_tbw_ad_council@<source sha>`, and deploys that commit. (GitHub refuses workflow-file changes from the deploy key, and Render doesn't need them.) The run summary maps the mirror commit to the source commit.
 - The push uses a **write deploy key** on the mirror. Its private half is the `RENDER_MIRROR_DEPLOY_KEY` secret in the GitHub `dev` environment; the mirror's name is the `RENDER_MIRROR_REPO` variable.
 - Retire the mirror when the repo moves to Ad Council's org (OPEN-11) or Render can fetch the canonical repo: point each service's repo back, then delete the key and the mirror.
 
