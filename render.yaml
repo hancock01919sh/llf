@@ -69,6 +69,13 @@ services:
       # (PROOF_DOC P4, verified on cms-dev Oct 19).
       - key: ADMIN_IP_TRUSTED_HOPS
         value: '2'
+      # Dev only (TDD D31): the admin is open to every IP during the build; Strapi login still
+      # applies, and the first-admin sign-up stays on ADMIN_IP_ALLOWLIST. Never set on staging/prod
+      # (the CMS refuses to start unless DEPLOY_ENV=dev).
+      - key: DEPLOY_ENV
+        value: dev
+      - key: ADMIN_IP_OPEN
+        value: 'true'
       - key: APP_KEYS
         generateValue: true
       - key: API_TOKEN_SALT

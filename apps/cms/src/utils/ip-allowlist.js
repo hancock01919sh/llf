@@ -81,19 +81,42 @@ function isOpenPath(path) {
   return OPEN_PATHS.some((pattern) => pattern.test(path));
 }
 
+// The only deployment where the admin may be opened to every IP (TDD D31). Staging and
+// production keep the allow-list.
+const OPEN_DEPLOY_ENVS = new Set(['dev']);
+
+/**
+ * Strapi's first-admin sign-up (`POST /admin/register-admin`). Until a Super Admin exists, anyone
+ * who reaches it can claim the CMS, so it stays on the allow-list even when the admin is open.
+ * Matched after decoding and anywhere in the path, so encoded or padded variants are covered too.
+ */
+function isFirstAdminPath(path) {
+  let decoded;
+  try {
+    decoded = decodeURIComponent(path);
+  } catch {
+    return true;
+  }
+  return /register-admin/i.test(decoded);
+}
+
 /**
  * Decides whether a request may pass. With enforcement off and no list (local development),
  * everything passes. With enforcement on and an empty list, every restricted path is blocked
- * (fail closed).
+ * (fail closed). With `open` (dev only, D31), everything passes except the first-admin sign-up.
  */
-function createGuard({ allowlist, header, trustedHops, enforce }) {
+function createGuard({ allowlist, header, trustedHops, enforce, open = false, deployEnv }) {
+  if (open && !OPEN_DEPLOY_ENVS.has(deployEnv)) {
+    throw new Error(`ADMIN_IP_OPEN is only allowed with DEPLOY_ENV=dev (got "${deployEnv ?? ''}")`);
+  }
   const { list, size } = parseAllowlist(allowlist);
   return function allowed({ path, headers, socketIp }) {
     if (isOpenPath(path)) return true;
     if (!enforce && size === 0) return true;
+    if (open && !isFirstAdminPath(path)) return true;
     const ip = clientIp({ headers, socketIp, header, trustedHops });
     return Boolean(ip) && list.check(ip, familyOf(ip));
   };
 }
 
-module.exports = { createGuard, parseAllowlist, clientIp, isOpenPath, normalizeIp };
+module.exports = { createGuard, parseAllowlist, clientIp, isOpenPath, isFirstAdminPath, normalizeIp };

@@ -3,7 +3,7 @@
 **Status:** Phase A middleware **built** (BD3244-15, `apps/cms/src/middlewares/admin-ip-allowlist.js`); the header-spoofing spike on Render is still to run ([`PROOF_DOC.md`](../PROOF_DOC.md)). Phase B WAF IP set: pending BD3244-6. Which IPs go on the list is OPEN-17 (due Oct 30).
 
 ## Purpose
-Let a person reach the Strapi admin from a new network, or remove someone who no longer needs it. The admin is **never public** ([AGENTS.md](../../AGENTS.md)).
+Let a person reach the Strapi admin from a new network, or remove someone who no longer needs it. The admin is **never public** on staging or production ([AGENTS.md](../../AGENTS.md)). On **dev**, during the build, it's open to every IP (`ADMIN_IP_OPEN=true`, TDD D31), and the list only guards the first-admin sign-up.
 
 ## When to use it
 - An editor, developer, or China-team member needs admin access from a new IP.
@@ -29,6 +29,7 @@ The allow-list is the `ADMIN_IP_ALLOWLIST` environment variable on the `llf-cms-
 - **Format:** IPs and CIDR ranges separated by commas or spaces, e.g. `203.0.113.7, 198.51.100.0/24, 2001:db8::/48`. An invalid entry or a `/0` range stops the CMS from starting, so a typo never opens the admin.
 - **Empty list = admin blocked for everyone** (fail closed) whenever `NODE_ENV=production`, which is how Render runs it. `/api/*`, `/uploads/*` and `/_health` stay up.
 - **Client IP:** the second `X-Forwarded-For` entry from the right (`ADMIN_IP_HEADER=x-forwarded-for`, `ADMIN_IP_TRUSTED_HOPS=2`). Render appends the visitor's address and then Cloudflare's edge address; entries to their left come from the client and are ignored (verified on cms-dev, PROOF_DOC P4). Cloudflare rejects requests that send their own `CF-Connecting-IP`.
+- **Dev is open (D31):** `ADMIN_IP_OPEN=true` with `DEPLOY_ENV=dev` lets every IP reach the admin except Strapi's first-admin sign-up (`/admin/register-admin`), which still needs a listed IP. The CMS won't start with `ADMIN_IP_OPEN` on any other `DEPLOY_ENV`. To lock dev again, delete `ADMIN_IP_OPEN` on `llf-cms-dev` and redeploy.
 - **Locally** there's no list and no enforcement, so the admin is open on `localhost`. Set `ADMIN_IP_ALLOWLIST` in `apps/cms/.env` (and `ADMIN_IP_HEADER=socket`) to try it.
 
 TODO(OPEN-17): the starting list of IPs.
@@ -50,7 +51,7 @@ The CMS domain is behind CloudFront with a WAF **IP set** ([TDD §4.3](../TDD.md
 ## Verification
 1. Ask the person to open the admin URL. They should see the login page.
 2. From a network that's **not** on the list, the admin must be blocked (Phase A: `403 Forbidden` from the middleware. Phase B: a WAF 403). Also try a forged header from that network: `curl -sI -H 'X-Forwarded-For: <an allowed IP>' https://<cms-url>/admin` must still return 403.
-   The `Deploy dev` workflow checks `/admin` returns 403 from GitHub's runners after every deploy.
+   On dev, where the admin is open (D31), only the first-admin sign-up is blocked. The `Deploy dev` workflow checks that `POST /admin/register-admin` returns 403 from GitHub's runners after every deploy.
 3. Check `/api/*` still needs a token (401 or 403 without one), and that `/_health` returns 204.
 
 ## Removing an IP

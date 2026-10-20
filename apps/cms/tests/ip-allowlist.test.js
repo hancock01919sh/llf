@@ -6,6 +6,7 @@ const { describe, it } = require('node:test');
 const {
   clientIp,
   createGuard,
+  isFirstAdminPath,
   isOpenPath,
   normalizeIp,
   parseAllowlist,
@@ -114,5 +115,50 @@ describe('createGuard', () => {
   it('enforces a list even when enforcement is off, so it can be tested locally', () => {
     const allowed = createGuard({ allowlist: '203.0.113.7', enforce: false, trustedHops: 1 });
     assert.ok(!allowed(request('/admin', '198.51.100.1')));
+  });
+
+  describe('open on dev (D31)', () => {
+    const open = { allowlist: '203.0.113.7', enforce: true, trustedHops: 1, open: true };
+
+    it('lets any IP reach the admin', () => {
+      const allowed = createGuard({ ...open, deployEnv: 'dev' });
+      assert.ok(allowed(request('/admin', '198.51.100.1')));
+      assert.ok(allowed(request('/admin/login', '198.51.100.1')));
+      assert.ok(allowed(request('/content-manager/collection-types/api::page.page', '198.51.100.1')));
+    });
+
+    it('keeps the first-admin sign-up on the allow-list', () => {
+      const allowed = createGuard({ ...open, deployEnv: 'dev' });
+      for (const path of [
+        '/admin/register-admin',
+        '/admin/register-admin/',
+        '/ADMIN/Register-Admin',
+        '//admin//register-admin',
+        '/admin/register%2Dadmin',
+        '/admin/x/../register-admin',
+      ]) {
+        assert.ok(!allowed(request(path, '198.51.100.1')), path);
+      }
+      assert.ok(allowed(request('/admin/register-admin', '203.0.113.7')));
+    });
+
+    it('blocks the first-admin sign-up for everyone when the list is empty', () => {
+      const allowed = createGuard({ ...open, allowlist: '', deployEnv: 'dev' });
+      assert.ok(!allowed(request('/admin/register-admin', '203.0.113.7')));
+      assert.ok(allowed(request('/admin', '203.0.113.7')));
+    });
+
+    it('refuses to start outside dev', () => {
+      for (const deployEnv of [undefined, '', 'staging', 'prod', 'production', 'DEV']) {
+        assert.throws(() => createGuard({ ...open, deployEnv }), /ADMIN_IP_OPEN/, String(deployEnv));
+      }
+    });
+  });
+});
+
+describe('isFirstAdminPath', () => {
+  it('treats undecodable paths as the sign-up', () => {
+    assert.ok(isFirstAdminPath('/admin/%E0%A4%A'));
+    assert.ok(!isFirstAdminPath('/admin/login'));
   });
 });

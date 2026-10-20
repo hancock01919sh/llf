@@ -17,7 +17,7 @@ A ddd admin (Art or a tech lead) for setup and secrets. Everyone else just merge
 1. A PR merges into `dev`.
 2. **CI** runs on the push.
 3. If CI passes, **Deploy dev** (`.github/workflows/deploy-dev.yml`) pushes that exact commit to the **deploy mirror**, then deploys it to `llf-cms-dev`, `llf-tips-dev` and `llf-web-dev` in that order, waits until each is live, and smoke-tests it:
-   - CMS: `/_health` → 204, `/admin` → 403 (the runner isn't allow-listed), `/api/pages` without a token → 401/403.
+   - CMS: `/_health` → 204, `/admin` → 200 (open on dev, TDD D31) or 403, `POST /admin/register-admin` → 403 (the runner isn't allow-listed), `/api/pages` without a token → 401/403.
    - Web: `/healthz` → 200, `/` → 401 (basic auth).
 4. The run summary lists each service's URL. The `dev` GitHub environment links to the web URL.
 
@@ -52,7 +52,7 @@ The services were created through the Render API from the values in `render.yaml
 3. Fill the prompted secrets:
    | Key | Service | Value |
    |---|---|---|
-   | `ADMIN_IP_ALLOWLIST` | `llf-cms-dev` | Comma-separated IPs/CIDRs of people who need the admin ([cms-ip-allow-list](./cms-ip-allow-list.md), OPEN-17). Empty keeps the admin closed |
+   | `ADMIN_IP_ALLOWLIST` | `llf-cms-dev` | Comma-separated IPs/CIDRs ([cms-ip-allow-list](./cms-ip-allow-list.md), OPEN-17). On dev it only guards the first-admin sign-up while `ADMIN_IP_OPEN=true` (`render.yaml`, D31); empty blocks the sign-up for everyone |
    | `GEMINI_API_KEY` | `llf-tips-dev` | ddd's Gemini dev key (TDD D25). Leave empty to run the tool with no live model |
    | `BASIC_AUTH` | `llf-web-dev` | `user:password` for the whole dev site |
 
@@ -69,7 +69,7 @@ The services were created through the Render API from the values in `render.yaml
 
 ## Steps: point the web build at cms-dev
 Until cms-dev has content, `llf-web-dev` builds from fixtures (`CMS_FIXTURES=1`).
-1. Seed cms-dev: create a short-lived full-access token in its admin (from an allow-listed IP), then run `CMS_URL=<cms-dev URL> CMS_SEED_TOKEN=<token> pnpm seed`. The seed only calls `/api/*`, so it works from any machine. Revoke the token afterwards ([seeding](./seeding.md)).
+1. Seed cms-dev: create a short-lived full-access token in its admin (any IP on dev while D31 applies), then run `CMS_URL=<cms-dev URL> CMS_SEED_TOKEN=<token> pnpm seed`. The seed only calls `/api/*`, so it works from any machine. Revoke the token afterwards ([seeding](./seeding.md)).
 2. Create a **read-only** API token in cms-dev.
 3. On `llf-web-dev` → Environment: delete `CMS_FIXTURES`, add `CMS_URL=<cms-dev URL>` and `CMS_TOKEN=<read-only token>`.
 4. Run **Deploy dev** by hand. The site now shows cms-dev content.
@@ -80,7 +80,7 @@ Until cms-dev has content, `llf-web-dev` builds from fixtures (`CMS_FIXTURES=1`)
 ## Verification
 - The Deploy dev run is green and its summary shows `live` for each service.
 - The web URL asks for basic auth, then shows the site with `X-Robots-Tag: noindex`.
-- `/admin` on the CMS URL returns 403 from a network that isn't on the list.
+- `POST /admin/register-admin` on the CMS URL returns 403 from a network that isn't on the list. `/admin` itself is open on dev (D31).
 
 ## Rollback
 In Render, open the service → **Events**, pick the last good deploy → **Rollback**. Then revert the bad PR on `dev` so the next deploy doesn't bring it back ([roll-back-release](./roll-back-release.md)).

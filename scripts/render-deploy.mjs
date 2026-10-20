@@ -23,10 +23,16 @@ const DONE = new Set([
   'pre_deploy_failed',
 ]);
 
-const key = process.env.RENDER_API_KEY;
+const key = process.env.RENDER_API_KEY?.trim();
 const sha = process.env.DEPLOY_SHA;
 if (!key || !sha) {
   console.error('RENDER_API_KEY and DEPLOY_SHA are required.');
+  process.exit(1);
+}
+if (/\s/.test(key)) {
+  console.error(
+    'RENDER_API_KEY contains spaces or line breaks; set the secret again with only the key.',
+  );
   process.exit(1);
 }
 
@@ -35,10 +41,12 @@ const SERVICES = [
   {
     name: 'cms',
     id: process.env.RENDER_SERVICE_ID_CMS,
-    // `/admin` must be blocked for the runner, which is never on the allow-list (TDD §5.4).
+    // The admin is open on dev (TDD D31), but the first-admin sign-up must stay blocked for the
+    // runner, which is never on the allow-list (§5.4).
     smoke: [
       ['/_health', [204]],
-      ['/admin', [403]],
+      ['/admin', [200, 403]],
+      ['/admin/register-admin', [403], 'POST'],
       ['/api/pages', [401, 403]],
     ],
   },
@@ -94,9 +102,13 @@ async function deploy(service) {
 const TRANSIENT = new Set([502, 503, 504]);
 const SMOKE_ATTEMPTS = 10;
 
-async function check(url) {
+async function check(url, method = 'GET') {
   for (let attempt = 1; ; attempt++) {
-    const response = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(30_000) });
+    const response = await fetch(url, {
+      method,
+      redirect: 'manual',
+      signal: AbortSignal.timeout(30_000),
+    });
     if (!TRANSIENT.has(response.status) || attempt === SMOKE_ATTEMPTS) return response;
     await sleep(10_000);
   }
@@ -104,8 +116,8 @@ async function check(url) {
 
 async function smoke(service, url) {
   const failures = [];
-  for (const [path, expected] of service.smoke) {
-    const response = await check(`${url}${path}`);
+  for (const [path, expected, method] of service.smoke) {
+    const response = await check(`${url}${path}`, method);
     const ok = expected.includes(response.status);
     console.log(
       `[${service.name}] ${path} → ${response.status} ${ok ? 'ok' : `(want ${expected})`}`,
