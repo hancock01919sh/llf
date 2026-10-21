@@ -14,9 +14,9 @@
     "Background_color": {
       "type": "enumeration",
       "enum": [
-        "Sand",
-        "Paper",
-        "Terra"
+        "sand",
+        "paper",
+        "terra"
       ]
     },
     "StandardCard": {
