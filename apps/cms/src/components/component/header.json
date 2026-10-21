@@ -27,8 +27,8 @@
     "Background_color": {
       "type": "enumeration",
       "enum": [
-        "Terra",
-        "Forest"
+        "terra",
+        "forest"
       ]
     },
     "Add_background_color": {
