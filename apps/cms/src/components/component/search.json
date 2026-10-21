@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_component_searches",
+  "info": {
+    "displayName": "Search"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Placeholder": {
+      "type": "string"
+    },
+    "Statement": {
+      "type": "blocks"
+    },
+    "Statement_Overlay": {
+      "type": "blocks"
+    },
+    "Hint": {
+      "type": "text"
+    },
+    "Button": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

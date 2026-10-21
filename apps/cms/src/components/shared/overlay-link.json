@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_overlay_links",
+  "info": {
+    "displayName": "OverlayLink"
+  },
+  "options": {},
+  "attributes": {
+    "Label": {
+      "type": "string"
+    },
+    "Overlay_description": {
+      "type": "blocks"
+    }
+  },
+  "config": {}
+}

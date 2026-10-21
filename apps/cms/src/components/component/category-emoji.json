@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_component_category_emojis",
+  "info": {
+    "displayName": "Category - Emoji"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Emoji": {
+      "type": "component",
+      "component": "shared.emoji-item",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

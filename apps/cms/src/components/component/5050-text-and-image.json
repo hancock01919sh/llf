@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_component_5050_text_and_images",
+  "info": {
+    "displayName": "5050 Text & Image"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  },
+  "config": {}
+}

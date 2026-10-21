@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_component_carousel_smalls",
+  "info": {
+    "displayName": "Carousel - Small"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "SmallCard": {
+      "type": "component",
+      "component": "shared.small-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

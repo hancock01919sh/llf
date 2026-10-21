@@ -1,0 +1,40 @@
+{
+  "collectionName": "components_component_category_details",
+  "info": {
+    "displayName": "Category Detail"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Image": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "SubTitle": {
+      "type": "string"
+    },
+    "Statement": {
+      "type": "blocks"
+    },
+    "Statement_Overlay": {
+      "type": "blocks"
+    },
+    "Button": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_component_logo_cards",
+  "info": {
+    "displayName": "Logo Cards"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Image": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "Paper",
+        "Forest"
+      ]
+    }
+  },
+  "config": {}
+}

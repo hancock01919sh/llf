@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_component_navigations",
+  "info": {
+    "displayName": "Navigation"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Link": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": true
+    },
+    "Searchplaceholder": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_component_accordions",
+  "info": {
+    "displayName": "Accordion"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "SubTitle": {
+      "type": "string"
+    },
+    "AccordionItem": {
+      "type": "component",
+      "component": "shared.accordion-item",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

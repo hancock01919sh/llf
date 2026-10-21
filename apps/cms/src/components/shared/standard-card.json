@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_shared_standard_cards",
+  "info": {
+    "displayName": "StandardCard"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "text"
+    },
+    "Image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  },
+  "config": {}
+}

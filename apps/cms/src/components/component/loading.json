@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_component_loadings",
+  "info": {
+    "displayName": "Loading"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Statement": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

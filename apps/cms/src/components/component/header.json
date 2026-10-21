@@ -1,0 +1,47 @@
+{
+  "collectionName": "components_component_headers",
+  "info": {
+    "displayName": "Header"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "SubTitle": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "Terra",
+        "Forest"
+      ]
+    },
+    "Add_background_color": {
+      "type": "boolean",
+      "default": false
+    },
+    "Position_of_Adding_BgColor": {
+      "type": "enumeration",
+      "enum": [
+        "up",
+        "down"
+      ]
+    }
+  },
+  "config": {}
+}

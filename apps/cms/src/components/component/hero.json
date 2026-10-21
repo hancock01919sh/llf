@@ -6,33 +6,25 @@
   },
   "options": {},
   "attributes": {
-    "description": {
-      "type": "blocks"
-    },
-    "ctas": {
-      "type": "component",
-      "component": "shared.cta",
-      "repeatable": true
-    },
     "images": {
       "type": "media",
       "multiple": true,
       "allowedTypes": [
         "images",
-        "files"
+        "files",
+        "videos"
       ]
     },
-    "eyebrow": {
-      "type": "string"
+    "Link": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": true
     },
-    "layout": {
-      "type": "enumeration",
-      "required": true,
-      "default": "Primary",
-      "enum": [
-        "Primary",
-        "Secondary"
-      ]
+    "Description": {
+      "type": "text"
+    },
+    "Title": {
+      "type": "blocks"
     }
   },
   "config": {}

@@ -1,0 +1,38 @@
+{
+  "kind": "singleType",
+  "collectionName": "globes",
+  "info": {
+    "singularName": "globe",
+    "pluralName": "globes",
+    "displayName": "Globe"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Navigation": {
+      "type": "component",
+      "component": "component.navigation",
+      "repeatable": false
+    },
+    "Footer": {
+      "type": "component",
+      "component": "component.footer",
+      "repeatable": false
+    },
+    "SEO": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false
+    },
+    "Load": {
+      "type": "component",
+      "component": "component.loading",
+      "repeatable": false
+    }
+  }
+}

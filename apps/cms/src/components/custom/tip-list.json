@@ -16,7 +16,7 @@
     },
     "tips": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "oneToMany",
       "target": "api::tip.tip"
     },
     "layout": {

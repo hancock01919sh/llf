@@ -1,0 +1,51 @@
+{
+  "collectionName": "components_component_tool_inputs",
+  "info": {
+    "displayName": "Tool Input"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "SubTitle": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "CardTitle": {
+      "type": "string"
+    },
+    "CardDescription": {
+      "type": "text"
+    },
+    "Cards": {
+      "type": "component",
+      "component": "shared.input-card",
+      "repeatable": true
+    },
+    "Placeholder": {
+      "type": "string"
+    },
+    "Copy": {
+      "type": "string"
+    },
+    "Button": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

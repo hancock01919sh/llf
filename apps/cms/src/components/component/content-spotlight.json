@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_component_content_spotlights",
+  "info": {
+    "displayName": "Content Spotlight"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "Paper",
+        "Sand"
+      ]
+    },
+    "Make_Image_left": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "config": {}
+}

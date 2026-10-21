@@ -24,7 +24,7 @@
     },
     "ingredients": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "oneToMany",
       "target": "api::ingredient.ingredient",
       "conditions": {
         "visible": {
@@ -39,7 +39,7 @@
     },
     "tips": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "oneToMany",
       "target": "api::tip.tip",
       "conditions": {
         "visible": {
