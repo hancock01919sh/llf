@@ -23,6 +23,12 @@
       "type": "component",
       "component": "shared.standard-card",
       "repeatable": true
+    },
+    "Card_Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "Bright Yellow"
+      ]
     }
   },
   "config": {}
