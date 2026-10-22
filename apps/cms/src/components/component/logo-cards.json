@@ -24,8 +24,8 @@
     "Background_color": {
       "type": "enumeration",
       "enum": [
-        "Paper",
-        "Forest"
+        "paper",
+        "forest"
       ]
     }
   },
