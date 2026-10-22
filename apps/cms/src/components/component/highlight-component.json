@@ -24,9 +24,9 @@
     "Background_color": {
       "type": "enumeration",
       "enum": [
-        "Forest Tint",
-        "Paper",
-        "Forest "
+        "forest-tint",
+        "paper",
+        "forest"
       ]
     },
     "Link": {
