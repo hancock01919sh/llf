@@ -24,8 +24,8 @@
     "Background_color": {
       "type": "enumeration",
       "enum": [
-        "Paper",
-        "Sand"
+        "paper",
+        "sand"
       ]
     },
     "Make_Image_left": {
