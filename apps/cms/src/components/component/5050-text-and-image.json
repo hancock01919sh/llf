@@ -20,6 +20,20 @@
         "videos",
         "audios"
       ]
+    },
+    "Make_Image_left": {
+      "type": "boolean"
+    },
+    "Add_Background_Color": {
+      "type": "boolean",
+      "default": false
+    },
+    "Position_of_Adding_BgColor": {
+      "type": "enumeration",
+      "enum": [
+        "Up ",
+        "Down"
+      ]
     }
   },
   "config": {}
