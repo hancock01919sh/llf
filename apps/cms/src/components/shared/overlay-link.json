@@ -10,6 +10,9 @@
     },
     "Overlay_description": {
       "type": "blocks"
+    },
+    "href": {
+      "type": "string"
     }
   },
   "config": {}
