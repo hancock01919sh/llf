@@ -7,8 +7,8 @@
 | **Delivery** | dotdotdash (ddd) |
 | **Owner / author** | Art Longbottom (tech lead) |
 | **Reviewers** | James Calhoun (tech lead), James Steele (AWS/DevOps), Adam Paikowsky (analytics), Danish Aziz (PM), China dev team (Eva Fan, Alessandro Grena, Maggie Ding) |
-| **Status** | **DRAFT v0.3.22.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
-| **Last updated** | 2026-10-20 |
+| **Status** | **DRAFT v0.3.23.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
+| **Last updated** | 2026-10-26 |
 | **Go-live** | **Friday, January 8, 2027** (go/no-go Thursday, January 7). There's **no contingency** after final QA |
 
 > **How to read this document.** Every significant statement has a label:
@@ -85,7 +85,7 @@ We're building **longlivefood.org**, a fast, accessible, SEO-friendly content si
 - **CMS:** the existing **Strapi 5** project, hardened for production with Postgres, S3 media, and the Cloud plugin removed.
   - The **admin runs on its own domain, open only to allow-listed IPs** [TL DECISION]. Staging and production always enforce this. On **dev** during the build, the allow-list is lifted, except for the first-admin sign-up (D31).
   - The public site runs on a public endpoint. Visitors never reach Strapi.
-  - **Hybrid content model** [TL DECISION, D21]: the CMS holds the collections (ingredients, tips, categories), global settings, Tool Copy, long-form rich text, and **asset slots** such as hero images. Site strings and page layouts live in code as typed files and **templates**, changed by PR. A dynamic zone of blocks is used by generic pages and below the Home slots (§6.4).
+  - **Hybrid content model** [TL DECISION, D21, updated by D32]: the CMS holds the collections (ingredients, tips, categories), global settings, Tool Copy, long-form rich text, and the **pages**. Every page is built from **blocks named after the Figma components**, in the Page `main` dynamic zone. Site strings live in code as typed files, changed by PR. Data-driven routes (Category, Search, tool results) stay in code (§6.4).
 - **Find My Tips:**
   - Recipe pages: read the JSON-LD first, and call the model only when there isn't any.
   - Images: the model extracts ingredient terms from **receipts, lists, and dish photos**. Code matches them against the catalog.
@@ -155,7 +155,7 @@ See [§12.3](#123-decision-deadlines).
 ### 2.3 Functional requirements
 | ID | Requirement | Source |
 |---|---|---|
-| FR-1 | Editors create Pages and fill their content slots. Generic pages (About, General Tips, and similar) are arranged from a library of blocks (dynamic zone). Designed pages use fixed templates (D21) | [CONFIRMED]; template/block split [TL DECISION] |
+| FR-1 | Editors create Pages and arrange them from a library of blocks (dynamic zone) named after the Figma components. Designed pages (Home, Find My Tips, Library, About, Toolkit) are seeded in the Figma order, and editors can add blocks (D32) | [CONFIRMED]; pages from blocks [TL DECISION, D32] |
 | FR-2 | The CMS manages tips, ingredients (with synonyms and a wasted score), categories, groups, and taxonomies | [CONFIRMED] |
 | FR-3 | Find My Tips accepts a recipe URL and an image. The image can be a receipt, a list, a recipe, or **a photo of a dish** (it should recognize the dish and infer its ingredients). Pasted text is [PROPOSED]. Figma shows two modes, "Paste a Link" ("Enter a recipe URL or video link") and "Upload an Image" ("Photo of your fridge or pantry"). Video links are new scope (OPEN-35), and the dish-photo flow isn't designed (OPEN-34) | [CONFIRMED] (dish recognition: kickoff; modes: Figma `1:7980`) |
 | FR-4 | Show matched ingredients with their CMS tips, sorted by `wasted` and then by tip priority | [CONFIRMED]/[PROPOSED] |
@@ -179,7 +179,7 @@ See [§12.3](#123-decision-deadlines).
 | Cost | **Pro-bono / at cost.** Choose the cheapest option that meets these requirements. Estimates are in [§9.5](#95-cost-estimate). AI spend is limited by an in-app daily quota and kill switch, with provider budget alerts as a backstop (§7.6) |
 | Maintainability | IaC for everything on AWS. Runbooks. Can be handed to the new DevOps partner. The repo lives in Ad Council's GitHub org |
 | Browser support | The last 2 versions of evergreen browsers, plus iOS Safari 16+ |
-| One codebase | **All work happens in this repo, starting from the `dev` scaffold** (§4.4, D29). Work started anywhere else is **ported into the scaffold** to match this TDD (templates, blocks, `packages/ui`, `content/`, Zod contracts, schema as code), not merged in from a separate base. No parallel apps, no second CMS |
+| One codebase | **All work happens in this repo, starting from the `dev` scaffold** (§4.4, D29). Work started anywhere else is **ported into the scaffold** to match this TDD (blocks, `packages/ui`, `content/`, Zod contracts, schema as code), not merged in from a separate base. No parallel apps, no second CMS |
 | Hosting during the build | Code, content, and CMS instances run **only** locally, on ddd's Render account (dev, staging), or in Ad Council's AWS. **No other hosting**, including team-run servers or third-party Strapi hosts, even for demos (D29) |
 | Change control | Every change reaches `dev`, `staging`, and `prod` by **PR only**: green CI, 1 approving code-owner review, resolved threads, and a **title that starts with its Jira key** (`BD3244-123: …`). No direct or force pushes (§9.3, D28) |
 | Review link | A **stable dev URL** on Render for client and team review, behind basic auth and `noindex`, updated only from commits that passed CI (§9.1, D27) |
@@ -297,7 +297,7 @@ The same code runs in both phases. Only the adapters and the environment configu
 ### 4.2 Components
 | Component | Tech | Responsibility | Status |
 |---|---|---|---|
-| `apps/web` | Next.js (App Router, latest stable at scaffold time), React 19, TypeScript, **Tailwind CSS + shadcn/ui** (Radix) | Page templates, blocks, site strings (`content/`), search, the tool UI | [TL DECISION] stack; details [PROPOSED] |
+| `apps/web` | Next.js (App Router, latest stable at scaffold time), React 19, TypeScript, **Tailwind CSS + shadcn/ui** (Radix) | Blocks, data-driven routes, site strings (`content/`), search, the tool UI | [TL DECISION] stack; details [PROPOSED] |
 | `apps/cms` | Strapi 5.45 (JS), Postgres (`pg`), S3 upload provider, Dockerfile | Content, media, editor workflow | [VERIFIED] base; changes [PROPOSED] |
 | `services/find-my-tips` | TypeScript. One handler (Web `Request` → `Response`) with **Node** and **Lambda** adapters | Extraction, matching, quotas, the publish relay | [PROPOSED] |
 | `packages/contracts` | Zod + TypeScript types | API request/response schemas, catalog snapshot schema, `ExtractionResult` | [PROPOSED] |
@@ -380,8 +380,7 @@ A single **pnpm workspace** monorepo, so the contracts and matching code are sha
 ├─ apps/
 │  ├─ web/                 # Next.js + Tailwind + shadcn/ui (static export)
 │  │  ├─ content/          # typed site strings (Zod-validated), changed by PR (D21)
-│  │  ├─ templates/        # one template per designed route, reading CMS slots
-│  │  ├─ blocks/           # dynamic-zone blocks + registry (generic Page template)
+│  │  ├─ blocks/           # dynamic-zone blocks + registry (every Page, D32)
 │  │  ├─ fixtures/cms/     # recorded CMS JSON for builds without Strapi (CMS_FIXTURES=1)
 │  │  └─ e2e/              # Playwright + axe specs (API mocked with page.route)
 │  └─ cms/                 # Strapi project, imported from AdCouncil/ending-wasted-food-strapi (+ Dockerfile)
@@ -496,8 +495,9 @@ erDiagram
   TIP }o--|| TIP_TYPE : ""
   TIP }o--|| TIP_BEHAVIOR : ""
   TIP }o--o{ TIP_MOTIVATOR : ""
-  PAGE ||--o{ BLOCK : "main (dynamic zone, generic template)"
-  PAGE ||--o| HERO_SLOT : "hero (asset slot)"
+  PAGE ||--o{ BLOCK : "main (dynamic zone, D32)"
+  GLOBAL ||--o| NAVIGATION : "navigation (shared UI)"
+  GLOBAL ||--o| FOOTER : "footer (shared UI)"
 ```
 
 **Content type changes**
@@ -516,8 +516,8 @@ erDiagram
 | Category, Group | `slug` → **uid**. Add `slug` to Group | URLs and uniqueness |
 | Group | Add `layout` enum [carousel, image-cards, emoji-cards, list, featured] and `order` int (additive) | The Library page in Figma (`1:1310`) stacks about 10 Group sections in different layouts (Ingredient Reputations, Cuisine, Easy to Miss, Weeknight Staples, Grocery Aisles, and others). Editors pick the layout and order, and code owns how each layout looks (§6.4) |
 | Tip Behavior / Motivator / Type | Add `slug`, `description`. **Seed the 7 coalition behaviors**. Seed the Tip Types the designs use: `use-it`, `store-it`, `rescue-it`, and `buy-it` (Search frame) | Filters and analytics. The type badge (`1:7919`) picks its color from the slug in code, using contrast-safe pairs (§6.3) |
-| Page | Add a `template` enum [generic, home, find-my-tips, library] and optional **slot** fields: `hero` (a single `component.hero`), `intro` (blocks), `featured` (relations), `tool` (a single `custom.tool`). Unused slots are hidden with **conditional fields**, as Category already does for `mode`. `main` (dynamic zone) is shown for the generic template and for Home, which renders it below its slots for anything editors add | D21. Designed pages keep a fixed layout in code, and editors still own the copy and images. [VERIFIED in P13, BD3244-26] |
-| **Global** (new single type) | `siteName`, `header` (nav links), `footer` (link groups, legal text including the EPA assistance-agreement line, social, "Manage Preferences" link if a CMP is needed, OPEN-18), `defaultSeo`, `defaultOgImage`, `organization` (for JSON-LD) | No global settings exist yet. The "All tips reviewed by food experts" badge in the designs is a site string (§6.4) |
+| Page | `title`, `path`, `main` (dynamic zone of blocks), `seo`. **No `template` enum or slot fields** (D32, replacing the P13 template/slot model). Blocks are named after the Figma components (`component.hero`, `component.tool-input`, `component.category-carousel-feature`, `component.highlight-component`, …). The designed pages are seeded in the Figma order | D32. The China team found the designed pages unlikely to be reused, so a template per page added code without giving editors anything. Removing `template` and the slots is a one-time breaking change, accepted because cms-dev holds only seed content (§5.2 two-phase rule applies once real content exists) |
+| **Global** (new single type, API ID `global`) | As built in BD3244-42: `title` (site name), `navigation`, `footer` (link groups, legal text including the EPA assistance-agreement line, social, "Manage Preferences" link if a CMP is needed, OPEN-18), `seo` (default SEO), `load` (loading screen). Add `defaultOgImage` and `organization` (for JSON-LD) with the SEO work. Field names in camelCase so the Zod contracts stay consistent | `navigation` and `footer` feed shared UI, never page blocks (D22, D32). The "All tips reviewed by food experts" badge in the designs is a site string (§6.4) |
 | **Tool Copy** (new single type) | Copy for every Find My Tips state: loading messages, success heading, partial-match note, no-match, unreadable, rate-limited, **unavailable** (kill switch), error, privacy notice, "unmatched count" template | FR-5. The client still has to supply the no-match and unreadable copy (OPEN-8) |
 | ~~Microcopy~~ | **Not a CMS type** (D21). Site strings (button labels, form hints, aria labels, the 404 page, empty states) live in typed files in `apps/web/content/` and ship with a deploy | Covers "Strings" from the walkthrough. Strings rarely change, and agents and developers can edit them safely by PR with types and a preview (§6.4) |
 | ~~Ingredient Gap~~ | **Not at launch.** v0.1 proposed storing unmatched terms. Free-text terms can contain personal data, so we store **no user text** until legal decides (OPEN-5, §7.8) | Privacy |
@@ -660,20 +660,20 @@ We self-host the free **Community** edition. Paid features would need a license 
 
 | Figma frame / source | Route [PROPOSED] | Data source | Notes |
 |---|---|---|---|
-| Homepage (`1:1286` / `1:4499`) | `/` | Page (`path: /`, `template: home`) | Home template: hero slot (muted looping video with a pause control, §6.6), Tip of the Week, the animated sections (OPEN-36), category carousels, and the Highlight CTA |
-| Tool Landing (`1:1402` / `1:4571`) | `/find-my-tips/` | Page (`template: find-my-tips`) + `tool` slot | Two modes: "Paste a Link" and "Upload an Image" (FR-3). The dish-photo flow isn't designed (OPEN-34), and video links are OPEN-35 |
+| Homepage (`1:1286` / `1:4499`) | `/` | Page (`path: /`): blocks | Hero block (muted looping video with a pause control, §6.6), Tip of the Week, the animated sections (OPEN-36), category carousels, and the Highlight CTA |
+| Tool Landing (`1:1402` / `1:4571`) | `/find-my-tips/` | Page (`path: /find-my-tips/`): blocks, including `component.tool-input` | Two modes: "Paste a Link" and "Upload an Image" (FR-3). The dish-photo flow isn't designed (OPEN-34), and video links are OPEN-35 |
 | Loading Screen (`1:1791` / `1:4708`) | client state on `/find-my-tips/` | Tool Copy | Shows progress messages. No route change |
 | Output List Page (`1:1564` / `1:4418`) | `/find-my-tips/results/?i=broccoli,chorizo` | Per-ingredient JSON in the current release | **noindex**. Shareable because the URL holds only matched slugs. `?i=` is **capped at 30 slugs** and unknown slugs are dropped |
-| Library Landing Page (`1:1310` / `1:4766`) | `/tips/` | Page (`template: library`) + Groups/Categories | About 10 Group sections, each rendered by its `layout` in `order` (§5.2, §6.4) |
+| Library Landing Page (`1:1310` / `1:4766`) | `/tips/` | Page (`path: /tips/`): blocks that reference Groups/Categories | About 10 Group sections, each rendered by its `layout` in `order` (§5.2, §6.4) |
 | Category List-Alt (`1:1526` / `1:4235`) | `/tips/[category]/` | Category (+ `seo`) | Shows tips by `mode` (FR-7). Tips open in the Tip Modal (§6.6). Mobile adds "Share this list" (`1:4300`) |
-| General Tips | `/general-tips/` (path set in the CMS) | Page (generic template): existing blocks | **Back in the nav** per the weekly status (FR-11) [CONFIRMED]. **No Figma frame** (OPEN-39) |
+| General Tips | `/general-tips/` (path set in the CMS) | Page: existing blocks | **Back in the nav** per the weekly status (FR-11) [CONFIRMED]. **No Figma frame** (OPEN-39) |
 | Search (`1:1609`, `1:1702` / `1:4327`), plus the header popover (`1:7183`) | `/search/#q=` | Client-side index (§6.5) | Every result state shown in the frames. The term is in the URL **fragment**, so it never reaches CloudFront, WAF, or any server log, and it's not in analytics `page_location` (§8). It still works with sharing and the back button |
-| About (`1:1466` / `1:4648`) | `/about/` | Page (generic template): teaser, accordion, and CTA blocks, plus an optional logo grid | Finish the Fridge FAQ (FR-10). Its fixed section order in Figma is reproduced with blocks |
-| Toolkit (`1:1801`, mislabeled `Search_All`) | TBD (e.g. `/toolkit/`) | Page (generic template): `jump-nav`, `asset-list`, and `accordion` blocks | Desktop design delivered Sep 30. **No mobile frame**, so ddd adapts it for mobile (OPEN-39), and it needs coalition approval (FR-12) |
+| About (`1:1466` / `1:4648`) | `/about/` | Page: blocks (accordion, logo cards, 50/50 text and image, …) | Finish the Fridge FAQ (FR-10). Its fixed section order in Figma is reproduced with blocks |
+| Toolkit (`1:1801`, mislabeled `Search_All`) | TBD (e.g. `/toolkit/`) | Page: `jump-nav`, `asset-list`, and `accordion` blocks | Desktop design delivered Sep 30. **No mobile frame**, so ddd adapts it for mobile (OPEN-39), and it needs coalition approval (FR-12) |
 | 404 | `/404.html` | Site strings (`content/`) | Custom, branded, and noindexed. Served for unknown paths on Render and AWS. **No Figma frame** (OPEN-39) |
 | *Not in design* | `/tips/[category]/[tip]/`, `/ingredients/[slug]/` | — | Possible SEO pages after launch (OPEN-15) |
 
-Any other Page entries in Strapi are rendered at their `path` by a catch-all route (`/[...path]`) with the **generic template** (blocks in the `main` dynamic zone, §6.4). Category and Search routes use fixed templates and have no Page entry.
+Every Page entry in Strapi, including Home, Find My Tips, and Library, is rendered at its `path` by one page renderer (blocks in the `main` dynamic zone, §6.4). Category, Search, the tool results, and the 404 are data-driven routes in code and have no Page entry.
 
 **Overlays and states that aren't routes:** the mobile menu (`1:4721`, a Radix Sheet that returns to the current route on close), the Tip Modal (`1:10735`, §6.6), Save/Share (`1:10947`, §6.6), and the tool's loading and error states (§7.10).
 
@@ -757,40 +757,28 @@ During the build:
 - **Variants** use `class-variance-authority`. Class merging uses `tailwind-merge` (`cn()`), the way shadcn does.
 - **Storybook** (optional, but recommended for the China team): every `packages/ui` component, template, and block has a story with the a11y addon. It's the reference the China team builds against.
 
-### 6.4 Templates, blocks, and site strings
-Under the hybrid content model (D21) [TL DECISION; templates and slots VERIFIED in P13 (BD3244-26); agent flow pending], each Figma **module** is built in one of these ways:
+### 6.4 Blocks, routes, and site strings
+Under the content model (D21, updated by **D32** on Oct 26) [TL DECISION], each Figma **module** is built in one of these ways:
 
 | Kind | Where it lives | Who changes it | Example |
 |---|---|---|---|
-| **Template** | `apps/web/templates/`. Fixed layout and section order for a designed route | Developer or coding agent, by PR | Home, Find My Tips, Library, Category, Search |
-| **Asset slot / content field** | A field on the CMS entry that a template reads (`hero`, `intro`, `featured`, `tool`, `seo`) | Editor, in the CMS | The home hero image and eyebrow |
-| **Block** | A Strapi component in the Page `main` dynamic zone, rendered by the block registry. Generic template, and below the slots on Home | Editors arrange them. Developers add new block types | Accordion, teaser, asset list, jump nav, or logo grid on About, General Tips, or Toolkit |
+| **Block** | A Strapi component in the Page `main` dynamic zone, named after the Figma component, rendered by the block registry. **Every Page** is built from blocks | Editors arrange them. Developers add new block types | Hero, tool input, category carousel, highlight, accordion, logo cards, asset list |
+| **Data-driven route** | `apps/web/app/`. Fixed layout for pages generated from collections | Developer or coding agent, by PR | Category (`/tips/[category]/`), Search, tool results, 404 |
+| **Shared UI** | `apps/web/components/`, reading Global, the collections, and site strings | Developer, by PR | Navigation (site header), mobile menu, footer, Tip Modal, Save/Share (D22) |
 | **Site string** | `apps/web/content/*.ts`, typed and Zod-validated | Developer or coding agent, by PR (the §5.2 copy-change flow) | Button labels, aria labels, form hints, the 404 page |
 
 The collections (ingredients, tips, categories, groups), Global, and Tool Copy stay in the CMS as described in §5.2.
 
 ```ts
-// apps/web/templates/registry.ts
-export const templates = {
-  generic:        GenericTemplate,     // renders page.main through <DynamicZone>
-  home:           HomeTemplate,
-  'find-my-tips': FindMyTipsTemplate,
-  library:        LibraryTemplate,
-} satisfies TemplateRegistry;
-
-// apps/web/blocks/registry.ts
+// apps/web/blocks/registry.ts (keys match the Strapi components, BD3244-42)
 export const blocks = {
-  'component.hero':      { Component: Hero,      schema: HeroSchema },
-  'component.teaser':    { Component: Teaser,    schema: TeaserSchema },
-  'component.link-list': { Component: LinkList,  schema: LinkListSchema },
-  'component.carousel':  { Component: CategoryCarousel, schema: CarouselSchema },
-  'custom.search':       { Component: SearchBox, schema: SearchSchema },
-  'custom.tool':         { Component: FindMyTips, schema: ToolSchema },
-  'custom.tip-list':     { Component: TipList,   schema: TipListSchema },
-  'component.accordion': { Component: Accordion, schema: AccordionSchema },
-  'component.asset-list':{ Component: AssetList, schema: AssetListSchema },  // Toolkit downloads
-  'component.jump-nav':  { Component: JumpNav,   schema: JumpNavSchema },
-  // + 'component.logo-grid' if editors need it (§5.2). No modal or scroll-lock block (D22)
+  'component.hero':                      entry({ schema: HeroSchema, Component: Hero }),
+  'component.header':                    entry({ schema: HeaderSchema, Component: PageHeader }),  // page title block, not the site header
+  'component.tool-input':                entry({ schema: ToolInputSchema, Component: ToolInput }),
+  'component.category-carousel-feature': entry({ schema: CategoryCarouselSchema, Component: CategoryCarousel }),
+  'component.highlight-component':       entry({ schema: HighlightSchema, Component: Highlight }),
+  'component.accordion':                 entry({ schema: AccordionSchema, Component: Accordion }),
+  // … one entry per Figma component in the Page dynamic zone
 } satisfies BlockRegistry;
 
 // apps/web/content/strings.ts (placeholder text; the real copy comes from Figma)
@@ -800,18 +788,18 @@ export const strings = defineStrings({
   notFound: { heading: 'Page not found', cta: 'Back to home' },
 }); // Zod-validated at build time
 ```
-- The Page's `template` field picks the template. Category and Search routes have fixed templates (§6.1).
-- **The Library template** renders each Group as a section, using the Group's `layout` and `order` (§5.2). A new Group shows up without a code change, and a new *kind* of layout is a PR.
-- **Shell UI, not blocks:** the header (with the search popover), the mobile menu, the footer, the Tip Modal, and Save/Share are shared UI in `apps/web/components/`. They read Global, the collections, and site strings (D22).
-- `<DynamicZone blocks={page.main} />` loops through the blocks. Templates and the dynamic zone both wrap each module in `<ModuleBoundary>`, which adds the `data-module-type`, `data-module-index`, and `data-module-id` attributes (§8) and an error boundary. The Zod schemas run at build time.
+- **One page renderer:** every Page renders `<DynamicZone blocks={page.main} />`. Blocks that need collection data (category carousels, tip lists, the tool input) reference it by relation and resolve it at build time.
+- **Designed pages keep the Figma order through the seed:** `scripts/seed` creates Home, Find My Tips, Library, About, and Toolkit with their blocks in the Figma order. Editors can add or reorder blocks; a visual review on dev catches layouts that drift from the design.
+- **Shell UI, not blocks:** the navigation (site header, with the search popover), the mobile menu, the footer, the Tip Modal, and Save/Share are shared UI. They read Global, the collections, and site strings (D22). `navigation` and `footer` live only in Global, never in the dynamic zone.
+- Every block is wrapped in `<ModuleBoundary>`, which adds the `data-module-type`, `data-module-index`, and `data-module-id` attributes (§8) and an error boundary. The Zod schemas run at build time.
 - **Unknown `__component`:** the build fails in CI. In development, the block is skipped with a console warning.
 - **Unknown or missing string key:** a type error, so CI fails. Components never inline user-facing strings. They read them from `content/`.
 - **Checklists** (also in AGENTS.md):
   - **To add a block:** a Strapi component, a Zod schema, a React component, a story, and a registry entry.
-  - **To add a template:** the template, its slot fields on Page (with conditional visibility), a Zod schema for the slots, a story, and a registry entry.
   - **To add or change a string:** edit `content/` and use the key. No CMS change.
-- **Rich text:** Strapi `blocks` are rendered with `@strapi/blocks-react-renderer` and our own element overrides for headings, links, and lists.
-- **Why hybrid:** a full page builder makes every layout an editor decision and every string a database row, which gives an agent or a new maintainer more to reason about. Templates in code are easy to read, review, and hand off. The CMS keeps what the client really edits: content, images, and long-form copy. We gauge it with the China team (P13), and we move a string into the CMS if the client edits it often (R16).
+- **Rich text:** Strapi `blocks` are rendered with `@strapi/blocks-react-renderer` and our own element overrides for headings, links, and lists. A rich-text **title** (for example the hero `Title`, used for highlighted words) renders inside one heading element with inline marks only.
+- **Moving off templates:** the scaffold's `apps/web/templates/` (P13) is retired as the Home, Find My Tips, and Library pages move to blocks in the FE tickets. Until then the template code stays, so `dev` keeps building.
+- **Why pages from blocks (D32):** the China team built the designed pages and found that apart from the Toolkit they're unlikely to be reused, so a code template per page added work without giving editors anything. One renderer and design-named blocks keep the mapping from Figma to code direct. Strings stay in code (D21), and we move a string into the CMS if the client edits it often (R16).
 
 ### 6.5 Site search [PROPOSED]
 - With fewer than 1,000 ingredients and tips, a **client-side index** is enough and needs no new vendor. The build creates `search-index.json` (around 50–150 KB gzipped, estimated), loaded only when someone focuses the search box.
@@ -825,7 +813,7 @@ export const strings = defineStrings({
 
 > **shadcn/Radix helps but doesn't make us compliant.** Radix gives correct keyboard and ARIA behavior for dialogs, accordions, menus, and tabs. **Contrast, focus visibility, heading order, alt text, motion, and content are still on us**, and the shadcn defaults (for example, a muted foreground color or a thin focus ring) need checking against the brand palette.
 
-- **Headings:** `shared.title.header` sets the element. A lint rule and a Playwright check verify there's one `h1` per page (the Hero renders the Page title as `h1`).
+- **Headings:** `shared.title.header` sets the element. A lint rule and a Playwright check verify there's one `h1` per page (the Hero renders the Page title as `h1`; a rich-text title keeps inline marks only, D32).
 - **Tool:**
   - Each input has a visible label (copy from the CMS).
   - File input: a keyboard-operable `<label>`/`<input type=file>`. Drag-and-drop is an extra, not the only way.
@@ -1051,6 +1039,8 @@ export async function extractIngredients(input, ctx): Promise<ExtractionResult> 
 
 **Requirements for the production provider:** US-only processing and storage of request data (for example, a US data-residency project or a US-region Bedrock model, not a global or cross-region endpoint), no training on our data, the shortest retention available (zero data retention if possible), and a project-level spend limit. Whichever provider we pick must **show these in its contract or settings**. We record the evidence in [`CLIENT_AUDIT.md`](./CLIENT_AUDIT.md).
 
+**One model, no fallback** [CONFIRMED Oct 26]: production runs a single provider and model. There is no backup model or automatic failover to a second provider. If the provider fails, the kill switch drops the tool to `jsonld-only` or `off` (§7.6), and switching models is an env change (`AI_PROVIDER`, `AI_MODEL`) after a passing eval run.
+
 **Choosing the model:** run the **eval suite** (§7.9) on the candidate models and pick **the cheapest one that meets the G2 target**. Dev keys are used for the eval until the client key exists. Decision due **Nov 13** (OPEN-1). The **arena** (`pnpm arena`, §7.9, D24) runs the candidates side by side and adds a **$/month forecast** at 25K and 50K uses against the client's **~$500/month cap**. If we add a guardrail pre-call, each use costs two calls (`callsPerUse: 2` in the matrix). The model only **classifies**: it returns ingredient names, never user-facing text (D21).
 
 ### 7.8 Catalog gaps
@@ -1191,7 +1181,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 | `Site` | S3 site bucket (OAC, private) with immutable `releases/<build-id>/` prefixes and a lifecycle rule (§5.3) |
 | `Cms` | **D3:** EB Docker (load-balanced, 1 instance) **or** ECS Fargate + ALB. Strapi in **public subnets with a public IP for outbound only** (security group: inbound from the ALB only). RDS Postgres in private subnets. S3 media bucket. Secrets Manager. Backup plan. **No NAT gateway** (§4.3 explains why, and the VPC-endpoint alternative if IT requires private subnets) |
 | `FindMyTips` | API Gateway HTTP API (**default `execute-api` endpoint disabled**; regional custom domain as the CloudFront origin) with a **Lambda authorizer** for `x-origin-verify` (§7.6). Lambdas `extract` and `status`. `publish-relay` Lambda with its **own Function URL** (§5.3) and the GitHub App key in Secrets Manager. DynamoDB table (cache + quota, TTL). SSM parameters (kill switch, quota, model) |
-| `Observability` | CloudWatch dashboards and alarms, SNS → email/Slack, AWS Budgets |
+| `Observability` | CloudWatch dashboards, alarms, and log groups (30-day retention, KMS-encrypted), SNS → email/Slack, AWS Budgets, and an account-level **CloudTrail** trail if Ad Council doesn't already run one |
 
 - **Database access:** no public endpoint and no bastion with SSH. Admins use **SSM Session Manager** port forwarding through the app's subnet (or ECS Exec) for the rare times they need `psql`.
 - **The cms ALB** accepts traffic only from the **CloudFront managed prefix list** and checks a secret header. Its DNS name isn't published.
@@ -1250,6 +1240,8 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 
 Logs are structured JSON with a `requestId`. **No request bodies, user URLs, images, or terms** (§7.6). Retention is 30 days.
 
+**Ownership** [PROPOSED]: Ad Council owns the AWS account. ddd delivers the logging, dashboards, and alarms above as IaC (`Observability` stack) and hands them to Ad Council's DevOps partner with the runbooks. Who receives alerts and who is on call after hypercare is OPEN-42.
+
 ### 9.5 Cost estimate
 
 **[PROPOSED]** Order of magnitude, to be confirmed in tech validation. Pro-bono / at-cost budget [CONFIRMED]. Prices are list prices to check at setup. **AI is the variable cost**, and it's controlled by the quota (§7.6).
@@ -1304,6 +1296,8 @@ Under the Tech Process, Launch includes an **O&M manual, training, and a handoff
 | CMS compromise | Admin reachable **only from allow-listed IPs** (Strapi middleware on Render, WAF IP set on AWS) [TL DECISION]. Exception: cms-dev during the build, which holds no user data (D31). No permissions on the Public role. Least-privilege roles. Strong unique passwords in a password manager. **Strapi has no built-in 2FA, and SSO is a paid feature** (§5.6), so the IP allow-list is the main compensating control. Monthly Strapi patch upgrades |
 | Admin IP spoofing (Phase A) | The middleware trusts only the client-IP header that Render's proxy sets, and the spike proves it can't be spoofed by the client. If it can, we fall back to an extra basic-auth layer on admin paths |
 | Supply chain | `pnpm audit` in CI, Dependabot, locked versions, **no new runtime SaaS**, shadcn components copied into the repo (no hosted component library) |
+| Eavesdropping or downgrade (encryption in transit) | **HTTPS only, TLS 1.2 minimum** [TL DECISION]. CloudFront viewer policy `TLSv1.2_2021`, so TLS 1.0/1.1 and legacy ciphers are off. HTTP redirects to HTTPS, plus HSTS. The ALB uses a TLS 1.2+ policy, and the CMS → RDS connection requires TLS (`rds.force_ssl`). Render dev serves TLS 1.2/1.3 only [VERIFIED Oct 26: TLS 1.0/1.1 handshakes refused] |
+| Data exposure at rest | **AES-256 encryption at rest** [TL DECISION] through AWS KMS: RDS (including snapshots and automated backups), S3 (media and backups), DynamoDB, and CloudWatch Logs. The nightly `strapi export` is encrypted too. No user text or images are stored (D20) |
 | Secrets leakage | Render env groups, then Secrets Manager and OIDC. GitHub secret scanning with push protection. `.env*` git-ignored. **No secrets in Jira, Slack, or chat** |
 | XSS through CMS content | Blocks are rendered as React elements (no `dangerouslySetInnerHTML`). URLs are validated (`https:`, `/`, `mailto:` only). CSP |
 | Repo access | Until the move to Ad Council's GitHub org, the repo is **private on ddd's org** with ddd-only access. After the move, the China team gets **access to this one repo only** (OPEN-11) |
@@ -1361,13 +1355,13 @@ See [`AGENTS.md`](../AGENTS.md) and the [PR template](../.github/pull_request_te
   - **China team starter tickets (Oct 8–16):** onboarding from the docs ([BD3244-17](https://dotdotdash.atlassian.net/browse/BD3244-17)), local toolchain ([BD3244-20](https://dotdotdash.atlassian.net/browse/BD3244-20)), network check from China ([BD3244-19](https://dotdotdash.atlassian.net/browse/BD3244-19)), TDD WIP review ([BD3244-14](https://dotdotdash.atlassian.net/browse/BD3244-14)), and the Figma review, component inventory, and spec template ([BD3244-25](https://dotdotdash.atlassian.net/browse/BD3244-25)).
 - **Repo access** [TL DECISION, updated Oct 19]: the China team has **write** access to **this repo only** (`dotdotdashdev/3244_tbw_ad_council`), because the move to Ad Council's GitHub slipped (OPEN-11). `dev` and `main` are protected, so everything goes through a reviewed PR (D28). The plan below was the pre-move arrangement; it's kept for the record.
 - **Work from the scaffold** [TL DECISION, D29]: **`dev` is the only starting point.** Every branch is cut from `dev` and every PR targets `dev`. Work the team built before they had access (a separate frontend, a hosted Strapi with its own content types) is **ported into the scaffold**, piece by piece, under Jira tickets:
-  - **Components and pages** → `apps/web/templates/`, `apps/web/blocks/` (with registry entries) and `packages/ui`, using Tailwind + shadcn and the Figma tokens. Strings go to `apps/web/content/`. Each comes with its Zod schema, a story, and tests ([add-template-block-or-string](./runbooks/add-template-block-or-string.md)).
+  - **Components and pages** → `apps/web/blocks/` (with registry entries) and `packages/ui`, using Tailwind + shadcn and the Figma tokens. Strings go to `apps/web/content/`. Each comes with its Zod schema, a story, and tests ([add-template-block-or-string](./runbooks/add-template-block-or-string.md)).
   - **Content types** → `apps/cms/src` as code, additive only (§5.2), with matching Zod schemas in `packages/contracts`. No Content-Type Builder changes on a hosted instance.
   - **CMS data access** → `apps/web/lib/cms` at build time, validated with Zod. Visitors never call Strapi.
   - **Content** → seed JSON (`pnpm seed`) or the §5.5 pipeline, not a database copy.
   - Nothing is merged from another base branch, and no second app or CMS lives alongside the scaffold.
 - **No team-hosted environments** (D29): the CMS runs **locally** (`pnpm dev:cms` + `pnpm seed`, or `CMS_FIXTURES=1` for frontend work) until cms-dev is up on Render. The Strapi instance the team ran on a third-party host (`ending-wasted-food-cms.proferotech.com`) is exported and **taken down** (OPEN-41), and its leaked token rotated (BD3244-43).
-  - **Until the move, ddd owns all repo work.** Art owns scaffolding, CI, the fixture seed, and the template and block registries. James Steele owns the Render Blueprint ([BD3244-15](https://dotdotdash.atlassian.net/browse/BD3244-15)) and the DevOps spikes (P4, P5, P7, P10–P12). James Calhoun owns the runbooks ([BD3244-18](https://dotdotdash.atlassian.net/browse/BD3244-18)).
+  - **Until the move, ddd owns all repo work.** Art owns scaffolding, CI, the fixture seed, and the block registry. James Steele owns the Render Blueprint ([BD3244-15](https://dotdotdash.atlassian.net/browse/BD3244-15)) and the DevOps spikes (P4, P5, P7, P10–P12). James Calhoun owns the runbooks ([BD3244-18](https://dotdotdash.atlassian.net/browse/BD3244-18)).
   - **The China team, in the same period:** onboarding from the docs (shared as a PDF/zip outside the repo), Figma review and a module-by-module component spec per Jira ticket, local tool installs (Node, pnpm, Docker, mirrors), and a network check from China.
   - **If the move slips past Oct 16** (R6): Art keeps building the foundation, and the China team writes component specs and static markup against Figma, ready to drop into `packages/ui`, templates, and blocks once they have access. We escalate the move through Danish the same day. ddd-org access for the China team is **not** a fallback (TL decision).
 - **Local stack:** `pnpm dev` starts the web app, the CMS against **Postgres in Docker Compose** (the same engine as every environment), and the tool handler with `AI_PROVIDER=mock`. **No Render, AWS, or AI credentials are needed** for about 95% of the work. **[VERIFIED]** `pnpm dev` runs `db:up` → `ensure-cms-env` → web (port 3000) + tool (8787, `TOOL_PORT`) + Strapi (1337). `pnpm dev:fe` runs only web + tool, and `pnpm dev:cms` runs only Postgres + Strapi. See the [README Quickstart](../README.md).
@@ -1441,7 +1435,7 @@ gantt
 | Env setup | Oct 8–15 | Local stack (Docker Compose Postgres, seed, mock tool). **Render dev** live from `dev`. CI green. Branch protection |
 | Tech validation | Oct 8–16 | Oct 16 spikes in [`PROOF_DOC.md`](./PROOF_DOC.md) closed (P1–P5, P8, P9, P13). Figma follow-ups: rename the copy and freeze the original (OPEN-33), contrast fixes (OPEN-37), and the missing designs requested from Colleen (OPEN-34, 36, 38, 39). Eval set v0 (80–120 items). **Oct 16 decisions** (§12.3). **TDD v1.0**. Art owns repo work until the move; the China team does onboarding, Figma specs, and Jira (§11.4) |
 | BE CMS structure | Oct 8–21 | Schema v1 (§5.2) on cms-dev. Roles. Seed pipeline and validated project seed (P6). `strapi transfer` proven (P7). Publish hook (§5.3) |
-| FE | Oct 8–Nov 18 | Skeleton of every route, template, and block by Alpha (~Nov 11), then **feature-complete Nov 18**: everything in §6, with a11y and SEO. Toolkit desktop and mobile. Search |
+| FE | Oct 8–Nov 18 | Skeleton of every route and block by Alpha (~Nov 11), then **feature-complete Nov 18**: everything in §6, with a11y and SEO. Toolkit desktop and mobile. Search |
 | BE API | Oct 22–Nov 11 | Find My Tips end to end (URL, image, text) with quota, kill switch, and the status endpoint (§7). Eval round 1 → model recommendation (Nov 13) |
 | Tracking | Nov 19–23 | `dataLayer` and GTM per §8, checked in staging. *Thanksgiving is Nov 26–27* |
 | Internal QA | Nov 19–Dec 7 | QA vendor functional and visual passes. P1/P2 at zero. **Staging moved to AWS** by Nov 25, and the last two weeks of QA run there |
@@ -1488,7 +1482,7 @@ gantt
 | Fri Oct 23 | Recipes and fridge photos in launch scope? | 6, 7 | Tool scope, eval set |
 | Fri Oct 23 | Video links in the tool? | 35 | Tool scope, eval set |
 | Fri Oct 23 | Designs for the missing tool states and the dish-photo flow | 34 | Tool UI build |
-| Fri Oct 23 | Animated Home sections: scroll-driven or timed? Final nav labels | 36, 38 | Home template, header |
+| Fri Oct 23 | Animated Home sections: scroll-driven or timed? Final nav labels | 36, 38 | Home blocks, navigation |
 | Fri Oct 23 | Dan's content export (or confirm we don't wait for it) | 13 | Seeding |
 | Fri Oct 23 | Who loads content, how much, and by when | 22 | Content plan, staging content |
 | Fri Oct 30 | QA vendor and their access to staging | 25 | Internal QA (Nov 19) |
@@ -1512,7 +1506,7 @@ Jira project **BD3244** ([board](https://dotdotdash.atlassian.net/jira/software/
 | **SETUP** | [BD3244-1](https://dotdotdash.atlassian.net/browse/BD3244-1) | Monorepo, CI, branch model, Render Blueprint and PR previews, GitHub move, onboarding docs and runbooks, copy-change issue form | Art (Render Blueprint: **James Steele**; runbooks: **James Calhoun**) |
 | **CMS** | [BD3244-11](https://dotdotdash.atlassian.net/browse/BD3244-11) | Strapi import, schema v1, roles, admin IP middleware, publish hook, editor guide | Art until the repo move, then China team + Art |
 | **SEED** | [BD3244-3](https://dotdotdash.atlassian.net/browse/BD3244-3) | Synthetic fixture seed, then scrape → JSON → validated import, `strapi transfer` runbook | Art (fixture seed), then the China team |
-| **FE-PLATFORM** | [BD3244-5](https://dotdotdash.atlassian.net/browse/BD3244-5) | Next.js shell, Tailwind tokens, `packages/ui` (shadcn), template and block registries, site strings (`content/`), fixture mode, SEO, a11y harness, perf budgets | Art |
+| **FE-PLATFORM** | [BD3244-5](https://dotdotdash.atlassian.net/browse/BD3244-5) | Next.js shell, Tailwind tokens, `packages/ui` (shadcn), block registry, site strings (`content/`), fixture mode, SEO, a11y harness, perf budgets | Art |
 | **FE-MODULES** | [BD3244-8](https://dotdotdash.atlassian.net/browse/BD3244-8) | One story per module and route (§6.1, §6.4), Toolkit desktop and mobile | China team (component specs from Figma before the move; code after) |
 | **TOOL** | [BD3244-10](https://dotdotdash.atlassian.net/browse/BD3244-10) | Handler, Node and Lambda adapters, `safeFetch`, JSON-LD parser, matching, provider adapters, quota and kill switch, UX states | Art + China team |
 | **EVAL** | [BD3244-9](https://dotdotdash.atlassian.net/browse/BD3244-9) | Labeled set, runner, model recommendation | Art + content support |
@@ -1539,7 +1533,7 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | R8 | AI cost spike from PSA traffic or abuse | M | M | Daily quota and kill switch (hard limits). WAF rate rules, Bot Control, Challenge. Caching. Provider budget alerts (not caps) |
 | R9 | Content not loaded in time (100+ ingredients, hundreds of tips) | M | H | Seeding pipeline (§5.5). Owner and volume due Oct 23 (OPEN-22). Bulk import from CSV |
 | R10 | **Images late** (≈ 1 month: lifestyle from iStock, categories stock first then AI, ingredients AI) | M | M | Placeholder images in the CMS. Images are content, so they can change after code freeze. Due Nov 30 (OPEN-28) |
-| R11 | **Toolkit design changes** after coalition review | M | M | Build it from existing blocks on the generic template, so changes are content, not code. Colleen is estimating the Oct 2 feedback. Figma has no mobile Toolkit frame yet (OPEN-39) |
+| R11 | **Toolkit design changes** after coalition review | M | M | Build it from existing blocks, so changes are content, not code. Colleen is estimating the Oct 2 feedback. Figma has no mobile Toolkit frame yet (OPEN-39) |
 | R12 | **Ad Council IT doesn't accept Render** for development (Anthropic is authorized) | L | H | Ask on Oct 8, decide by Oct 16 (OPEN-23). Fall back to local-only development plus AWS dev as soon as access allows |
 | R13 | **Pro-bono budget** squeezes AWS and AI spend | M | M | Cheapest architecture that meets the NFRs (§9.5). Quota. Turn dev off after handoff (OPEN-24) |
 | R14 | Scope creep (detail pages, recipes, fridge photos, Spanish, broader analytics) | M | H | Decision log. Design is locked. Change requests for anything not in §2. Broader analytics is a separate scope (OPEN-27) |
@@ -1577,7 +1571,7 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | D18 | **Repo scaffolded on ddd GitHub, then moved to Ad Council's org.** China team gets access to that repo only, after the move. Work assigned through Jira | TL DECISION | Client owns the code. Limits access |
 | D19 | **Seeding by scrape → JSON → validated import**, not by hand | TL DECISION | Repeatable for every environment. No dependency on Dan's export |
 | D20 | **No user text stored** (no gap logging) at launch | PROPOSED (OPEN-5) | Receipts and free text can contain personal data |
-| D21 | **Hybrid content model.** The CMS holds the collections, Global, Tool Copy, long-form rich text, and asset slots. Site strings live in typed files in `apps/web/content/`, and designed routes use code **templates**. A dynamic zone of **blocks** is used by the generic Page template and below the Home slots. No Microcopy type | TL DECISION (gauged with the China team, P13); content model verified in P13, agent flow pending | Simple, agent-friendly, and easy to hand off. Strings rarely change. Avoids building a full page builder (kickoff) |
+| D21 | **Hybrid content model.** The CMS holds the collections, Global, Tool Copy, long-form rich text, and asset slots. Site strings live in typed files in `apps/web/content/`, and designed routes use code **templates**. A dynamic zone of **blocks** is used by the generic Page template and below the Home slots. No Microcopy type | TL DECISION (gauged with the China team, P13); **templates and slots superseded by D32** | Simple, agent-friendly, and easy to hand off. Strings rarely change. Avoids building a full page builder (kickoff) |
 | D22 | **Figma audit outcomes.** The Tip Modal, Save/Share, header, mobile menu, and footer are shared UI, not CMS blocks. `component.modal` is dropped and `component.scroll-lock` deferred; the Home animated sections live in the Home template (OPEN-36). Toolkit is built from `asset-list`, `jump-nav`, and `accordion` blocks. Library Groups gain `layout` and `order`. Tokens come straight from Figma variables, plus contrast rules (§6.3) | TL DECISION | The modal and animations are bound to one designed page, so blocks would add CMS surface without giving editors real choices. The contrast rules keep AA without redesigning the palette |
 | D23 | **Scaffold conventions** (BD3244-16). CI runs on GitHub Actions with the mock AI provider and CMS fixtures, no secrets, read-only permissions, and SHA-pinned actions. One root `.env`, with `apps/cms/.env` generated locally. Fonts are self-hosted with Fontsource instead of `next/font`. No Turborepo until build times need it | TL DECISION | CI can run on forks and PRs without secrets. Fontsource builds offline and gives the same no-Google-calls result. Fewer tools for the China team to learn |
 | D24 | **Model arena for provider-neutral model selection** (BD3244-37). Every candidate (vendor × model × settings) runs the same labeled set, prompt, and harness (`pnpm arena`, §7.9). The pick is the **cheapest cell that meets G2** (precision ≥ 0.9, recall ≥ 0.8; bar still to agree, OPEN-8) **with 100% injection resistance, and** whose forecast stays under the monthly AI cap at 25K–50K uses. Feeds the OPEN-1 recommendation | TL DECISION | Same inputs across vendors make the comparison fair. Per-cell and global budgets cap eval spend. Tying the forecast to the client's budget keeps the choice honest about cost, not only accuracy |
@@ -1588,6 +1582,7 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | D29 | **One codebase, one place to run it.** All work starts from the `dev` scaffold; earlier work is ported into it to follow this TDD, not merged from another base. No environments outside local, ddd's Render, and Ad Council's AWS, so the team-hosted Strapi comes down | TL DECISION | A parallel app and CMS had drifted from the TDD (no Tailwind/shadcn, schema changed in a hosted admin, a token in the repo). One scaffold keeps the contracts, tests, and security rules in force, and keeps test content and credentials on accounts the client can audit |
 | D30 | **Render builds from a deploy mirror in ddd's EMU org** (BD3244-15). `dotdotdash-OMC/3244_tbw_ad_council` is a private, push-only mirror; `deploy-dev.yml` pushes the tested tree (without workflow files) to it with a write deploy key before each deploy. `dotdotdashdev` stays canonical | TL DECISION | Render's GitHub link returned "repository URL is invalid or unfetchable" for the canonical repo, and ddd's other Render projects build from `dotdotdash-OMC`. The China team can't join an EMU org, so the work stays in `dotdotdashdev`. Removed when the repo moves (OPEN-11) |
 | D31 | **The CMS admin IP allow-list is lifted on dev during the build** (Oct 20). `ADMIN_IP_OPEN=true` is honoured only with `DEPLOY_ENV=dev`; anywhere else the CMS refuses to start. The first-admin sign-up stays on the allow-list, and Strapi login still applies. Staging and production keep the allow-list (D16) | TL DECISION | The China team and editors can work on cms-dev without collecting IPs first (OPEN-17 stays open for staging). cms-dev holds only seed and draft content. Accepted risk: the dev admin login faces the internet, so we use strong unique passwords, keep Strapi's login rate limit, and give no real content or user data to dev. Revisit before real content is entered |
+| D32 | **Pages are built from design-named blocks; Page templates are retired** (Oct 26, BD3244-42). Page keeps `title`, `path`, `main`, and `seo`; the `template` enum and slot fields go. Every Page renders through one block renderer, and the designed pages are seeded in the Figma order. Data-driven routes (Category, Search, tool results, 404) stay in code. `navigation` and `footer` live in Global as shared UI. Replaces the template half of D21 | TL DECISION (proposed by the China team, Eva Fan, BD3244-42) | The team found the designed pages unlikely to be reused, so per-page templates added code without editor value. Block names match Figma, which keeps design-to-code mapping direct. Accepted risk: editors can reorder designed pages, mitigated by the seed and a visual review on dev. The schema break is accepted once because cms-dev has no real content |
 
 Bigger decisions get a short ADR in `docs/adr/NNNN-title.md` once they're approved.
 
@@ -1600,7 +1595,7 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | ID | Question | Owner | Due |
 |---|---|---|---|
 | OPEN-1 | **Production AI provider, account, and key.** "Most likely Anthropic" (kickoff), direct or via Bedrock. **Anthropic is the only authorized AI vendor; OpenAI is not** (confirmed Oct 19). The eval's best value, Gemini 3.8 Flash, needs Google approved (OPEN-2); Claude Opus 5.5 meets G2 but costs about $806/month on product photos at 50K, over the cap. It must meet US-only data handling, no training, and spend controls (§7.7). **Progress (Oct 8):** the model arena is built (D24, BD3244-37) and the `anthropic` and `openai` adapters are ready; live runs wait on keys and the labeled set | Ad Council (Cat + AI lead) | Nov 13 |
-| OPEN-2 | ~~Does Ad Council IT accept ddd's Anthropic key for development?~~ **Answered (Oct 19):** Anthropic is authorized; OpenAI is not. **Still open:** will IT approve **Google (Gemini)** for production, as the primary model with Claude as the backup? | Ad Council IT | Nov 13 |
+| OPEN-2 | ~~Does Ad Council IT accept ddd's Anthropic key for development?~~ **Answered (Oct 19):** Anthropic is authorized; OpenAI is not. **Still open:** will IT approve **Google (Gemini)** for production? **One production model, no backup model** (decided Oct 26). | Ad Council IT | Nov 13 |
 | OPEN-3 | **Usable AWS access**: the current IAM users can't list users or pipelines. We need scoped access (SSO ReadOnly + project admin), GitHub OIDC deploy role, account structure, and how the DevOps partner change affects CI/CD (§9.1). Danish's account waits on this | Ad Council IT / James S (via Danish → Cat) | Oct 16 |
 | OPEN-4 | Rendering mode: static export (recommended) or SSR/ISR? Spike P3 found no blocker for static | ddd → Ad Council | Oct 16 |
 | OPEN-5 | Are uploaded images or typed text kept? (Recommendation: no.) This affects the privacy policy, FAQ, and FR-8 | Ad Council legal | Nov 13 |
@@ -1637,9 +1632,10 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | OPEN-36 | **Animated Home sections.** Figma shows an Animated Headline and stepped sections but has no scroll-lock spec. Scroll-driven, timed, or static? Needs a pause control and a reduced-motion version either way (§6.6) | Colleen Miller | Oct 23 |
 | OPEN-37 | **Contrast fixes in Figma.** Store It badge (Sand on Squash, 2.12:1, `1:7919`). No focus state for controls on Forest sections (the Forest ring would vanish). Terra 40 and Sand 70 must stay off text on light surfaces (disabled states are exempt). Text over photos in the Highlight CTA (the Desktop Specs already ask for a dark overlay). ddd builds the fixes in §6.3; Colleen updates the file to match (R18) | Colleen Miller + Art | Oct 16 |
 | OPEN-38 | **Nav labels and placeholder copy.** The main nav says "The Tool / Tip Library / General Tips / About," but the Search and Toolkit frames say "Discover Tips / Use the Tool / Our Mission," and the Toolkit footer differs again. Lorem ipsum remains in the Category and Results subfooters, the Toolkit body, the About CTA, and the Search CTA | Colleen Miller + Ad Council | Oct 23 |
-| OPEN-39 | **Missing page designs:** General Tips (FR-7), the 404 page, and the mobile Toolkit. Until then, General Tips and the 404 use the generic template, and mobile Toolkit is adapted from desktop (OPEN-9, R11) | Colleen Miller | Oct 30 |
+| OPEN-39 | **Missing page designs:** General Tips (FR-7), the 404 page, and the mobile Toolkit. Until then, General Tips is built from existing blocks, the 404 uses site strings, and mobile Toolkit is adapted from desktop (OPEN-9, R11) | Colleen Miller | Oct 30 |
 | OPEN-40 | **Where are saved tips listed?** Save (spec `1:10947`) keeps tips on the device, with no accounts. Is there a Saved view or a header count, and what happens on another device? (§6.6) | Colleen Miller + Ad Council | Oct 30 |
 | OPEN-41 | **The team-hosted Strapi** (`ending-wasted-food-cms.proferotech.com`): what content and accounts it holds, and confirmation that it's exported (content + schema) and **taken down**. Its API token was committed and must be rotated (BD3244-43). Nothing from it moves to Render except through code (schema) and the seed (content). *Oct 20 (Davis, BD3244-43):* it was the China team's shared CMS dev environment, deployed from `AdCouncil/ending-wasted-food-strapi` with content types added in its admin per Figma, and it's **shut down** (502 since Oct 20); the team runs the CMS locally now. **Still open:** confirm the instance and its database are deleted (or the token revoked), and port the admin-made content types into `apps/cms` as code (BD3244-42) | China team (Davis, Chad) → Art | Oct 21 |
+| OPEN-42 | **Alerts and on-call after handoff:** who receives the CloudWatch/SNS alerts and AWS Budgets notifications, and who is on call after hypercare (Ad Council's DevOps partner?). Does Ad Council already run an account-level CloudTrail trail? | Ad Council IT | Nov 13 |
 
 ---
 
@@ -1649,10 +1645,9 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 - **Catalog:** the published Ingredients (titles, slugs, and synonyms) that the matcher uses.
 - **Raw terms:** the ingredient words the model reads from the input, before matching. The only thing the model returns.
 - **Gap:** an extracted term that didn't match the catalog. **Not stored at launch** (§7.8).
-- **Module:** any UI section in the Figma file. It's built either into a code template or as a CMS block. Analytics tracks both through `ModuleBoundary` (§8).
-- **Template:** a code layout for a designed route (`apps/web/templates/`), picked by the Page's `template` field or fixed by the route. It reads content from CMS slots (§6.4).
-- **Block:** a Strapi component in the Page `main` dynamic zone, rendered by the block registry. Used by the generic template and below the Home slots.
-- **Asset slot:** a CMS field that a template reads, such as the hero image, an intro, or featured items. Editors change what's in it, not where it goes.
+- **Module:** any UI section in the Figma file. It's built as a CMS block, a data-driven route, or shared UI. Analytics tracks them through `ModuleBoundary` (§8).
+- **Block:** a Strapi component in the Page `main` dynamic zone, named after the Figma component and rendered by the block registry. Every Page is built from blocks (D32).
+- **Data-driven route:** a code route generated from the collections (Category, Search, tool results), with no Page entry.
 - **Site strings:** short UI text (labels, hints, aria text, the 404 page) kept in typed files in `apps/web/content/` and changed by PR (D21).
 - **Phase A / Phase B:** Render on ddd's account (dev, staging) / Ad Council AWS (staging, prod).
 - **Release pointer:** the CloudFront KeyValueStore entry that tells the edge which `releases/<build-id>/` to serve. Switching it is how we publish and roll back.
@@ -1702,3 +1697,4 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.3.20 | 2026-10-20 | Art Longbottom (with Copilot) | **OPEN-41 update:** the team-hosted Strapi is shut down; deletion, host owner, and porting its content types as code are still open |
 | 0.3.21 | 2026-10-20 | Art Longbottom (with Copilot) | **D31: CMS admin open on dev.** `ADMIN_IP_OPEN` (dev only, the CMS won't start with it elsewhere). The first-admin sign-up stays allow-listed and is smoke-tested on every deploy. Staging and production unchanged (§5.4, §10, AGENTS.md) |
 | 0.3.22 | 2026-10-20 | Art Longbottom (with Copilot) | **OPEN-41:** dropped the question of who ran the host (not needed). Still open: deletion or token revocation, and porting its content types as code |
+| 0.3.23 | 2026-10-26 | Art Longbottom (with Copilot) | **D32: pages from design-named blocks**, templates and slots retired (China team proposal, BD3244-42). Updated §1, FR-1, §4.4, §5.2 (Page, Global), §6.1, §6.4, glossary. **Security:** TLS 1.2 minimum and AES-256 at rest stated in §10 (Render dev TLS verified). Observability ownership and CloudTrail in §9.3/§9.4, new OPEN-42. **No backup AI model** (§7.7, OPEN-2): one production model, no fallback |

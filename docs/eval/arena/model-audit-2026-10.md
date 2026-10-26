@@ -332,7 +332,7 @@ These are for dotdotdash to do. The model choice itself stays with Ad Council (O
 1. **Make `p3` the next prompt version** (`PROMPT_VERSION=p3`). It's part of the cache key, so no cache purge is needed.
 2. **Shortlist for the scorecard email to Cat** (the draft still has Oct 12 numbers; updated after round 4):
    - **Gemini 3.8 Flash, thinking off** (`AI_REASONING_EFFORT=none`): best value, at about $147/month from January on dishes and up to $206 if every use is a product photo.
-   - **Claude Opus 5.5**: the authorized-vendor option and the quality reference. It resisted every image injection, but costs about $806/month on product photos at 50K, over the cap, so it fits best as the **backup** model.
+   - **Claude Opus 5.5**: the authorized-vendor option and the quality reference. It resisted every image injection, but costs about $806/month on product photos at 50K, over the cap, so it fits best as the **backup** model. *(Superseded Oct 26: no backup model; production runs one model, TDD §7.7.)*
    - Gemini 3.1 Flash-Lite and GPT-5 mini drop off: they write planted items from images into the result.
 
    Present Opus 5.5 as the quality reference.

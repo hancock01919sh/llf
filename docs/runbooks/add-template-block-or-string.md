@@ -1,14 +1,16 @@
-# Runbook: add a template, a block, or a site string
+# Runbook: add a block or a site string
+
+Page templates are retired (TDD D32, Oct 26). Every Page is built from blocks; section C is kept only for the scaffold code that hasn't moved yet.
 
 **Status:** first draft for review (BD3244-18). No Storybook is set up in the repo yet, so the "story" step below is pending the component workflow (BD3244-25).
 
 ## Purpose
-Add UI to the site the way the TDD expects ([TDD §6.4](../TDD.md#64-templates-blocks-and-site-strings), D21). Pick the right one first:
+Add UI to the site the way the TDD expects ([TDD §6.4](../TDD.md#64-blocks-routes-and-site-strings), D21, D32). Pick the right one first:
 
 | You need | Use |
 |---|---|
-| A new fixed page layout for a designed route | **Template** |
-| A module editors can add to a page (below the Home slots or on the generic template) | **Block** |
+| A Figma module on any Page (Home, Find My Tips, Library, About, Toolkit, …) | **Block**, named after the Figma component |
+| A page generated from collections (Category, Search, tool results) | **Data-driven route** in `apps/web/app/` |
 | A label, hint, aria text, or the 404 page | **Site string** |
 | Page content, tips, long text, images | **CMS** (Strapi). Not code |
 
@@ -35,11 +37,12 @@ Files: a Strapi component, a Zod schema, a React component, a story, and a regis
 2. **Schema:** add the block schema to `packages/contracts/src/cms.ts`, with a test in `cms.test.ts`. Don't define API shapes anywhere else.
 3. **Component:** add `apps/web/blocks/<Name>.tsx`. Use semantic headings that respect the heading level set in the CMS, keyboard support, and alt text from the CMS. Add `data-module-*` attributes (the registry's `type` becomes `data-module-type`).
 4. **Registry:** add an `entry({ schema, Component, type })` to `apps/web/blocks/registry.ts` with the key `<category>.<name>` matching the Strapi component.
-5. **Fixture and seed:** add an example to `apps/web/fixtures/cms/` and `scripts/seed/fixtures/` (they must stay in step), so CI and local builds exercise it.
+5. **Fixture and seed:** add an example to `apps/web/fixtures/cms/` and `scripts/seed/fixtures/` (they must stay in step), so CI and local builds exercise it. For a designed page, add the block to that page's seed in the Figma order.
 6. **Story:** pending (see status).
 7. **Tests:** a component test for each UI state, and an e2e/axe check for a page that shows it.
 
-## C. Add a template
+## C. Templates (retired, D32)
+Don't add new templates. The scaffold's `apps/web/templates/` stays only until the Home, Find My Tips, and Library pages move to blocks. For reference, the old steps were:
 Files: the template, slot fields on Page, a Zod schema for the slots, a story, and a registry entry.
 1. Add the template name to `PAGE_TEMPLATES` in `packages/contracts/src/cms.ts`, and the slot schema.
 2. Add the Page slot fields in Strapi with **conditional visibility**, so editors only see the fields for their template.
