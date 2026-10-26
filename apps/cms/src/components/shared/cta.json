@@ -13,7 +13,7 @@
     },
     "page": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "manyToOne",
       "target": "api::page.page"
     }
   },

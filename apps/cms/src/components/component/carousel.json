@@ -16,7 +16,7 @@
     },
     "categories": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "manyToMany",
       "target": "api::category.category",
       "conditions": {
         "visible": {

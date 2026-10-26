@@ -26,18 +26,21 @@
     },
     "tip_type": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::tip-type.tip-type"
+      "relation": "manyToOne",
+      "target": "api::tip-type.tip-type",
+      "inversedBy": "tips"
     },
     "tip_behavior": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::tip-behavior.tip-behavior"
+      "relation": "manyToOne",
+      "target": "api::tip-behavior.tip-behavior",
+      "inversedBy": "tips"
     },
     "tip_motivator": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::tip-motivator.tip-motivator"
+      "relation": "manyToOne",
+      "target": "api::tip-motivator.tip-motivator",
+      "inversedBy": "tips"
     }
   }
 }
