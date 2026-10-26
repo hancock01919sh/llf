@@ -27,12 +27,14 @@
     "Statement": {
       "type": "blocks"
     },
-    "Statement_Overlay": {
-      "type": "blocks"
-    },
     "Button": {
       "type": "component",
       "component": "shared.links",
+      "repeatable": false
+    },
+    "Popup": {
+      "type": "component",
+      "component": "component.tips-popup",
       "repeatable": false
     }
   },
