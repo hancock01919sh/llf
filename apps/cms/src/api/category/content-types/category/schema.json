@@ -40,7 +40,7 @@
     },
     "tips": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "manyToMany",
       "target": "api::tip.tip",
       "conditions": {
         "visible": {
@@ -51,7 +51,8 @@
             "Tips"
           ]
         }
-      }
+      },
+      "mappedBy": "categories"
     },
     "mode": {
       "type": "enumeration",

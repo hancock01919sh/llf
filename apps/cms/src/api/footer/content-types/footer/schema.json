@@ -11,10 +11,10 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "string"
     },
-    "Link": {
+    "link": {
       "type": "component",
       "component": "shared.links",
       "repeatable": true
@@ -24,10 +24,10 @@
       "component": "shared.iconlink",
       "repeatable": true
     },
-    "Legal_Copy": {
+    "legalCopy": {
       "type": "text"
     },
-    "Overlaylink": {
+    "overlayLink": {
       "type": "component",
       "component": "shared.overlay-link",
       "repeatable": true
