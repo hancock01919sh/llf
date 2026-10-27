@@ -11,15 +11,15 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "string"
     },
-    "Link": {
+    "link": {
       "type": "component",
       "component": "shared.links",
       "repeatable": true
     },
-    "Searchplaceholder": {
+    "searchPlaceholder": {
       "type": "string"
     }
   }

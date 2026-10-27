@@ -14,7 +14,7 @@
     "title": {
       "type": "string"
     },
-    "SEO": {
+    "seo": {
       "type": "component",
       "component": "shared.seo",
       "repeatable": false
