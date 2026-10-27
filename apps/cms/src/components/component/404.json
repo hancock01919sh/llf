@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_component_404s",
+  "info": {
+    "displayName": "404"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}
