@@ -11,7 +11,7 @@
     "Description": {
       "type": "text"
     },
-    "Image": {
+    "Image_Desktop": {
       "type": "media",
       "multiple": true,
       "allowedTypes": [
@@ -26,6 +26,16 @@
       "enum": [
         "paper",
         "forest"
+      ]
+    },
+    "Image_Mobile": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
       ]
     }
   },

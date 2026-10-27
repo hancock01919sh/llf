@@ -43,7 +43,8 @@
         "component.tip-banner",
         "component.carousel-small",
         "component.search",
-        "component.category-detail"
+        "component.category-detail",
+        "component.404"
       ]
     },
     "seo": {
