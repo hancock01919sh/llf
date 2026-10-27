@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * globe router
+ * global router
  */
 
 const { createCoreRouter } = require('@strapi/strapi').factories;
 
-module.exports = createCoreRouter('api::globe.globe');
+module.exports = createCoreRouter('api::global.global');
