@@ -1,6 +1,5 @@
 import type { cms } from '@llf/contracts';
 import type { ComponentType } from 'react';
-import { ModuleBoundary } from '@/components/ModuleBoundary';
 import { ContentError } from '@/lib/cms';
 import { blockLayout, blocks, isBlockKey } from './registry';
 import type { BlockProps } from './types';
@@ -73,9 +72,17 @@ export function DynamicZone({
   return resolveBlocks(page, isStrict()).map(({ key, type, id, layout, data, Component }, i) => {
     const index = i + offset;
     return (
-      <ModuleBoundary key={key} type={type} index={index} id={String(id)} layout={layout}>
-        <Component block={data} index={index} pageTitle={page.title} />
-      </ModuleBoundary>
+      // <ModuleBoundary key={key} type={type} index={index} id={String(id)} layout={layout}>
+      <Component
+        key={key}
+        type={type}
+        index={index}
+        id={String(id)}
+        layout={layout}
+        block={data}
+        pageTitle={page.title}
+      />
+      // </ModuleBoundary>
     );
   });
 }

@@ -1,45 +1,48 @@
 import { cn } from '@llf/ui';
-import type { ReactNode } from 'react';
+import { forwardRef, type ReactNode } from 'react';
 import { ModuleErrorBoundary } from './ModuleErrorBoundary';
+import type { ModuleBoundaryBgColor } from '@/blocks/types';
 
 export type Surface = 'paper' | 'sand' | 'mint' | 'forest-tint' | 'forest' | 'terra';
 
 interface ModuleBoundaryProps {
   /** Short module name used in analytics, e.g. `hero`, `tip-list`. */
   type: string;
-  index: number;
-  id: string;
   layout?: string;
-  surface?: Surface;
+  index?: number;
+  id?: string;
+  surface?: ModuleBoundaryBgColor;
   className?: string;
   children: ReactNode;
+  fullWidth?: boolean;
+  style?: React.CSSProperties;
 }
 
 /**
  * Wraps every module. The `data-module-*` attributes drive the generic `module_view` and `cta_click`
  * events, so modules need no analytics code of their own (TDD §8).
  */
-export function ModuleBoundary({
-  type,
-  index,
-  id,
-  layout,
-  surface,
-  className,
-  children,
-}: ModuleBoundaryProps) {
+export const ModuleBoundary = forwardRef<HTMLOptionElement, ModuleBoundaryProps>((props, ref) => {
+  const { type, layout, index, id, surface, className, children, fullWidth = false, style } = props;
   return (
     <section
+      ref={ref}
       data-module-type={type}
-      data-module-index={index}
-      data-module-id={id}
       data-module-layout={layout}
       data-surface={surface}
-      className={cn('px-gutter py-xl lg:px-gutter-lg', className)}
+      data-module-index={index}
+      data-module-id={id}
+      style={style}
     >
-      <div className="mx-auto max-w-page">
+      <div
+        className={cn(
+          'max-w-page  mx-auto',
+          `${fullWidth ? 'w-full' : 'px-gutter lg:px-gutter-lg'}`,
+          className,
+        )}
+      >
         <ModuleErrorBoundary moduleType={type}>{children}</ModuleErrorBoundary>
       </div>
     </section>
   );
-}
+});

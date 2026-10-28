@@ -14,7 +14,7 @@ export const PAGE_SIZE = 100;
 
 type Populate = { [key: string]: true | Populate };
 
-const ctas: Populate = { populate: { page: true } };
+// const ctas: Populate = { populate: { page: true } };
 const tipFields: Populate = {
   tip_type: true,
   tip_behavior: true,
@@ -22,25 +22,49 @@ const tipFields: Populate = {
   ingredient: true,
 };
 const tipRelations: Populate = { populate: tipFields };
-const hero: Populate = { populate: { ctas, images: true } };
-
+// const hero: Populate = { populate: { ctas, images: true } };
+export const ImagePopulate = {
+  fields: ['url', 'ext', 'alternativeText', 'height', 'width', 'size'],
+};
 // Verified against seeded content (BD3244-24). Keep in sync with POPULATE in scripts/seed/src/seed.ts.
 const POPULATE = {
   pages: {
-    hero,
-    featured: { populate: { image: true } },
-    tool: true,
+    // hero,
+    // featured: { populate: { image: true } },
+    // tool: true,
     main: {
       on: {
-        'component.hero': hero,
-        'component.teaser': { populate: { title: true, ctas, images: true } },
-        'component.link-list': { populate: { title: true, pages: true } },
-        'component.carousel': {
-          populate: { title: true, ctas, categories: { populate: { image: true } } },
+        // 'component.hero': hero,
+        // 'component.teaser': { populate: { title: true, ctas, images: true } },
+        // 'component.link-list': { populate: { title: true, pages: true } },
+        // 'component.carousel': {
+        //   populate: { title: true, ctas, categories: { populate: { image: true } } },
+        // },
+        // 'custom.tip-list': { populate: { title: true, tips: tipRelations } },
+        // 'custom.search': true,
+        // 'custom.tool': true,
+        'component.tool-input': {
+          populate: {
+            Button: true,
+            Cards: {
+              populate: {
+                Link: true,
+              },
+            },
+            Image: ImagePopulate,
+          },
         },
-        'custom.tip-list': { populate: { title: true, tips: tipRelations } },
-        'custom.search': true,
-        'custom.tool': true,
+        // 'component.accordion': {
+        //   populate: {
+        //     AccordionItem: true,
+        //   },
+        // },
+        // 'component.highlight-component': {
+        //   populate: {
+        //     Link: true,
+        //     Image: ImagePopulate,
+        //   },
+        // },
       },
     },
     seo: true,
@@ -55,7 +79,8 @@ const POPULATE = {
   groups: { categories: { populate: { image: true } } },
   ingredients: { image: true, tips: { populate: { tip_type: true } } },
   tips: tipFields,
-} satisfies Record<string, Populate>;
+};
+// satisfies Record<string, Populate>;
 
 const SCHEMAS = {
   pages: cms.Page,
@@ -174,7 +199,8 @@ export const getTips = () => loadCollection('tips');
 
 export async function getPageByPath(value: string): Promise<cms.Page | undefined> {
   const wanted = normalizePath(value);
-  return (await getPages()).find((page) => normalizePath(page.path) === wanted);
+  const pages = await getPages();
+  return pages.find((page) => normalizePath(page.path) === wanted);
 }
 
 /** Designed routes need their CMS page; a missing one is an editor error, not a 404. */

@@ -8,6 +8,7 @@ import { LinkList } from './LinkList';
 import { SearchBox } from './SearchBox';
 import { Teaser } from './Teaser';
 import { TipList } from './TipList';
+import { ToolInput, ToolInputSchema } from './ToolInput';
 import type { BlockProps } from './types';
 
 /**
@@ -36,6 +37,11 @@ export const blocks = {
   'custom.search': entry({ schema: cms.SearchBlock, Component: SearchBox, type: 'search' }),
   'custom.tip-list': entry({ schema: cms.TipListBlock, Component: TipList, type: 'tip-list' }),
   'custom.tool': entry({ schema: cms.ToolBlock, Component: FindMyTips, type: 'tool' }),
+  'component.tool-input': entry({
+    schema: ToolInputSchema,
+    Component: ToolInput,
+    type: 'tool-input',
+  }),
 } as const;
 
 export type BlockKey = keyof typeof blocks;
