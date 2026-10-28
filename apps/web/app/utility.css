@@ -1,0 +1,171 @@
+/* --- Headlines --- */
+@utility text-headline-xl {
+  @apply text-mob-headline-xl;
+  @variant lg {
+    @apply text-lg-headline-xl;
+  }
+}
+
+@utility text-headline-lg {
+  @apply text-mob-headline-lg uppercase;
+  @variant lg {
+    @apply text-lg-headline-xl;
+  }
+}
+
+@utility text-headline-md {
+  @apply text-mob-headline-md;
+  @variant lg {
+    @apply text-lg-headline-md;
+  }
+}
+
+@utility text-headline-sm {
+  @apply text-mob-headline-sm;
+  @variant lg {
+    @apply text-lg-headline-sm;
+  }
+}
+
+@utility text-headline-xs {
+  @apply text-mob-headline-xs;
+  @variant lg {
+    @apply text-lg-headline-xs;
+  }
+}
+
+/* --- Subheadlines --- */
+@utility text-subheadline-lg {
+  @apply text-mob-subheadline-lg;
+  @variant lg {
+    @apply text-lg-subheadline-lg;
+  }
+}
+
+@utility text-subheadline-md {
+  @apply text-mob-subheadline-md;
+  @variant lg {
+    @apply text-lg-subheadline-md;
+  }
+}
+
+@utility text-subheadline-sm {
+  @apply text-mob-subheadline-sm;
+  @variant lg {
+    @apply text-lg-subheadline-sm;
+  }
+}
+
+/* --- Paragraphs --- */
+@utility text-paragraph-lg {
+  @apply text-mob-paragraph-lg;
+}
+
+@utility text-paragraph-regular {
+  @apply text-mob-paragraph-regular;
+}
+
+@utility text-paragraph-sm {
+  @apply text-mob-paragraph-sm;
+}
+
+/* --- Captions --- */
+@utility text-caption {
+  @apply text-mob-caption;
+  @variant lg {
+    @apply text-lg-caption;
+  }
+}
+
+/* --- Eyebrow --- */
+@utility text-eyebrow {
+  @apply text-mob-eyebrow;
+}
+
+/* --- CTA (Call to Action) --- */
+@utility text-cta {
+  @apply text-mob-cta;
+  @variant lg {
+    @apply text-lg-cta;
+  }
+}
+
+/* --- Label --- */
+@utility text-label {
+  @apply text-mob-label;
+}
+
+/* --- Link --- */
+@utility text-link {
+  @apply text-mob-link;
+  @variant lg {
+    @apply text-lg-link;
+  }
+}
+
+/* --- Title Card --- */
+@utility text-title-card {
+  @apply text-mob-title-card;
+  @variant lg {
+    @apply text-lg-title-card;
+  }
+}
+
+/* --- Input --- */
+@utility text-input {
+  @apply text-mob-input;
+  @variant lg {
+    @apply text-lg-input;
+  }
+}
+@utility flex-center {
+  @apply flex items-center;
+}
+
+@utility opacity-enter {
+  animation: ani-opacity-enter var(--duration, 0.3s) ease-in-out forwards;
+}
+@utility opacity-exit {
+  animation: ani-opacity-exit var(--duration, 0.3s) ease-in-out forwards;
+}
+
+@keyframes ani-opacity-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes ani-opacity-exit {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@utility translate-enter {
+  animation: ani-translate-enter var(--duration, 0.3s) ease-in-out forwards;
+}
+@utility translate-exit {
+  animation: ani-translate-exit var(--duration, 0.3s) ease-in-out forwards;
+}
+
+@keyframes ani-translate-enter {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes ani-translate-exit {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}

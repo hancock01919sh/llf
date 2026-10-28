@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import '@llf/ui/styles/tokens.css';
+@import './utility.css';
 
 @source '../blocks';
 @source '../components';
@@ -12,9 +13,93 @@
   --font-fustat: 'Fustat Variable';
 }
 
+@theme inline {
+  --font-fustat: var(--font-fustat);
+  --font-anton: var(--font-anton);
+  --font-inter: var(--font-inter);
+
+  --breakpoint-4k: 1921px;
+
+  --radius-small: 20px;
+  --radius-medium: 40px;
+  --radius-large: 80px;
+  --radius-pill: 100px;
+
+  --text-mob-headline-xl: 3.5625rem; /* 57px */
+  --text-lg-headline-xl: 4.625rem; /* 74px */
+  --text-mob-headline-lg: 2.8125rem; /* 45px */
+  --text-lg-headline-lg: 4rem; /* 64px */
+  --text-mob-headline-md: 2.25rem; /* 36px */
+  --text-lg-headline-md: 3rem; /* 48px */
+  --text-mob-headline-sm: 1.75rem; /* 28px */
+  --text-lg-headline-sm: 2rem; /* 32px */
+  --text-mob-headline-xs: 1.375rem; /* 22px */
+  --text-lg-headline-xs: 1.75rem; /* 28px */
+
+  --text-mob-subheadline-lg: 1.25rem; /* 20px */
+  --text-lg-subheadline-lg: 1.75rem; /* 28px */
+  --text-mob-subheadline-lg--line-height: 1.25;
+
+  --text-mob-subheadline-md: 1.125rem; /* 18px */
+  --text-lg-subheadline-md: 1.375rem; /* 22px */
+  --text-mob-subheadline-md--font-weight: 500;
+  --text-mob-subheadline-md--line-height: 1.25;
+
+  --text-mob-subheadline-sm: 1.125rem; /* 18px */
+  --text-lg-subheadline-sm: 1.25rem; /* 20px */
+  --text-mob-subheadline-sm--line-height: 1.25;
+
+  --text-mob-paragraph-lg: 1.375rem; /* 22px */
+  --text-mob-paragraph-lg--line-height: 1.1818;
+
+  --text-mob-paragraph-regular: 1.25rem; /* 20px */
+  --text-mob-paragraph-regular--line-height: 1.1;
+
+  --text-mob-paragraph-sm: 1rem; /* 16px */
+  --text-mob-paragraph-sm--line-height: 1.25;
+
+  --text-mob-caption: 0.9375rem; /* 15px */
+  --text-mob-caption--line-height: 1.1333;
+  --text-lg-caption: 0.875rem; /* 14px */
+  --text-lg-caption--line-height: 1.14286;
+  --text-mob-caption--font-weight: 600;
+
+  --text-mob-eyebrow: 1.25rem; /* 20px */
+  --text-mob-eyebrow--font-weight: 500;
+
+  --text-mob-cta: 1.125rem; /* 18px */
+  --text-lg-cta: 1.25rem; /* 20px */
+  --text-mob-cta--font-weight: 500;
+
+  --text-mob-label: 0.875rem; /* 14px */
+  --text-mob-label--font-weight: 500;
+
+  --text-mob-link: 1.125rem; /* 18px */
+  --text-lg-link: 1.25rem; /* 20px */
+  --text-mob-link--line-height: 1.1111;
+
+  --text-mob-title-card: 1.75rem; /* 28px */
+  --text-lg-title-card: 2rem; /* 32px */
+
+  --text-mob-input: 0.875rem; /* 14px */
+  --text-lg-input: 1.25rem; /* 20px */
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
+    @variant 4k {
+      font-size: 1vw;
+    }
+  }
+  body {
+    @apply bg-surface-paper text-ink-terra font-fustat m-0 p-0 leading-none min-h-full flex flex-col transition-opacity duration-1000;
+    *[class*='text-headline'] {
+      @apply font-anton;
+    }
+    &:has(.popup-container) {
+      @apply overflow-hidden;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -30,4 +115,66 @@
       transition-duration: 0.01ms !important;
     }
   }
+}
+@layer components {
+  .btn {
+    @apply cursor-pointer flex items-center justify-center gap-2.5 text-ink-terra bg-surface-mint rounded-pill py-6 leading-none px-6 border-0 transition-colors duration-300 box-border active:bg-surface-mint-dark font-semibold text-cta text-nowrap;
+
+    @variant focus-visible {
+      @apply border-solid border-[3px] border-brand-forest bg-surface-mint outline-0;
+    }
+    @variant disabled {
+      @apply bg-ink-terra-15 text-ink-terra-40;
+    }
+
+    @variant hover {
+      @apply bg-surface-mint-dark;
+      @variant active {
+        @apply bg-brand-forest text-surface-sand;
+      }
+    }
+
+    @variant lg {
+      @apply font-bold text-paragraph-regular;
+      @variant focus-visible {
+        @apply bg-surface-mint;
+      }
+    }
+  }
+  .btn.black {
+    @apply bg-ink-terra text-surface-sand border-surface-sand border;
+  }
+  .btn.white {
+    @apply bg-surface-paper text-ink-terra;
+  }
+  .link {
+    @apply underline underline-offset-4 border-transparent border-[3px] py-1 font-semibold text-link text-surface-mint transition-colors duration-300 w-max;
+    @variant hover {
+      @apply text-surface-mint-dark;
+      @variant active {
+        @apply border-solid  border-current outline-0 rounded-none;
+      }
+    }
+    @variant lg {
+      @apply text-paragraph-regular;
+    }
+  }
+}
+[data-surface='paper'] {
+  box-shadow: 0 1px 1px var(--color-surface-paper);
+}
+[data-surface='sand'] {
+  box-shadow: 0 1px 1px var(--color-surface-sand);
+}
+[data-surface='mint'] {
+  box-shadow: 0 1px 1px var(--color-surface-mint);
+}
+[data-surface='forest-tint'] {
+  box-shadow: 0 1px 1px var(--color-surface-forest-tint);
+}
+[data-surface='forest'] {
+  box-shadow: 0 1px 1px var(--color-brand-forest);
+}
+[data-surface='terra'] {
+  box-shadow: 0 1px 1px var(--color-ink-terra);
 }
