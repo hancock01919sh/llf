@@ -44,7 +44,9 @@
         "component.carousel-small",
         "component.search",
         "component.category-detail",
-        "component.404"
+        "component.404",
+        "component.toolkit-headline",
+        "component.assets-card"
       ]
     },
     "seo": {
