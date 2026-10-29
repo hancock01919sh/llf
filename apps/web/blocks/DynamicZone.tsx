@@ -3,6 +3,7 @@ import type { ComponentType } from 'react';
 import { ContentError } from '@/lib/cms';
 import { blockLayout, blocks, isBlockKey } from './registry';
 import type { BlockProps } from './types';
+import { ModuleBoundary } from '@/components/ModuleBoundary';
 
 export interface ResolvedBlock {
   key: string;
@@ -72,17 +73,17 @@ export function DynamicZone({
   return resolveBlocks(page, isStrict()).map(({ key, type, id, layout, data, Component }, i) => {
     const index = i + offset;
     return (
-      // <ModuleBoundary key={key} type={type} index={index} id={String(id)} layout={layout}>
-      <Component
-        key={key}
-        type={type}
-        index={index}
-        id={String(id)}
-        layout={layout}
-        block={data}
-        pageTitle={page.title}
-      />
-      // </ModuleBoundary>
+      <ModuleBoundary key={key} type={type} index={index} id={String(id)} layout={layout}>
+        <Component
+          key={key}
+          type={type}
+          index={index}
+          id={String(id)}
+          layout={layout}
+          block={data}
+          pageTitle={page.title}
+        />
+      </ModuleBoundary>
     );
   });
 }
