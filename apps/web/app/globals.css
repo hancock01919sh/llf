@@ -160,21 +160,3 @@
     }
   }
 }
-[data-surface='paper'] {
-  box-shadow: 0 1px 1px var(--color-surface-paper);
-}
-[data-surface='sand'] {
-  box-shadow: 0 1px 1px var(--color-surface-sand);
-}
-[data-surface='mint'] {
-  box-shadow: 0 1px 1px var(--color-surface-mint);
-}
-[data-surface='forest-tint'] {
-  box-shadow: 0 1px 1px var(--color-surface-forest-tint);
-}
-[data-surface='forest'] {
-  box-shadow: 0 1px 1px var(--color-brand-forest);
-}
-[data-surface='terra'] {
-  box-shadow: 0 1px 1px var(--color-ink-terra);
-}
