@@ -31,6 +31,10 @@
     "Make_Image_left": {
       "type": "boolean",
       "default": false
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
     }
   },
   "config": {}

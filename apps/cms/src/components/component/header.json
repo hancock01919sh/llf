@@ -41,6 +41,10 @@
         "up",
         "down"
       ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
     }
   },
   "config": {}

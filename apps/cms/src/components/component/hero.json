@@ -25,6 +25,16 @@
     },
     "Title": {
       "type": "blocks"
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "terra"
+      ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
     }
   },
   "config": {}

@@ -36,6 +36,16 @@
       "type": "component",
       "component": "component.tips-popup",
       "repeatable": false
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "forest"
+      ]
     }
   },
   "config": {}

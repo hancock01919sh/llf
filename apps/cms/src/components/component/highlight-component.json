@@ -33,6 +33,10 @@
       "type": "component",
       "component": "shared.links",
       "repeatable": true
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
     }
   },
   "config": {}

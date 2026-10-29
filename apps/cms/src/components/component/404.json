@@ -10,6 +10,16 @@
     },
     "Description": {
       "type": "text"
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "forest"
+      ]
     }
   },
   "config": {}

@@ -34,6 +34,16 @@
         "Up ",
         "Down"
       ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "paper"
+      ]
     }
   },
   "config": {}

@@ -20,6 +20,17 @@
       "type": "component",
       "component": "shared.feature-card",
       "repeatable": true
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": true
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "default": "terra",
+      "enum": [
+        "terra"
+      ]
     }
   },
   "config": {}

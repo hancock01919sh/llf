@@ -29,6 +29,10 @@
       "enum": [
         "Bright Yellow"
       ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": true
     }
   },
   "config": {}

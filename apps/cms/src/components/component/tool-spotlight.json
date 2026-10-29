@@ -20,6 +20,16 @@
       "type": "component",
       "component": "shared.spotlight-item",
       "repeatable": true
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "forest"
+      ]
     }
   },
   "config": {}

@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "toolkit_categories",
+  "info": {
+    "singularName": "toolkit-category",
+    "pluralName": "toolkit-categories",
+    "displayName": "Toolkit Category"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "subCategory": {
+      "type": "enumeration",
+      "enum": [
+        "Brand Guidelines",
+        "Usage Guidelines",
+        "Messaging & Amplification Guidelines",
+        "Television",
+        "Radio"
+      ]
+    }
+  }
+}

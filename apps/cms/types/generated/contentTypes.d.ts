@@ -728,6 +728,9 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
         "component.carousel-small",
         "component.search",
         "component.category-detail",
+        "component.404",
+        "component.toolkit-headline",
+        "component.assets-card",
       ]
     >;
     path: Schema.Attribute.String &
@@ -867,6 +870,44 @@ export interface ApiTipTip extends Struct.CollectionTypeSchema {
     >;
     tip_type: Schema.Attribute.Relation<"manyToOne", "api::tip-type.tip-type">;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiToolkitCategoryToolkitCategory
+  extends Struct.CollectionTypeSchema {
+  collectionName: "toolkit_categories";
+  info: {
+    displayName: "Toolkit Category";
+    pluralName: "toolkit-categories";
+    singularName: "toolkit-category";
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
+      Schema.Attribute.Private;
+    label: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      "oneToMany",
+      "api::toolkit-category.toolkit-category"
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    subCategory: Schema.Attribute.Enumeration<
+      [
+        "Brand Guidelines",
+        "Usage Guidelines",
+        "Messaging & Amplification Guidelines",
+        "Television",
+        "Radio",
+      ]
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private;
@@ -1396,6 +1437,7 @@ declare module "@strapi/strapi" {
       "api::tip-motivator.tip-motivator": ApiTipMotivatorTipMotivator;
       "api::tip-type.tip-type": ApiTipTypeTipType;
       "api::tip.tip": ApiTipTip;
+      "api::toolkit-category.toolkit-category": ApiToolkitCategoryToolkitCategory;
       "plugin::content-releases.release": PluginContentReleasesRelease;
       "plugin::content-releases.release-action": PluginContentReleasesReleaseAction;
       "plugin::i18n.locale": PluginI18NLocale;

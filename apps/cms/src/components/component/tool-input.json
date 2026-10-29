@@ -45,6 +45,17 @@
       "type": "component",
       "component": "shared.links",
       "repeatable": true
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "forest",
+        "paper"
+      ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
     }
   },
   "config": {}

@@ -37,6 +37,10 @@
         "videos",
         "audios"
       ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
     }
   },
   "config": {}

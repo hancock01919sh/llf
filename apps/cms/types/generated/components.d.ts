@@ -1,5 +1,18 @@
 import type { Schema, Struct } from "@strapi/strapi";
 
+export interface Component404 extends Struct.ComponentSchema {
+  collectionName: "components_component_404s";
+  info: {
+    displayName: "404";
+  };
+  attributes: {
+    Background_color: Schema.Attribute.Enumeration<["forest"]>;
+    Description: Schema.Attribute.Text;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    Title: Schema.Attribute.String;
+  };
+}
+
 export interface Component5050TextAndImage extends Struct.ComponentSchema {
   collectionName: "components_component_5050_text_and_images";
   info: {
@@ -8,8 +21,10 @@ export interface Component5050TextAndImage extends Struct.ComponentSchema {
   attributes: {
     Add_Background_Color: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
+    Background_color: Schema.Attribute.Enumeration<["paper"]>;
     Description: Schema.Attribute.Text;
     Image: Schema.Attribute.Media<"images" | "files" | "videos" | "audios">;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Make_Image_left: Schema.Attribute.Boolean;
     Position_of_Adding_BgColor: Schema.Attribute.Enumeration<["Up ", "Down"]>;
     Title: Schema.Attribute.String;
@@ -23,8 +38,28 @@ export interface ComponentAccordion extends Struct.ComponentSchema {
   };
   attributes: {
     AccordionItem: Schema.Attribute.Component<"shared.accordion-item", true>;
+    Background_color: Schema.Attribute.Enumeration<["forest-tint"]>;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     SubTitle: Schema.Attribute.String;
     Title: Schema.Attribute.String;
+  };
+}
+
+export interface ComponentAssetsCard extends Struct.ComponentSchema {
+  collectionName: "components_component_assets_cards";
+  info: {
+    displayName: "Assets Card";
+  };
+  attributes: {
+    CTA: Schema.Attribute.Component<"shared.links", false>;
+    Description: Schema.Attribute.Text;
+    File: Schema.Attribute.Media<"images" | "files" | "videos" | "audios">;
+    Image: Schema.Attribute.Media<"images" | "files" | "videos" | "audios">;
+    Title: Schema.Attribute.String;
+    toolkit_category: Schema.Attribute.Relation<
+      "oneToOne",
+      "api::toolkit-category.toolkit-category"
+    >;
   };
 }
 
@@ -57,7 +92,9 @@ export interface ComponentCarouselSmall extends Struct.ComponentSchema {
     displayName: "Carousel - Small";
   };
   attributes: {
+    Background_color: Schema.Attribute.Enumeration<["paper"]>;
     Description: Schema.Attribute.Text;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     SmallCard: Schema.Attribute.Component<"shared.small-card", true>;
     Title: Schema.Attribute.String;
   };
@@ -72,6 +109,7 @@ export interface ComponentCarouselStandard extends Struct.ComponentSchema {
     Background_color: Schema.Attribute.Enumeration<["sand", "paper", "terra"]>;
     Card_Background_color: Schema.Attribute.Enumeration<["Bright Yellow"]>;
     Description: Schema.Attribute.Text;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     StandardCard: Schema.Attribute.Component<"shared.standard-card", true>;
     Title: Schema.Attribute.String;
   };
@@ -84,8 +122,11 @@ export interface ComponentCategoryCarouselFeature
     displayName: "Category Carousel - Feature";
   };
   attributes: {
+    Background_color: Schema.Attribute.Enumeration<["terra"]> &
+      Schema.Attribute.DefaultTo<"terra">;
     Description: Schema.Attribute.Text;
     Feature_Card: Schema.Attribute.Component<"shared.feature-card", true>;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     Link: Schema.Attribute.Component<"shared.links", true>;
     Title: Schema.Attribute.String;
   };
@@ -97,12 +138,14 @@ export interface ComponentCategoryDetail extends Struct.ComponentSchema {
     displayName: "Category Detail";
   };
   attributes: {
+    Background_color: Schema.Attribute.Enumeration<["forest"]>;
     Button: Schema.Attribute.Component<"shared.links", false>;
     Description: Schema.Attribute.Text;
     Image: Schema.Attribute.Media<
       "images" | "files" | "videos" | "audios",
       true
     >;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Popup: Schema.Attribute.Component<"component.tips-popup", false>;
     Statement: Schema.Attribute.Blocks;
     SubTitle: Schema.Attribute.String;
@@ -116,8 +159,10 @@ export interface ComponentCategoryEmoji extends Struct.ComponentSchema {
     displayName: "Category - Emoji";
   };
   attributes: {
+    Background_color: Schema.Attribute.Enumeration<["paper"]>;
     Description: Schema.Attribute.Text;
     Emoji: Schema.Attribute.Component<"shared.emoji-item", true>;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Title: Schema.Attribute.String;
   };
 }
@@ -131,6 +176,7 @@ export interface ComponentContentSpotlight extends Struct.ComponentSchema {
     Background_color: Schema.Attribute.Enumeration<["paper", "sand"]>;
     Description: Schema.Attribute.Text;
     Image: Schema.Attribute.Media<"images" | "files" | "videos" | "audios">;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Make_Image_left: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
     Title: Schema.Attribute.String;
@@ -161,6 +207,7 @@ export interface ComponentHeader extends Struct.ComponentSchema {
     Background_color: Schema.Attribute.Enumeration<["terra", "forest"]>;
     Description: Schema.Attribute.Text;
     Image: Schema.Attribute.Media<"images" | "files" | "videos" | "audios">;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Position_of_Adding_BgColor: Schema.Attribute.Enumeration<["up", "down"]>;
     SubTitle: Schema.Attribute.String;
     Title: Schema.Attribute.String;
@@ -174,8 +221,10 @@ export interface ComponentHero extends Struct.ComponentSchema {
     icon: "crown";
   };
   attributes: {
+    Background_color: Schema.Attribute.Enumeration<["terra"]>;
     Description: Schema.Attribute.Text;
     images: Schema.Attribute.Media<"images" | "files" | "videos", true>;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Link: Schema.Attribute.Component<"shared.links", true>;
     Title: Schema.Attribute.Blocks;
   };
@@ -192,6 +241,7 @@ export interface ComponentHighlightComponent extends Struct.ComponentSchema {
     >;
     Description: Schema.Attribute.Text;
     Image: Schema.Attribute.Media<"images" | "files" | "videos" | "audios">;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Link: Schema.Attribute.Component<"shared.links", true>;
     Title: Schema.Attribute.String;
   };
@@ -203,8 +253,10 @@ export interface ComponentIngredientCarousel extends Struct.ComponentSchema {
     displayName: "Ingredient Carousel ";
   };
   attributes: {
+    Background_color: Schema.Attribute.Enumeration<["paper"]>;
     Description: Schema.Attribute.Text;
     IngredientCard: Schema.Attribute.Component<"shared.ingredient-card", true>;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     Title: Schema.Attribute.String;
   };
 }
@@ -244,10 +296,15 @@ export interface ComponentLogoCards extends Struct.ComponentSchema {
   attributes: {
     Background_color: Schema.Attribute.Enumeration<["paper", "forest"]>;
     Description: Schema.Attribute.Text;
-    Image: Schema.Attribute.Media<
+    Image_Desktop: Schema.Attribute.Media<
       "images" | "files" | "videos" | "audios",
       true
     >;
+    Image_Mobile: Schema.Attribute.Media<
+      "images" | "files" | "videos" | "audios",
+      true
+    >;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Title: Schema.Attribute.String;
   };
 }
@@ -270,9 +327,11 @@ export interface ComponentSearch extends Struct.ComponentSchema {
     displayName: "Search";
   };
   attributes: {
+    Background_color: Schema.Attribute.Enumeration<["paper"]>;
     Button: Schema.Attribute.Component<"shared.links", false>;
     Description: Schema.Attribute.Text;
     Hint: Schema.Attribute.Text;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Placeholder: Schema.Attribute.String;
     Popup: Schema.Attribute.Component<"component.tips-popup", false>;
     Statement: Schema.Attribute.Blocks;
@@ -303,11 +362,13 @@ export interface ComponentTextAndImageCard extends Struct.ComponentSchema {
     displayName: "Text and Image Card";
   };
   attributes: {
+    Background_color: Schema.Attribute.Enumeration<["paper"]>;
     Description: Schema.Attribute.Text;
     Image: Schema.Attribute.Media<
       "images" | "files" | "videos" | "audios",
       true
     >;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Title: Schema.Attribute.String;
   };
 }
@@ -320,6 +381,7 @@ export interface ComponentTipBanner extends Struct.ComponentSchema {
   attributes: {
     Background_color: Schema.Attribute.Enumeration<["terra", "forest"]>;
     CTA: Schema.Attribute.Component<"shared.links", true>;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Label: Schema.Attribute.String;
     tip: Schema.Attribute.Relation<"oneToOne", "api::tip.tip">;
   };
@@ -331,7 +393,9 @@ export interface ComponentTipsPopup extends Struct.ComponentSchema {
     displayName: "Tips Popup";
   };
   attributes: {
+    Background_color: Schema.Attribute.Enumeration<["paper"]>;
     Description: Schema.Attribute.Text;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Link: Schema.Attribute.Component<"shared.links", false>;
     Title: Schema.Attribute.String;
   };
@@ -343,6 +407,7 @@ export interface ComponentToolInput extends Struct.ComponentSchema {
     displayName: "Tool Input";
   };
   attributes: {
+    Background_color: Schema.Attribute.Enumeration<["forest", "paper"]>;
     Button: Schema.Attribute.Component<"shared.links", true>;
     CardDescription: Schema.Attribute.Text;
     Cards: Schema.Attribute.Component<"shared.input-card", true>;
@@ -350,6 +415,7 @@ export interface ComponentToolInput extends Struct.ComponentSchema {
     Copy: Schema.Attribute.String;
     Description: Schema.Attribute.Text;
     Image: Schema.Attribute.Media<"images" | "files" | "videos" | "audios">;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Placeholder: Schema.Attribute.String;
     SubTitle: Schema.Attribute.String;
     Title: Schema.Attribute.String;
@@ -362,9 +428,24 @@ export interface ComponentToolSpotlight extends Struct.ComponentSchema {
     displayName: "Tool Spotlight";
   };
   attributes: {
+    Background_color: Schema.Attribute.Enumeration<["forest"]>;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Link: Schema.Attribute.Component<"shared.links", false>;
     SpotlightItem: Schema.Attribute.Component<"shared.spotlight-item", true>;
     SubTitle: Schema.Attribute.String;
+    Title: Schema.Attribute.String;
+  };
+}
+
+export interface ComponentToolkitHeadline extends Struct.ComponentSchema {
+  collectionName: "components_component_toolkit_headlines";
+  info: {
+    displayName: "Toolkit Headline";
+  };
+  attributes: {
+    CTA: Schema.Attribute.Component<"shared.links", false>;
+    Description: Schema.Attribute.Text;
+    File: Schema.Attribute.Media<"images" | "files" | "videos" | "audios">;
     Title: Schema.Attribute.String;
   };
 }
@@ -604,8 +685,10 @@ export interface SharedTitle extends Struct.ComponentSchema {
 declare module "@strapi/strapi" {
   export module Public {
     export interface ComponentSchemas {
+      "component.404": Component404;
       "component.5050-text-and-image": Component5050TextAndImage;
       "component.accordion": ComponentAccordion;
+      "component.assets-card": ComponentAssetsCard;
       "component.carousel": ComponentCarousel;
       "component.carousel-small": ComponentCarouselSmall;
       "component.carousel-standard": ComponentCarouselStandard;
@@ -629,6 +712,7 @@ declare module "@strapi/strapi" {
       "component.tips-popup": ComponentTipsPopup;
       "component.tool-input": ComponentToolInput;
       "component.tool-spotlight": ComponentToolSpotlight;
+      "component.toolkit-headline": ComponentToolkitHeadline;
       "custom.search": CustomSearch;
       "custom.tip-list": CustomTipList;
       "custom.tool": CustomTool;

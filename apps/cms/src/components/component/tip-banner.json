@@ -24,6 +24,10 @@
         "terra",
         "forest"
       ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
     }
   },
   "config": {}

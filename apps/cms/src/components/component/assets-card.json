@@ -1,0 +1,46 @@
+{
+  "collectionName": "components_component_assets_cards",
+  "info": {
+    "displayName": "Assets Card"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "toolkit_category": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::toolkit-category.toolkit-category"
+    },
+    "CTA": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": false
+    },
+    "File": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  },
+  "config": {}
+}

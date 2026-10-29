@@ -20,6 +20,16 @@
         "videos",
         "audios"
       ]
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "paper"
+      ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
     }
   },
   "config": {}
