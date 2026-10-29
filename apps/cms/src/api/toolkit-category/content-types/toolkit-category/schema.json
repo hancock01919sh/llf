@@ -14,15 +14,15 @@
     "label": {
       "type": "string"
     },
-    "subCategory": {
+    "parentCategory": {
       "type": "enumeration",
       "enum": [
-        "Brand Guidelines",
-        "Usage Guidelines",
-        "Messaging & Amplification Guidelines",
-        "Television",
-        "Radio"
+        "PSA Assets",
+        "Guideline"
       ]
+    },
+    "SubCategory_Description": {
+      "type": "text"
     }
   }
 }
