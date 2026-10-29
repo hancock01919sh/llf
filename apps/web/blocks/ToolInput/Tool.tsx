@@ -4,7 +4,7 @@ import type { ToolInputProps } from '.';
 import { useEffect, useMemo, useState } from 'react';
 import type { BlockProps } from '../types';
 import { IconClose, IconUpload } from '@/components/Icon';
-import { ExtractRequest, ExtractResponse } from '@llf/contracts/find-tips';
+import { ExtractRequest, ExtractResponse, IMAGE_MIME_TYPES } from '@llf/contracts/find-tips';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { resultsHref } from '@/lib/paths';
@@ -136,9 +136,10 @@ export function Tool(props: BlockProps<ToolInputProps> & { className?: string })
               <span className=" text-mob-input text-ink-terra-40 flex-1">
                 Upload an image of a shopping list or receipt
               </span>
+              {/* IMAGE_MIME_TYPES webp,jpeg,png */}
               <input
                 type="file"
-                accept="image/*"
+                accept={IMAGE_MIME_TYPES.join(',')}
                 className="absolute opacity-0 inset-0 flex-1 text-ink-terra mx-4 outline-none min-w-0 border border-red-500"
                 onChange={(eInput) => {
                   if (eInput.target.files && eInput.target.files[0]) {
