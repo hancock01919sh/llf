@@ -12,6 +12,7 @@ import { ToolInput, ToolInputSchema } from './ToolInput';
 import { Accordion, AccordionSchema } from './Accordion';
 import type { BlockProps } from './types';
 import type { Surface } from '@/components/ModuleBoundary';
+import { HighlightComponent, HighlightComponentSchema } from './HighlightComponent';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -50,7 +51,11 @@ export const blocks = {
     schema: AccordionSchema,
     Component: Accordion,
     type: 'accordion',
-    // surface: 'forest-tint',
+  }),
+  'component.highlight-component': entry({
+    schema: HighlightComponentSchema,
+    Component: HighlightComponent,
+    type: 'highlight-component',
   }),
 } as const;
 
