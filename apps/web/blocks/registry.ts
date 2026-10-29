@@ -10,6 +10,7 @@ import { Teaser } from './Teaser';
 import { TipList } from './TipList';
 import { ToolInput, ToolInputSchema } from './ToolInput';
 import type { BlockProps } from './types';
+import type { Surface } from '@/components/ModuleBoundary';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -20,6 +21,7 @@ interface BlockEntry<S extends z.ZodType> {
   Component: ComponentType<BlockProps<z.output<S>>>;
   /** Short name used for `data-module-type` and analytics (TDD §8). */
   type: string;
+  surface?: Surface;
 }
 
 const entry = <S extends z.ZodType>(e: BlockEntry<S>) => e;
@@ -41,6 +43,7 @@ export const blocks = {
     schema: ToolInputSchema,
     Component: ToolInput,
     type: 'tool-input',
+    surface: 'paper',
   }),
 } as const;
 

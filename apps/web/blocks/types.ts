@@ -1,3 +1,4 @@
+import type { Surface } from '@/components/ModuleBoundary';
 import type { GlobalBackgroundColor } from '@/lib/const';
 import z from 'zod';
 export interface BlockProps<T> {
@@ -8,12 +9,16 @@ export interface BlockProps<T> {
   type?: string;
   id?: string;
   layout?: string;
+  isFullwidth?: boolean;
+  Background_color?: Surface;
 }
 
 export type BlockBaseProps = {
   Title: string;
   Description: string;
   CategorySlug?: string;
+  Background_color?: Surface;
+  isFullwidth?: boolean;
 };
 // export type LinkProps = {
 //   Label: string;
