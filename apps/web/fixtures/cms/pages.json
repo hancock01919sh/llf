@@ -158,7 +158,86 @@
         "description": "Fixture copy. Share a recipe and we'll find tips for its ingredients.",
         "cta_label": "Find my tips"
       },
-      "main": []
+      "main": [
+        {
+          "__component": "component.tool-input",
+          "id": 9,
+          "Title": "Input ingredients,  get tips, waste less",
+          "SubTitle": "Tip Finder",
+          "Description": "Whatever you're buying, cooking, or already have, we'll help you get the most out of it.",
+          "CardTitle": "How it works",
+          "CardDescription": "Three simple steps between your ingredients and the tips that help you use them better.",
+          "Placeholder": "Enter a recipe URL or video link",
+          "Copy": "Works with any recipe site or video link from YouTube, TikTok, or Instagram.",
+          "Button": [
+            {
+              "id": 387,
+              "Label": "🔗 Paste Link",
+              "href": null,
+              "isDisplay": true,
+              "isButton": true,
+              "Buttontype": null,
+              "NewTab": false
+            },
+            {
+              "id": 388,
+              "Label": "📷 Upload Image",
+              "href": null,
+              "isDisplay": true,
+              "isButton": true,
+              "Buttontype": null,
+              "NewTab": false
+            },
+            {
+              "id": 389,
+              "Label": "Find Tips",
+              "href": null,
+              "isDisplay": true,
+              "isButton": true,
+              "Buttontype": null,
+              "NewTab": false
+            }
+          ],
+          "Image": {
+            "id": 85,
+            "documentId": "ihf9pbfub16ofi5w13luqzza",
+            "url": "/uploads/12691884_uhd_2160_3840_60fps_ea8b6d8dc5.mp4",
+            "ext": ".mp4",
+            "alternativeText": null,
+            "height": null,
+            "width": null,
+            "size": 26352.05
+          },
+          "Cards": [
+            {
+              "id": 27,
+              "Title": "Step 1",
+              "Description": "Upload an image or recipe link",
+              "Link": {
+                "id": 385,
+                "Label": "What can I upload?",
+                "href": "/find#what-you-can-upload",
+                "isDisplay": true,
+                "isButton": null,
+                "Buttontype": null,
+                "NewTab": false
+              }
+            },
+            {
+              "id": 25,
+              "Title": "Step 2",
+              "Description": "We'll pull the ingredients.",
+              "Link": null
+            },
+            {
+              "id": 26,
+              "Title": "Step 3",
+              "Description": "You see how to waste less of each ingredient.",
+              "Link": null
+            }
+          ]
+        }
+      ]
     },
     {
       "id": 3,

@@ -38,7 +38,7 @@ export function ToolHeader(props: BlockProps<ToolInputProps>) {
           <Typography variant="eyebrow" className=" font-bold">
             {props.block.SubTitle}
           </Typography>
-          <Typography variant="headline-lg" className="uppercase mt-10 ">
+          <Typography variant="headline-lg" className="uppercase mt-10 " as="h1">
             {props.block.Title}
           </Typography>
           <Typography variant="subhead-lg" className="font-bold mt-5">

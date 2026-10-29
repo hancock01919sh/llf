@@ -4,8 +4,10 @@ import type { ToolInputProps } from '.';
 import { useEffect, useMemo, useState } from 'react';
 import type { BlockProps } from '../types';
 import { IconClose, IconUpload } from '@/components/Icon';
-import { ExtractRequest } from '@llf/contracts/find-tips';
+import { ExtractRequest, ExtractResponse } from '@llf/contracts/find-tips';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { resultsHref } from '@/lib/paths';
 export function Tool(props: BlockProps<ToolInputProps> & { className?: string }) {
   const { block } = props;
   const findTipsLabel = block.Button[2]?.Label as string;
@@ -24,43 +26,51 @@ export function Tool(props: BlockProps<ToolInputProps> & { className?: string })
     setLinkText('');
   }, [activeTab]);
   const imageActive = useMemo(() => uploadInfo !== null, [uploadInfo]);
-  function handleSubmit() {
+
+  const router = useRouter();
+
+  async function handleSubmit() {
     const submitData = linkText
       ? { inputType: 'url', url: linkText }
-      : {
-          inputType: 'image',
-          mimeType: uploadInfo?.type,
-          imageBase64: uploadInfo?.imageBase64,
-        };
-    const result = ExtractRequest.safeParse(submitData);
-    if (!result.success) {
-      console.error('result error', result.error.message);
+      : { inputType: 'image', mimeType: uploadInfo?.type, imageBase64: uploadInfo?.imageBase64 };
+    // const submitData = { inputType: 'text', text: 'bananas, milk, saffron' };
+
+    const { data, success } = ExtractRequest.safeParse(submitData);
+    if (!success) {
+      console.error('Invalid input data:', submitData);
       return;
     }
-    fetch('/api/find-tips/extract', {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+
+    const res = await fetch('/api/find-tips/extract', {
       method: 'POST',
-      body: JSON.stringify(result.data),
-    })
-      .then((res) => res.json())
-      .then(() => {
-        // data: { matches: Array<{ slug: string }> }
-        // console.log(
-        //   'ai response data:',
-        //   data?.matches.map((item) => item.slug),
-        // );
-      });
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) return;
+
+    const parsed = ExtractResponse.safeParse(await res.json());
+    if (!parsed.success || parsed.data.matches.length === 0) return;
+
+    // 只把 CMS catalog 里的 slug 带进 URL，模型原始输出不进 URL（AGENTS.md 硬规则）
+    router.push(resultsHref(parsed.data.matches.map((m) => m.slug)));
   }
   return (
     <div className={`${props.className || ''} flex flex-col gap-5`}>
-      <div className=" flex flex-center overflow-hidden rounded-md">
+      <div
+        role="tablist"
+        aria-label={`${activeTab === tabs[0] ? 'Input' : 'Upload'} method`}
+        className=" flex flex-center overflow-hidden rounded-md"
+      >
         {tabs.map((item, index) => (
           <button
             className={` cursor-pointer flex-center justify-center w-1/2 py-5 capitalize font-bold ${activeTab === item ? 'bg-surface-paper text-ink-terra' : 'bg-ink-terra text-surface-sand'}`}
             key={index}
+            role="tab"
+            id={`tool-tab-${index}`}
+            aria-selected={activeTab === item}
+            aria-controls={`tool-panel-${index}`}
             onClick={() => setActiveTab(item)}
+            name={item}
           >
             {item}
           </button>
@@ -68,9 +78,13 @@ export function Tool(props: BlockProps<ToolInputProps> & { className?: string })
       </div>
       {activeTab === tabs[0] && (
         <div
+          role="tabpanel"
+          id="tool-panel-0"
+          aria-labelledby="tool-tab-0"
           className={`h-12.5 transition-colors duration-300 ${linkActive ? 'bg-semantic-leaf text-surface-mint' : 'bg-surface-paper text-ink-terra'}  p-[1.5px] overflow-hidden rounded-full flex-center `}
         >
           <input
+            type="text"
             placeholder={block.Placeholder}
             className="flex-1  mx-4 outline-none"
             onInput={(e) => {
@@ -96,6 +110,9 @@ export function Tool(props: BlockProps<ToolInputProps> & { className?: string })
       )}
       {activeTab === tabs[1] && (
         <div
+          role="tabpanel"
+          id="tool-panel-1"
+          aria-labelledby="tool-tab-1"
           className={`relative flex flex-center justify-between pl-3.5 gap-2.5 h-12.5 rounded-full border border-dashed border-ink-terra-15 ${imageActive ? 'bg-semantic-leaf' : 'bg-brand-forest'} `}
         >
           <div
