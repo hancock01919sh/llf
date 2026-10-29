@@ -10,7 +10,7 @@ const page = (main: unknown[]) =>
   >;
 
 const good = { __component: 'custom.search', id: 1, placeholder: 'Search' };
-const unknown = { __component: 'component.accordion', id: 2 };
+const unknown = { __component: 'component.not-a-real-block', id: 2 };
 const invalid = { __component: 'component.hero', id: 3, layout: 'Sideways' };
 
 describe('resolveBlocks', () => {
@@ -34,7 +34,7 @@ describe('resolveBlocks', () => {
     } catch (error) {
       const message = (error as Error).message;
       expect(message).toContain('Page "Test page" (/test)');
-      expect(message).toContain('block #2 (component.accordion): the site has no component');
+      expect(message).toContain('block #2 (component.not-a-real-block): the site has no component');
       expect(message).toContain('block #3 (component.hero): layout:');
       expect(message).toMatch(/Fix them in Strapi and publish again\.$/);
     }

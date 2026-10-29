@@ -9,6 +9,7 @@ import { SearchBox } from './SearchBox';
 import { Teaser } from './Teaser';
 import { TipList } from './TipList';
 import { ToolInput, ToolInputSchema } from './ToolInput';
+import { Accordion, AccordionSchema } from './Accordion';
 import type { BlockProps } from './types';
 import type { Surface } from '@/components/ModuleBoundary';
 
@@ -44,6 +45,12 @@ export const blocks = {
     Component: ToolInput,
     type: 'tool-input',
     surface: 'paper',
+  }),
+  'component.accordion': entry({
+    schema: AccordionSchema,
+    Component: Accordion,
+    type: 'accordion',
+    // surface: 'forest-tint',
   }),
 } as const;
 

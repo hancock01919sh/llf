@@ -238,6 +238,41 @@
           ],
           "isFullwidth": true,
           "Background_color": "paper"
+        },
+        {
+          "__component": "component.accordion",
+          "id": 13,
+          "Title": "what can you upload",
+          "SubTitle": "Not sure what to try first? Here’s what works.",
+          "Background_color": "forest-tint",
+          "isFullwidth": false,
+          "AccordionItem": [
+            {
+              "id": 61,
+              "Label": "Photo of your fridge or pantry",
+              "Description": "Take the photo in good lighting and make sure ingredients are visible. Works best when items aren't stacked or hidden behind each other."
+            },
+            {
+              "id": 62,
+              "Label": "Recipe from a website",
+              "Description": null
+            },
+            {
+              "id": 63,
+              "Label": "Recipe from a video",
+              "Description": null
+            },
+            {
+              "id": 64,
+              "Label": "Grocery receipt",
+              "Description": null
+            },
+            {
+              "id": 65,
+              "Label": "Shopping list",
+              "Description": null
+            }
+          ]
         }
       ]
     },

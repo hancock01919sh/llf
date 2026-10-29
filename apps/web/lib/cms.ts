@@ -54,11 +54,11 @@ const POPULATE = {
             Image: ImagePopulate,
           },
         },
-        // 'component.accordion': {
-        //   populate: {
-        //     AccordionItem: true,
-        //   },
-        // },
+        'component.accordion': {
+          populate: {
+            AccordionItem: true,
+          },
+        },
         // 'component.highlight-component': {
         //   populate: {
         //     Link: true,

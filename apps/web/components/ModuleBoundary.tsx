@@ -1,9 +1,10 @@
 import { cn } from '@llf/ui';
 import type { ReactNode } from 'react';
 import { ModuleErrorBoundary } from './ModuleErrorBoundary';
+import z from 'zod';
 
 export type Surface = 'paper' | 'sand' | 'mint' | 'forest-tint' | 'forest' | 'terra';
-
+export const SurfaceSchema = z.enum(['paper', 'sand', 'mint', 'forest-tint', 'forest', 'terra']);
 interface ModuleBoundaryProps {
   /** Short module name used in analytics, e.g. `hero`, `tip-list`. */
   type: string;

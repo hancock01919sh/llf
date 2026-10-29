@@ -1,6 +1,6 @@
 import { SurfaceSchema, type Surface } from '@/components/ModuleBoundary';
 import type { GlobalBackgroundColor } from '@/lib/const';
-import z from 'zod';
+import { z } from 'zod';
 export interface BlockProps<T> {
   block: T;
   /** Position in the dynamic zone. The first block may own the page's h1 (TDD §6.6). */
@@ -14,12 +14,12 @@ export interface BlockProps<T> {
 }
 
 export const BlockBaseSchema = z.object({
-   id: z.number().int(),
+  id: z.number().int(),
   Title: z.string(),
   Description: z.string().nullish(),
   CategorySlug: z.string().nullish(),
-  isFullwidth: z.boolean().nullish().default(false),
-  Background_color: SurfaceSchema.nullish().default('paper'),
+  isFullwidth: z.boolean().nullish(),
+  Background_color: SurfaceSchema.nullish(),
 });
 export type BlockBaseProps = z.infer<typeof BlockBaseSchema>;
 export const LinkSchema = z.object({
