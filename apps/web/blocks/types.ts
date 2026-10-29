@@ -1,4 +1,4 @@
-import type { Surface } from '@/components/ModuleBoundary';
+import { SurfaceSchema, type Surface } from '@/components/ModuleBoundary';
 import type { GlobalBackgroundColor } from '@/lib/const';
 import z from 'zod';
 export interface BlockProps<T> {
@@ -13,21 +13,15 @@ export interface BlockProps<T> {
   Background_color?: Surface;
 }
 
-export type BlockBaseProps = {
-  Title: string;
-  Description: string;
-  CategorySlug?: string;
-  Background_color?: Surface;
-  isFullwidth?: boolean;
-};
-// export type LinkProps = {
-//   Label: string;
-//   href: string;
-//   isDisplay: boolean | null;
-//   isButton: boolean | null;
-//   Buttontype: string | null;
-//   NewTab: boolean | null;
-// };
+export const BlockBaseSchema = z.object({
+   id: z.number().int(),
+  Title: z.string(),
+  Description: z.string().nullish(),
+  CategorySlug: z.string().nullish(),
+  isFullwidth: z.boolean().nullish().default(false),
+  Background_color: SurfaceSchema.nullish().default('paper'),
+});
+export type BlockBaseProps = z.infer<typeof BlockBaseSchema>;
 export const LinkSchema = z.object({
   Label: z.string(),
   href: z.string().nullable().default('#'),

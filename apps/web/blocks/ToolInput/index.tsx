@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Media } from '@llf/contracts/cms';
-import { LinkSchema, type BlockBaseProps, type BlockProps } from '../types';
+import { BlockBaseSchema, LinkSchema, type BlockProps } from '../types';
 import { ToolHeader } from './ToolHeader';
 import { ToolBody } from './ToolBody';
 const CardSchema = z.object({
@@ -9,12 +9,8 @@ const CardSchema = z.object({
   Link: LinkSchema.nullable(),
 });
 
-export const ToolInputSchema = z.object({
-  id: z.number().int(),
+export const ToolInputSchema = BlockBaseSchema.extend({
   __component: z.literal('component.tool-input'),
-  Title: z.string(),
-  Description: z.string(),
-  CategorySlug: z.string().optional(),
   Button: z.array(LinkSchema),
   CardDescription: z.string(),
   CardTitle: z.string(),
@@ -23,7 +19,7 @@ export const ToolInputSchema = z.object({
   Image: Media,
   Placeholder: z.string(),
   SubTitle: z.string(),
-}) satisfies z.ZodType<BlockBaseProps & { [k: string]: unknown }>;
+});
 
 export type ToolInputProps = z.infer<typeof ToolInputSchema>;
 export function ToolInput(props: BlockProps<ToolInputProps>) {
