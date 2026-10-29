@@ -15,14 +15,14 @@ export type BlockBaseProps = {
   Description: string;
   CategorySlug?: string;
 };
-export type LinkProps = {
-  Label: string;
-  href: string;
-  isDisplay: boolean;
-  isButton: boolean;
-  Buttontype: string;
-  NewTab: boolean;
-};
+// export type LinkProps = {
+//   Label: string;
+//   href: string;
+//   isDisplay: boolean | null;
+//   isButton: boolean | null;
+//   Buttontype: string | null;
+//   NewTab: boolean | null;
+// };
 export const LinkSchema = z.object({
   Label: z.string(),
   href: z.string().nullable().default('#'),
@@ -31,6 +31,7 @@ export const LinkSchema = z.object({
   Buttontype: z.string().nullable(),
   NewTab: z.boolean().nullable(),
 });
+export type LinkProps = z.infer<typeof LinkSchema>;
 
 export type ImageProps = {
   url: string;

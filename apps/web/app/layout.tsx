@@ -4,10 +4,8 @@ import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import { Analytics } from '@/components/Analytics';
-import { Footer } from '@/components/Footer';
-import { Header } from '@/components/Header';
 import { JsonLd } from '@/components/JsonLd';
-import { MAIN_ID, SkipLink } from '@/components/SkipLink';
+import { SkipLink } from '@/components/SkipLink';
 import { strings } from '@/content/strings';
 import { INDEXABLE, SITE_URL, organizationJsonLd, websiteJsonLd } from '@/lib/seo';
 
@@ -27,11 +25,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body data-surface="paper" className="flex min-h-dvh flex-col font-sans antialiased">
         <SkipLink />
-        <Header />
-        <main id={MAIN_ID} tabIndex={-1} className="flex-1 focus:outline-none">
-          {children}
-        </main>
-        <Footer />
+        {children}
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         <Analytics />
       </body>

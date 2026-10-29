@@ -1,35 +1,79 @@
-import Link from 'next/link';
-import { strings } from '@/content/strings';
-
-const NAV = [
-  { href: '/tips/', label: strings.nav.tips },
-  { href: '/find-my-tips/', label: strings.nav.findMyTips },
-  { href: '/search/', label: strings.nav.search },
-] as const;
-
-/**
- * Site header (shell UI, TDD §6.4 / D22).
- * TODO(BD3244-8): nav links from Global, the search popover (§6.5), and the mobile menu.
- */
-export function Header() {
+'use client';
+import { IconClose, IconMenu, IconSearch } from './Icon';
+import TransitionLink from './TransitionLink';
+import { Typography } from './Typography';
+import { useContext } from 'react';
+// import { Menu } from './Menu';
+import { usePathname } from 'next/navigation';
+import type { LinkProps } from '@/blocks/types';
+import { AppContext } from '@/components/Provider';
+export interface NavigationCmsDataProps {
+  searchPlaceholder: string;
+  title: string;
+  link: Array<LinkProps>;
+}
+interface NavigationProp {
+  className?: string;
+  showClose?: boolean;
+  onClose?: () => void;
+  inPopup?: boolean;
+}
+export function Header({ className = '', showClose = false, onClose = () => {} }: NavigationProp) {
+  // const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const hiddenSearch = pathname === '/search' && !showClose;
+  const { navigation } = useContext(AppContext);
+  if (!navigation) {
+    return null;
+  }
   return (
-    <header data-surface="paper" className="border-b border-line px-gutter lg:px-gutter-lg">
-      <div className="mx-auto flex max-w-page flex-wrap items-center justify-between gap-md py-sm">
-        <Link href="/" className="font-display text-2xl uppercase">
-          {strings.site.name}
-        </Link>
-        <nav aria-label={strings.nav.label}>
-          <ul className="flex flex-wrap gap-md text-label font-semibold">
-            {NAV.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="underline-offset-4 hover:underline">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+    <nav
+      className={`flex justify-between items-center px-5 pt-16.5 pb-5 border-b lg:border-b-[1.5px] border-ink-terra-15 lg:pt-12.5 lg:pb-6.5 lg:px-15 bg-ink-terra text-surface-mint ${className}`}
+    >
+      <div className="text-[35px] h-8.75">
+        <TransitionLink href="/">{navigation.title}</TransitionLink>
       </div>
-    </header>
+      <div className="flex items-center gap-lg lg:hidden">
+        {!hiddenSearch && (
+          <TransitionLink aria-label={navigation.searchPlaceholder} href="/search">
+            <IconSearch />
+          </TransitionLink>
+        )}
+
+        {showClose ? (
+          <IconClose className="cursor-pointer" onClick={onClose} />
+        ) : (
+          <IconMenu
+            className="cursor-pointer"
+            onClick={() => {
+              // setIsOpen(true);
+            }}
+          />
+        )}
+      </div>
+      <div className="hidden lg:flex gap-lg items-center">
+        {navigation.link.map((item) => (
+          <TransitionLink className="capitalize" key={item.href} href={`${item.href}`}>
+            <Typography variant="paragraph-regular" className="font-bold" as="span">
+              {item.Label}
+            </Typography>
+          </TransitionLink>
+        ))}
+        <div className="rounded-4xl flex gap-2.5 items-center py-sm px-5 border-surface-mint border-2">
+          <IconSearch />
+          <input
+            type="text"
+            className="font-bold placeholder:text-surface-mint w-43"
+            placeholder="Search Ingredients Tips"
+          />
+        </div>
+      </div>
+      {/* <Menu
+        open={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+        }}
+      /> */}
+    </nav>
   );
 }
