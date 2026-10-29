@@ -1,4 +1,3 @@
-import { ModuleBoundary } from '@/components/ModuleBoundary';
 import type { ToolInputProps } from '.';
 import { Typography } from '@/components/Typography';
 import { IconWork1, IconWork2, IconWork3 } from '@/components/Icon';
@@ -7,7 +6,7 @@ import type { BlockProps } from '../types';
 const IconComponent = [IconWork1, IconWork2, IconWork3];
 export function ToolBody(props: BlockProps<ToolInputProps>) {
   return (
-    <ModuleBoundary type="tool-body" surface="paper" className="pt-12 pb-15 lg:pb-25">
+    <div className="px-gutter lg:px-gutter-lg max-w-page mx-auto pt-12 pb-15 lg:pb-25">
       <div className="lg:w-2/3 mx-auto lg:text-center">
         <Typography variant="headline-lg">{props.block.CardTitle}</Typography>
         <Typography variant="subhead-lg" className="mt-5">
@@ -39,6 +38,6 @@ export function ToolBody(props: BlockProps<ToolInputProps>) {
           );
         })}
       </div>
-    </ModuleBoundary>
+    </div>
   );
 }

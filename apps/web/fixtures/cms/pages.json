@@ -235,7 +235,9 @@
               "Description": "You see how to waste less of each ingredient.",
               "Link": null
             }
-          ]
+          ],
+          "isFullwidth": true,
+          "Background_color": "paper"
         }
       ]
     },
