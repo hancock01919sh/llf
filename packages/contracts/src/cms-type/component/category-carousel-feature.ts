@@ -7,17 +7,17 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const CategoryCarouselFeature = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
-  Link: nullish(LinksRef.array()),
-  Feature_Card: nullish(FeatureCardRef.array()),
-  isFullwidth: z.boolean().default(true).optional(),
-  Background_color: z.enum(['terra']).default('terra').optional(),
+  Link: nullish(z.array(z.lazy(() => LinksRef))),
+  Feature_Card: nullish(z.array(z.lazy(() => FeatureCardRef))),
+  isFullwidth: nullish(z.boolean().default(true)),
+  Background_color: nullish(z.enum(['terra']).default('terra')),
 });
 
 export const CategoryCarouselFeatureRef = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
-  isFullwidth: z.boolean().default(true).optional(),
-  Background_color: z.enum(['terra']).default('terra').optional(),
+  isFullwidth: nullish(z.boolean().default(true)),
+  Background_color: nullish(z.enum(['terra']).default('terra')),
 });
 
 export type CategoryCarouselFeature = z.infer<typeof CategoryCarouselFeature>;

@@ -9,8 +9,8 @@ export const Ingredient = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  type: z
-    .enum([
+  type: nullish(
+    z.enum([
       'Baked Goods',
       'Dairy',
       'Dry Foods',
@@ -18,21 +18,21 @@ export const Ingredient = z.object({
       'Leafy Greens',
       'Produce',
       'Protein',
-    ])
-    .optional(),
+    ]),
+  ),
   synonyms: nullish(z.string()),
-  tips: nullish(TipRef.array()),
+  tips: nullish(z.array(z.lazy(() => TipRef))),
   wasted: z.number().int().default(3),
   image: nullish(Media),
-  categories: nullish(CategoryRef.array()),
+  categories: nullish(z.array(z.lazy(() => CategoryRef))),
 });
 
 export const IngredientRef = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  type: z
-    .enum([
+  type: nullish(
+    z.enum([
       'Baked Goods',
       'Dairy',
       'Dry Foods',
@@ -40,8 +40,8 @@ export const IngredientRef = z.object({
       'Leafy Greens',
       'Produce',
       'Protein',
-    ])
-    .optional(),
+    ]),
+  ),
   synonyms: nullish(z.string()),
   wasted: z.number().int().default(3),
   image: nullish(Media),

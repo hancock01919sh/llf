@@ -6,10 +6,10 @@ import { OverlayLinkRef } from '../shared/overlay-link';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Footer = z.object({
-  Link: nullish(LinksRef.array()),
-  Iconlink: nullish(IconlinkRef.array()),
+  Link: nullish(z.array(z.lazy(() => LinksRef))),
+  Iconlink: nullish(z.array(z.lazy(() => IconlinkRef))),
   Legal_Copy: nullish(z.string()),
-  Overlaylink: nullish(OverlayLinkRef.array()),
+  Overlaylink: nullish(z.array(z.lazy(() => OverlayLinkRef))),
 });
 
 export const FooterRef = z.object({

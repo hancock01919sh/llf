@@ -8,10 +8,10 @@ export const Header = z.object({
   SubTitle: nullish(z.string()),
   Description: nullish(z.string()),
   Image: nullish(Media),
-  Background_color: z.enum(['terra', 'forest']).optional(),
-  Add_background_color: z.boolean().default(false).optional(),
-  Position_of_Adding_BgColor: z.enum(['up', 'down']).optional(),
-  isFullwidth: z.boolean().default(false).optional(),
+  Background_color: nullish(z.enum(['terra', 'forest'])),
+  Add_background_color: nullish(z.boolean().default(false)),
+  Position_of_Adding_BgColor: nullish(z.enum(['up', 'down'])),
+  isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export const HeaderRef = z.object({
@@ -19,10 +19,10 @@ export const HeaderRef = z.object({
   SubTitle: nullish(z.string()),
   Description: nullish(z.string()),
   Image: nullish(Media),
-  Background_color: z.enum(['terra', 'forest']).optional(),
-  Add_background_color: z.boolean().default(false).optional(),
-  Position_of_Adding_BgColor: z.enum(['up', 'down']).optional(),
-  isFullwidth: z.boolean().default(false).optional(),
+  Background_color: nullish(z.enum(['terra', 'forest'])),
+  Add_background_color: nullish(z.boolean().default(false)),
+  Position_of_Adding_BgColor: nullish(z.enum(['up', 'down'])),
+  isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export type Header = z.infer<typeof Header>;

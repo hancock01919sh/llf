@@ -8,7 +8,7 @@ export const Group = z.object({
   documentId: z.string(),
   description: nullish(z.string()),
   title: z.string(),
-  categories: nullish(CategoryRef.array()),
+  categories: nullish(z.array(z.lazy(() => CategoryRef))),
 });
 
 export const GroupRef = z.object({

@@ -12,11 +12,11 @@ export const Tip = z.object({
   documentId: z.string(),
   title: z.string(),
   description: nullish(z.string()),
-  ingredient: nullish(IngredientRef),
-  tip_type: nullish(TipTypeRef),
-  tip_behavior: nullish(TipBehaviorRef),
-  tip_motivator: nullish(TipMotivatorRef),
-  categories: nullish(CategoryRef.array()),
+  ingredient: nullish(z.lazy(() => IngredientRef)),
+  tip_type: nullish(z.lazy(() => TipTypeRef)),
+  tip_behavior: nullish(z.lazy(() => TipBehaviorRef)),
+  tip_motivator: nullish(z.lazy(() => TipMotivatorRef)),
+  categories: nullish(z.array(z.lazy(() => CategoryRef))),
 });
 
 export const TipRef = z.object({

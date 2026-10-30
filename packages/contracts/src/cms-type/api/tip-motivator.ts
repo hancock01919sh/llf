@@ -7,7 +7,7 @@ export const TipMotivator = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  tips: nullish(TipRef.array()),
+  tips: nullish(z.array(z.lazy(() => TipRef))),
 });
 
 export const TipMotivatorRef = z.object({

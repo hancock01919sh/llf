@@ -12,12 +12,12 @@ export const ToolInput = z.object({
   Image: nullish(Media),
   CardTitle: nullish(z.string()),
   CardDescription: nullish(z.string()),
-  Cards: nullish(InputCardRef.array()),
+  Cards: nullish(z.array(z.lazy(() => InputCardRef))),
   Placeholder: nullish(z.string()),
   Copy: nullish(z.string()),
-  Button: nullish(LinksRef.array()),
-  Background_color: z.enum(['forest', 'paper']).optional(),
-  isFullwidth: z.boolean().default(false).optional(),
+  Button: nullish(z.array(z.lazy(() => LinksRef))),
+  Background_color: nullish(z.enum(['forest', 'paper'])),
+  isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export const ToolInputRef = z.object({
@@ -29,8 +29,8 @@ export const ToolInputRef = z.object({
   CardDescription: nullish(z.string()),
   Placeholder: nullish(z.string()),
   Copy: nullish(z.string()),
-  Background_color: z.enum(['forest', 'paper']).optional(),
-  isFullwidth: z.boolean().default(false).optional(),
+  Background_color: nullish(z.enum(['forest', 'paper'])),
+  isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export type ToolInput = z.infer<typeof ToolInput>;
