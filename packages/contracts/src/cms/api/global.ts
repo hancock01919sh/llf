@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import {LoadingSchema } from '../component/loading';
-import {SeoSchema } from '../shared/seo';
+import { LoadingSchema } from '../component/loading';
+import { SeoSchema } from '../shared/seo';
 
 export const GlobalSchema = z.object({
   id: z.number(),

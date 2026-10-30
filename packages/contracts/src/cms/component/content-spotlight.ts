@@ -5,7 +5,7 @@ export const ContentSpotlightSchema = z.object({
   Title: z.string().optional(),
   Description: z.string().optional(),
   Image: MediaSchema.optional(),
-  Background_color: z.enum(["paper","sand"]).optional(),
+  Background_color: z.enum(['paper', 'sand']).optional(),
   Make_Image_left: z.boolean().default(false).optional(),
   isFullwidth: z.boolean().default(false).optional(),
 });

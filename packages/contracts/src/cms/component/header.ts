@@ -6,9 +6,9 @@ export const HeaderSchema = z.object({
   SubTitle: z.string().optional(),
   Description: z.string().optional(),
   Image: MediaSchema.optional(),
-  Background_color: z.enum(["terra","forest"]).optional(),
+  Background_color: z.enum(['terra', 'forest']).optional(),
   Add_background_color: z.boolean().default(false).optional(),
-  Position_of_Adding_BgColor: z.enum(["up","down"]).optional(),
+  Position_of_Adding_BgColor: z.enum(['up', 'down']).optional(),
   isFullwidth: z.boolean().default(false).optional(),
 });
 

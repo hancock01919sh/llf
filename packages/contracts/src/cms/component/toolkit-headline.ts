@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { MediaSchema } from '../media';
-import {LinksSchema } from '../shared/links';
+import { LinksSchema } from '../shared/links';
 
 export const ToolkitHeadlineSchema = z.object({
   Title: z.string().optional(),

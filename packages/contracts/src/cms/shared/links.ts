@@ -5,7 +5,7 @@ export const LinksSchema = z.object({
   href: z.string().optional(),
   isDisplay: z.boolean().default(true).optional(),
   isButton: z.boolean().optional(),
-  Buttontype: z.enum(["Primary","Secondary"]).optional(),
+  Buttontype: z.enum(['Primary', 'Secondary']).optional(),
   NewTab: z.boolean().default(false).optional(),
 });
 

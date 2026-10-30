@@ -5,7 +5,7 @@ export const LogoCardsSchema = z.object({
   Title: z.string().optional(),
   Description: z.string().optional(),
   Image_Desktop: MediaSchema.array().optional(),
-  Background_color: z.enum(["paper","forest"]).optional(),
+  Background_color: z.enum(['paper', 'forest']).optional(),
   Image_Mobile: MediaSchema.array().optional(),
   isFullwidth: z.boolean().default(false).optional(),
 });

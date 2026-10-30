@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import {LinksSchema } from '../shared/links';
+import { LinksSchema } from '../shared/links';
 
 export const TipsPopupSchema = z.object({
   Title: z.string().optional(),

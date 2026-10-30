@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import {PageSchema } from '../api/page';
+import { PageSchema } from '../api/page';
 
 export const CtaSchema = z.object({
   label: z.string().optional(),
