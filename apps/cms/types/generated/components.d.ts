@@ -45,24 +45,6 @@ export interface ComponentAccordion extends Struct.ComponentSchema {
   };
 }
 
-export interface ComponentAssetsCard extends Struct.ComponentSchema {
-  collectionName: "components_component_assets_cards";
-  info: {
-    displayName: "Assets Card";
-  };
-  attributes: {
-    CTA: Schema.Attribute.Component<"shared.links", false>;
-    Description: Schema.Attribute.Text;
-    File: Schema.Attribute.Media<"images" | "files" | "videos" | "audios">;
-    Image: Schema.Attribute.Media<"images" | "files" | "videos" | "audios">;
-    Title: Schema.Attribute.String;
-    toolkit_category: Schema.Attribute.Relation<
-      "oneToOne",
-      "api::toolkit-category.toolkit-category"
-    >;
-  };
-}
-
 export interface ComponentCarousel extends Struct.ComponentSchema {
   collectionName: "components_component_carousels";
   info: {
@@ -196,6 +178,21 @@ export interface ComponentFooter extends Struct.ComponentSchema {
   };
 }
 
+export interface ComponentGuide extends Struct.ComponentSchema {
+  collectionName: "components_component_guides";
+  info: {
+    displayName: "Guide";
+  };
+  attributes: {
+    Asset1: Schema.Attribute.Component<"shared.assets-cards", true>;
+    Asset2: Schema.Attribute.Component<"shared.assets-cards", true>;
+    Description: Schema.Attribute.Text;
+    Label1: Schema.Attribute.Text;
+    Label2: Schema.Attribute.Text;
+    Title: Schema.Attribute.String;
+  };
+}
+
 export interface ComponentHeader extends Struct.ComponentSchema {
   collectionName: "components_component_headers";
   info: {
@@ -283,6 +280,8 @@ export interface ComponentLoading extends Struct.ComponentSchema {
     displayName: "Loading";
   };
   attributes: {
+    Background_color: Schema.Attribute.Enumeration<["forest"]>;
+    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Statement: Schema.Attribute.Text;
     Title: Schema.Attribute.String;
   };
@@ -393,9 +392,7 @@ export interface ComponentTipsPopup extends Struct.ComponentSchema {
     displayName: "Tips Popup";
   };
   attributes: {
-    Background_color: Schema.Attribute.Enumeration<["paper"]>;
     Description: Schema.Attribute.Text;
-    isFullwidth: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     Link: Schema.Attribute.Component<"shared.links", false>;
     Title: Schema.Attribute.String;
   };
@@ -440,7 +437,7 @@ export interface ComponentToolSpotlight extends Struct.ComponentSchema {
 export interface ComponentToolkitHeadline extends Struct.ComponentSchema {
   collectionName: "components_component_toolkit_headlines";
   info: {
-    displayName: "Toolkit Headline";
+    displayName: "Toolkit Info";
   };
   attributes: {
     CTA: Schema.Attribute.Component<"shared.links", false>;
@@ -515,6 +512,25 @@ export interface SharedAccordionItem extends Struct.ComponentSchema {
   attributes: {
     Description: Schema.Attribute.String;
     Label: Schema.Attribute.String;
+  };
+}
+
+export interface SharedAssetsCards extends Struct.ComponentSchema {
+  collectionName: "components_shared_assets_cards";
+  info: {
+    displayName: "Assets Cards";
+  };
+  attributes: {
+    CTA: Schema.Attribute.Component<"shared.links", false>;
+    Description: Schema.Attribute.Text;
+    Display_Mode: Schema.Attribute.Enumeration<["Landscape", "Portrait"]>;
+    File: Schema.Attribute.Media<"images" | "files" | "videos" | "audios">;
+    Image: Schema.Attribute.Media<"images" | "files" | "videos" | "audios">;
+    Title: Schema.Attribute.String;
+    toolkit_category: Schema.Attribute.Relation<
+      "oneToOne",
+      "api::toolkit-category.toolkit-category"
+    >;
   };
 }
 
@@ -688,7 +704,6 @@ declare module "@strapi/strapi" {
       "component.404": Component404;
       "component.5050-text-and-image": Component5050TextAndImage;
       "component.accordion": ComponentAccordion;
-      "component.assets-card": ComponentAssetsCard;
       "component.carousel": ComponentCarousel;
       "component.carousel-small": ComponentCarouselSmall;
       "component.carousel-standard": ComponentCarouselStandard;
@@ -697,6 +712,7 @@ declare module "@strapi/strapi" {
       "component.category-emoji": ComponentCategoryEmoji;
       "component.content-spotlight": ComponentContentSpotlight;
       "component.footer": ComponentFooter;
+      "component.guide": ComponentGuide;
       "component.header": ComponentHeader;
       "component.hero": ComponentHero;
       "component.highlight-component": ComponentHighlightComponent;
@@ -717,6 +733,7 @@ declare module "@strapi/strapi" {
       "custom.tip-list": CustomTipList;
       "custom.tool": CustomTool;
       "shared.accordion-item": SharedAccordionItem;
+      "shared.assets-cards": SharedAssetsCards;
       "shared.cta": SharedCta;
       "shared.emoji-item": SharedEmojiItem;
       "shared.feature-card": SharedFeatureCard;
