@@ -7,7 +7,7 @@ export const Navigation = z.object({
   id: z.number(),
   documentId: z.string(),
   title: nullish(z.string()),
-  link: nullish(LinksRef.array()),
+  link: nullish(z.array(z.lazy(() => LinksRef))),
   searchPlaceholder: nullish(z.string()),
 });
 

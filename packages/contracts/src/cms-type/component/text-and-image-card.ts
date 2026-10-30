@@ -7,16 +7,16 @@ export const TextAndImageCard = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
   Image: nullish(Media.array()),
-  Background_color: z.enum(['paper']).optional(),
-  isFullwidth: z.boolean().default(false).optional(),
+  Background_color: nullish(z.enum(['paper'])),
+  isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export const TextAndImageCardRef = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
   Image: nullish(Media.array()),
-  Background_color: z.enum(['paper']).optional(),
-  isFullwidth: z.boolean().default(false).optional(),
+  Background_color: nullish(z.enum(['paper'])),
+  isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export type TextAndImageCard = z.infer<typeof TextAndImageCard>;

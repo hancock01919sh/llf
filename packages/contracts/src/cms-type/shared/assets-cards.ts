@@ -9,10 +9,10 @@ export const AssetsCards = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
   Image: nullish(Media),
-  CTA: nullish(LinksRef),
+  CTA: nullish(z.lazy(() => LinksRef)),
   File: nullish(Media),
-  toolkit_category: nullish(ToolkitCategoryRef),
-  Display_Mode: z.enum(['Landscape', 'Portrait']).optional(),
+  toolkit_category: nullish(z.lazy(() => ToolkitCategoryRef)),
+  Display_Mode: nullish(z.enum(['Landscape', 'Portrait'])),
 });
 
 export const AssetsCardsRef = z.object({
@@ -20,7 +20,7 @@ export const AssetsCardsRef = z.object({
   Description: nullish(z.string()),
   Image: nullish(Media),
   File: nullish(Media),
-  Display_Mode: z.enum(['Landscape', 'Portrait']).optional(),
+  Display_Mode: nullish(z.enum(['Landscape', 'Portrait'])),
 });
 
 export type AssetsCards = z.infer<typeof AssetsCards>;

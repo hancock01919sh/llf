@@ -12,10 +12,10 @@ export const CategoryDetail = z.object({
   Image: nullish(Media.array()),
   SubTitle: nullish(z.string()),
   Statement: nullish(Block.array()),
-  Button: nullish(LinksRef),
-  Popup: nullish(TipsPopupRef),
-  isFullwidth: z.boolean().default(false).optional(),
-  Background_color: z.enum(['forest']).optional(),
+  Button: nullish(z.lazy(() => LinksRef)),
+  Popup: nullish(z.lazy(() => TipsPopupRef)),
+  isFullwidth: nullish(z.boolean().default(false)),
+  Background_color: nullish(z.enum(['forest'])),
 });
 
 export const CategoryDetailRef = z.object({
@@ -23,8 +23,8 @@ export const CategoryDetailRef = z.object({
   Description: nullish(z.string()),
   Image: nullish(Media.array()),
   SubTitle: nullish(z.string()),
-  isFullwidth: z.boolean().default(false).optional(),
-  Background_color: z.enum(['forest']).optional(),
+  isFullwidth: nullish(z.boolean().default(false)),
+  Background_color: nullish(z.enum(['forest'])),
 });
 
 export type CategoryDetail = z.infer<typeof CategoryDetail>;

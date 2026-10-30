@@ -6,7 +6,7 @@ export const ToolkitCategory = z.object({
   id: z.number(),
   documentId: z.string(),
   label: nullish(z.string()),
-  parentCategory: z.enum(['PSA Assets', 'Guideline']).optional(),
+  parentCategory: nullish(z.enum(['PSA Assets', 'Guideline'])),
   SubCategory_Description: nullish(z.string()),
 });
 
@@ -14,7 +14,7 @@ export const ToolkitCategoryRef = z.object({
   id: z.number(),
   documentId: z.string(),
   label: nullish(z.string()),
-  parentCategory: z.enum(['PSA Assets', 'Guideline']).optional(),
+  parentCategory: nullish(z.enum(['PSA Assets', 'Guideline'])),
   SubCategory_Description: nullish(z.string()),
 });
 

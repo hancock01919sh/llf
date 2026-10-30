@@ -7,9 +7,9 @@ export const Guide = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
   Label1: nullish(z.string()),
-  Asset1: nullish(AssetsCardsRef.array()),
+  Asset1: nullish(z.array(z.lazy(() => AssetsCardsRef))),
   Label2: nullish(z.string()),
-  Asset2: nullish(AssetsCardsRef.array()),
+  Asset2: nullish(z.array(z.lazy(() => AssetsCardsRef))),
 });
 
 export const GuideRef = z.object({

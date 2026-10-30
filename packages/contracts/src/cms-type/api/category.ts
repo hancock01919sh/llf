@@ -13,12 +13,12 @@ export const Category = z.object({
   title: z.string(),
   slug: z.string(),
   description: nullish(z.string()),
-  ingredients: nullish(IngredientRef.array()),
-  tips: nullish(TipRef.array()),
+  ingredients: nullish(z.array(z.lazy(() => IngredientRef))),
+  tips: nullish(z.array(z.lazy(() => TipRef))),
   mode: z.enum(['Ingredients', 'Tips']).default('Ingredients'),
   image: nullish(Media),
-  group: nullish(GroupRef),
-  seo: nullish(SeoRef),
+  group: nullish(z.lazy(() => GroupRef)),
+  seo: nullish(z.lazy(() => SeoRef)),
 });
 
 export const CategoryRef = z.object({

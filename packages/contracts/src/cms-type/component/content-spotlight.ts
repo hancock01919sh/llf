@@ -7,18 +7,18 @@ export const ContentSpotlight = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
   Image: nullish(Media),
-  Background_color: z.enum(['paper', 'sand']).optional(),
-  Make_Image_left: z.boolean().default(false).optional(),
-  isFullwidth: z.boolean().default(false).optional(),
+  Background_color: nullish(z.enum(['paper', 'sand'])),
+  Make_Image_left: nullish(z.boolean().default(false)),
+  isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export const ContentSpotlightRef = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
   Image: nullish(Media),
-  Background_color: z.enum(['paper', 'sand']).optional(),
-  Make_Image_left: z.boolean().default(false).optional(),
-  isFullwidth: z.boolean().default(false).optional(),
+  Background_color: nullish(z.enum(['paper', 'sand'])),
+  Make_Image_left: nullish(z.boolean().default(false)),
+  isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export type ContentSpotlight = z.infer<typeof ContentSpotlight>;

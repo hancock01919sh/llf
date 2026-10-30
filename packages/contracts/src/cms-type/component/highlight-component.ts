@@ -8,17 +8,17 @@ export const HighlightComponent = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
   Image: nullish(Media),
-  Background_color: z.enum(['forest-tint', 'paper', 'forest']).optional(),
-  Link: nullish(LinksRef.array()),
-  isFullwidth: z.boolean().default(false).optional(),
+  Background_color: nullish(z.enum(['forest-tint', 'paper', 'forest'])),
+  Link: nullish(z.array(z.lazy(() => LinksRef))),
+  isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export const HighlightComponentRef = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
   Image: nullish(Media),
-  Background_color: z.enum(['forest-tint', 'paper', 'forest']).optional(),
-  isFullwidth: z.boolean().default(false).optional(),
+  Background_color: nullish(z.enum(['forest-tint', 'paper', 'forest'])),
+  isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export type HighlightComponent = z.infer<typeof HighlightComponent>;

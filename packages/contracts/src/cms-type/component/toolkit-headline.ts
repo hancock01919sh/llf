@@ -7,7 +7,7 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const ToolkitHeadline = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
-  CTA: nullish(LinksRef),
+  CTA: nullish(z.lazy(() => LinksRef)),
   File: nullish(Media),
 });
 

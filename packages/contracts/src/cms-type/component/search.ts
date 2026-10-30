@@ -11,10 +11,10 @@ export const Search = z.object({
   Placeholder: nullish(z.string()),
   Statement: nullish(Block.array()),
   Hint: nullish(z.string()),
-  Button: nullish(LinksRef),
-  Popup: nullish(TipsPopupRef),
-  isFullwidth: z.boolean().default(false).optional(),
-  Background_color: z.enum(['paper']).optional(),
+  Button: nullish(z.lazy(() => LinksRef)),
+  Popup: nullish(z.lazy(() => TipsPopupRef)),
+  isFullwidth: nullish(z.boolean().default(false)),
+  Background_color: nullish(z.enum(['paper'])),
 });
 
 export const SearchRef = z.object({
@@ -22,8 +22,8 @@ export const SearchRef = z.object({
   Description: nullish(z.string()),
   Placeholder: nullish(z.string()),
   Hint: nullish(z.string()),
-  isFullwidth: z.boolean().default(false).optional(),
-  Background_color: z.enum(['paper']).optional(),
+  isFullwidth: nullish(z.boolean().default(false)),
+  Background_color: nullish(z.enum(['paper'])),
 });
 
 export type Search = z.infer<typeof Search>;
