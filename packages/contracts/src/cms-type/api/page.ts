@@ -72,37 +72,6 @@ export const PageRef = z.object({
   documentId: z.string(),
   title: z.string(),
   path: z.string(),
-  main: nullish(
-    z.array(
-      z.union([
-        z.lazy(() => HeroRef),
-        z.lazy(() => ToolRef),
-        z.lazy(() => CarouselRef),
-        z.lazy(() => TipListRef),
-        z.lazy(() => ToolSpotlightRef),
-        z.lazy(() => HighlightComponentRef),
-        z.lazy(() => CategoryEmojiRef),
-        z.lazy(() => CategoryCarouselFeatureRef),
-        z.lazy(() => HeaderRef),
-        z.lazy(() => LogoCardsRef),
-        z.lazy(() => ContentSpotlightRef),
-        z.lazy(() => _5050TextAndImageRef),
-        z.lazy(() => TextAndImageCardRef),
-        z.lazy(() => ToolInputRef),
-        z.lazy(() => AccordionRef),
-        z.lazy(() => CarouselStandardRef),
-        z.lazy(() => IngredientCarouselRef),
-        z.lazy(() => TipBannerRef),
-        z.lazy(() => CarouselSmallRef),
-        z.lazy(() => SearchRef),
-        z.lazy(() => CategoryDetailRef),
-        z.lazy(() => _404Ref),
-        z.lazy(() => ToolkitHeadlineRef),
-        z.lazy(() => AssetsCardsRef),
-        z.lazy(() => GuideRef),
-      ]),
-    ),
-  ),
 });
 
 export type Page = z.infer<typeof Page>;
