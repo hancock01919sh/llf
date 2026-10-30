@@ -18,3 +18,24 @@ export function UIImage({ className = '', ...rest }: ResponsiveImageProps) {
     </picture>
   );
 }
+export function EasyImage({
+  url,
+  alt,
+  className = '',
+}: {
+  url: string;
+  alt: string;
+  className?: string;
+}) {
+  return (
+    <picture className={`relative block overflow-hidden ${className}`}>
+      <Image
+        className="w-full h-full object-cover"
+        style={{ objectFit: 'cover' }}
+        fill
+        src={url}
+        alt={alt}
+      />
+    </picture>
+  );
+}

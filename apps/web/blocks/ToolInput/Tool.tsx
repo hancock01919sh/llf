@@ -194,7 +194,7 @@ export function Tool(props: BlockProps<ToolInputProps> & { className?: string })
 
         <Typography variant="paragraph-sm">{props.block.Copy}</Typography>
       </div>
-      <Loading open={showLoading} onClose={() => setShowLoading(false)} />
+      <Loading open={showLoading} />
     </>
   );
 }
