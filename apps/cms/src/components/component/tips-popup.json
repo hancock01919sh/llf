@@ -15,16 +15,6 @@
       "type": "component",
       "component": "shared.links",
       "repeatable": false
-    },
-    "isFullwidth": {
-      "type": "boolean",
-      "default": false
-    },
-    "Background_color": {
-      "type": "enumeration",
-      "enum": [
-        "paper"
-      ]
     }
   },
   "config": {}
