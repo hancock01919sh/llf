@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_shared_input_cards",
+  "info": {
+    "displayName": "InputCard"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "text"
+    },
+    "Icon": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "Link": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": false
+    },
+    "Description": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

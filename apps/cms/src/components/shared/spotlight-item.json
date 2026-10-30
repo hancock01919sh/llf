@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_shared_spotlight_items",
+  "info": {
+    "displayName": "SpotlightItem"
+  },
+  "options": {},
+  "attributes": {
+    "Copy": {
+      "type": "string"
+    },
+    "Video": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  },
+  "config": {}
+}

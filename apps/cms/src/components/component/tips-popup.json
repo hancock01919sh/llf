@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_component_tips_popups",
+  "info": {
+    "displayName": "Tips Popup"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Link": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": false
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "paper"
+      ]
+    }
+  },
+  "config": {}
+}

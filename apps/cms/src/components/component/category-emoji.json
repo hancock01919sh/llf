@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_component_category_emojis",
+  "info": {
+    "displayName": "Category - Emoji"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Emoji": {
+      "type": "component",
+      "component": "shared.emoji-item",
+      "repeatable": true
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "paper"
+      ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "config": {}
+}

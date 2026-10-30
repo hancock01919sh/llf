@@ -1,0 +1,34 @@
+{
+  "collectionName": "components_component_tip_banners",
+  "info": {
+    "displayName": "Tip Banner"
+  },
+  "options": {},
+  "attributes": {
+    "Label": {
+      "type": "string"
+    },
+    "tip": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::tip.tip"
+    },
+    "CTA": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": true
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "terra",
+        "forest"
+      ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "config": {}
+}

@@ -35,7 +35,8 @@
             "Ingredients"
           ]
         }
-      }
+      },
+      "mappedBy": "categories"
     },
     "tips": {
       "type": "relation",
@@ -50,7 +51,8 @@
             "Tips"
           ]
         }
-      }
+      },
+      "mappedBy": "categories"
     },
     "mode": {
       "type": "enumeration",

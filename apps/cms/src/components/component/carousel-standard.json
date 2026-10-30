@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_component_carousel_standards",
+  "info": {
+    "displayName": "Carousel - Standard"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "sand",
+        "paper",
+        "terra"
+      ]
+    },
+    "StandardCard": {
+      "type": "component",
+      "component": "shared.standard-card",
+      "repeatable": true
+    },
+    "Card_Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "Bright Yellow"
+      ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_shared_iconlinks",
+  "info": {
+    "displayName": "iconlink"
+  },
+  "options": {},
+  "attributes": {
+    "Label": {
+      "type": "string"
+    },
+    "Image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "href": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}
