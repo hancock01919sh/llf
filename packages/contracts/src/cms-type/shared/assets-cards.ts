@@ -1,15 +1,25 @@
 import { z } from 'zod';
-import { Links } from '../shared/links';
+import { LinksRef } from '../shared/links';
 import { Media } from '../media';
-import { ToolkitCategory } from '../api/toolkit-category';
+import { ToolkitCategoryRef } from '../api/toolkit-category';
+
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const AssetsCards = z.object({
-  Title: z.string().optional(),
-  Description: z.string().optional(),
+  Title: nullish(z.string()),
+  Description: nullish(z.string()),
   Image: Media.optional(),
-  CTA: z.lazy((): z.ZodType => Links).optional(),
+  CTA: LinksRef.optional(),
   File: Media.optional(),
-  toolkit_category: z.lazy((): z.ZodType => ToolkitCategory).optional(),
+  toolkit_category: nullish(ToolkitCategoryRef),
+  Display_Mode: z.enum(['Landscape', 'Portrait']).optional(),
+});
+
+export const AssetsCardsRef = z.object({
+  Title: nullish(z.string()),
+  Description: nullish(z.string()),
+  Image: Media.optional(),
+  File: Media.optional(),
   Display_Mode: z.enum(['Landscape', 'Portrait']).optional(),
 });
 

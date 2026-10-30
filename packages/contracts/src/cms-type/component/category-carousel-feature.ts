@@ -1,18 +1,21 @@
 import { z } from 'zod';
-import { FeatureCard } from '../shared/feature-card';
-import { Links } from '../shared/links';
+import { FeatureCardRef } from '../shared/feature-card';
+import { LinksRef } from '../shared/links';
+
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const CategoryCarouselFeature = z.object({
-  Title: z.string().optional(),
-  Description: z.string().optional(),
-  Link: z
-    .lazy((): z.ZodType => Links)
-    .array()
-    .optional(),
-  Feature_Card: z
-    .lazy((): z.ZodType => FeatureCard)
-    .array()
-    .optional(),
+  Title: nullish(z.string()),
+  Description: nullish(z.string()),
+  Link: LinksRef.array().optional(),
+  Feature_Card: FeatureCardRef.array().optional(),
+  isFullwidth: z.boolean().default(true).optional(),
+  Background_color: z.enum(['terra']).default('terra').optional(),
+});
+
+export const CategoryCarouselFeatureRef = z.object({
+  Title: nullish(z.string()),
+  Description: nullish(z.string()),
   isFullwidth: z.boolean().default(true).optional(),
   Background_color: z.enum(['terra']).default('terra').optional(),
 });

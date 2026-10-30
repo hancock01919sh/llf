@@ -1,16 +1,27 @@
 import { z } from 'zod';
 import { Block } from '../blocks';
-import { Links } from '../shared/links';
-import { TipsPopup } from '../component/tips-popup';
+import { LinksRef } from '../shared/links';
+import { TipsPopupRef } from '../component/tips-popup';
+
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Search = z.object({
-  Title: z.string().optional(),
-  Description: z.string().optional(),
-  Placeholder: z.string().optional(),
+  Title: nullish(z.string()),
+  Description: nullish(z.string()),
+  Placeholder: nullish(z.string()),
   Statement: Block.array().optional(),
-  Hint: z.string().optional(),
-  Button: z.lazy((): z.ZodType => Links).optional(),
-  Popup: z.lazy((): z.ZodType => TipsPopup).optional(),
+  Hint: nullish(z.string()),
+  Button: LinksRef.optional(),
+  Popup: TipsPopupRef.optional(),
+  isFullwidth: z.boolean().default(false).optional(),
+  Background_color: z.enum(['paper']).optional(),
+});
+
+export const SearchRef = z.object({
+  Title: nullish(z.string()),
+  Description: nullish(z.string()),
+  Placeholder: nullish(z.string()),
+  Hint: nullish(z.string()),
   isFullwidth: z.boolean().default(false).optional(),
   Background_color: z.enum(['paper']).optional(),
 });

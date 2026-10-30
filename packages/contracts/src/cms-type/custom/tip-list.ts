@@ -1,14 +1,18 @@
 import { z } from 'zod';
-import { Tip } from '../api/tip';
-import { Title } from '../shared/title';
+import { TipRef } from '../api/tip';
+import { TitleRef } from '../shared/title';
+
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const TipList = z.object({
-  title: z.lazy((): z.ZodType => Title).optional(),
-  description: z.string().optional(),
-  tips: z
-    .lazy((): z.ZodType => Tip)
-    .array()
-    .optional(),
+  title: TitleRef.optional(),
+  description: nullish(z.string()),
+  tips: nullish(TipRef.array()),
+  layout: z.enum(['Basic', 'Single']).default('Basic'),
+});
+
+export const TipListRef = z.object({
+  description: nullish(z.string()),
   layout: z.enum(['Basic', 'Single']).default('Basic'),
 });
 

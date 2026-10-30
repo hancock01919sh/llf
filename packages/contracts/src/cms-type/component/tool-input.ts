@@ -1,25 +1,34 @@
 import { z } from 'zod';
-import { InputCard } from '../shared/input-card';
-import { Links } from '../shared/links';
+import { InputCardRef } from '../shared/input-card';
+import { LinksRef } from '../shared/links';
 import { Media } from '../media';
 
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
+
 export const ToolInput = z.object({
-  Title: z.string().optional(),
-  SubTitle: z.string().optional(),
-  Description: z.string().optional(),
+  Title: nullish(z.string()),
+  SubTitle: nullish(z.string()),
+  Description: nullish(z.string()),
   Image: Media.optional(),
-  CardTitle: z.string().optional(),
-  CardDescription: z.string().optional(),
-  Cards: z
-    .lazy((): z.ZodType => InputCard)
-    .array()
-    .optional(),
-  Placeholder: z.string().optional(),
-  Copy: z.string().optional(),
-  Button: z
-    .lazy((): z.ZodType => Links)
-    .array()
-    .optional(),
+  CardTitle: nullish(z.string()),
+  CardDescription: nullish(z.string()),
+  Cards: InputCardRef.array().optional(),
+  Placeholder: nullish(z.string()),
+  Copy: nullish(z.string()),
+  Button: LinksRef.array().optional(),
+  Background_color: z.enum(['forest', 'paper']).optional(),
+  isFullwidth: z.boolean().default(false).optional(),
+});
+
+export const ToolInputRef = z.object({
+  Title: nullish(z.string()),
+  SubTitle: nullish(z.string()),
+  Description: nullish(z.string()),
+  Image: Media.optional(),
+  CardTitle: nullish(z.string()),
+  CardDescription: nullish(z.string()),
+  Placeholder: nullish(z.string()),
+  Copy: nullish(z.string()),
   Background_color: z.enum(['forest', 'paper']).optional(),
   isFullwidth: z.boolean().default(false).optional(),
 });

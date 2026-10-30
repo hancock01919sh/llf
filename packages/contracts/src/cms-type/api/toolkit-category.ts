@@ -1,11 +1,21 @@
 import { z } from 'zod';
 
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
+
 export const ToolkitCategory = z.object({
   id: z.number(),
   documentId: z.string(),
-  label: z.string().optional(),
+  label: nullish(z.string()),
   parentCategory: z.enum(['PSA Assets', 'Guideline']).optional(),
-  SubCategory_Description: z.string().optional(),
+  SubCategory_Description: nullish(z.string()),
+});
+
+export const ToolkitCategoryRef = z.object({
+  id: z.number(),
+  documentId: z.string(),
+  label: nullish(z.string()),
+  parentCategory: z.enum(['PSA Assets', 'Guideline']).optional(),
+  SubCategory_Description: nullish(z.string()),
 });
 
 export type ToolkitCategory = z.infer<typeof ToolkitCategory>;

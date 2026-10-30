@@ -730,7 +730,8 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
         "component.category-detail",
         "component.404",
         "component.toolkit-headline",
-        "component.assets-card",
+        "shared.assets-cards",
+        "component.guide",
       ]
     >;
     path: Schema.Attribute.String &
@@ -898,16 +899,9 @@ export interface ApiToolkitCategoryToolkitCategory
       "api::toolkit-category.toolkit-category"
     > &
       Schema.Attribute.Private;
+    parentCategory: Schema.Attribute.Enumeration<["PSA Assets", "Guideline"]>;
     publishedAt: Schema.Attribute.DateTime;
-    subCategory: Schema.Attribute.Enumeration<
-      [
-        "Brand Guidelines",
-        "Usage Guidelines",
-        "Messaging & Amplification Guidelines",
-        "Television",
-        "Radio",
-      ]
-    >;
+    SubCategory_Description: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private;

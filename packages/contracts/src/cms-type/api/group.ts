@@ -1,15 +1,21 @@
 import { z } from 'zod';
-import { Category } from '../api/category';
+import { CategoryRef } from '../api/category';
+
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Group = z.object({
   id: z.number(),
   documentId: z.string(),
-  description: z.string().optional(),
+  description: nullish(z.string()),
   title: z.string(),
-  categories: z
-    .lazy((): z.ZodType => Category)
-    .array()
-    .optional(),
+  categories: nullish(CategoryRef.array()),
+});
+
+export const GroupRef = z.object({
+  id: z.number(),
+  documentId: z.string(),
+  description: nullish(z.string()),
+  title: z.string(),
 });
 
 export type Group = z.infer<typeof Group>;

@@ -1,10 +1,17 @@
 import { z } from 'zod';
-import { Links } from '../shared/links';
+import { LinksRef } from '../shared/links';
+
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const TipsPopup = z.object({
-  Title: z.string().optional(),
-  Description: z.string().optional(),
-  Link: z.lazy((): z.ZodType => Links).optional(),
+  Title: nullish(z.string()),
+  Description: nullish(z.string()),
+  Link: LinksRef.optional(),
+});
+
+export const TipsPopupRef = z.object({
+  Title: nullish(z.string()),
+  Description: nullish(z.string()),
 });
 
 export type TipsPopup = z.infer<typeof TipsPopup>;

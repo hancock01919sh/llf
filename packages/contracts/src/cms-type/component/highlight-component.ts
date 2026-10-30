@@ -1,16 +1,23 @@
 import { z } from 'zod';
-import { Links } from '../shared/links';
+import { LinksRef } from '../shared/links';
 import { Media } from '../media';
 
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
+
 export const HighlightComponent = z.object({
-  Title: z.string().optional(),
-  Description: z.string().optional(),
+  Title: nullish(z.string()),
+  Description: nullish(z.string()),
   Image: Media.optional(),
   Background_color: z.enum(['forest-tint', 'paper', 'forest']).optional(),
-  Link: z
-    .lazy((): z.ZodType => Links)
-    .array()
-    .optional(),
+  Link: LinksRef.array().optional(),
+  isFullwidth: z.boolean().default(false).optional(),
+});
+
+export const HighlightComponentRef = z.object({
+  Title: nullish(z.string()),
+  Description: nullish(z.string()),
+  Image: Media.optional(),
+  Background_color: z.enum(['forest-tint', 'paper', 'forest']).optional(),
   isFullwidth: z.boolean().default(false).optional(),
 });
 

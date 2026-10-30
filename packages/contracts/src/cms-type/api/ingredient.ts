@@ -1,7 +1,9 @@
 import { z } from 'zod';
-import { Category } from '../api/category';
+import { CategoryRef } from '../api/category';
 import { Media } from '../media';
-import { Tip } from '../api/tip';
+import { TipRef } from '../api/tip';
+
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Ingredient = z.object({
   id: z.number(),
@@ -18,17 +20,31 @@ export const Ingredient = z.object({
       'Protein',
     ])
     .optional(),
-  synonyms: z.string().optional(),
-  tips: z
-    .lazy((): z.ZodType => Tip)
-    .array()
-    .optional(),
-  wasted: z.number().int(),
+  synonyms: nullish(z.string()),
+  tips: nullish(TipRef.array()),
+  wasted: z.number().int().default(3),
   image: Media.optional(),
-  categories: z
-    .lazy((): z.ZodType => Category)
-    .array()
+  categories: nullish(CategoryRef.array()),
+});
+
+export const IngredientRef = z.object({
+  id: z.number(),
+  documentId: z.string(),
+  title: z.string(),
+  type: z
+    .enum([
+      'Baked Goods',
+      'Dairy',
+      'Dry Foods',
+      'Fresh Herbs',
+      'Leafy Greens',
+      'Produce',
+      'Protein',
+    ])
     .optional(),
+  synonyms: nullish(z.string()),
+  wasted: z.number().int().default(3),
+  image: Media.optional(),
 });
 
 export type Ingredient = z.infer<typeof Ingredient>;

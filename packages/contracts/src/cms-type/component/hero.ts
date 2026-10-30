@@ -1,16 +1,22 @@
 import { z } from 'zod';
 import { Block } from '../blocks';
-import { Links } from '../shared/links';
+import { LinksRef } from '../shared/links';
 import { Media } from '../media';
+
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Hero = z.object({
   images: Media.array().optional(),
-  Link: z
-    .lazy((): z.ZodType => Links)
-    .array()
-    .optional(),
-  Description: z.string().optional(),
+  Link: LinksRef.array().optional(),
+  Description: nullish(z.string()),
   Title: Block.array().optional(),
+  Background_color: z.enum(['terra']).optional(),
+  isFullwidth: z.boolean().default(false).optional(),
+});
+
+export const HeroRef = z.object({
+  images: Media.array().optional(),
+  Description: nullish(z.string()),
   Background_color: z.enum(['terra']).optional(),
   isFullwidth: z.boolean().default(false).optional(),
 });

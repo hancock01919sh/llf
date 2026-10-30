@@ -1,15 +1,21 @@
 import { z } from 'zod';
-import { Links } from '../shared/links';
+import { LinksRef } from '../shared/links';
+
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Navigation = z.object({
   id: z.number(),
   documentId: z.string(),
-  title: z.string().optional(),
-  link: z
-    .lazy((): z.ZodType => Links)
-    .array()
-    .optional(),
-  searchPlaceholder: z.string().optional(),
+  title: nullish(z.string()),
+  link: LinksRef.array().optional(),
+  searchPlaceholder: nullish(z.string()),
+});
+
+export const NavigationRef = z.object({
+  id: z.number(),
+  documentId: z.string(),
+  title: nullish(z.string()),
+  searchPlaceholder: nullish(z.string()),
 });
 
 export type Navigation = z.infer<typeof Navigation>;

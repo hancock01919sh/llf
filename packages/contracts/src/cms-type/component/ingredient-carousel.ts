@@ -1,13 +1,19 @@
 import { z } from 'zod';
-import { IngredientCard } from '../shared/ingredient-card';
+import { IngredientCardRef } from '../shared/ingredient-card';
+
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const IngredientCarousel = z.object({
-  Title: z.string().optional(),
-  Description: z.string().optional(),
-  IngredientCard: z
-    .lazy((): z.ZodType => IngredientCard)
-    .array()
-    .optional(),
+  Title: nullish(z.string()),
+  Description: nullish(z.string()),
+  IngredientCard: IngredientCardRef.array().optional(),
+  Background_color: z.enum(['paper']).optional(),
+  isFullwidth: z.boolean().default(true).optional(),
+});
+
+export const IngredientCarouselRef = z.object({
+  Title: nullish(z.string()),
+  Description: nullish(z.string()),
   Background_color: z.enum(['paper']).optional(),
   isFullwidth: z.boolean().default(true).optional(),
 });

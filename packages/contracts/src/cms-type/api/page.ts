@@ -17,7 +17,7 @@ import { HighlightComponent } from '../component/highlight-component';
 import { IngredientCarousel } from '../component/ingredient-carousel';
 import { LogoCards } from '../component/logo-cards';
 import { Search } from '../component/search';
-import { Seo } from '../shared/seo';
+import { SeoRef } from '../shared/seo';
 import { TextAndImageCard } from '../component/text-and-image-card';
 import { TipBanner } from '../component/tip-banner';
 import { TipList } from '../custom/tip-list';
@@ -32,39 +32,73 @@ export const Page = z.object({
   title: z.string(),
   path: z.string(),
   main: z
-    .lazy((): z.ZodType =>
-      z
-        .union([
-          Hero,
-          Tool,
-          Carousel,
-          TipList,
-          ToolSpotlight,
-          HighlightComponent,
-          CategoryEmoji,
-          CategoryCarouselFeature,
-          Header,
-          LogoCards,
-          ContentSpotlight,
-          _5050TextAndImage,
-          TextAndImageCard,
-          ToolInput,
-          Accordion,
-          CarouselStandard,
-          IngredientCarousel,
-          TipBanner,
-          CarouselSmall,
-          Search,
-          CategoryDetail,
-          _404,
-          ToolkitHeadline,
-          AssetsCards,
-          Guide,
-        ])
-        .array(),
-    )
+    .union([
+      Hero,
+      Tool,
+      Carousel,
+      TipList,
+      ToolSpotlight,
+      HighlightComponent,
+      CategoryEmoji,
+      CategoryCarouselFeature,
+      Header,
+      LogoCards,
+      ContentSpotlight,
+      _5050TextAndImage,
+      TextAndImageCard,
+      ToolInput,
+      Accordion,
+      CarouselStandard,
+      IngredientCarousel,
+      TipBanner,
+      CarouselSmall,
+      Search,
+      CategoryDetail,
+      _404,
+      ToolkitHeadline,
+      AssetsCards,
+      Guide,
+    ])
+    .array()
     .optional(),
-  seo: z.lazy((): z.ZodType => Seo).optional(),
+  seo: SeoRef.optional(),
+});
+
+export const PageRef = z.object({
+  id: z.number(),
+  documentId: z.string(),
+  title: z.string(),
+  path: z.string(),
+  main: z
+    .union([
+      Hero,
+      Tool,
+      Carousel,
+      TipList,
+      ToolSpotlight,
+      HighlightComponent,
+      CategoryEmoji,
+      CategoryCarouselFeature,
+      Header,
+      LogoCards,
+      ContentSpotlight,
+      _5050TextAndImage,
+      TextAndImageCard,
+      ToolInput,
+      Accordion,
+      CarouselStandard,
+      IngredientCarousel,
+      TipBanner,
+      CarouselSmall,
+      Search,
+      CategoryDetail,
+      _404,
+      ToolkitHeadline,
+      AssetsCards,
+      Guide,
+    ])
+    .array()
+    .optional(),
 });
 
 export type Page = z.infer<typeof Page>;
