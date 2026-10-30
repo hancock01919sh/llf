@@ -7,8 +7,8 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const CategoryCarouselFeature = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
-  Link: LinksRef.array().optional(),
-  Feature_Card: FeatureCardRef.array().optional(),
+  Link: nullish(LinksRef.array()),
+  Feature_Card: nullish(FeatureCardRef.array()),
   isFullwidth: z.boolean().default(true).optional(),
   Background_color: z.enum(['terra']).default('terra').optional(),
 });

@@ -6,7 +6,7 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const TextAndImageCard = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
-  Image: Media.array().optional(),
+  Image: nullish(Media.array()),
   Background_color: z.enum(['paper']).optional(),
   isFullwidth: z.boolean().default(false).optional(),
 });
@@ -14,7 +14,7 @@ export const TextAndImageCard = z.object({
 export const TextAndImageCardRef = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
-  Image: Media.array().optional(),
+  Image: nullish(Media.array()),
   Background_color: z.enum(['paper']).optional(),
   isFullwidth: z.boolean().default(false).optional(),
 });

@@ -7,8 +7,8 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const ToolSpotlight = z.object({
   Title: nullish(z.string()),
   SubTitle: nullish(z.string()),
-  Link: LinksRef.optional(),
-  SpotlightItem: SpotlightItemRef.array().optional(),
+  Link: nullish(LinksRef),
+  SpotlightItem: nullish(SpotlightItemRef.array()),
   isFullwidth: z.boolean().default(false).optional(),
   Background_color: z.enum(['forest']).optional(),
 });

@@ -9,10 +9,10 @@ export const Footer = z.object({
   id: z.number(),
   documentId: z.string(),
   title: nullish(z.string()),
-  link: LinksRef.array().optional(),
-  iconLink: IconlinkRef.array().optional(),
+  link: nullish(LinksRef.array()),
+  iconLink: nullish(IconlinkRef.array()),
   legalCopy: nullish(z.string()),
-  overlayLink: OverlayLinkRef.array().optional(),
+  overlayLink: nullish(OverlayLinkRef.array()),
 });
 
 export const FooterRef = z.object({

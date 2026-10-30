@@ -6,16 +6,16 @@ import { Media } from '../media';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Hero = z.object({
-  images: Media.array().optional(),
-  Link: LinksRef.array().optional(),
+  images: nullish(Media.array()),
+  Link: nullish(LinksRef.array()),
   Description: nullish(z.string()),
-  Title: Block.array().optional(),
+  Title: nullish(Block.array()),
   Background_color: z.enum(['terra']).optional(),
   isFullwidth: z.boolean().default(false).optional(),
 });
 
 export const HeroRef = z.object({
-  images: Media.array().optional(),
+  images: nullish(Media.array()),
   Description: nullish(z.string()),
   Background_color: z.enum(['terra']).optional(),
   isFullwidth: z.boolean().default(false).optional(),

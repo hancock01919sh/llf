@@ -9,11 +9,11 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const CategoryDetail = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
-  Image: Media.array().optional(),
+  Image: nullish(Media.array()),
   SubTitle: nullish(z.string()),
-  Statement: Block.array().optional(),
-  Button: LinksRef.optional(),
-  Popup: TipsPopupRef.optional(),
+  Statement: nullish(Block.array()),
+  Button: nullish(LinksRef),
+  Popup: nullish(TipsPopupRef),
   isFullwidth: z.boolean().default(false).optional(),
   Background_color: z.enum(['forest']).optional(),
 });
@@ -21,7 +21,7 @@ export const CategoryDetail = z.object({
 export const CategoryDetailRef = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
-  Image: Media.array().optional(),
+  Image: nullish(Media.array()),
   SubTitle: nullish(z.string()),
   isFullwidth: z.boolean().default(false).optional(),
   Background_color: z.enum(['forest']).optional(),

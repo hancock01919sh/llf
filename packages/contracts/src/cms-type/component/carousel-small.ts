@@ -6,7 +6,7 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const CarouselSmall = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
-  SmallCard: SmallCardRef.array().optional(),
+  SmallCard: nullish(SmallCardRef.array()),
   isFullwidth: z.boolean().default(true).optional(),
   Background_color: z.enum(['paper']).optional(),
 });

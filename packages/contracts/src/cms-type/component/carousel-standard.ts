@@ -7,7 +7,7 @@ export const CarouselStandard = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
   Background_color: z.enum(['sand', 'paper', 'terra']).optional(),
-  StandardCard: StandardCardRef.array().optional(),
+  StandardCard: nullish(StandardCardRef.array()),
   Card_Background_color: z.enum(['Bright Yellow']).optional(),
   isFullwidth: z.boolean().default(true).optional(),
 });

@@ -6,7 +6,7 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const IngredientCarousel = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
-  IngredientCard: IngredientCardRef.array().optional(),
+  IngredientCard: nullish(IngredientCardRef.array()),
   Background_color: z.enum(['paper']).optional(),
   isFullwidth: z.boolean().default(true).optional(),
 });

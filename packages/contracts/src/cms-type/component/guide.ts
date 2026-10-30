@@ -7,9 +7,9 @@ export const Guide = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
   Label1: nullish(z.string()),
-  Asset1: AssetsCardsRef.array().optional(),
+  Asset1: nullish(AssetsCardsRef.array()),
   Label2: nullish(z.string()),
-  Asset2: AssetsCardsRef.array().optional(),
+  Asset2: nullish(AssetsCardsRef.array()),
 });
 
 export const GuideRef = z.object({

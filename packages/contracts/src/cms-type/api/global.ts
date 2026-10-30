@@ -8,8 +8,8 @@ export const Global = z.object({
   id: z.number(),
   documentId: z.string(),
   title: nullish(z.string()),
-  seo: SeoRef.optional(),
-  load: LoadingRef.optional(),
+  seo: nullish(SeoRef),
+  load: nullish(LoadingRef),
 });
 
 export const GlobalRef = z.object({

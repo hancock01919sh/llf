@@ -5,7 +5,7 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Navigation = z.object({
   Title: nullish(z.string()),
-  Link: LinksRef.array().optional(),
+  Link: nullish(LinksRef.array()),
   Searchplaceholder: nullish(z.string()),
 });
 

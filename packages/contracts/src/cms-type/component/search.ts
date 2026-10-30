@@ -9,10 +9,10 @@ export const Search = z.object({
   Title: nullish(z.string()),
   Description: nullish(z.string()),
   Placeholder: nullish(z.string()),
-  Statement: Block.array().optional(),
+  Statement: nullish(Block.array()),
   Hint: nullish(z.string()),
-  Button: LinksRef.optional(),
-  Popup: TipsPopupRef.optional(),
+  Button: nullish(LinksRef),
+  Popup: nullish(TipsPopupRef),
   isFullwidth: z.boolean().default(false).optional(),
   Background_color: z.enum(['paper']).optional(),
 });

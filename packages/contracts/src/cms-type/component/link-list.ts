@@ -6,8 +6,8 @@ import { TitleRef } from '../shared/title';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const LinkList = z.object({
-  title: TitleRef.optional(),
-  description: Block.array().optional(),
+  title: nullish(TitleRef),
+  description: nullish(Block.array()),
   pages: nullish(PageRef.array()),
   layout: z.enum(['Basic', 'Two Column']).default('Basic'),
 });

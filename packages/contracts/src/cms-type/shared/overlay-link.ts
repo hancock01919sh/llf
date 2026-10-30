@@ -5,7 +5,7 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const OverlayLink = z.object({
   Label: nullish(z.string()),
-  Overlay_description: Block.array().optional(),
+  Overlay_description: nullish(Block.array()),
   href: nullish(z.string()),
 });
 

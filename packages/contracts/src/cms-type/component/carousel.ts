@@ -6,12 +6,12 @@ import { TitleRef } from '../shared/title';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Carousel = z.object({
-  title: TitleRef.optional(),
+  title: nullish(TitleRef),
   description: nullish(z.string()),
   categories: nullish(CategoryRef.array()),
   mode: z.enum(['categories']).default('categories'),
   layout: z.enum(['Basic', 'Compact']).default('Basic'),
-  ctas: CtaRef.array().optional(),
+  ctas: nullish(CtaRef.array()),
 });
 
 export const CarouselRef = z.object({

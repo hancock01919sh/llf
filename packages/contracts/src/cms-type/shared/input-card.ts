@@ -6,14 +6,14 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const InputCard = z.object({
   Title: nullish(z.string()),
-  Icon: Media.optional(),
-  Link: LinksRef.optional(),
+  Icon: nullish(Media),
+  Link: nullish(LinksRef),
   Description: nullish(z.string()),
 });
 
 export const InputCardRef = z.object({
   Title: nullish(z.string()),
-  Icon: Media.optional(),
+  Icon: nullish(Media),
   Description: nullish(z.string()),
 });
 

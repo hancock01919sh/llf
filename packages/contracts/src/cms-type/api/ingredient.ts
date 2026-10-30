@@ -23,7 +23,7 @@ export const Ingredient = z.object({
   synonyms: nullish(z.string()),
   tips: nullish(TipRef.array()),
   wasted: z.number().int().default(3),
-  image: Media.optional(),
+  image: nullish(Media),
   categories: nullish(CategoryRef.array()),
 });
 
@@ -44,7 +44,7 @@ export const IngredientRef = z.object({
     .optional(),
   synonyms: nullish(z.string()),
   wasted: z.number().int().default(3),
-  image: Media.optional(),
+  image: nullish(Media),
 });
 
 export type Ingredient = z.infer<typeof Ingredient>;

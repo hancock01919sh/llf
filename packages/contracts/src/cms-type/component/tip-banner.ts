@@ -7,7 +7,7 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const TipBanner = z.object({
   Label: nullish(z.string()),
   tip: nullish(TipRef),
-  CTA: LinksRef.array().optional(),
+  CTA: nullish(LinksRef.array()),
   Background_color: z.enum(['terra', 'forest']).optional(),
   isFullwidth: z.boolean().default(false).optional(),
 });

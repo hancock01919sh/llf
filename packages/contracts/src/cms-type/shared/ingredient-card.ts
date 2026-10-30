@@ -5,12 +5,12 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const IngredientCard = z.object({
   Title: nullish(z.string()),
-  Image: Media.optional(),
+  Image: nullish(Media),
 });
 
 export const IngredientCardRef = z.object({
   Title: nullish(z.string()),
-  Image: Media.optional(),
+  Image: nullish(Media),
 });
 
 export type IngredientCard = z.infer<typeof IngredientCard>;

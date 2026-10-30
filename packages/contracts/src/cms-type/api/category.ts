@@ -16,9 +16,9 @@ export const Category = z.object({
   ingredients: nullish(IngredientRef.array()),
   tips: nullish(TipRef.array()),
   mode: z.enum(['Ingredients', 'Tips']).default('Ingredients'),
-  image: Media.optional(),
+  image: nullish(Media),
   group: nullish(GroupRef),
-  seo: SeoRef.optional(),
+  seo: nullish(SeoRef),
 });
 
 export const CategoryRef = z.object({
@@ -28,7 +28,7 @@ export const CategoryRef = z.object({
   slug: z.string(),
   description: nullish(z.string()),
   mode: z.enum(['Ingredients', 'Tips']).default('Ingredients'),
-  image: Media.optional(),
+  image: nullish(Media),
 });
 
 export type Category = z.infer<typeof Category>;
