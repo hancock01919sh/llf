@@ -53,7 +53,7 @@ test('results page renders tips for each slug', async ({ page }) => {
 test('unknown paths get the 404 page', async ({ page }) => {
   const response = await page.goto('/nope/');
   expect(response?.status()).toBe(404);
-  await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Oops. We dropped the beet.' })).toBeVisible();
   await expectAccessible(page);
 });
 
