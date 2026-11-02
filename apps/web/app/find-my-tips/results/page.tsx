@@ -5,6 +5,7 @@ import { pageMetadata } from '@/lib/seo';
 // import { ResultsView } from './ResultsView';
 import { requirePage } from '@/lib/cms';
 import { PageTemplate } from '@/templates/PageTemplate';
+import { Suspense } from 'react';
 const page = await requirePage('/find-my-tips/results/');
 /** Results are per-visitor, so the page is never indexed (TDD §6.7). */
 export const metadata: Metadata = pageMetadata({
@@ -14,5 +15,9 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default function ResultsPage() {
-  return <PageTemplate page={page} />;
+  return (
+    <Suspense fallback={<div></div>}>
+      <PageTemplate page={page} />
+    </Suspense>
+  );
 }
