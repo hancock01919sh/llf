@@ -11,18 +11,7 @@
     "Description": {
       "type": "text"
     },
-    "Label1": {
-      "type": "text"
-    },
-    "Asset1": {
-      "type": "component",
-      "component": "shared.assets-cards",
-      "repeatable": true
-    },
-    "Label2": {
-      "type": "text"
-    },
-    "Asset2": {
+    "Assets": {
       "type": "component",
       "component": "shared.assets-cards",
       "repeatable": true

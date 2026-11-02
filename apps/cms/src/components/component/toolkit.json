@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_component_toolkits",
+  "info": {
+    "displayName": "Toolkit"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "toolkitCategory": {
+      "type": "component",
+      "component": "component.toolkit-parent-category",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

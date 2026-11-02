@@ -11,6 +11,9 @@
     "Description": {
       "type": "text"
     },
+    "Label": {
+      "type": "text"
+    },
     "Image": {
       "type": "media",
       "multiple": false,
@@ -36,16 +39,14 @@
         "audios"
       ]
     },
-    "toolkit_category": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::toolkit-category.toolkit-category"
-    },
     "Display_Mode": {
       "type": "enumeration",
       "enum": [
-        "Landscape",
-        "Portrait"
+        "aspect-16/9",
+        "aspect-9/16",
+        "aspect-4/5",
+        "aspect-1/1",
+        "aspect-4/5 10 second"
       ]
     }
   },
