@@ -117,7 +117,7 @@ export function Tool(props: BlockProps<ToolInputProps> & { className?: string })
             role="tabpanel"
             id="tool-panel-1"
             aria-labelledby="tool-tab-1"
-            className={`relative flex flex-center justify-between pl-3.5 gap-2.5 h-12.5 rounded-full border border-dashed border-ink-terra-15 ${imageActive ? 'bg-semantic-leaf' : 'bg-brand-forest'} `}
+            className={`relative flex flex-center justify-between pl-3.5 gap-2.5 h-12.5 rounded-full border border-dashed border-surface-mint ${imageActive ? 'bg-semantic-leaf' : 'bg-brand-forest'} `}
           >
             <div
               className={`w-8 h-8 rounded-full flex-center justify-center ${imageActive ? 'bg-[rgba(0,0,0,0.2)]' : 'bg-semantic-leaf'}`}
