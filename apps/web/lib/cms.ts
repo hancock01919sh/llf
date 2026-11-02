@@ -76,6 +76,7 @@ const POPULATE = {
             },
           },
         },
+        'component.404': true,
       },
     },
     seo: true,
