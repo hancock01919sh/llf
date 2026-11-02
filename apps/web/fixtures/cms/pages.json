@@ -434,6 +434,95 @@
           "layout": "Basic"
         }
       ]
+    },
+    {
+      "id": 10,
+      "documentId": "hebmi5cxd7c34eft2y2f5dsa",
+      "title": "Output List",
+      "path": "/find-my-tips/results/",
+      "template": "generic",
+      "featured": [],
+      "main": [
+        {
+          "__component": "component.category-detail",
+          "id": 2,
+          "Title": "Your Ingredients List",
+          "Description": "The following ingredients have been extracted. Select one to see how to get the most out of it.",
+          "SubTitle": "Recipe Upload",
+          "Statement": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "All tips reviewed by ",
+                  "type": "text"
+                },
+                {
+                  "text": "food experts",
+                  "type": "text",
+                  "underline": true
+                }
+              ]
+            }
+          ],
+          "isFullwidth": true,
+          "Background_color": "forest",
+          "Image": null,
+          "Button": {
+            "id": 56,
+            "Label": "Upload Another Link or Image",
+            "href": "/find",
+            "isDisplay": true,
+            "isButton": true,
+            "Buttontype": null,
+            "NewTab": false
+          },
+          "Popup": {
+            "id": 4,
+            "Title": "All tips reviewed by food experts.",
+            "Description": "Most of us don't know where we're losing food. ",
+            "Link": {
+              "id": 58,
+              "Label": "Discover tips in the library",
+              "href": null,
+              "isDisplay": true,
+              "isButton": true,
+              "Buttontype": "Primary",
+              "NewTab": false
+            }
+          }
+        },
+        {
+          "__component": "component.highlight-component",
+          "id": 6,
+          "Title": "There are 200+ tips more waiting",
+          "Description": "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis.",
+          "Background_color": "forest-tint",
+          "isFullwidth": true,
+          "Link": [
+            {
+              "id": 57,
+              "Label": "Link to Tip Library",
+              "href": null,
+              "isDisplay": true,
+              "isButton": true,
+              "Buttontype": "Primary",
+              "NewTab": false
+            }
+          ],
+          "Image": {
+            "id": 26,
+            "documentId": "lpi64r4bz6uin7l8g8f836ah",
+            "url": "/uploads/6a75c669d797bf8ded9c00a5f911560c1aa98631_8c09406ce6.png",
+            "ext": ".png",
+            "alternativeText": "fresh",
+            "height": 1458,
+            "width": 1188,
+            "size": 1161.68
+          }
+        }
+      ],
+      "seo": null
     }
   ],
   "meta": {
