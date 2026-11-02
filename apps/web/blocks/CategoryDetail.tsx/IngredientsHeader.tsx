@@ -37,7 +37,7 @@ export function IngredientsHeader(
         <Typography variant="eyebrow" className="font-bold lg:font-normal">
           {categoryData?.group?.title || props.SubTitle}
         </Typography>
-        <Typography variant="headline-lg" className=" uppercase mt-10">
+        <Typography role="heading" as="h1" variant="headline-lg" className=" uppercase mt-10">
           {categoryData?.title || props.Title}
         </Typography>
         <Typography variant="subhead-lg" className="mt-5">

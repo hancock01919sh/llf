@@ -42,9 +42,11 @@ test('search reads the term from the fragment', async ({ page }) => {
 
 test('results page renders tips for each slug', async ({ page }) => {
   await page.goto('/find-my-tips/results/?i=banana,milk');
-  await expect(page.getByRole('heading', { level: 1, name: 'Your tips' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Tips for Banana' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Tips for Milk' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Your Ingredients List' }),
+  ).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Banana' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Milk' })).toBeVisible();
   await expectAccessible(page);
 });
 
@@ -84,8 +86,8 @@ test('typed ingredients go to the results page', async ({ page }) => {
   await expect(page).toHaveURL(/\/find-my-tips\/results\/\?i=banana(%2C|,)milk$/);
   // The UI only offers the URL and image tabs, so a typed link is submitted as `url`.
   expect(body).toEqual({ inputType: 'url', url: typedUrl });
-  await expect(page.getByRole('heading', { level: 2, name: 'Tips for Banana' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Tips for Milk' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Banana' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Milk' })).toBeVisible();
 });
 
 test('slash redirect keeps the ?i= query', async ({ request }) => {

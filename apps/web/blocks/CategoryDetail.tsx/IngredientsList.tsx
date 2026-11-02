@@ -47,6 +47,7 @@ export function IngredientsList(
         });
       } else {
         router.back();
+        // console.log('no ingredients', loaded);
       }
     });
   }, [key, router]);
@@ -104,7 +105,12 @@ export function IngredientsList(
                   </div>
 
                   <div className="flex-1 flex flex-col lg:flex-row gap-2.5 lg:flex-center lg:justify-between">
-                    <Typography variant="subhead-md" className="font-bold font-fustat!">
+                    <Typography
+                      role="heading"
+                      as="h2"
+                      variant="subhead-md"
+                      className="font-bold font-fustat!"
+                    >
                       {item.title}
                     </Typography>
                     <Typography variant="paragraph-sm" className="lg:text-paragraph-sm">
@@ -138,7 +144,12 @@ export function IngredientsList(
                   <div className="flex flex-col gap-8">
                     <TipBadge type={item.type as TipBadgeType} />
                     <div className="flex-col flex  gap-4">
-                      <Typography variant="title-card" className=" font-anton">
+                      <Typography
+                        role="heading"
+                        as="h2"
+                        variant="title-card"
+                        className=" font-anton"
+                      >
                         {item.title}
                       </Typography>
                       <Typography variant="paragraph-lg" className="">
