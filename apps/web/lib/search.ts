@@ -17,9 +17,20 @@ export interface SearchDocument {
   /** Extra words that should find the document (synonyms, tip text). Indexed, not stored. */
   body: string;
   href: string;
+  image?:{
+    url: string;
+    alt: string;
+  } | null,
+  tips?: Array<{
+    title: string;
+    description?: string | null;
+    tip_type: string;
+    tip_behavior: string;
+    tip_motivator: string;
+  }>;
 }
 
-export type StoredFields = Pick<SearchDocument, 'kind' | 'title' | 'href'>;
+export type StoredFields = Pick<SearchDocument, 'kind' | 'title' | 'href' | 'tips' | 'image'>;
 
 /** Same `normalize()` as the tool's matcher, so "Tomatoes" finds "tomato" (TDD §7.5). */
 export function processTerm(term: string): string | null {
@@ -29,7 +40,7 @@ export function processTerm(term: string): string | null {
 export const SEARCH_OPTIONS: Options<SearchDocument> = {
   idField: 'id',
   fields: ['title', 'body'],
-  storeFields: ['kind', 'title', 'href'],
+  storeFields: ['kind', 'title', 'href', 'tips', 'image'],
   processTerm,
   searchOptions: {
     boost: { title: 3 },
@@ -40,7 +51,7 @@ export const SEARCH_OPTIONS: Options<SearchDocument> = {
 };
 
 export const SEARCH_PATH = '/search/';
-export const SEARCH_TERM_MAX_LENGTH = 100;
+export const SEARCH_TERM_MAX_LENGTH = 1000;
 
 /** The term rides in the fragment, which browsers never send to the CDN or WAF logs (TDD §6.5, §7.6). */
 export function searchHref(term: string): string {
