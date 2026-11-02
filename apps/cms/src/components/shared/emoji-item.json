@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_emoji_items",
+  "info": {
+    "displayName": "EmojiItem"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Emoji": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

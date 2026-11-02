@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_component_toolkit_headlines",
+  "info": {
+    "displayName": "Toolkit Info"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "CTA": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": false
+    },
+    "File": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  },
+  "config": {}
+}

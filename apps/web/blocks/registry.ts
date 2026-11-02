@@ -1,4 +1,4 @@
-import { cms } from '@llf/contracts';
+import { cms, cmsType } from '@llf/contracts';
 import type { ComponentType } from 'react';
 import type { z } from 'zod';
 import { Carousel } from './Carousel';
@@ -9,10 +9,11 @@ import { SearchBox } from './SearchBox';
 import { Teaser } from './Teaser';
 import { TipList } from './TipList';
 import { ToolInput, ToolInputSchema } from './ToolInput';
-import { Accordion, AccordionSchema } from './Accordion';
+import { Accordion } from './Accordion';
 import type { BlockProps } from './types';
 import type { Surface } from '@/components/ModuleBoundary';
 import { HighlightComponent, HighlightComponentSchema } from './HighlightComponent';
+import { CategoryDetailComponent, CategoryDetailSchema } from './CategoryDetail.tsx';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -48,7 +49,7 @@ export const blocks = {
     surface: 'paper',
   }),
   'component.accordion': entry({
-    schema: AccordionSchema,
+    schema: cmsType.component.Accordion,
     Component: Accordion,
     type: 'accordion',
   }),
@@ -56,6 +57,12 @@ export const blocks = {
     schema: HighlightComponentSchema,
     Component: HighlightComponent,
     type: 'highlight-component',
+  }),
+  'component.category-detail': entry({
+    schema: CategoryDetailSchema,
+    Component: CategoryDetailComponent,
+    type: 'category-detail',
+    surface: 'forest',
   }),
 } as const;
 

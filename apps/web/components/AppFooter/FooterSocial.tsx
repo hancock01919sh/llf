@@ -1,4 +1,4 @@
-import type { ImageProps } from '@/blocks/types';
+import type { Media } from '@llf/contracts/cms';
 import { IconInstagram, IconTikTok, IconYoutube } from '../Icon';
 function SocialItemWrapper({
   inPopup,
@@ -22,7 +22,7 @@ function SocialItemWrapper({
   );
 }
 export interface FooterSocialLinkProps {
-  Image: ImageProps;
+  Image: Media;
   Label: string;
   href: string;
 }

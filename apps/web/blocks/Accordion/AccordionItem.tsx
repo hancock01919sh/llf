@@ -1,13 +1,13 @@
 import { IconArrow } from '@/components/Icon';
 import { Typography } from '@/components/Typography';
-import type { TAccordionItem } from './index';
+import type { cmsType } from '@llf/contracts';
 
 export function AccordionItemComponent({
   Label,
   Description,
   isExpanded,
   toggleIsExpanded,
-}: TAccordionItem & {
+}: cmsType.shared.AccordionItem & {
   isExpanded: boolean;
   toggleIsExpanded: (isExpanded: boolean) => void;
 }) {

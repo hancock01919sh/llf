@@ -65,6 +65,17 @@ const POPULATE = {
             Image: ImagePopulate,
           },
         },
+        'component.category-detail': {
+          populate: {
+            Image: ImagePopulate,
+            Button: true,
+            Popup: {
+              populate: {
+                Link: true,
+              },
+            },
+          },
+        },
       },
     },
     seo: true,

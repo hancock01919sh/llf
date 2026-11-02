@@ -27,17 +27,26 @@
     "tip_type": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::tip-type.tip-type"
+      "target": "api::tip-type.tip-type",
+      "inversedBy": "tips"
     },
     "tip_behavior": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::tip-behavior.tip-behavior"
+      "target": "api::tip-behavior.tip-behavior",
+      "inversedBy": "tips"
     },
     "tip_motivator": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::tip-motivator.tip-motivator"
+      "target": "api::tip-motivator.tip-motivator",
+      "inversedBy": "tips"
+    },
+    "categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::category.category",
+      "inversedBy": "tips"
     }
   }
 }

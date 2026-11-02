@@ -1,0 +1,50 @@
+{
+  "collectionName": "components_component_5050_text_and_images",
+  "info": {
+    "displayName": "5050 Text & Image"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "Make_Image_left": {
+      "type": "boolean"
+    },
+    "Add_Background_Color": {
+      "type": "boolean",
+      "default": false
+    },
+    "Position_of_Adding_BgColor": {
+      "type": "enumeration",
+      "enum": [
+        "Up ",
+        "Down"
+      ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "paper"
+      ]
+    }
+  },
+  "config": {}
+}

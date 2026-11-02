@@ -55,6 +55,7 @@ export function Typography({
   children,
   richText = false,
   id,
+  ...rest
 }: TypographyProps) {
   const Tag = as ?? 'p';
   if (richText && typeof children === 'string') {
@@ -65,11 +66,16 @@ export function Typography({
           .filter(Boolean)
           .join(' ')}`}
         dangerouslySetInnerHTML={{ __html: children }}
+        {...rest}
       />
     );
   }
   return (
-    <Tag id={id} className={[VARIANT_CLASS_MAP[variant], className].filter(Boolean).join(' ')}>
+    <Tag
+      id={id}
+      className={[VARIANT_CLASS_MAP[variant], className].filter(Boolean).join(' ')}
+      {...rest}
+    >
       {children}
     </Tag>
   );

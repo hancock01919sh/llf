@@ -1,0 +1,52 @@
+{
+  "collectionName": "components_component_category_details",
+  "info": {
+    "displayName": "Category Detail"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Image": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "SubTitle": {
+      "type": "string"
+    },
+    "Statement": {
+      "type": "blocks"
+    },
+    "Button": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": false
+    },
+    "Popup": {
+      "type": "component",
+      "component": "component.tips-popup",
+      "repeatable": false
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "enum": [
+        "forest"
+      ]
+    }
+  },
+  "config": {}
+}

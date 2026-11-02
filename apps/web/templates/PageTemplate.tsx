@@ -2,8 +2,11 @@ import { DynamicZone } from '@/blocks/DynamicZone';
 import type { TemplateProps } from './types';
 import { Provider } from '@/components/Provider';
 import type { FooterCmsDataProps } from '@/components/AppFooter';
+import type { GlobalProps } from '@/blocks/types';
 // const navigate = await getNavigate();
 // const footer = await getFooter();
+// const global = await getGlobal();
+
 export function PageTemplate({ page }: TemplateProps) {
   const navigate = {
     title: 'longlivefood',
@@ -207,10 +210,25 @@ export function PageTemplate({ page }: TemplateProps) {
       },
     ],
   };
+  const global = {
+    id: 5,
+    documentId: 'l20oqa08azr635xlm0g577ht',
+    title: 'longlivefood',
+    seo: null,
+    load: {
+      id: 11,
+      Title: 'Finding ways to waste less of the food you love.',
+      Statement: 'Extracting ingredients...',
+    },
+  };
 
   return (
     <>
-      <Provider navigation={navigate} footer={footer as FooterCmsDataProps}>
+      <Provider
+        navigation={navigate}
+        footer={footer as FooterCmsDataProps}
+        global={global as GlobalProps}
+      >
         <DynamicZone page={page} />
       </Provider>
     </>
