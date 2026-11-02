@@ -11,6 +11,7 @@ export function IngredientsTipsPopup(
   },
 ) {
   const { open, onClose, Title, Description, Link } = props;
+  console.log('props:', props);
   return (
     <Popup open={open} onClose={onClose} className="lg:bottom-1/4">
       <div className="flex flex-col gap-10 bg-surface-paper text-ink-terra px-4 py-6 rounded-t-[24px] lg:rounded-[24px] lg:p-10 max-w-page mx-auto lg:text-center">

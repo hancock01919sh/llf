@@ -1,5 +1,5 @@
 'use client';
-import { IngredientData, parseResultSlugs } from '@llf/contracts';
+import { cmsType, IngredientData, parseResultSlugs } from '@llf/contracts';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { Loading } from '../ToolInput/Loading';
@@ -13,7 +13,7 @@ import { IngredientsPopup } from './IngredientsPopup';
 import type { CategoryDetailProps } from '.';
 
 export function IngredientsList(
-  props: CategoryDetailProps & {
+  props:  (CategoryDetailProps | cmsType.component.Search) & {
     Placeholder?: string | null;
     ingredients?: IngredientData[];
     bgColor?: 'paper';
@@ -32,9 +32,9 @@ export function IngredientsList(
   });
   const [activeIndex, setActiveIndex] = useState(-1);
   const { isMobile } = useDevice();
-  const isSearch = props?.Placeholder && props.bgColor === 'paper';
+  const isSearch = props?.Placeholder !== undefined;
   useEffect(() => {
-    if (!key) {
+    if (!key && !isSearch) {
       router.replace('/find-my-tips');
       return;
     }
@@ -67,7 +67,7 @@ export function IngredientsList(
   }
   return (
     <>
-      {state.status === 'loading' && <Loading open={state.status === 'loading'} />}
+      {/* {state.status === 'loading' && <Loading open={state.status === 'loading'} />} */}
       {state.status === 'ready' && state.ingredients.length > 0 && (
         <div className={`lg:px-gutter-lg pb-gutter-lg`}>
           <Typography variant="paragraph-regular" className="px-5">

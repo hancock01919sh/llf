@@ -5,7 +5,7 @@ import { Carousel } from './Carousel';
 import { FindMyTips } from './FindMyTips';
 import { Hero } from './Hero';
 import { LinkList } from './LinkList';
-import { SearchBox } from './SearchBox';
+// import { SearchBox } from './SearchBox';
 import { Teaser } from './Teaser';
 import { TipList } from './TipList';
 import { ToolInput, ToolInputSchema } from './ToolInput';
@@ -15,6 +15,7 @@ import type { Surface } from '@/components/ModuleBoundary';
 import { HighlightComponent, HighlightComponentSchema } from './HighlightComponent';
 import { CategoryDetailComponent, CategoryDetailSchema } from './CategoryDetail.tsx';
 import { NotFound } from './NotFound';
+import { SearchBlock, SearchSchema } from './Search';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -26,6 +27,7 @@ interface BlockEntry<S extends z.ZodType> {
   /** Short name used for `data-module-type` and analytics (TDD §8). */
   type: string;
   surface?: Surface;
+  isFullWidth?: boolean;
 }
 
 const entry = <S extends z.ZodType>(e: BlockEntry<S>) => e;
@@ -40,7 +42,7 @@ export const blocks = {
     type: 'link-list',
   }),
   'component.carousel': entry({ schema: cms.CarouselBlock, Component: Carousel, type: 'carousel' }),
-  'custom.search': entry({ schema: cms.SearchBlock, Component: SearchBox, type: 'search' }),
+  // 'custom.search': entry({ schema: cms.SearchBlock, Component: SearchBox, type: 'search' }),
   'custom.tip-list': entry({ schema: cms.TipListBlock, Component: TipList, type: 'tip-list' }),
   'custom.tool': entry({ schema: cms.ToolBlock, Component: FindMyTips, type: 'tool' }),
   'component.tool-input': entry({
@@ -69,6 +71,12 @@ export const blocks = {
     schema: cmsType.component._404,
     Component: NotFound,
     type: 'not-found',
+  }),
+  'component.search': entry({
+    schema: SearchSchema,
+    Component: SearchBlock,
+    type: 'search',
+    isFullWidth: true,
   }),
 } as const;
 

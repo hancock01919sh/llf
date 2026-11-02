@@ -7,15 +7,16 @@ import { RichText } from '@/components/RichText';
 import type { CategoryDetailProps } from '.';
 import type { Category } from '@llf/contracts/cms';
 // import { getIngrendients } from '@/lib/MLP/cms';
-export function IngredientsHeader(
-  props: CategoryDetailProps & {
-    categoryData?: Category;
-    bgColor?: string;
-    onSearch?: (value: string) => void;
-    className?: string;
-    Placeholder?: string | null;
-  },
-) {
+interface IngredientsHeaderProps extends Omit<CategoryDetailProps, 'Background_color'> {
+  categoryData?: Category;
+  isSearch?: boolean;
+  onSearch?: (value: string) => void;
+  className?: string;
+  Background_color?: 'forest' | 'paper' | null;
+  Placeholder?: string | null;
+
+}
+export function IngredientsHeader(props: IngredientsHeaderProps) {
   const [open, setOpen] = useState(false);
   const { categoryData } = props;
   const ref = useRef<HTMLDivElement>(null);
@@ -28,14 +29,14 @@ export function IngredientsHeader(
       });
     }
   }, []);
-
+  const isSearch = props.onSearch || props.Placeholder !== undefined;
   return (
     <>
       <div
-        className={`${props.bgColor || 'bg-brand-forest forest'} px-gutter lg:px-gutter-lg max-w-page  py-16 lg:text-center mx-auto lg:py-25 ${props.className || ''}`}
+        className={`${isSearch ? ' bg-surface-paper' : 'bg-brand-forest'} px-gutter lg:px-gutter-lg max-w-page  py-16 lg:text-center mx-auto lg:py-25 ${props.className || ''}`}
       >
         <Typography variant="eyebrow" className="font-bold lg:font-normal">
-          {categoryData?.group?.title || props.SubTitle}
+          {categoryData?.group?.title || props?.SubTitle}
         </Typography>
         <Typography role="heading" as="h1" variant="headline-lg" className=" uppercase mt-10">
           {categoryData?.title || props.Title}

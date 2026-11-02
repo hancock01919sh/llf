@@ -4,7 +4,7 @@ import { IngredientsHeader } from './IngredientsHeader';
 import { IngredientsList } from './IngredientsList';
 import { cmsType } from '@llf/contracts';
 export const CategoryDetailSchema = cmsType.component.CategoryDetail.extend({
-  Popup: cmsType.component.TipsPopup,
+  Popup: cmsType.component.TipsPopup.nullish(),
 });
 export type CategoryDetailProps = z.infer<typeof CategoryDetailSchema>;
 export const CategoryDetailComponent = (props: BlockProps<CategoryDetailProps>) => {

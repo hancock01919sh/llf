@@ -77,6 +77,15 @@ const POPULATE = {
           },
         },
         'component.404': true,
+        'component.search': {
+          populate: {
+            Popup: {
+              populate: {
+                Link: true,
+              },
+            },
+          },
+        },
       },
     },
     seo: true,
