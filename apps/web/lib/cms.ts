@@ -59,12 +59,12 @@ const POPULATE = {
             AccordionItem: true,
           },
         },
-        // 'component.highlight-component': {
-        //   populate: {
-        //     Link: true,
-        //     Image: ImagePopulate,
-        //   },
-        // },
+        'component.highlight-component': {
+          populate: {
+            Link: true,
+            Image: ImagePopulate,
+          },
+        },
       },
     },
     seo: true,
