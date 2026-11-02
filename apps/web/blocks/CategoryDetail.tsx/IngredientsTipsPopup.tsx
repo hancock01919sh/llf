@@ -2,13 +2,10 @@ import { IconClose } from '@/components/Icon';
 import { Popup } from '@/components/Popup';
 import { Typography } from '@/components/Typography';
 import TransitionLink from '@/components/TransitionLink';
-import type { BlockBaseProps, LinkProps } from '@/blocks/types';
-export interface IngredientsTipsPopupCmsDataProps extends BlockBaseProps {
-  Link: LinkProps;
-}
+import type { cmsType } from '@llf/contracts';
 
 export function IngredientsTipsPopup(
-  props: IngredientsTipsPopupCmsDataProps & {
+  props: cmsType.component.TipsPopup & {
     open: boolean;
     onClose: () => void;
   },
@@ -31,7 +28,6 @@ export function IngredientsTipsPopup(
             {Description}
           </Typography>
         </div>
-        {}
         <TransitionLink href={Link?.href || '#'} className="btn w-full lg:w-max mx-auto lg:mb-10">
           {Link?.Label || ''}
         </TransitionLink>
