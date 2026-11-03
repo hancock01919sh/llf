@@ -10,4 +10,3 @@ export * from './tip-behavior';
 export * from './tip-motivator';
 export * from './tip-type';
 export * from './tip';
-export * from './toolkit-category';
