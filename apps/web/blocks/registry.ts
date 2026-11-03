@@ -17,6 +17,7 @@ import { CategoryDetailComponent, CategoryDetailSchema } from './CategoryDetail.
 import { NotFound } from './NotFound';
 import { SearchBlock, SearchSchema } from './Search';
 import TipBanner, { TipBannerSchema } from './TipBanner';
+import { ToolSpotlight } from './ToolSpotlight';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -73,6 +74,7 @@ export const blocks = {
     schema: cmsType.component._404,
     Component: NotFound,
     type: 'not-found',
+    surface:'forest'
   }),
   'component.search': entry({
     schema: SearchSchema,
@@ -84,6 +86,12 @@ export const blocks = {
     schema: TipBannerSchema,
     Component: TipBanner,
     type: 'tip-banner',
+  }),
+  'component.tool-spotlight': entry({
+    schema: cmsType.component.ToolSpotlight,
+    Component: ToolSpotlight,
+    type: 'tool-spotlight',
+    isFullWidth:true
   }),
 } as const;
 
