@@ -52,7 +52,7 @@ export function Popup({
         onClick={onClose}
       />
       <div
-        className={`absolute bottom-0 left-0 z-1 w-full overflow-y-auto max-h-full overscroll-y-none  ${
+        className={`absolute bottom-0 left-0 z-1 w-full overflow-y-auto max-h-full overscroll-y-none lg:top-0 lg:flex-center  ${
           open ? animation.enter : animation.exit
         } ${className}`}
         onAnimationEnd={handleAnimationEnd}
