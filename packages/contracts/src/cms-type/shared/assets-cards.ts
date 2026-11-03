@@ -5,8 +5,6 @@ import { Media } from '../media';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const AssetsCards = z.object({
-  __component: z.literal('shared.assets-cards'),
-  id: z.number().int(),
   Title: z.string(),
   Description: z.string(),
   Label: z.string(),
@@ -23,8 +21,6 @@ export const AssetsCards = z.object({
 });
 
 export const AssetsCardsRef = z.object({
-  __component: z.literal('shared.assets-cards'),
-  id: z.number().int(),
   Title: z.string(),
   Description: z.string(),
   Label: z.string(),

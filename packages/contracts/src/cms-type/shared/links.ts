@@ -3,8 +3,6 @@ import { z } from 'zod';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Links = z.object({
-  __component: z.literal('shared.links'),
-  id: z.number().int(),
   Label: z.string(),
   href: nullish(z.string()),
   isDisplay: nullish(z.boolean().default(true)),
@@ -14,8 +12,6 @@ export const Links = z.object({
 });
 
 export const LinksRef = z.object({
-  __component: z.literal('shared.links'),
-  id: z.number().int(),
   Label: z.string(),
   href: nullish(z.string()),
   isDisplay: nullish(z.boolean().default(true)),

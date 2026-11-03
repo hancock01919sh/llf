@@ -1,8 +1,6 @@
 import { z } from 'zod';
 
 export const Tool = z.object({
-  __component: z.literal('custom.tool'),
-  id: z.number().int(),
   url_label: z.string().default('Recipe URL'),
   url_placeholder: z.string().default('Enter URL'),
   upload_label: z.string().default('Image Upload'),
@@ -16,8 +14,6 @@ export const Tool = z.object({
 });
 
 export const ToolRef = z.object({
-  __component: z.literal('custom.tool'),
-  id: z.number().int(),
   url_label: z.string().default('Recipe URL'),
   url_placeholder: z.string().default('Enter URL'),
   upload_label: z.string().default('Image Upload'),
