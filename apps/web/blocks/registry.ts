@@ -16,6 +16,7 @@ import { HighlightComponent, HighlightComponentSchema } from './HighlightCompone
 import { CategoryDetailComponent, CategoryDetailSchema } from './CategoryDetail.tsx';
 import { NotFound } from './NotFound';
 import { SearchBlock, SearchSchema } from './Search';
+import TipBanner, { TipBannerSchema } from './TipBanner';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -34,7 +35,7 @@ const entry = <S extends z.ZodType>(e: BlockEntry<S>) => e;
 
 // TODO(BD3244-8): accordion, asset-list, and jump-nav blocks once their Strapi components exist.
 export const blocks = {
-  'component.hero': entry({ schema: cms.HeroBlock, Component: Hero, type: 'hero' }),
+  'component.hero': entry({ schema: cmsType.component.Hero, Component: Hero, type: 'hero' }),
   'component.teaser': entry({ schema: cms.TeaserBlock, Component: Teaser, type: 'teaser' }),
   'component.link-list': entry({
     schema: cms.LinkListBlock,
@@ -60,6 +61,7 @@ export const blocks = {
     schema: HighlightComponentSchema,
     Component: HighlightComponent,
     type: 'highlight-component',
+    isFullWidth:true
   }),
   'component.category-detail': entry({
     schema: CategoryDetailSchema,
@@ -77,6 +79,11 @@ export const blocks = {
     Component: SearchBlock,
     type: 'search',
     isFullWidth: true,
+  }),
+  'component.tip-banner': entry({
+    schema: TipBannerSchema,
+    Component: TipBanner,
+    type: 'tip-banner',
   }),
 } as const;
 
