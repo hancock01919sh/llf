@@ -8,14 +8,15 @@ import { useDevice } from '@/components/hooks/useDevice';
 import { EasyImage } from '@/components/UIImage';
 import { IconArrow, IconDownload, IconShare, IconUpload, IconWork2 } from '@/components/Icon';
 import TransitionLink from '@/components/TransitionLink';
-import { TipBadge, type TipBadgeType } from '@/components/TipBadge';
+import { TipBadge, TipBadgeColorMapping, type TipBadgeType } from '@/components/TipBadge';
 import { IngredientsPopup } from './IngredientsPopup';
 import type { CategoryDetailProps } from '.';
+import type { SearchDocument } from '@/lib/search';
 
 export function IngredientsList(
-  props:  (CategoryDetailProps | cmsType.component.Search) & {
+  props: (CategoryDetailProps | cmsType.component.Search) & {
     Placeholder?: string | null;
-    ingredients?: IngredientData[];
+    ingredients?: SearchDocument[];
     bgColor?: 'paper';
   },
 ) {
@@ -55,6 +56,9 @@ export function IngredientsList(
     () => ingredients || state.ingredients,
     [state.ingredients, ingredients],
   );
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [finalIngredients]);
   function getLeftListClass(index: number) {
     let classText = `${isSearch ? 'border-ink-terra-15  lg:border-ink-terra-15  hover:bg-semantic-leaf hover:text-surface-sand' : 'border-surface-sand lg:border-semantic-leaf hover:bg-semantic-leaf'} border-t`;
     if (activeIndex === index) {
@@ -67,12 +71,12 @@ export function IngredientsList(
   }
   return (
     <>
-      {/* {state.status === 'loading' && <Loading open={state.status === 'loading'} />} */}
-      {state.status === 'ready' && state.ingredients.length > 0 && (
+      {state.status === 'loading' && !isSearch && <Loading open={state.status === 'loading'} />}
+      {state.status === 'ready' && finalIngredients.length > 0 && (
         <div className={`lg:px-gutter-lg pb-gutter-lg`}>
           <Typography variant="paragraph-regular" className="px-5">
-            {state.ingredients?.length} ingredients |{' '}
-            {state.ingredients?.reduce((acc, cur) => acc + cur.tips.length, 0)} tips
+            {finalIngredients?.length} ingredients |{' '}
+            {finalIngredients?.reduce((acc, cur) => acc + (cur.tips?.length || 0), 0)} tips
           </Typography>
           <div
             className={`flex items-start mt-lg lg:mt-12.5 gap-6 ${state.ingredients[activeIndex]?.tips.length === 0 ? ' items-stretch' : ''}`}
@@ -114,7 +118,7 @@ export function IngredientsList(
                       {item.title}
                     </Typography>
                     <Typography variant="paragraph-sm" className="lg:text-paragraph-sm">
-                      {item.tips.length} tips available
+                      {item?.tips?.length || 0} tips available
                     </Typography>
                   </div>
                   <IconArrow
@@ -134,15 +138,15 @@ export function IngredientsList(
               )}
             </div>
             <div
-              className={`hidden lg:flex flex-col gap-5  flex-1 ${finalIngredients[activeIndex]?.tips.length === 0 ? 'border p-5 rounded-md items-center justify-center' + (isSearch ? ' border-ink-terra-15' : ' border-semantic-leaf') : ''}`}
+              className={`hidden lg:flex flex-col gap-5  flex-1 ${activeIndex === -1 ? 'border p-5 rounded-md items-center justify-center aspect-square' + (isSearch ? ' border-ink-terra-15 ' : ' border-semantic-leaf') : ''}`}
             >
-              {finalIngredients[activeIndex]?.tips.map((item) => (
+              {finalIngredients[activeIndex]?.tips?.map((item) => (
                 <div
                   key={item.title}
                   className={`border group/item ${isSearch ? 'border-ink-terra-15 text-ink-terra' : 'border-semantic-leaf text-surface-sand'} p-10 rounded-[40px] transition-all duration-500 bg-transparent   hover:text-ink-terra hover:bg-surface-forest-tint hover:border-surface-forest-tint`}
                 >
                   <div className="flex flex-col gap-8">
-                    <TipBadge type={item.type as TipBadgeType} />
+                    <TipBadge type={item.type?.toLowerCase() as TipBadgeType} />
                     <div className="flex-col flex  gap-4">
                       <Typography
                         role="heading"
@@ -171,12 +175,17 @@ export function IngredientsList(
                   </div>
                 </div>
               ))}
-              {finalIngredients[activeIndex]?.tips.length === 0 && (
-                <div className="max-w-2/3 flex-center text-center flex-col justify-center">
+              {activeIndex === -1 && (
+                <div className="max-w-2/3 flex-center text-center flex-col justify-center aspect-square">
                   <IconWork2 />
-                  <Typography variant="subhead-lg" className="mt-9">
+                  <Typography variant="subhead-lg" className="mt-9 text-ink-terra-70">
                     Click an ingredient to view specific tips that save time, money, and food.
                   </Typography>
+                  <div className="flex-center gap-2 mt-9">
+                    {Object.keys(TipBadgeColorMapping).map((type) => (
+                      <TipBadge type={type as TipBadgeType} key={type} />
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

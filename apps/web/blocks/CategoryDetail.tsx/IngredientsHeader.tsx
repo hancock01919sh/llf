@@ -14,7 +14,6 @@ interface IngredientsHeaderProps extends Omit<CategoryDetailProps, 'Background_c
   className?: string;
   Background_color?: 'forest' | 'paper' | null;
   Placeholder?: string | null;
-
 }
 export function IngredientsHeader(props: IngredientsHeaderProps) {
   const [open, setOpen] = useState(false);
