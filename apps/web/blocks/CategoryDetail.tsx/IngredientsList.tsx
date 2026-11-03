@@ -2,7 +2,7 @@
 import { type cmsType, IngredientData, parseResultSlugs } from '@llf/contracts';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { Loading } from '../ToolInput/Loading';
+// import { Loading } from '../ToolInput/Loading';
 import { Typography } from '@/components/Typography';
 import { useDevice } from '@/components/hooks/useDevice';
 import { EasyImage } from '@/components/UIImage';
@@ -22,8 +22,8 @@ export function IngredientsList(
 ) {
   const { ingredients, Button } = props;
   const router = useRouter();
-   const isSearch = props?.Placeholder !== undefined;
-  const slugs = !isSearch ? parseResultSlugs(useSearchParams().get('i')) : [];
+  const isSearch = props?.Placeholder !== undefined;
+  const slugs = parseResultSlugs(useSearchParams().get('i'));
   const key = slugs.join(',');
   const [state, setState] = useState<{
     status: 'loading' | 'ready';
@@ -34,7 +34,7 @@ export function IngredientsList(
   });
   const [activeIndex, setActiveIndex] = useState(-1);
   const { isMobile } = useDevice();
- 
+
   useEffect(() => {
     if (!key && !isSearch) {
       router.replace('/find-my-tips');
@@ -72,7 +72,7 @@ export function IngredientsList(
   }
   return (
     <>
-      {state.status === 'loading' && !isSearch && <Loading open={state.status === 'loading'} />}
+      {/* {state.status === 'loading' && !isSearch && <Loading open={state.status === 'loading'} />} */}
       {state.status === 'ready' && finalIngredients.length > 0 && (
         <div className={`lg:px-gutter-lg pb-gutter-lg max-w-page mx-auto`}>
           <Typography variant="paragraph-regular" className="px-5">
@@ -110,12 +110,7 @@ export function IngredientsList(
                   </div>
 
                   <div className="flex-1 flex flex-col lg:flex-row gap-2.5 lg:flex-center lg:justify-between">
-                    <Typography
-                      role="heading"
-                      as="h2"
-                      variant="subhead-md"
-                      className="font-bold font-fustat!"
-                    >
+                    <Typography as="h2" variant="subhead-md" className="font-bold font-fustat!">
                       {item.title}
                     </Typography>
                     <Typography variant="paragraph-sm" className="lg:text-paragraph-sm">
@@ -149,12 +144,7 @@ export function IngredientsList(
                   <div className="flex flex-col gap-8">
                     <TipBadge type={item.type?.toLowerCase() as TipBadgeType} />
                     <div className="flex-col flex  gap-4">
-                      <Typography
-                        role="heading"
-                        as="h2"
-                        variant="title-card"
-                        className=" font-anton"
-                      >
+                      <Typography as="h2" variant="title-card" className=" font-anton">
                         {item.title}
                       </Typography>
                       <Typography variant="paragraph-lg" className="">
@@ -179,7 +169,10 @@ export function IngredientsList(
               {activeIndex === -1 && (
                 <div className="max-w-2/3 flex-center text-center flex-col justify-center aspect-square">
                   <IconWork2 />
-                  <Typography variant="subhead-lg" className="mt-9 text-ink-terra-70">
+                  <Typography
+                    variant="subhead-lg"
+                    className={`mt-9 ${isSearch ? 'text-ink-terra-70' : 'text-surface-sand'} `}
+                  >
                     Click an ingredient to view specific tips that save time, money, and food.
                   </Typography>
                   <div className="flex-center gap-2 mt-9">

@@ -48,6 +48,7 @@ export function IngredientsHeader(props: IngredientsHeaderProps) {
             className="mt-10 w-full bg-surface-paper border border-ink-terra-15 rounded-pill p-5 text-paragraph-sm font-bold [&_placeholder]:text-ink-terra outline-ink-terra lg:w-[46%] "
             type="text"
             placeholder={props.Placeholder}
+            aria-label={props.Placeholder}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 const value = (e.target as HTMLInputElement).value as string;

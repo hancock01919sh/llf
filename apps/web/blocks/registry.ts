@@ -5,7 +5,7 @@ import { Carousel } from './Carousel';
 import { FindMyTips } from './FindMyTips';
 import { Hero } from './Hero';
 import { LinkList } from './LinkList';
-// import { SearchBox } from './SearchBox';
+import { SearchBox } from './SearchBox';
 import { Teaser } from './Teaser';
 import { TipList } from './TipList';
 import { ToolInput, ToolInputSchema } from './ToolInput';
@@ -42,7 +42,7 @@ export const blocks = {
     type: 'link-list',
   }),
   'component.carousel': entry({ schema: cms.CarouselBlock, Component: Carousel, type: 'carousel' }),
-  // 'custom.search': entry({ schema: cms.SearchBlock, Component: SearchBox, type: 'search' }),
+  'custom.search': entry({ schema: cms.SearchBlock, Component: SearchBox, type: 'search' }),
   'custom.tip-list': entry({ schema: cms.TipListBlock, Component: TipList, type: 'tip-list' }),
   'custom.tool': entry({ schema: cms.ToolBlock, Component: FindMyTips, type: 'tool' }),
   'component.tool-input': entry({
