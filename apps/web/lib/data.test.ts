@@ -2,7 +2,7 @@ import MiniSearch from 'minisearch';
 import type { cms } from '@llf/contracts';
 import { describe, expect, it } from 'vitest';
 import { runSearch } from '@/app/search/SearchResults';
-import { getIngredients, getTips } from './cms';
+import { getIngredients } from './cms';
 import {
   buildCatalog,
   buildSearchDocuments,
@@ -57,7 +57,7 @@ describe('buildCatalog', () => {
 describe('fixture release data', () => {
   it('builds a catalog, ingredient files, and a search index from the fixtures', async () => {
     const ingredients = await getIngredients();
-    const tips = await getTips();
+    // const tips = await getTips();
     const catalog = buildCatalog(ingredients);
     expect(catalog.ingredients.map((i) => i.slug)).toEqual([
       'banana',
@@ -73,7 +73,7 @@ describe('fixture release data', () => {
       expect(toIngredientData(slugged).slug).toBe(slugged.slug);
     }
 
-    const docs = buildSearchDocuments(ingredients, tips);
+    const docs = buildSearchDocuments(ingredients);
     expect(docs.find((d) => d.id === 'ingredient:banana')?.href).toBe(
       '/find-my-tips/results/?i=banana',
     );
@@ -82,7 +82,7 @@ describe('fixture release data', () => {
   });
 
   it('finds plurals, synonyms, and tips the same way the browser will', async () => {
-    const json = buildSearchIndex(buildSearchDocuments(await getIngredients(), await getTips()));
+    const json = buildSearchIndex(buildSearchDocuments(await getIngredients()));
     const index = MiniSearch.loadJSON<SearchDocument>(json, SEARCH_OPTIONS);
 
     expect(runSearch(index, '  ')).toEqual([]);

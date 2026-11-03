@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { strings } from '@/content/strings';
 import { pageMetadata } from '@/lib/seo';
-import { SearchResults } from './SearchResults';
+// import { SearchResults } from './SearchResults';
 import { requirePage } from '@/lib/cms';
 import { PageTemplate } from '@/templates/PageTemplate';
 const page = await requirePage('search');

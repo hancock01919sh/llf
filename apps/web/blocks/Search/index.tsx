@@ -1,5 +1,5 @@
 import { cmsType } from '@llf/contracts';
-import { z } from 'zod';
+import type { z } from 'zod';
 export const SearchSchema = cmsType.component.Search.extend({
   Popup: cmsType.component.TipsPopup.nullish(),
 });

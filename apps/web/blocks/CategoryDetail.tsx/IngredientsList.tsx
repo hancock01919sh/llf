@@ -1,5 +1,5 @@
 'use client';
-import { cmsType, IngredientData, parseResultSlugs } from '@llf/contracts';
+import { type cmsType, IngredientData, parseResultSlugs } from '@llf/contracts';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { Loading } from '../ToolInput/Loading';
@@ -51,7 +51,7 @@ export function IngredientsList(
         // console.log('no ingredients', loaded);
       }
     });
-  }, [key, router]);
+  }, [key, router, isSearch]);
   const finalIngredients = useMemo(
     () => ingredients || state.ingredients,
     [state.ingredients, ingredients],
