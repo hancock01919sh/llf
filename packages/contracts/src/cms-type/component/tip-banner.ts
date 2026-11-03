@@ -5,16 +5,20 @@ import { TipRef } from '../api/tip';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const TipBanner = z.object({
-  Label: nullish(z.string()),
+  __component: z.literal('component.tip-banner'),
+  id: z.number().int(),
+  Label: z.string(),
   tip: nullish(z.lazy(() => TipRef)),
   CTA: nullish(z.array(z.lazy(() => LinksRef))),
-  Background_color: nullish(z.enum(['terra', 'forest'])),
+  Background_color: z.enum(['terra', 'forest']),
   isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export const TipBannerRef = z.object({
-  Label: nullish(z.string()),
-  Background_color: nullish(z.enum(['terra', 'forest'])),
+  __component: z.literal('component.tip-banner'),
+  id: z.number().int(),
+  Label: z.string(),
+  Background_color: z.enum(['terra', 'forest']),
   isFullwidth: nullish(z.boolean().default(false)),
 });
 

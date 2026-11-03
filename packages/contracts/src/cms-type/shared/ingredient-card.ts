@@ -4,12 +4,16 @@ import { Media } from '../media';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const IngredientCard = z.object({
-  Title: nullish(z.string()),
+  __component: z.literal('shared.ingredient-card'),
+  id: z.number().int(),
+  Title: z.string(),
   Image: nullish(Media),
 });
 
 export const IngredientCardRef = z.object({
-  Title: nullish(z.string()),
+  __component: z.literal('shared.ingredient-card'),
+  id: z.number().int(),
+  Title: z.string(),
   Image: nullish(Media),
 });
 

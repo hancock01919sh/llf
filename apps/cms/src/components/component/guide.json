@@ -6,26 +6,18 @@
   "options": {},
   "attributes": {
     "Title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Description": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
-    "Label1": {
-      "type": "text"
-    },
-    "Asset1": {
+    "Assets": {
       "type": "component",
       "component": "shared.assets-cards",
-      "repeatable": true
-    },
-    "Label2": {
-      "type": "text"
-    },
-    "Asset2": {
-      "type": "component",
-      "component": "shared.assets-cards",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     }
   },
   "config": {}

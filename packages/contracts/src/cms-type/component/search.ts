@@ -6,6 +6,8 @@ import { TipsPopupRef } from '../component/tips-popup';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Search = z.object({
+  __component: z.literal('component.search'),
+  id: z.number().int(),
   Title: nullish(z.string()),
   Description: nullish(z.string()),
   Placeholder: nullish(z.string()),
@@ -18,6 +20,8 @@ export const Search = z.object({
 });
 
 export const SearchRef = z.object({
+  __component: z.literal('component.search'),
+  id: z.number().int(),
   Title: nullish(z.string()),
   Description: nullish(z.string()),
   Placeholder: nullish(z.string()),

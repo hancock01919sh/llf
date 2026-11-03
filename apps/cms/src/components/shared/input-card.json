@@ -6,7 +6,8 @@
   "options": {},
   "attributes": {
     "Title": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "Icon": {
       "type": "media",
@@ -24,7 +25,8 @@
       "repeatable": false
     },
     "Description": {
-      "type": "text"
+      "type": "text",
+      "required": true
     }
   },
   "config": {}

@@ -50,9 +50,9 @@
         "images"
       ]
     },
-    "categories": {
+    "category": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "manyToOne",
       "target": "api::category.category",
       "inversedBy": "ingredients"
     }

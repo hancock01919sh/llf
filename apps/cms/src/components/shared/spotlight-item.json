@@ -6,7 +6,8 @@
   "options": {},
   "attributes": {
     "Copy": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Video": {
       "type": "media",

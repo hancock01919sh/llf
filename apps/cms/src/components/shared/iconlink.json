@@ -6,11 +6,13 @@
   "options": {},
   "attributes": {
     "Label": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Image": {
       "type": "media",
       "multiple": false,
+      "required": true,
       "allowedTypes": [
         "images",
         "files"

@@ -16,7 +16,7 @@ export const Tip = z.object({
   tip_type: nullish(z.lazy(() => TipTypeRef)),
   tip_behavior: nullish(z.lazy(() => TipBehaviorRef)),
   tip_motivator: nullish(z.lazy(() => TipMotivatorRef)),
-  categories: nullish(z.array(z.lazy(() => CategoryRef))),
+  category: nullish(z.lazy(() => CategoryRef)),
 });
 
 export const TipRef = z.object({

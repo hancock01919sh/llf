@@ -7,6 +7,8 @@ import { TitleRef } from '../shared/title';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Teaser = z.object({
+  __component: z.literal('component.teaser'),
+  id: z.number().int(),
   title: nullish(z.lazy(() => TitleRef)),
   description: nullish(Block.array()),
   ctas: nullish(z.array(z.lazy(() => CtaRef))),
@@ -15,6 +17,8 @@ export const Teaser = z.object({
 });
 
 export const TeaserRef = z.object({
+  __component: z.literal('component.teaser'),
+  id: z.number().int(),
   images: nullish(Media.array()),
   layout: z.enum(['Basic', 'Highlight', 'Quote']).default('Basic'),
 });

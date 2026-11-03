@@ -6,17 +6,21 @@
   "options": {},
   "attributes": {
     "Title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "SubTitle": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Description": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "Image": {
       "type": "media",
       "multiple": false,
+      "required": true,
       "allowedTypes": [
         "images",
         "files",
@@ -25,7 +29,8 @@
       ]
     },
     "CardTitle": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "CardDescription": {
       "type": "text"
@@ -48,6 +53,7 @@
     },
     "Background_color": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "forest",
         "paper"

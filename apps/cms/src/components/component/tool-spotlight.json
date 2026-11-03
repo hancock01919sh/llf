@@ -6,10 +6,12 @@
   "options": {},
   "attributes": {
     "Title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "SubTitle": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Link": {
       "type": "component",
@@ -19,7 +21,8 @@
     "SpotlightItem": {
       "type": "component",
       "component": "shared.spotlight-item",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     },
     "isFullwidth": {
       "type": "boolean",
@@ -27,6 +30,7 @@
     },
     "Background_color": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "forest"
       ]

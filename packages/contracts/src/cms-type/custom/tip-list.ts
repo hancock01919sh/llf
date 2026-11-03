@@ -5,6 +5,8 @@ import { TitleRef } from '../shared/title';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const TipList = z.object({
+  __component: z.literal('custom.tip-list'),
+  id: z.number().int(),
   title: nullish(z.lazy(() => TitleRef)),
   description: nullish(z.string()),
   tips: nullish(z.array(z.lazy(() => TipRef))),
@@ -12,6 +14,8 @@ export const TipList = z.object({
 });
 
 export const TipListRef = z.object({
+  __component: z.literal('custom.tip-list'),
+  id: z.number().int(),
   description: nullish(z.string()),
   layout: z.enum(['Basic', 'Single']).default('Basic'),
 });

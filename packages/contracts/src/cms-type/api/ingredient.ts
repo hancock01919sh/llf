@@ -24,7 +24,7 @@ export const Ingredient = z.object({
   tips: nullish(z.array(z.lazy(() => TipRef))),
   wasted: z.number().int().default(3),
   image: nullish(Media),
-  categories: nullish(z.array(z.lazy(() => CategoryRef))),
+  category: nullish(z.lazy(() => CategoryRef)),
 });
 
 export const IngredientRef = z.object({

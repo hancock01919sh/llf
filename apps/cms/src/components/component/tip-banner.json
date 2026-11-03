@@ -6,7 +6,8 @@
   "options": {},
   "attributes": {
     "Label": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "tip": {
       "type": "relation",
@@ -20,6 +21,7 @@
     },
     "Background_color": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "terra",
         "forest"

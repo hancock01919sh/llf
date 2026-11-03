@@ -7,15 +7,15 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const Global = z.object({
   id: z.number(),
   documentId: z.string(),
-  title: nullish(z.string()),
+  title: z.string(),
   seo: nullish(z.lazy(() => SeoRef)),
-  load: nullish(z.lazy(() => LoadingRef)),
+  load: z.lazy(() => LoadingRef),
 });
 
 export const GlobalRef = z.object({
   id: z.number(),
   documentId: z.string(),
-  title: nullish(z.string()),
+  title: z.string(),
 });
 
 export type Global = z.infer<typeof Global>;
