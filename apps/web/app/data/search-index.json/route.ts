@@ -4,7 +4,7 @@ import { getSearchIndexJson } from '@/lib/data';
 export const dynamic = 'force-static';
 
 export async function GET() {
-  return new Response(await getSearchIndexJson(), {
+  return new Response(JSON.stringify(await getSearchIndexJson()), {
     headers: { 'Content-Type': 'application/json' },
   });
 }

@@ -17,14 +17,14 @@ export interface SearchDocument {
   /** Extra words that should find the document (synonyms, tip text). Indexed, not stored. */
   body: string;
   href: string;
-  image?:{
+  image?: {
     url: string;
     alt: string;
-  } | null,
+  } | null;
   tips?: Array<{
     title: string;
     description?: string | null;
-    tip_type: string;
+    type: string;
     tip_behavior: string;
     tip_motivator: string;
   }>;

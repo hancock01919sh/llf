@@ -104,7 +104,7 @@ export function buildSearchDocuments(
           : ingredient.tips?.map((tip) => ({
               title: tip.title,
               description: tip.description,
-              tip_type: tip.tip_type?.title ?? '',
+              type: tip.tip_type?.title ?? '',
               tip_behavior: tip?.tip_behavior?.title ?? '',
               tip_motivator: tip?.tip_motivator?.title ?? '',
             })),
@@ -137,6 +137,7 @@ export async function getCatalog(): Promise<Catalog> {
   return buildCatalog(await getIngredients());
 }
 
-export async function getSearchIndexJson(): Promise<string> {
-  return buildSearchIndex(buildSearchDocuments(await getIngredients()));
+export async function getSearchIndexJson(): Promise<SearchDocument[]> {
+  return buildSearchDocuments(await getIngredients());
+  // return buildSearchIndex(buildSearchDocuments(await getIngredients()));
 }
