@@ -125,9 +125,9 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
   return (
     <div
       ref={containerRef}
-      className="py-15 lg:py-25 flex flex-col gap-lg lg:pt-25 lg:pb-35.75"
+      className="py-15 lg:py-25 flex flex-col gap-lg max-w-page mx-auto lg:px-gutter-lg"
     >
-      <div className="px-4.5 lg:px-0 lg:w-[62.5%] lg:mx-auto lg:max-w-[calc(1440*0.625*1px)]">
+      <div className="px-4.5 lg:px-0 lg:w-[70%] lg:mx-auto ">
         <Typography variant="headline-lg" className="text-center">
           {Title}
         </Typography>
