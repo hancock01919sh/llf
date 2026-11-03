@@ -6,19 +6,24 @@
   "options": {},
   "attributes": {
     "Title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Description": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "Placeholder": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Statement": {
-      "type": "blocks"
+      "type": "blocks",
+      "required": true
     },
     "Hint": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "Button": {
       "type": "component",
@@ -28,7 +33,8 @@
     "Popup": {
       "type": "component",
       "component": "component.tips-popup",
-      "repeatable": false
+      "repeatable": false,
+      "required": true
     },
     "isFullwidth": {
       "type": "boolean",
