@@ -19,6 +19,7 @@ import { SearchBlock, SearchSchema } from './Search';
 import TipBanner, { TipBannerSchema } from './TipBanner';
 import { ToolSpotlight } from './ToolSpotlight';
 import { CategoryEmoji } from './CategoryEmoji';
+import { CategoryCarouselFeature } from './CategoryCarouselFeature';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -63,7 +64,7 @@ export const blocks = {
     schema: HighlightComponentSchema,
     Component: HighlightComponent,
     type: 'highlight-component',
-    isFullWidth:true
+    isFullWidth: true,
   }),
   'component.category-detail': entry({
     schema: CategoryDetailSchema,
@@ -75,7 +76,7 @@ export const blocks = {
     schema: cmsType.component._404,
     Component: NotFound,
     type: 'not-found',
-    surface:'forest'
+    surface: 'forest',
   }),
   'component.search': entry({
     schema: SearchSchema,
@@ -92,13 +93,19 @@ export const blocks = {
     schema: cmsType.component.ToolSpotlight,
     Component: ToolSpotlight,
     type: 'tool-spotlight',
-    isFullWidth:true
+    isFullWidth: true,
   }),
-  'component.category-emoji':entry({
+  'component.category-emoji': entry({
     schema: cmsType.component.CategoryEmoji,
     Component: CategoryEmoji,
     type: 'category-emoji',
-  })
+  }),
+  'component.category-carousel-feature': entry({
+    schema: cmsType.component.CategoryCarouselFeature,
+    Component: CategoryCarouselFeature,
+    type: 'category-carousel-feature',
+    isFullWidth: true,
+  }),
 } as const;
 
 export type BlockKey = keyof typeof blocks;
