@@ -1,26 +1,38 @@
 import { z } from 'zod';
 import { LinksRef } from '../shared/links';
 import { Media } from '../media';
-import { ToolkitCategoryRef } from '../api/toolkit-category';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const AssetsCards = z.object({
-  Title: nullish(z.string()),
-  Description: nullish(z.string()),
-  Image: nullish(Media),
+  Title: z.string(),
+  Description: z.string(),
+  Label: z.string(),
+  Image: Media,
   CTA: nullish(z.lazy(() => LinksRef)),
   File: nullish(Media),
-  toolkit_category: nullish(z.lazy(() => ToolkitCategoryRef)),
-  Display_Mode: nullish(z.enum(['Landscape', 'Portrait'])),
+  Display_Mode: z.enum([
+    'aspect-16/9',
+    'aspect-9/16',
+    'aspect-4/5',
+    'aspect-1/1',
+    'aspect-4/5 10 second',
+  ]),
 });
 
 export const AssetsCardsRef = z.object({
-  Title: nullish(z.string()),
-  Description: nullish(z.string()),
-  Image: nullish(Media),
+  Title: z.string(),
+  Description: z.string(),
+  Label: z.string(),
+  Image: Media,
   File: nullish(Media),
-  Display_Mode: nullish(z.enum(['Landscape', 'Portrait'])),
+  Display_Mode: z.enum([
+    'aspect-16/9',
+    'aspect-9/16',
+    'aspect-4/5',
+    'aspect-1/1',
+    'aspect-4/5 10 second',
+  ]),
 });
 
 export type AssetsCards = z.infer<typeof AssetsCards>;

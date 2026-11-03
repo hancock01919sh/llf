@@ -1,22 +1,19 @@
 import { z } from 'zod';
 import { AssetsCardsRef } from '../shared/assets-cards';
 
-const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
-
 export const Guide = z.object({
-  Title: nullish(z.string()),
-  Description: nullish(z.string()),
-  Label1: nullish(z.string()),
-  Asset1: nullish(z.array(z.lazy(() => AssetsCardsRef))),
-  Label2: nullish(z.string()),
-  Asset2: nullish(z.array(z.lazy(() => AssetsCardsRef))),
+  __component: z.literal('component.guide'),
+  id: z.number().int(),
+  Title: z.string(),
+  Description: z.string(),
+  Assets: z.array(z.lazy(() => AssetsCardsRef)),
 });
 
 export const GuideRef = z.object({
-  Title: nullish(z.string()),
-  Description: nullish(z.string()),
-  Label1: nullish(z.string()),
-  Label2: nullish(z.string()),
+  __component: z.literal('component.guide'),
+  id: z.number().int(),
+  Title: z.string(),
+  Description: z.string(),
 });
 
 export type Guide = z.infer<typeof Guide>;
