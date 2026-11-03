@@ -73,7 +73,7 @@ export function IngredientsList(
     <>
       {state.status === 'loading' && !isSearch && <Loading open={state.status === 'loading'} />}
       {state.status === 'ready' && finalIngredients.length > 0 && (
-        <div className={`lg:px-gutter-lg pb-gutter-lg`}>
+        <div className={`lg:px-gutter-lg pb-gutter-lg max-w-page mx-auto`}>
           <Typography variant="paragraph-regular" className="px-5">
             {finalIngredients?.length} ingredients |{' '}
             {finalIngredients?.reduce((acc, cur) => acc + (cur.tips?.length || 0), 0)} tips
@@ -81,7 +81,7 @@ export function IngredientsList(
           <div
             className={`flex items-start mt-lg lg:mt-12.5 gap-6 ${state.ingredients[activeIndex]?.tips.length === 0 ? ' items-stretch' : ''}`}
           >
-            <div className="flex flex-col w-full lg:w-[29%] lg:max-w-96.25 lg:gap-5">
+            <div className="flex flex-col w-full lg:w-[32.89%] lg:max-w-106.75 lg:gap-5">
               {finalIngredients.map((item, index) => (
                 <div
                   key={item.title + index}
