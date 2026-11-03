@@ -22,7 +22,8 @@ export function IngredientsList(
 ) {
   const { ingredients, Button } = props;
   const router = useRouter();
-  const slugs = parseResultSlugs(useSearchParams().get('i'));
+   const isSearch = props?.Placeholder !== undefined;
+  const slugs = !isSearch ? parseResultSlugs(useSearchParams().get('i')) : [];
   const key = slugs.join(',');
   const [state, setState] = useState<{
     status: 'loading' | 'ready';
@@ -33,7 +34,7 @@ export function IngredientsList(
   });
   const [activeIndex, setActiveIndex] = useState(-1);
   const { isMobile } = useDevice();
-  const isSearch = props?.Placeholder !== undefined;
+ 
   useEffect(() => {
     if (!key && !isSearch) {
       router.replace('/find-my-tips');

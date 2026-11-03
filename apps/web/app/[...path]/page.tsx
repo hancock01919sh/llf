@@ -5,7 +5,7 @@ import { pageMetadata } from '@/lib/seo';
 import { templateFor } from '@/templates/registry';
 
 /** Paths with their own route. A CMS page at one of these renders there, not here (TDD §6.1). */
-const RESERVED = ['', 'find-my-tips', 'tips', 'search'];
+const RESERVED = ['', 'find-my-tips', 'tips', 'search','find-my-tips/results'];
 
 function isReserved(path: string): boolean {
   return RESERVED.some(
