@@ -6,18 +6,22 @@
   "options": {},
   "attributes": {
     "Title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Description": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "Emoji": {
       "type": "component",
       "component": "shared.emoji-item",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     },
     "Background_color": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "paper"
       ]

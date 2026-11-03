@@ -6,12 +6,14 @@
   "options": {},
   "attributes": {
     "Title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "SubCategory": {
       "type": "component",
       "component": "component.guide",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     }
   },
   "config": {}

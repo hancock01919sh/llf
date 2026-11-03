@@ -9,6 +9,7 @@
     "images": {
       "type": "media",
       "multiple": true,
+      "required": true,
       "allowedTypes": [
         "images",
         "files",
@@ -21,13 +22,16 @@
       "repeatable": true
     },
     "Description": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "Title": {
-      "type": "blocks"
+      "type": "blocks",
+      "required": true
     },
     "Background_color": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "terra"
       ]

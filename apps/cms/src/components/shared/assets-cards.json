@@ -6,17 +6,21 @@
   "options": {},
   "attributes": {
     "Title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Description": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "Label": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "Image": {
       "type": "media",
       "multiple": false,
+      "required": true,
       "allowedTypes": [
         "images",
         "files",
@@ -41,6 +45,7 @@
     },
     "Display_Mode": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "aspect-16/9",
         "aspect-9/16",

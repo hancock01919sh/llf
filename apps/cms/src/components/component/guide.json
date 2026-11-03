@@ -6,15 +6,18 @@
   "options": {},
   "attributes": {
     "Title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Description": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "Assets": {
       "type": "component",
       "component": "shared.assets-cards",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     }
   },
   "config": {}

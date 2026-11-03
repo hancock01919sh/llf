@@ -6,20 +6,24 @@
   "options": {},
   "attributes": {
     "Title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Description": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "Link": {
       "type": "component",
       "component": "shared.links",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     },
     "Feature_Card": {
       "type": "component",
       "component": "shared.feature-card",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     },
     "isFullwidth": {
       "type": "boolean",
@@ -27,6 +31,7 @@
     },
     "Background_color": {
       "type": "enumeration",
+      "required": true,
       "default": "terra",
       "enum": [
         "terra"
