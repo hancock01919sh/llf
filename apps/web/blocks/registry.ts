@@ -18,6 +18,7 @@ import { NotFound } from './NotFound';
 import { SearchBlock, SearchSchema } from './Search';
 import TipBanner, { TipBannerSchema } from './TipBanner';
 import { ToolSpotlight } from './ToolSpotlight';
+import { CategoryEmoji } from './CategoryEmoji';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -93,6 +94,11 @@ export const blocks = {
     type: 'tool-spotlight',
     isFullWidth:true
   }),
+  'component.category-emoji':entry({
+    schema: cmsType.component.CategoryEmoji,
+    Component: CategoryEmoji,
+    type: 'category-emoji',
+  })
 } as const;
 
 export type BlockKey = keyof typeof blocks;
