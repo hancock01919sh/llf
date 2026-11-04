@@ -1,0 +1,29 @@
+import { z } from 'zod';
+import { CategoryRef } from '../api/category';
+import { IngredientRef } from '../api/ingredient';
+import { TipBehaviorRef } from '../api/tip-behavior';
+import { TipMotivatorRef } from '../api/tip-motivator';
+import { TipTypeRef } from '../api/tip-type';
+
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
+
+export const Tip = z.object({
+  id: z.number(),
+  documentId: z.string(),
+  title: z.string(),
+  description: nullish(z.string()),
+  ingredient: nullish(z.lazy(() => IngredientRef)),
+  tip_type: nullish(z.lazy(() => TipTypeRef)),
+  tip_behavior: nullish(z.lazy(() => TipBehaviorRef)),
+  tip_motivator: nullish(z.lazy(() => TipMotivatorRef)),
+  category: nullish(z.lazy(() => CategoryRef)),
+});
+
+export const TipRef = z.object({
+  id: z.number(),
+  documentId: z.string(),
+  title: z.string(),
+  description: nullish(z.string()),
+});
+
+export type Tip = z.infer<typeof Tip>;

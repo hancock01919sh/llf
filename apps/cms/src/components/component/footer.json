@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_component_footers",
+  "info": {
+    "displayName": "Footer"
+  },
+  "options": {},
+  "attributes": {
+    "Link": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": true
+    },
+    "Iconlink": {
+      "type": "component",
+      "component": "shared.iconlink",
+      "repeatable": true
+    },
+    "Legal_Copy": {
+      "type": "text"
+    },
+    "Overlaylink": {
+      "type": "component",
+      "component": "shared.overlay-link",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

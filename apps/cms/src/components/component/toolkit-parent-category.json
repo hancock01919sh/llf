@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_component_toolkit_parent_categories",
+  "info": {
+    "displayName": "Toolkit ParentCategory"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string",
+      "required": true
+    },
+    "SubCategory": {
+      "type": "component",
+      "component": "component.guide",
+      "repeatable": true,
+      "required": true
+    }
+  },
+  "config": {}
+}

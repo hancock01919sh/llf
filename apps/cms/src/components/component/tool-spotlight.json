@@ -1,0 +1,40 @@
+{
+  "collectionName": "components_component_tool_spotlights",
+  "info": {
+    "displayName": "Tool Spotlight"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string",
+      "required": true
+    },
+    "SubTitle": {
+      "type": "string",
+      "required": true
+    },
+    "Link": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": false
+    },
+    "SpotlightItem": {
+      "type": "component",
+      "component": "shared.spotlight-item",
+      "repeatable": true,
+      "required": true
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "forest"
+      ]
+    }
+  },
+  "config": {}
+}

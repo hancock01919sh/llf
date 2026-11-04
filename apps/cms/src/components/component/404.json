@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_component_404s",
+  "info": {
+    "displayName": "404"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    },
+    "backgroundColor": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "forest"
+      ]
+    }
+  },
+  "config": {}
+}

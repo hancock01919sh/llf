@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_shared_links",
+  "info": {
+    "displayName": "Links"
+  },
+  "options": {},
+  "attributes": {
+    "Label": {
+      "type": "string",
+      "required": true
+    },
+    "href": {
+      "type": "string"
+    },
+    "isDisplay": {
+      "type": "boolean",
+      "default": true
+    },
+    "isButton": {
+      "type": "boolean"
+    },
+    "Buttontype": {
+      "type": "enumeration",
+      "enum": [
+        "Primary",
+        "Secondary"
+      ]
+    },
+    "NewTab": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "config": {}
+}

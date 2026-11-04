@@ -1,0 +1,68 @@
+{
+  "collectionName": "components_component_tool_inputs",
+  "info": {
+    "displayName": "Tool Input"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string",
+      "required": true
+    },
+    "SubTitle": {
+      "type": "string",
+      "required": true
+    },
+    "Description": {
+      "type": "text",
+      "required": true
+    },
+    "Image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "CardTitle": {
+      "type": "string",
+      "required": true
+    },
+    "CardDescription": {
+      "type": "text"
+    },
+    "Cards": {
+      "type": "component",
+      "component": "shared.input-card",
+      "repeatable": true
+    },
+    "Placeholder": {
+      "type": "string"
+    },
+    "Copy": {
+      "type": "string"
+    },
+    "Button": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": true
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "forest",
+        "paper"
+      ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "config": {}
+}
