@@ -21,7 +21,7 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
   const { SubTitle, Link, SpotlightItem, Title } = props.block;
   const [swiperIndex, setSwiperIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const defaultTextColor = 'yellow'
+  const defaultTextColor = 'yellow';
   useGSAP(() => {
     if (!containerRef.current || window.innerWidth < 1024) return;
     const texts = gsap.utils.toArray<HTMLParagraphElement>(
@@ -37,7 +37,7 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
       autoAlpha: 1,
       zIndex: (i) => i + 1,
     });
-// text-[#1A4F3A]
+    // text-[#1A4F3A]
     gsap.set(texts, {
       color: defaultTextColor,
     });
@@ -190,11 +190,7 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
         <div className="w-1/2">
           <div className="text-wrapper flex flex-col gap-6">
             {SpotlightItem.map((item) => (
-              <Typography
-                key={item.Copy}
-                variant="headline-md"
-                className={`uppercase `}
-              >
+              <Typography key={item.Copy} variant="headline-md" className={`uppercase `}>
                 {item.Copy}
               </Typography>
             ))}

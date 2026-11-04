@@ -15,7 +15,6 @@ export function RichText({
   content: cms.BlocksContent | null | undefined;
   className?: string;
 }) {
-  console.log('content:',content)
   if (!content || content.length === 0) return null;
   return (
     <div className={className}>

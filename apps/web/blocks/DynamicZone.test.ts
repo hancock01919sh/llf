@@ -26,10 +26,7 @@ describe('resolveBlocks', () => {
   afterEach(() => vi.restoreAllMocks());
 
   it('resolves registered blocks with their analytics type and layout', () => {
-    const [block] = resolveBlocks(
-      page([good, validHero]),
-      true,
-    ).slice(1);
+    const [block] = resolveBlocks(page([good, validHero]), true).slice(1);
     expect(resolveBlocks(page([good]), true)).toMatchObject([
       { key: 'custom.search-1', type: 'search' },
     ]);

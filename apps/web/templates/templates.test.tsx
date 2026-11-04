@@ -1,10 +1,8 @@
 import type { cms } from '@llf/contracts';
 import { cleanup, render } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { strings } from '@/content/strings';
 import { requirePage } from '@/lib/cms';
 import { FindMyTipsTemplate } from './FindMyTipsTemplate';
-import { HomeTemplate } from './HomeTemplate';
 import { templateFor, templates } from './registry';
 
 vi.mock('next/navigation', () => ({

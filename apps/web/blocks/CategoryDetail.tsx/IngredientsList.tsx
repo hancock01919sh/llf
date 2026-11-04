@@ -144,7 +144,7 @@ export function IngredientsList(
                   <div className="flex flex-col gap-8">
                     <TipBadge type={item.type?.toLowerCase() as TipBadgeType} />
                     <div className="flex-col flex  gap-4">
-                      <Typography  variant="title-card" className=" font-anton">
+                      <Typography variant="title-card" className=" font-anton">
                         {item.title}
                       </Typography>
                       <Typography variant="paragraph-lg" className="">
