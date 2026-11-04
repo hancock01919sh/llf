@@ -4,16 +4,12 @@ import { LinksRef } from '../shared/links';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const TipsPopup = z.object({
-  __component: z.literal('component.tips-popup'),
-  id: z.number().int(),
   Title: z.string(),
   Description: nullish(z.string()),
   Link: nullish(z.lazy(() => LinksRef)),
 });
 
 export const TipsPopupRef = z.object({
-  __component: z.literal('component.tips-popup'),
-  id: z.number().int(),
   Title: z.string(),
   Description: nullish(z.string()),
 });
