@@ -4,14 +4,12 @@ import { HeroTitle } from './HeroTitle';
 import { HeroContent } from './HeroContent';
 import { IconLongArrow } from '@/components/Icon';
 import { useEffect, useRef, useState } from 'react';
-import { useAdjacent } from '@/components/hooks/useAdjacent';
 import { findFirstVisibleContentWrapper } from '@/lib/utils';
 import type { BlockProps } from '../types';
 import type { cmsType } from '@llf/contracts';
 export function Hero(props: BlockProps<cmsType.component.Hero>) {
   const { Title, images } = props.block;
   const containerRef = useRef(null);
-  //   const { next } = useAdjacent({ originalRef: containerRef });
   const [nextVisible, setNextVisible] = useState<number>();
 
   useEffect(() => {

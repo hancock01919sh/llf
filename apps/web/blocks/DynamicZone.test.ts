@@ -11,31 +11,40 @@ const page = (main: unknown[]) =>
 
 const good = { __component: 'custom.search', id: 1, placeholder: 'Search' };
 const unknown = { __component: 'component.not-a-real-block', id: 2 };
-const invalid = { __component: 'component.hero', id: 3, layout: 'Sideways' };
+// Hero mock mirrors the current `cms-type.component.Hero` schema (Strapi has no `layout` field).
+const validHero = {
+  __component: 'component.hero',
+  id: 4,
+  images: [],
+  Description: 'Everything you did not know about ingredients.',
+  Title: [],
+  Background_color: 'terra',
+};
+const invalidHero = { ...validHero, id: 3, Background_color: 'paper' };
 
 describe('resolveBlocks', () => {
   afterEach(() => vi.restoreAllMocks());
 
   it('resolves registered blocks with their analytics type and layout', () => {
     const [block] = resolveBlocks(
-      page([good, { __component: 'component.hero', id: 4 }]),
+      page([good, validHero]),
       true,
     ).slice(1);
     expect(resolveBlocks(page([good]), true)).toMatchObject([
       { key: 'custom.search-1', type: 'search' },
     ]);
-    expect(block).toMatchObject({ type: 'hero', layout: 'Primary' });
+    expect(block).toMatchObject({ type: 'hero' });
   });
 
   it('fails the build on unknown or invalid blocks, naming each one', () => {
-    expect(() => resolveBlocks(page([good, unknown, invalid]), true)).toThrow(ContentError);
+    expect(() => resolveBlocks(page([good, unknown, invalidHero]), true)).toThrow(ContentError);
     try {
-      resolveBlocks(page([good, unknown, invalid]), true);
+      resolveBlocks(page([good, unknown, invalidHero]), true);
     } catch (error) {
       const message = (error as Error).message;
       expect(message).toContain('Page "Test page" (/test)');
       expect(message).toContain('block #2 (component.not-a-real-block): the site has no component');
-      expect(message).toContain('block #3 (component.hero): layout:');
+      expect(message).toContain('block #3 (component.hero): Background_color:');
       expect(message).toMatch(/Fix them in Strapi and publish again\.$/);
     }
   });

@@ -4,7 +4,7 @@ import { Typography } from '@/components/Typography';
 import Image from 'next/image';
 import { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
-import { z } from 'zod';
+import type { z } from 'zod';
 import type { Media } from '@llf/contracts/cms';
 // interface TipBannerProps {
 //   CTA: LinkProps[];

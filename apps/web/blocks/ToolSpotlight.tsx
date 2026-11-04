@@ -21,6 +21,7 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
   const { SubTitle, Link, SpotlightItem, Title } = props.block;
   const [swiperIndex, setSwiperIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const defaultTextColor = 'yellow'
   useGSAP(() => {
     if (!containerRef.current || window.innerWidth < 1024) return;
     const texts = gsap.utils.toArray<HTMLParagraphElement>(
@@ -36,9 +37,9 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
       autoAlpha: 1,
       zIndex: (i) => i + 1,
     });
-
+// text-[#1A4F3A]
     gsap.set(texts, {
-      color: '#1A4F3A',
+      color: defaultTextColor,
     });
 
     const tl = gsap.timeline({
@@ -113,7 +114,7 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
         tl.to(
           texts[i - 1]!,
           {
-            color: '#1A4F3A',
+            color: defaultTextColor,
             duration: 1,
             ease: 'none',
           },
@@ -192,7 +193,7 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
               <Typography
                 key={item.Copy}
                 variant="headline-md"
-                className={`uppercase text-[#1A4F3A]}`}
+                className={`uppercase `}
               >
                 {item.Copy}
               </Typography>
@@ -215,4 +216,3 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
     </div>
   );
 }
-

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { requirePage } from '@/lib/cms';
 import { pageMetadata } from '@/lib/seo';
-// import { templates } from '@/templates/registry';
 import { PageTemplate } from '@/templates/PageTemplate';
 const page = await requirePage('/');
 export async function generateMetadata(): Promise<Metadata> {
@@ -9,6 +8,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  console.log(page);
   return <PageTemplate page={page} />;
 }

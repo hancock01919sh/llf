@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Carousel } from '@/blocks/Carousel';
 import { DynamicZone } from '@/blocks/DynamicZone';
-import { Hero } from '@/blocks/Hero';
+import { Hero } from '@/blocks/Hero_old';
 import { ModuleBoundary } from '@/components/ModuleBoundary';
 import { RichText } from '@/components/RichText';
 import { strings } from '@/content/strings';

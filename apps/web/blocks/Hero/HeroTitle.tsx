@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useRef } from 'react';
-import { BlocksRenderer, type BlocksContent } from '@strapi/blocks-react-renderer';
 import { RichText } from '@/components/RichText';
 import type { cms } from '@llf/contracts';
 export function HeroTitle({ Title }: { Title: cms.BlocksContent | null | undefined }) {
@@ -21,9 +20,8 @@ export function HeroTitle({ Title }: { Title: cms.BlocksContent | null | undefin
     };
   }, []);
   return (
-    <div ref={ref} className="text-headline-lg [&_code]:text-surface-mint [&_code]:font-anton">
-      {/* <BlocksRenderer content={Title as BlocksContent} /> */}
+    <h1 ref={ref} className="text-headline-lg [&_code]:text-surface-mint [&_code]:font-anton">
       <RichText content={Title} />
-    </div>
+    </h1>
   );
 }
