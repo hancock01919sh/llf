@@ -5,16 +5,16 @@ import { Media } from '../media';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const InputCard = z.object({
-  Title: z.string(),
-  Icon: nullish(Media),
-  Link: nullish(z.lazy(() => LinksRef)),
-  Description: z.string(),
+  title: z.string(),
+  icon: nullish(Media),
+  link: nullish(z.lazy(() => LinksRef)),
+  description: z.string(),
 });
 
 export const InputCardRef = z.object({
-  Title: z.string(),
-  Icon: nullish(Media),
-  Description: z.string(),
+  title: z.string(),
+  icon: nullish(Media),
+  description: z.string(),
 });
 
 export type InputCard = z.infer<typeof InputCard>;

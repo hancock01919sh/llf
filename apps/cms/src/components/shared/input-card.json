@@ -5,11 +5,11 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "text",
       "required": true
     },
-    "Icon": {
+    "icon": {
       "type": "media",
       "multiple": false,
       "allowedTypes": [
@@ -19,12 +19,12 @@
         "audios"
       ]
     },
-    "Link": {
+    "link": {
       "type": "component",
       "component": "shared.links",
       "repeatable": false
     },
-    "Description": {
+    "description": {
       "type": "text",
       "required": true
     }

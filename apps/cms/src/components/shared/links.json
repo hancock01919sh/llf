@@ -5,7 +5,7 @@
   },
   "options": {},
   "attributes": {
-    "Label": {
+    "label": {
       "type": "string",
       "required": true
     },
@@ -19,14 +19,14 @@
     "isButton": {
       "type": "boolean"
     },
-    "Buttontype": {
+    "buttonType": {
       "type": "enumeration",
       "enum": [
         "Primary",
         "Secondary"
       ]
     },
-    "NewTab": {
+    "newTab": {
       "type": "boolean",
       "default": false
     }
