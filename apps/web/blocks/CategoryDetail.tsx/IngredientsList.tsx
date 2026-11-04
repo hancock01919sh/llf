@@ -1,5 +1,5 @@
 'use client';
-import { type cmsType, IngredientData, parseResultSlugs } from '@llf/contracts';
+import { IngredientData, parseResultSlugs } from '@llf/contracts';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 // import { Loading } from '../ToolInput/Loading';
@@ -14,8 +14,8 @@ import type { CategoryDetailProps } from '.';
 import type { SearchDocument } from '@/lib/search';
 
 export function IngredientsList(
-  props: (CategoryDetailProps | cmsType.component.Search) & {
-    Placeholder?: string | null;
+  props: CategoryDetailProps & {
+    // Placeholder?: string | null;
     ingredients?: SearchDocument[];
     bgColor?: 'paper';
   },
@@ -32,7 +32,7 @@ export function IngredientsList(
     status: 'loading',
     ingredients: [],
   });
-  const [activeIndex, setActiveIndex] = useState(-1);
+  const [activeIndex, setActiveIndex] = useState(isSearch ? -1 : 0);
   const { isMobile } = useDevice();
 
   useEffect(() => {
@@ -58,8 +58,8 @@ export function IngredientsList(
     [state.ingredients, ingredients],
   );
   useEffect(() => {
-    setActiveIndex(-1);
-  }, [finalIngredients]);
+    setActiveIndex(isSearch ? -1 : 0);
+  }, [finalIngredients, isSearch]);
   function getLeftListClass(index: number) {
     let classText = `${isSearch ? 'border-ink-terra-15  lg:border-ink-terra-15  hover:bg-semantic-leaf hover:text-surface-sand' : 'border-surface-sand lg:border-semantic-leaf hover:bg-semantic-leaf'} border-t`;
     if (activeIndex === index) {
@@ -144,7 +144,7 @@ export function IngredientsList(
                   <div className="flex flex-col gap-8">
                     <TipBadge type={item.type?.toLowerCase() as TipBadgeType} />
                     <div className="flex-col flex  gap-4">
-                      <Typography as="h2" variant="title-card" className=" font-anton">
+                      <Typography  variant="title-card" className=" font-anton">
                         {item.title}
                       </Typography>
                       <Typography variant="paragraph-lg" className="">
@@ -173,7 +173,7 @@ export function IngredientsList(
                     variant="subhead-lg"
                     className={`mt-9 ${isSearch ? 'text-ink-terra-70' : 'text-surface-sand'} `}
                   >
-                    Click an ingredient to view specific tips that save time, money, and food.
+                    {props.Hint}
                   </Typography>
                   <div className="flex-center gap-2 mt-9">
                     {Object.keys(TipBadgeColorMapping).map((type) => (

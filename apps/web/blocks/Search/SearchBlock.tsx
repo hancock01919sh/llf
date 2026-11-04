@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from 'react';
 import type { BlockProps } from '../types';
 import { IngredientsHeader } from '@/blocks/CategoryDetail.tsx/IngredientsHeader';
 import { IngredientsList } from '@/blocks/CategoryDetail.tsx/IngredientsList';
-import type { SearchBlockProps } from '.';
 import { track } from '@/lib/analytics';
 import {
   readSearchHash,
@@ -14,6 +13,7 @@ import {
   type StoredFields,
 } from '@/lib/search';
 import MiniSearch from 'minisearch';
+import type { CategoryDetailProps } from '../CategoryDetail.tsx';
 type IndexState =
   | { status: 'loading' }
   | { status: 'unavailable' }
@@ -32,7 +32,7 @@ export function runSearch(index: MiniSearch<SearchDocument>, term: string): Sear
     image: hit.image as StoredFields['image'],
   }));
 }
-export function SearchBlock(props: BlockProps<SearchBlockProps>) {
+export function SearchBlock(props: BlockProps<CategoryDetailProps>) {
   async function searchIngredients(query: string) {
     if (!query) return;
     window.location.hash = searchHref(query).replace(/^[^#]*/, '');

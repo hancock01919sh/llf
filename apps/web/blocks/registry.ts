@@ -15,7 +15,7 @@ import type { Surface } from '@/components/ModuleBoundary';
 import { HighlightComponent, HighlightComponentSchema } from './HighlightComponent';
 import { CategoryDetailComponent, CategoryDetailSchema } from './CategoryDetail.tsx';
 import { NotFound } from './NotFound';
-import { SearchBlock, SearchSchema } from './Search';
+import { SearchBlock } from './Search';
 import TipBanner, { TipBannerSchema } from './TipBanner';
 import { ToolSpotlight } from './ToolSpotlight';
 import { CategoryEmoji } from './CategoryEmoji';
@@ -79,7 +79,7 @@ export const blocks = {
     surface: 'forest',
   }),
   'component.search': entry({
-    schema: SearchSchema,
+    schema: CategoryDetailSchema,
     Component: SearchBlock,
     type: 'search',
     isFullWidth: true,

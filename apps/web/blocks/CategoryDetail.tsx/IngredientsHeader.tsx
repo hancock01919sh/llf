@@ -6,14 +6,12 @@ import { IngredientsTipsPopup } from './IngredientsTipsPopup';
 import { RichText } from '@/components/RichText';
 import type { CategoryDetailProps } from '.';
 import type { Category } from '@llf/contracts/cms';
-// import { getIngrendients } from '@/lib/MLP/cms';
-interface IngredientsHeaderProps extends Omit<CategoryDetailProps, 'Background_color'> {
+import type { cmsType } from '@llf/contracts';
+interface IngredientsHeaderProps extends CategoryDetailProps {
   categoryData?: Category;
   isSearch?: boolean;
   onSearch?: (value: string) => void;
   className?: string;
-  Background_color?: 'forest' | 'paper' | null;
-  Placeholder?: string | null;
 }
 export function IngredientsHeader(props: IngredientsHeaderProps) {
   const [open, setOpen] = useState(false);
@@ -67,7 +65,11 @@ export function IngredientsHeader(props: IngredientsHeaderProps) {
           </div>
         </div>
       </div>
-      <IngredientsTipsPopup open={open} onClose={() => setOpen(false)} {...props.Popup} />
+      <IngredientsTipsPopup
+        open={open}
+        onClose={() => setOpen(false)}
+        {...(props.Popup as cmsType.component.TipsPopup)}
+      />
     </>
   );
 }
