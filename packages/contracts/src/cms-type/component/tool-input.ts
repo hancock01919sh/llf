@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { InputCardRef,InputCard } from '../shared/input-card';
+import { InputCard } from '../shared/input-card';
 import { LinksRef } from '../shared/links';
 import { Media } from '../media';
 
