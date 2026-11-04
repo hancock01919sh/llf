@@ -16,6 +16,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { resultsHref } from '@/lib/paths';
 import type { cmsType } from '@llf/contracts';
+import { Loading } from './Loading';
 export function Tool(props: BlockProps<cmsType.component.ToolInput> & { className?: string }) {
   const { block } = props;
   const findTipsLabel = block.button?.[2]?.label as string;
@@ -38,7 +39,6 @@ export function Tool(props: BlockProps<cmsType.component.ToolInput> & { classNam
     setUploadInfo(null);
     setLinkText('');
   }, [activeTab]);
-
   const imageActive = useMemo(() => uploadInfo !== null, [uploadInfo]);
 
   const router = useRouter();
@@ -267,6 +267,7 @@ export function Tool(props: BlockProps<cmsType.component.ToolInput> & { classNam
       )}
 
       <Typography variant="paragraph-sm">{props.block.copy}</Typography>
+      <Loading open={showLoading} onClose={() => setShowLoading(false)} />
     </div>
   );
 }
