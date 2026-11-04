@@ -53,7 +53,7 @@ export function Tool(props: BlockProps<cmsType.component.ToolInput> & { classNam
 
     const { data, success } = ExtractRequest.safeParse(submitData);
     if (!success) {
-      console.error('Invalid input data:', submitData);
+      // console.error('Invalid input data:', submitData);
       return;
     }
 
