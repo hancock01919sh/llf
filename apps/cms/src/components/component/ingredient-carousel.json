@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_component_ingredient_carousel_s",
+  "info": {
+    "displayName": "Ingredient Carousel "
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string",
+      "required": true
+    },
+    "Description": {
+      "type": "text",
+      "required": true
+    },
+    "IngredientCard": {
+      "type": "component",
+      "component": "shared.ingredient-card",
+      "repeatable": true,
+      "required": true
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "paper"
+      ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "config": {}
+}

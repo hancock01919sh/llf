@@ -1,0 +1,20 @@
+import { z } from 'zod';
+import { LinksRef } from '../shared/links';
+import { Media } from '../media';
+
+const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
+
+export const InputCard = z.object({
+  title: z.string(),
+  icon: nullish(Media),
+  link: nullish(z.lazy(() => LinksRef)),
+  description: z.string(),
+});
+
+export const InputCardRef = z.object({
+  title: z.string(),
+  icon: nullish(Media),
+  description: z.string(),
+});
+
+export type InputCard = z.infer<typeof InputCard>;

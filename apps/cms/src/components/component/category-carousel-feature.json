@@ -1,0 +1,42 @@
+{
+  "collectionName": "components_component_category_carousel_features",
+  "info": {
+    "displayName": "Category Carousel - Feature"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string",
+      "required": true
+    },
+    "Description": {
+      "type": "text",
+      "required": true
+    },
+    "Link": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": true,
+      "required": true
+    },
+    "Feature_Card": {
+      "type": "component",
+      "component": "shared.feature-card",
+      "repeatable": true,
+      "required": true
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": true
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "required": true,
+      "default": "terra",
+      "enum": [
+        "terra"
+      ]
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,48 @@
+{
+  "collectionName": "components_component_highlight_components",
+  "info": {
+    "displayName": "Highlight Component"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string",
+      "required": true
+    },
+    "Description": {
+      "type": "text",
+      "required": true
+    },
+    "Image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "forest-tint",
+        "paper",
+        "forest"
+      ]
+    },
+    "Link": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": true,
+      "required": false
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "config": {}
+}

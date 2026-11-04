@@ -1,0 +1,59 @@
+{
+  "collectionName": "components_shared_assets_cards",
+  "info": {
+    "displayName": "Assets Cards"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string",
+      "required": true
+    },
+    "Description": {
+      "type": "text",
+      "required": true
+    },
+    "Label": {
+      "type": "text",
+      "required": true
+    },
+    "Image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "CTA": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": false
+    },
+    "File": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "Display_Mode": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "aspect-16/9",
+        "aspect-9/16",
+        "aspect-4/5",
+        "aspect-1/1",
+        "aspect-4/5 10 second"
+      ]
+    }
+  },
+  "config": {}
+}

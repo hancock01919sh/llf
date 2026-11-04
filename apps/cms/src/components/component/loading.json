@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_component_loadings",
+  "info": {
+    "displayName": "Loading"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string",
+      "required": true
+    },
+    "Statement": {
+      "type": "text"
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "forest"
+      ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "config": {}
+}

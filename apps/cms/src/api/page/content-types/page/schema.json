@@ -20,66 +20,37 @@
       "required": true,
       "unique": true
     },
-    "template": {
-      "type": "enumeration",
-      "enum": ["generic", "home", "find-my-tips", "library"],
-      "default": "generic",
-      "required": true
-    },
-    "hero": {
-      "type": "component",
-      "component": "component.hero",
-      "repeatable": false,
-      "conditions": {
-        "visible": {
-          "==": [{ "var": "template" }, "home"]
-        }
-      }
-    },
-    "intro": {
-      "type": "blocks",
-      "conditions": {
-        "visible": {
-          "==": [{ "var": "template" }, "home"]
-        }
-      }
-    },
-    "featured": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::category.category",
-      "conditions": {
-        "visible": {
-          "==": [{ "var": "template" }, "home"]
-        }
-      }
-    },
-    "tool": {
-      "type": "component",
-      "component": "custom.tool",
-      "repeatable": false,
-      "conditions": {
-        "visible": {
-          "==": [{ "var": "template" }, "find-my-tips"]
-        }
-      }
-    },
     "main": {
       "type": "dynamiczone",
       "components": [
-        "component.teaser",
-        "component.link-list",
         "component.hero",
         "custom.tool",
-        "custom.search",
         "component.carousel",
-        "custom.tip-list"
-      ],
-      "conditions": {
-        "visible": {
-          "in": [{ "var": "template" }, ["generic", "home"]]
-        }
-      }
+        "custom.tip-list",
+        "component.tool-spotlight",
+        "component.highlight-component",
+        "component.category-emoji",
+        "component.category-carousel-feature",
+        "component.header",
+        "component.logo-cards",
+        "component.content-spotlight",
+        "component.5050-text-and-image",
+        "component.text-and-image-card",
+        "component.tool-input",
+        "component.accordion",
+        "component.carousel-standard",
+        "component.ingredient-carousel",
+        "component.tip-banner",
+        "component.carousel-small",
+        "component.search",
+        "component.category-detail",
+        "component.404",
+        "component.toolkit-headline",
+        "shared.assets-cards",
+        "component.guide",
+        "component.toolkit-parent-category",
+        "component.toolkit"
+      ]
     },
     "seo": {
       "type": "component",
