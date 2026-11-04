@@ -5,13 +5,13 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Iconlink = z.object({
   Label: z.string(),
-  Image: Media,
+  Image: Media.nullish(),
   href: nullish(z.string()),
 });
 
 export const IconlinkRef = z.object({
   Label: z.string(),
-  Image: Media,
+  Image: Media.nullish(),
   href: nullish(z.string()),
 });
 

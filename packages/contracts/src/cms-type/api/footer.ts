@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { IconlinkRef } from '../shared/iconlink';
+import { Iconlink } from '../shared/iconlink';
 import { LinksRef } from '../shared/links';
 import { OverlayLinkRef } from '../shared/overlay-link';
 
@@ -8,7 +8,7 @@ export const Footer = z.object({
   documentId: z.string(),
   title: z.string(),
   link: z.array(z.lazy(() => LinksRef)),
-  iconLink: z.array(z.lazy(() => IconlinkRef)),
+  iconLink: z.array(z.lazy(() => Iconlink)),
   legalCopy: z.string(),
   overlayLink: z.array(z.lazy(() => OverlayLinkRef)),
 });

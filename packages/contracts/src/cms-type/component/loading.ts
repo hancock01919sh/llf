@@ -3,7 +3,6 @@ import { z } from 'zod';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Loading = z.object({
-  __component: z.literal('component.loading'),
   id: z.number().int(),
   Title: z.string(),
   Statement: nullish(z.string()),
