@@ -65,16 +65,20 @@ export function Tool(props: BlockProps<cmsType.component.ToolInput> & { classNam
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (!res.ok) return;
+    if (!res.ok) {
+      setShowLoading(false);
+      return;
+    }
 
     const parsed = ExtractResponse.safeParse(await res.json());
-    if (!parsed.success || parsed.data.matches.length === 0) return;
+    if (!parsed.success || parsed.data.matches.length === 0) {
+      setShowLoading(false);
+      return;
+    }
 
-    // 只把 CMS catalog 里的 slug 带进 URL，模型原始输出不进 URL（AGENTS.md 硬规则）
     router.push(resultsHref(parsed.data.matches.map((m) => m.slug)));
   }
 
-  // WAI-ARIA tabs pattern: arrow-key roving + Home/End.
   function onTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     const last = tabs.length - 1;
     const next =

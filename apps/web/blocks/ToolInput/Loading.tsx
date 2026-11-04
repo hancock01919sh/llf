@@ -6,9 +6,9 @@ import { Typography } from '@/components/Typography';
 
 export function Loading({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
-    <Popup open={open} className="bg-surface-paper">
+    <Popup open={open} className="bg-surface-paper" animationClass="opacity">
       <Header showClose={true} onClose={onClose} />
-      <div className="loading-container bg-brand-forest h-dvh flex flex-col">
+      <div className=" bg-brand-forest h-dvh flex flex-col">
         <div className="flex-1 flex flex-col justify-center items-center gap-lg px-5 text-center">
           <IconWork2 className={`animate-[spin_3s_linear_infinite]`} />
           <Typography variant="subhead-md" className="text-surface-mint">
