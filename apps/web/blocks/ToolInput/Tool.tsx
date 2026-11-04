@@ -1,6 +1,5 @@
 'use client';
 import { Typography } from '@/components/Typography';
-import type { ToolInputProps } from '.';
 import { useEffect, useMemo, useState } from 'react';
 import type { BlockProps } from '../types';
 import { IconClose, IconUpload } from '@/components/Icon';
@@ -8,10 +7,11 @@ import { ExtractRequest, ExtractResponse, IMAGE_MIME_TYPES } from '@llf/contract
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { resultsHref } from '@/lib/paths';
-export function Tool(props: BlockProps<ToolInputProps> & { className?: string }) {
+import type { cmsType } from '@llf/contracts';
+export function Tool(props: BlockProps<cmsType.component.ToolInput> & { className?: string }) {
   const { block } = props;
-  const findTipsLabel = block.Button[2]?.Label as string;
-  const tabs = block.Button.map((item) => item.Label).slice(0, 2);
+  const findTipsLabel = block.button?.[2]?.label as string;
+  const tabs = block.button?.map((item) => item.label).slice(0, 2) || [];
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [linkActive, setLinkActive] = useState(false);
   const [linkText, setLinkText] = useState('');
@@ -63,7 +63,7 @@ export function Tool(props: BlockProps<ToolInputProps> & { className?: string })
       >
         {tabs.map((item, index) => (
           <button
-            className={` cursor-pointer flex-center justify-center w-1/2 py-5 capitalize font-bold ${activeTab === item ? 'bg-surface-paper text-ink-terra' : 'bg-ink-terra text-surface-sand'}`}
+            className={`cursor-pointer flex-center justify-center w-1/2 py-5 capitalize font-bold ${activeTab === item ? 'bg-surface-paper text-ink-terra' : 'bg-ink-terra text-surface-sand'}`}
             key={index}
             role="tab"
             id={`tool-tab-${index}`}
@@ -85,7 +85,9 @@ export function Tool(props: BlockProps<ToolInputProps> & { className?: string })
         >
           <input
             type="text"
-            placeholder={block.Placeholder}
+            placeholder={block?.placeholder || ''}
+            aria-label={block?.placeholder || tabs[0]}
+            name="input-url"
             className="flex-1  mx-4 outline-none"
             onInput={(e) => {
               setLinkText((e.target as HTMLInputElement).value.trim());
@@ -188,7 +190,7 @@ export function Tool(props: BlockProps<ToolInputProps> & { className?: string })
         </div>
       )}
 
-      <Typography variant="paragraph-sm">{props.block.Copy}</Typography>
+      <Typography variant="paragraph-sm">{props.block.copy}</Typography>
     </div>
   );
 }

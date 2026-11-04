@@ -45,18 +45,18 @@ const POPULATE = {
         // 'custom.tool': true,
         'component.tool-input': {
           populate: {
-            Button: true,
-            Cards: {
+            button: true,
+            cards: {
               populate: {
-                Link: true,
+                link: true,
               },
             },
-            Image: ImagePopulate,
+            image: ImagePopulate,
           },
         },
         'component.accordion': {
           populate: {
-            AccordionItem: true,
+            accordionItem: true,
           },
         },
         'component.highlight-component': {

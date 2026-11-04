@@ -49,7 +49,7 @@ export function resolveBlocks(
       layout: blockLayout(result.data),
       data: result.data,
       Component: entry.Component as ComponentType<BlockProps<unknown>>,
-      surface: entry.surface || (block.Background_color as Surface) || 'paper',
+      surface: entry.surface || (block.backgroundColor as Surface) || 'paper',
       isFullwidth: block.isFullwidth as boolean,
     });
   });

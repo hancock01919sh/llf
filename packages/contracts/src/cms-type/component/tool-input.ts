@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { InputCardRef } from '../shared/input-card';
+import { InputCardRef,InputCard } from '../shared/input-card';
 import { LinksRef } from '../shared/links';
 import { Media } from '../media';
 
@@ -14,7 +14,7 @@ export const ToolInput = z.object({
   image: Media,
   cardTitle: z.string(),
   cardDescription: nullish(z.string()),
-  cards: nullish(z.array(z.lazy(() => InputCardRef))),
+  cards: nullish(z.array(z.lazy(() => InputCard))),
   placeholder: nullish(z.string()),
   copy: nullish(z.string()),
   button: nullish(z.array(z.lazy(() => LinksRef))),
