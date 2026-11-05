@@ -15,10 +15,10 @@ export function Loading({ open, onClose }: { open: boolean; onClose: () => void 
         <div className="flex-1 flex flex-col justify-center items-center gap-lg px-5 text-center">
           <IconWork2 className={`animate-[spin_3s_linear_infinite]`} />
           <Typography variant="subhead-md" className="text-surface-mint">
-            {global?.load?.Statement}
+            {global?.load?.statement}
           </Typography>
           <Typography variant="headline-lg" className="text-surface-sand">
-            {global?.load?.Title}
+            {global?.load?.title}
           </Typography>
         </div>
       </div>
