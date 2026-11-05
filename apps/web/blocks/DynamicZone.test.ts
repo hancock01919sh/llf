@@ -16,11 +16,11 @@ const validHero = {
   __component: 'component.hero',
   id: 4,
   images: [],
-  Description: 'Everything you did not know about ingredients.',
-  Title: [],
-  Background_color: 'terra',
+  description: 'Everything you did not know about ingredients.',
+  title: [],
+  backgroundColor: 'terra',
 };
-const invalidHero = { ...validHero, id: 3, Background_color: 'paper' };
+const invalidHero = { ...validHero, id: 3, backgroundColor: 'paper' };
 
 describe('resolveBlocks', () => {
   afterEach(() => vi.restoreAllMocks());
@@ -41,7 +41,7 @@ describe('resolveBlocks', () => {
       const message = (error as Error).message;
       expect(message).toContain('Page "Test page" (/test)');
       expect(message).toContain('block #2 (component.not-a-real-block): the site has no component');
-      expect(message).toContain('block #3 (component.hero): Background_color:');
+      expect(message).toContain('block #3 (component.hero): backgroundColor:');
       expect(message).toMatch(/Fix them in Strapi and publish again\.$/);
     }
   });
