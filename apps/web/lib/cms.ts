@@ -67,11 +67,11 @@ const POPULATE = {
         },
         'component.category-detail': {
           populate: {
-            Image: ImagePopulate,
-            Button: true,
-            Popup: {
+            image: ImagePopulate,
+            button: true,
+            popup: {
               populate: {
-                Link: true,
+                link: true,
               },
             },
           },
