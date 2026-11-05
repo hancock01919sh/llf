@@ -31,7 +31,7 @@ export function IngredientsList(
     status: 'loading',
     ingredients: [],
   });
-  const [activeIndex, setActiveIndex] = useState(isSearch ? -1 : 0);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const { isMobile } = useDevice();
 
   useEffect(() => {
@@ -57,8 +57,8 @@ export function IngredientsList(
     [state.ingredients, ingredients],
   );
   useEffect(() => {
-    setActiveIndex(isSearch ? -1 : 0);
-  }, [finalIngredients, isSearch]);
+    setActiveIndex(-1);
+  }, [finalIngredients]);
   function getLeftListClass(index: number) {
     let classText = `${isSearch ? 'border-ink-terra-15  lg:border-ink-terra-15  hover:bg-semantic-leaf hover:text-surface-sand' : 'border-surface-sand lg:border-semantic-leaf hover:bg-semantic-leaf'} border-t`;
     if (activeIndex === index) {

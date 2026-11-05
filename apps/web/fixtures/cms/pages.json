@@ -793,13 +793,14 @@
               ]
             }
           ],
+          "hint": "Click an ingredient to view specific tips that save time, money, and food.",
           "isFullwidth": true,
           "backgroundColor": "forest",
           "image": null,
           "button": {
             "id": 56,
             "label": "Upload Another Link or Image",
-            "href": "/find",
+            "href": "/find-my-tips",
             "isDisplay": true,
             "isButton": true,
             "Buttontype": null,
