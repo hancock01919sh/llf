@@ -1,6 +1,6 @@
 import { SurfaceSchema, type Surface } from '@/components/ModuleBoundary';
-import type { GlobalBackgroundColor } from '@/lib/const';
 import { z } from 'zod';
+import { cms } from '@llf/contracts';
 export interface BlockProps<T> {
   block: T;
   /** Position in the dynamic zone. The first block may own the page's h1 (TDD §6.6). */
@@ -32,16 +32,21 @@ export const LinkSchema = z.object({
 });
 export type LinkProps = z.infer<typeof LinkSchema>;
 
-export type ImageProps = {
-  url: string;
-  width?: number | string;
-  height?: number | string;
-  ext?: string;
-  name?: string;
-  alternativeText: string;
-  documentId?: string;
-};
-export type ModuleBoundaryBgColor = keyof typeof GlobalBackgroundColor;
+export const GlobalSchema = z.object({
+  id: z.number(),
+  documentId: z.string(),
+  title: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  publishedAt: z.string(),
+  seo: cms.Seo.nullable(),
+  load: z.object({
+    id: z.number(),
+    Title: z.string(),
+    Statement: z.string(),
+  }),
+});
+export type GlobalProps = z.infer<typeof GlobalSchema>;
 
 /** One entry in a Page's `main` dynamic zone, as Strapi returns it (TDD §6.4). */
 export type CmsBlock = {
@@ -61,12 +66,4 @@ export type CmsPage = {
   path: string;
   main: CmsBlock[];
   seo?: SeoProps | null;
-};
-export type GlobalProps = {
-  seo?: SeoProps | null;
-  title: string;
-  load: {
-    title: string;
-    Statement: string;
-  };
 };

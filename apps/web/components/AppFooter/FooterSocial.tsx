@@ -1,5 +1,5 @@
-import type { ImageProps } from '@/blocks/types';
 import { IconInstagram, IconTikTok, IconYoutube } from '../Icon';
+import type { cmsType } from '@llf/contracts';
 function SocialItemWrapper({
   inPopup,
   children,
@@ -21,30 +21,25 @@ function SocialItemWrapper({
     </a>
   );
 }
-export interface FooterSocialLinkProps {
-  Image: ImageProps;
-  Label: string;
-  href: string;
-}
 interface FooterSocialShareProps {
-  iconLink: FooterSocialLinkProps[];
+  iconLink: cmsType.shared.Iconlink[];
   inPopup: boolean;
 }
 export function FooterSocialShare({ iconLink, inPopup }: FooterSocialShareProps) {
   return (
     <div className="flex gap-2.75">
       {iconLink.map((item) => {
-        const { Label, href } = item;
+        const { label, href } = item;
         let IconTemplate = IconInstagram;
-        if (Label.toLowerCase() === 'instagram') {
+        if (label.toLowerCase() === 'instagram') {
           IconTemplate = IconInstagram;
-        } else if (Label.toLowerCase() === 'tiktok') {
+        } else if (label.toLowerCase() === 'tiktok') {
           IconTemplate = IconTikTok;
-        } else if (Label.toLowerCase() === 'youtube') {
+        } else if (label.toLowerCase() === 'youtube') {
           IconTemplate = IconYoutube;
         }
         return (
-          <SocialItemWrapper ariaLabel={Label} key={href} inPopup={inPopup} href={href}>
+          <SocialItemWrapper ariaLabel={label} key={href} inPopup={inPopup} href={href || ''}>
             <IconTemplate />
           </SocialItemWrapper>
         );

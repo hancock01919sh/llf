@@ -16,6 +16,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { resultsHref } from '@/lib/paths';
 import type { cmsType } from '@llf/contracts';
+import { Loading } from './Loading';
 export function Tool(props: BlockProps<cmsType.component.ToolInput> & { className?: string }) {
   const { block } = props;
   const findTipsLabel = block.button?.[2]?.label as string;
@@ -31,6 +32,8 @@ export function Tool(props: BlockProps<cmsType.component.ToolInput> & { classNam
     type: string;
     imageBase64: string;
   } | null>(null);
+
+  const [showLoading, setShowLoading] = useState(false);
   useEffect(() => {
     setLinkActive(false);
     setUploadInfo(null);
@@ -56,22 +59,26 @@ export function Tool(props: BlockProps<cmsType.component.ToolInput> & { classNam
       // console.error('Invalid input data:', submitData);
       return;
     }
-
+    setShowLoading(true);
     const res = await fetch('/api/find-tips/extract', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (!res.ok) return;
+    if (!res.ok) {
+      setShowLoading(false);
+      return;
+    }
 
     const parsed = ExtractResponse.safeParse(await res.json());
-    if (!parsed.success || parsed.data.matches.length === 0) return;
+    if (!parsed.success || parsed.data.matches.length === 0) {
+      setShowLoading(false);
+      return;
+    }
 
-    // 只把 CMS catalog 里的 slug 带进 URL，模型原始输出不进 URL（AGENTS.md 硬规则）
     router.push(resultsHref(parsed.data.matches.map((m) => m.slug)));
   }
 
-  // WAI-ARIA tabs pattern: arrow-key roving + Home/End.
   function onTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     const last = tabs.length - 1;
     const next =
@@ -264,6 +271,7 @@ export function Tool(props: BlockProps<cmsType.component.ToolInput> & { classNam
       )}
 
       <Typography variant="paragraph-sm">{props.block.copy}</Typography>
+      <Loading open={showLoading} onClose={() => setShowLoading(false)} />
     </div>
   );
 }
