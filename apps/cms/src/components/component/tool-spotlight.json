@@ -5,20 +5,20 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "string",
       "required": true
     },
-    "SubTitle": {
+    "subTitle": {
       "type": "string",
       "required": true
     },
-    "Link": {
+    "link": {
       "type": "component",
       "component": "shared.links",
       "repeatable": false
     },
-    "SpotlightItem": {
+    "spotlightItem": {
       "type": "component",
       "component": "shared.spotlight-item",
       "repeatable": true,
@@ -28,7 +28,7 @@
       "type": "boolean",
       "default": false
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
       "required": true,
       "enum": [
