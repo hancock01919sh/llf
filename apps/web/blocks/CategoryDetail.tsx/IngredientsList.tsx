@@ -143,7 +143,7 @@ export function IngredientsList(
                   <div className="flex flex-col gap-8">
                     <TipBadge type={item.type?.toLowerCase() as TipBadgeType} />
                     <div className="flex-col flex  gap-4">
-                      <Typography as="h2" variant="title-card" className=" font-anton">
+                      <Typography variant="title-card" className=" font-anton">
                         {item.title}
                       </Typography>
                       <Typography variant="paragraph-lg" className="">
@@ -172,7 +172,7 @@ export function IngredientsList(
                     variant="subhead-lg"
                     className={`mt-9 ${isSearch ? 'text-ink-terra-70' : 'text-surface-sand'} `}
                   >
-                    Click an ingredient to view specific tips that save time, money, and food.
+                    {props?.hint}
                   </Typography>
                   <div className="flex-center gap-2 mt-9">
                     {Object.keys(TipBadgeColorMapping).map((type) => (

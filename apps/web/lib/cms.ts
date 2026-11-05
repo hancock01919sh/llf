@@ -34,7 +34,7 @@ const POPULATE = {
     // tool: true,
     main: {
       on: {
-        // 'component.hero': hero,
+        // 'component.hero': true,
         // 'component.teaser': { populate: { title: true, ctas, images: true } },
         // 'component.link-list': { populate: { title: true, pages: true } },
         // 'component.carousel': {
@@ -84,6 +84,53 @@ const POPULATE = {
                 link: true,
               },
             },
+          },
+        },
+        'component.hero': {
+          populate: {
+            link: true,
+            images: ImagePopulate,
+          },
+        },
+        'component.tip-banner': {
+          populate: {
+            cta: true,
+            tip: {
+              populate: {
+                ingredient: {
+                  populate: {
+                    image: ImagePopulate,
+                    tips: true,
+                  },
+                },
+                tip_type: true,
+              },
+            },
+          },
+        },
+        'component.tool-spotlight': {
+          populate: {
+            link: true,
+            spotlightItem: {
+              populate: {
+                video: true,
+              },
+            },
+          },
+        },
+        'component.category-emoji': {
+          populate: {
+            emoji: true,
+          },
+        },
+        'component.category-carousel-feature': {
+          populate: {
+            featureCard: {
+              populate: {
+                image: ImagePopulate,
+              },
+            },
+            link: true,
           },
         },
       },

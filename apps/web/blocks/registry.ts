@@ -15,7 +15,11 @@ import type { Surface } from '@/components/ModuleBoundary';
 import { BlockHighlightComponent } from './HighlightComponent';
 import { CategoryDetailComponent, CategoryDetailWithSearchSchema } from './CategoryDetail.tsx';
 import { BlockNotFound } from './NotFound';
-import { BlockSearch } from './Search/SearchBlock';
+import { BlockSearch } from './Search';
+import TipBanner from './TipBanner';
+import { ToolSpotlight } from './ToolSpotlight';
+import { CategoryEmoji } from './CategoryEmoji';
+import { CategoryCarouselFeature } from './CategoryCarouselFeature';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -34,7 +38,7 @@ const entry = <S extends z.ZodType>(e: BlockEntry<S>) => e;
 
 // TODO(BD3244-8): accordion, asset-list, and jump-nav blocks once their Strapi components exist.
 export const blocks = {
-  'component.hero': entry({ schema: cms.HeroBlock, Component: Hero, type: 'hero' }),
+  'component.hero': entry({ schema: cmsType.component.Hero, Component: Hero, type: 'hero' }),
   'component.teaser': entry({ schema: cms.TeaserBlock, Component: Teaser, type: 'teaser' }),
   'component.link-list': entry({
     schema: cms.LinkListBlock,
@@ -60,6 +64,7 @@ export const blocks = {
     schema: cmsType.component.HighlightComponent,
     Component: BlockHighlightComponent,
     type: 'highlight-component',
+    isFullWidth: true,
   }),
   'component.category-detail': entry({
     schema: CategoryDetailWithSearchSchema,
@@ -71,11 +76,34 @@ export const blocks = {
     schema: cmsType.component._404,
     Component: BlockNotFound,
     type: 'not-found',
+    surface: 'forest',
   }),
   'component.search': entry({
     schema: CategoryDetailWithSearchSchema,
     Component: BlockSearch,
     type: 'search',
+    isFullWidth: true,
+  }),
+  'component.tip-banner': entry({
+    schema: cmsType.component.TipBannerDeepRef,
+    Component: TipBanner,
+    type: 'tip-banner',
+  }),
+  'component.tool-spotlight': entry({
+    schema: cmsType.component.ToolSpotlightDeepRef,
+    Component: ToolSpotlight,
+    type: 'tool-spotlight',
+    isFullWidth: true,
+  }),
+  'component.category-emoji': entry({
+    schema: cmsType.component.CategoryEmojiDeepRef,
+    Component: CategoryEmoji,
+    type: 'category-emoji',
+  }),
+  'component.category-carousel-feature': entry({
+    schema: cmsType.component.CategoryCarouselFeatureDeepRef,
+    Component: CategoryCarouselFeature,
+    type: 'category-carousel-feature',
     isFullWidth: true,
   }),
 } as const;

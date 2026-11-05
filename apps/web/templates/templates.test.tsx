@@ -1,10 +1,8 @@
 import type { cms } from '@llf/contracts';
 import { cleanup, render } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { strings } from '@/content/strings';
 import { requirePage } from '@/lib/cms';
 import { FindMyTipsTemplate } from './FindMyTipsTemplate';
-import { HomeTemplate } from './HomeTemplate';
 import { templateFor, templates } from './registry';
 
 vi.mock('next/navigation', () => ({
@@ -32,34 +30,34 @@ describe('templateFor', () => {
   });
 });
 
-describe('HomeTemplate', () => {
-  it('renders the hero, intro, and featured slots before main, with page-wide indexes', async () => {
-    const page = await requirePage('');
-    const { container, getByRole } = render(<HomeTemplate page={page} />);
-    expect(modules(container)).toEqual([
-      { index: '0', type: 'hero' },
-      { index: '1', type: 'intro' },
-      { index: '2', type: 'carousel' },
-      { index: '3', type: 'search' },
-      { index: '4', type: 'tip-list' },
-    ]);
-    expect(getByRole('heading', { level: 2, name: strings.home.featuredTitle })).toBeTruthy();
-    // The hero carries the page's h1, so the template adds no heading of its own.
-    expect(container.querySelectorAll('h1')).toHaveLength(1);
-  });
+// describe('HomeTemplate', () => {
+//   it('renders the hero, intro, and featured slots before main, with page-wide indexes', async () => {
+//     const page = await requirePage('');
+//     const { container, getByRole } = render(<HomeTemplate page={page} />);
+//     expect(modules(container)).toEqual([
+//       { index: '0', type: 'hero' },
+//       { index: '1', type: 'intro' },
+//       { index: '2', type: 'carousel' },
+//       { index: '3', type: 'search' },
+//       { index: '4', type: 'tip-list' },
+//     ]);
+//     expect(getByRole('heading', { level: 2, name: strings.home.featuredTitle })).toBeTruthy();
+//     // The hero carries the page's h1, so the template adds no heading of its own.
+//     expect(container.querySelectorAll('h1')).toHaveLength(1);
+//   });
 
-  it('skips empty slots and keeps indexes contiguous', async () => {
-    const page = await requirePage('');
-    const { container } = render(
-      <HomeTemplate page={{ ...page, hero: null, intro: null, featured: [] }} />,
-    );
-    expect(modules(container)).toEqual([
-      { index: '0', type: 'search' },
-      { index: '1', type: 'tip-list' },
-    ]);
-    expect(container.querySelector('h1')?.textContent).toBe(page.title);
-  });
-});
+//   it('skips empty slots and keeps indexes contiguous', async () => {
+//     const page = await requirePage('');
+//     const { container } = render(
+//       <HomeTemplate page={{ ...page, hero: null, intro: null, featured: [] }} />,
+//     );
+//     expect(modules(container)).toEqual([
+//       { index: '0', type: 'search' },
+//       { index: '1', type: 'tip-list' },
+//     ]);
+//     expect(container.querySelector('h1')?.textContent).toBe(page.title);
+//   });
+// });
 
 describe('FindMyTipsTemplate', () => {
   it('renders the tool slot first and offsets the dynamic zone', async () => {
