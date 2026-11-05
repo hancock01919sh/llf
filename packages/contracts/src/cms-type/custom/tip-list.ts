@@ -1,13 +1,14 @@
+import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { TipRef, TipDeepRef } from '../api/tip';
-import { TitleRef } from '../shared/title';
+import { TitleRef, TitleDeepRef } from '../shared/title';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const TipList = z.object({
-  title: nullish(z.lazy(() => TitleRef)),
+  title: nullish(z.lazy((): ZodType => TitleRef)),
   description: nullish(z.string()),
-  tips: nullish(z.array(z.lazy(() => TipRef))),
+  tips: nullish(z.array(z.lazy((): ZodType => TipRef))),
   layout: z.enum(['Basic', 'Single']).default('Basic'),
 });
 
@@ -17,7 +18,9 @@ export const TipListRef = z.object({
 });
 
 export const TipListDeepRef = z.object({
+  title: nullish(z.lazy((): ZodType => TitleDeepRef)),
   description: nullish(z.string()),
+  tips: nullish(z.array(z.lazy((): ZodType => TipDeepRef))),
   layout: z.enum(['Basic', 'Single']).default('Basic'),
 });
 

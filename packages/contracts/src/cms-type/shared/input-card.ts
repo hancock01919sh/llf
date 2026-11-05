@@ -1,5 +1,6 @@
+import type { ZodType } from 'zod';
 import { z } from 'zod';
-import { LinksRef } from '../shared/links';
+import { LinksRef, LinksDeepRef } from '../shared/links';
 import { Media } from '../media';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
@@ -7,7 +8,7 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const InputCard = z.object({
   title: z.string(),
   icon: nullish(Media),
-  link: nullish(z.lazy(() => LinksRef)),
+  link: nullish(z.lazy((): ZodType => LinksRef)),
   description: z.string(),
 });
 
@@ -20,6 +21,7 @@ export const InputCardRef = z.object({
 export const InputCardDeepRef = z.object({
   title: z.string(),
   icon: nullish(Media),
+  link: nullish(z.lazy((): ZodType => LinksDeepRef)),
   description: z.string(),
 });
 

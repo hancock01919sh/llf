@@ -1,5 +1,6 @@
+import type { ZodType } from 'zod';
 import { z } from 'zod';
-import { LinksRef } from '../shared/links';
+import { LinksRef, LinksDeepRef } from '../shared/links';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
@@ -7,7 +8,7 @@ export const Navigation = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  link: z.array(z.lazy(() => LinksRef)),
+  link: z.array(z.lazy((): ZodType => LinksRef)),
   searchPlaceholder: nullish(z.string()),
 });
 
@@ -22,6 +23,7 @@ export const NavigationDeepRef = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
+  link: z.array(z.lazy((): ZodType => LinksDeepRef)),
   searchPlaceholder: nullish(z.string()),
 });
 

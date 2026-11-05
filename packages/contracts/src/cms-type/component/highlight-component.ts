@@ -1,5 +1,6 @@
+import type { ZodType } from 'zod';
 import { z } from 'zod';
-import { LinksRef } from '../shared/links';
+import { LinksRef, LinksDeepRef } from '../shared/links';
 import { Media } from '../media';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
@@ -11,7 +12,7 @@ export const HighlightComponent = z.object({
   description: z.string(),
   image: Media,
   backgroundColor: z.enum(['forest-tint', 'paper', 'forest']),
-  link: nullish(z.array(z.lazy(() => LinksRef))),
+  link: nullish(z.array(z.lazy((): ZodType => LinksRef))),
   isFullwidth: nullish(z.boolean().default(false)),
 });
 
@@ -32,6 +33,7 @@ export const HighlightComponentDeepRef = z.object({
   description: z.string(),
   image: Media,
   backgroundColor: z.enum(['forest-tint', 'paper', 'forest']),
+  link: nullish(z.array(z.lazy((): ZodType => LinksDeepRef))),
   isFullwidth: nullish(z.boolean().default(false)),
 });
 

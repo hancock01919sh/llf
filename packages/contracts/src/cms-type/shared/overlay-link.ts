@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z, ZodType } from 'zod';
 import { Block } from '../blocks';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
@@ -16,6 +16,7 @@ export const OverlayLinkRef = z.object({
 
 export const OverlayLinkDeepRef = z.object({
   Label: z.string(),
+  Overlay_description: nullish(Block.array()),
   href: nullish(z.string()),
 });
 

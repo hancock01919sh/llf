@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z, ZodType } from 'zod';
 
 export const IngredientType = z.object({
   id: z.number(),

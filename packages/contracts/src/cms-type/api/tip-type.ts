@@ -1,3 +1,4 @@
+import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { TipRef, TipDeepRef } from '../api/tip';
 
@@ -7,7 +8,7 @@ export const TipType = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  tips: nullish(z.array(z.lazy(() => TipRef))),
+  tips: nullish(z.array(z.lazy((): ZodType => TipRef))),
 });
 
 export const TipTypeRef = z.object({
@@ -20,6 +21,7 @@ export const TipTypeDeepRef = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
+  tips: nullish(z.array(z.lazy((): ZodType => TipDeepRef))),
 });
 
 export type TipTypeDeepRef = z.infer<typeof TipTypeDeepRef>;

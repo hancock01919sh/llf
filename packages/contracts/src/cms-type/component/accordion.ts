@@ -1,5 +1,6 @@
+import type { ZodType } from 'zod';
 import { z } from 'zod';
-import { AccordionItemRef } from '../shared/accordion-item';
+import { AccordionItemRef, AccordionItemDeepRef } from '../shared/accordion-item';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
@@ -8,7 +9,7 @@ export const Accordion = z.object({
   id: z.number().int(),
   title: z.string(),
   subTitle: z.string(),
-  accordionItem: z.array(z.lazy(() => AccordionItemRef)),
+  accordionItem: z.array(z.lazy((): ZodType => AccordionItemRef)),
   backgroundColor: z.enum(['forest-tint']),
   isFullwidth: nullish(z.boolean().default(false)),
 });
@@ -27,6 +28,7 @@ export const AccordionDeepRef = z.object({
   id: z.number().int(),
   title: z.string(),
   subTitle: z.string(),
+  accordionItem: z.array(z.lazy((): ZodType => AccordionItemDeepRef)),
   backgroundColor: z.enum(['forest-tint']),
   isFullwidth: nullish(z.boolean().default(false)),
 });

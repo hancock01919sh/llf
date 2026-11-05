@@ -1,6 +1,7 @@
+import type { ZodType } from 'zod';
 import { z } from 'zod';
-import { LinksRef } from '../shared/links';
-import { SpotlightItemRef } from '../shared/spotlight-item';
+import { LinksRef, LinksDeepRef } from '../shared/links';
+import { SpotlightItemRef, SpotlightItemDeepRef } from '../shared/spotlight-item';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
@@ -9,8 +10,8 @@ export const ToolSpotlight = z.object({
   id: z.number().int(),
   title: z.string(),
   subTitle: z.string(),
-  link: nullish(z.lazy(() => LinksRef)),
-  spotlightItem: z.array(z.lazy(() => SpotlightItemRef)),
+  link: nullish(z.lazy((): ZodType => LinksRef)),
+  spotlightItem: z.array(z.lazy((): ZodType => SpotlightItemRef)),
   isFullwidth: nullish(z.boolean().default(false)),
   backgroundColor: z.enum(['forest']),
 });
@@ -29,6 +30,8 @@ export const ToolSpotlightDeepRef = z.object({
   id: z.number().int(),
   title: z.string(),
   subTitle: z.string(),
+  link: nullish(z.lazy((): ZodType => LinksDeepRef)),
+  spotlightItem: z.array(z.lazy((): ZodType => SpotlightItemDeepRef)),
   isFullwidth: nullish(z.boolean().default(false)),
   backgroundColor: z.enum(['forest']),
 });

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z, ZodType } from 'zod';
 
 export const Tool = z.object({
   url_label: z.string().default('Recipe URL'),
