@@ -3,24 +3,25 @@ import { type BlockProps } from '../types';
 import { IngredientsHeader } from './IngredientsHeader';
 import { IngredientsList } from './IngredientsList';
 import { cmsType } from '@llf/contracts';
-
-export const CategoryDetailSchema = z.object({
-  Background_color: z.enum(['forest', 'paper']).nullish(),
-  Statement: cmsType.Block.array().nullish(),
-  Hint: z.string().nullish(),
-  Placeholder: z.string().nullish(),
-  Popup: cmsType.component.TipsPopup,
-  id: z.number().int(),
+export const CategoryDetailWithSearchSchema = z.object({
   __component: z.enum(['component.category-detail', 'component.search']),
-  Title: z.string(),
-  Description: z.string(),
-  SubTitle: z.string().nullish(),
-  isFullwidth: z.boolean().default(false),
-  Button: cmsType.shared.Links.nullish(),
+  id: z.number().int(),
+  title: z.string().nullish(),
+  description: z.string(),
+  image: cmsType.Media.array().nullish(),
+  subTitle: z.string().nullish(),
+  placeholder: z.string().nullish(),
+  statement: cmsType.Block.array().nullish(),
+  hint: z.string().nullish(),
+  button: cmsType.shared.Links.nullish(),
+  popup: cmsType.component.TipsPopupDeepRef.nullish(),
+  isFullwidth: z.boolean().nullish().default(false),
+  backgroundColor: z.enum(['paper', 'forest']).nullish(),
 });
-export type CategoryDetailProps = z.infer<typeof CategoryDetailSchema>;
 
-export const CategoryDetailComponent = (props: BlockProps<CategoryDetailProps>) => {
+export type CategoryDetailWithSearchProps = z.infer<typeof CategoryDetailWithSearchSchema>;
+
+export const CategoryDetailComponent = (props: BlockProps<CategoryDetailWithSearchProps>) => {
   return (
     <>
       <IngredientsHeader {...props.block} />

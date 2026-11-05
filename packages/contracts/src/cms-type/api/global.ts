@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { LoadingRef } from '../component/loading';
-import { SeoRef } from '../shared/seo';
+import { LoadingDeepRef, Loading } from '../component/loading';
+import { SeoRef, SeoDeepRef } from '../shared/seo';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
@@ -9,7 +9,7 @@ export const Global = z.object({
   documentId: z.string(),
   title: z.string(),
   seo: nullish(z.lazy(() => SeoRef)),
-  load: z.lazy(() => LoadingRef),
+  load: z.lazy(() => Loading),
 });
 
 export const GlobalRef = z.object({
@@ -17,5 +17,15 @@ export const GlobalRef = z.object({
   documentId: z.string(),
   title: z.string(),
 });
+
+export const GlobalDeepRef = z.object({
+  id: z.number(),
+  documentId: z.string(),
+  title: z.string(),
+  seo: nullish(z.lazy((): z.ZodType<SeoDeepRef> => SeoDeepRef)),
+  load: z.lazy((): z.ZodType<LoadingDeepRef> => LoadingDeepRef),
+});
+
+export type GlobalDeepRef = z.infer<typeof GlobalDeepRef>;
 
 export type Global = z.infer<typeof Global>;

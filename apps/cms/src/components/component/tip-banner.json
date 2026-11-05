@@ -5,7 +5,7 @@
   },
   "options": {},
   "attributes": {
-    "Label": {
+    "label": {
       "type": "string",
       "required": true
     },
@@ -14,12 +14,12 @@
       "relation": "oneToOne",
       "target": "api::tip.tip"
     },
-    "CTA": {
+    "cta": {
       "type": "component",
       "component": "shared.links",
       "repeatable": true
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
       "required": true,
       "enum": [

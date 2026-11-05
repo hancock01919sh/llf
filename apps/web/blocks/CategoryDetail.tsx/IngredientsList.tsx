@@ -10,19 +10,18 @@ import { IconArrow, IconDownload, IconShare, IconUpload, IconWork2 } from '@/com
 import TransitionLink from '@/components/TransitionLink';
 import { TipBadge, TipBadgeColorMapping, type TipBadgeType } from '@/components/TipBadge';
 import { IngredientsPopup } from './IngredientsPopup';
-import type { CategoryDetailProps } from '.';
 import type { SearchDocument } from '@/lib/search';
+import type { CategoryDetailWithSearchProps } from '.';
 
 export function IngredientsList(
-  props: CategoryDetailProps & {
-    // Placeholder?: string | null;
+  props: CategoryDetailWithSearchProps & {
     ingredients?: SearchDocument[];
     bgColor?: 'paper';
   },
 ) {
-  const { ingredients, Button } = props;
+  const { ingredients, button } = props;
   const router = useRouter();
-  const isSearch = props?.Placeholder !== undefined;
+  const isSearch = props?.placeholder !== undefined;
   const slugs = parseResultSlugs(useSearchParams().get('i'));
   const key = slugs.join(',');
   const [state, setState] = useState<{
@@ -123,12 +122,12 @@ export function IngredientsList(
                   />
                 </div>
               ))}
-              {Button?.Label && (
+              {button?.label && (
                 <TransitionLink
-                  href={Button.href || '#'}
+                  href={button.href || '#'}
                   className="btn mt-5 mx-5 lg:mx-0 px-0 flex gap-2"
                 >
-                  {Button.Label}
+                  {button.label}
                   <IconUpload className="w-4 h-4 " />
                 </TransitionLink>
               )}
@@ -173,7 +172,7 @@ export function IngredientsList(
                     variant="subhead-lg"
                     className={`mt-9 ${isSearch ? 'text-ink-terra-70' : 'text-surface-sand'} `}
                   >
-                    {props.Hint}
+                    {props?.hint}
                   </Typography>
                   <div className="flex-center gap-2 mt-9">
                     {Object.keys(TipBadgeColorMapping).map((type) => (
