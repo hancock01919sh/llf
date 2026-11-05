@@ -5,14 +5,14 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "string",
       "required": true
     },
-    "Statement": {
+    "statement": {
       "type": "text"
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
       "required": true,
       "enum": [
