@@ -38,7 +38,7 @@ export const CategoryDeepRef = z.object({
   slug: z.string(),
   description: nullish(z.string()),
   ingredients: nullish(z.array(z.lazy((): z.ZodType<IngredientDeepRef> => IngredientDeepRef))),
-  tips: nullish(z.array(z.lazy((): z.ZodType => TipDeepRef))),
+  tips: nullish(z.array(z.lazy((): z.ZodType<TipDeepRef> => TipDeepRef))),
   mode: z.enum(['Ingredients', 'Tips']).default('Ingredients'),
   image: nullish(Media),
   group: nullish(z.lazy((): z.ZodType<GroupDeepRef> => GroupDeepRef)),

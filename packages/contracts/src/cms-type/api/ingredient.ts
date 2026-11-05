@@ -63,7 +63,7 @@ export const IngredientDeepRef = z.object({
     ]),
   ),
   synonyms: nullish(z.string()),
-  tips: nullish(z.array(z.lazy((): z.ZodType => TipDeepRef))),
+  tips: nullish(z.array(z.lazy((): z.ZodType<TipDeepRef> => TipDeepRef))),
   wasted: z.number().int().default(3),
   image: nullish(Media),
   category: nullish(z.lazy((): z.ZodType => CategoryDeepRef)),
