@@ -5,15 +5,18 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
-      "type": "string"
+    "title": {
+      "type": "string",
+      "required": false
     },
-    "Description": {
-      "type": "text"
+    "description": {
+      "type": "text",
+      "required": false
     },
-    "Image": {
+    "image": {
       "type": "media",
       "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
@@ -21,18 +24,19 @@
         "audios"
       ]
     },
-    "SubTitle": {
-      "type": "string"
+    "subTitle": {
+      "type": "string",
+      "required": false
     },
-    "Statement": {
+    "statement": {
       "type": "blocks"
     },
-    "Button": {
+    "button": {
       "type": "component",
       "component": "shared.links",
       "repeatable": false
     },
-    "Popup": {
+    "popup": {
       "type": "component",
       "component": "component.tips-popup",
       "repeatable": false
@@ -41,8 +45,9 @@
       "type": "boolean",
       "default": false
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "forest"
       ]

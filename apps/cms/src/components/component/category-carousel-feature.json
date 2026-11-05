@@ -5,28 +5,33 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
-      "type": "string"
+    "title": {
+      "type": "string",
+      "required": true
     },
-    "Description": {
-      "type": "text"
+    "description": {
+      "type": "text",
+      "required": true
     },
-    "Link": {
+    "link": {
       "type": "component",
       "component": "shared.links",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     },
-    "Feature_Card": {
+    "featureCard": {
       "type": "component",
       "component": "shared.feature-card",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     },
     "isFullwidth": {
       "type": "boolean",
       "default": true
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
+      "required": true,
       "default": "terra",
       "enum": [
         "terra"

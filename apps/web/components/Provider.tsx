@@ -1,12 +1,12 @@
 'use client';
 import { createContext } from 'react';
-import { AppFooter, type FooterCmsDataProps } from './AppFooter';
-import { Header, type NavigationCmsDataProps } from './Header';
-import type { GlobalProps } from '@/blocks/types';
+import { AppFooter } from './AppFooter';
+import { Header } from './Header';
+import type { cmsType } from '@llf/contracts';
 export const AppContext = createContext<{
-  footer?: FooterCmsDataProps;
-  navigation?: NavigationCmsDataProps;
-  global?: GlobalProps;
+  footer?: cmsType.api.Footer;
+  navigation?: cmsType.api.Navigation;
+  global?: cmsType.api.Global;
 }>({});
 export function Provider({
   children,
@@ -15,9 +15,9 @@ export function Provider({
   global,
 }: {
   children: React.ReactNode;
-  footer: FooterCmsDataProps;
-  navigation: NavigationCmsDataProps;
-  global: GlobalProps;
+  footer: cmsType.api.Footer;
+  navigation: cmsType.api.Navigation;
+  global: cmsType.api.Global;
 }) {
   return (
     <AppContext.Provider value={{ footer, navigation, global }}>

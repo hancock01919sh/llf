@@ -5,19 +5,23 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
-      "type": "string"
+    "title": {
+      "type": "string",
+      "required": true
     },
-    "Description": {
-      "type": "text"
+    "description": {
+      "type": "text",
+      "required": true
     },
-    "Emoji": {
+    "emoji": {
       "type": "component",
       "component": "shared.emoji-item",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "paper"
       ]

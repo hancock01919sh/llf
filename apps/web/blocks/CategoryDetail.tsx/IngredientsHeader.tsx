@@ -4,20 +4,19 @@ import { Typography } from '@/components/Typography';
 import { useEffect, useRef, useState } from 'react';
 import { IngredientsTipsPopup } from './IngredientsTipsPopup';
 import { RichText } from '@/components/RichText';
-import type { CategoryDetailProps } from '.';
 import type { Category } from '@llf/contracts/cms';
-// import { getIngrendients } from '@/lib/MLP/cms';
-interface IngredientsHeaderProps extends Omit<CategoryDetailProps, 'Background_color'> {
-  categoryData?: Category;
-  isSearch?: boolean;
-  onSearch?: (value: string) => void;
-  className?: string;
-  Background_color?: 'forest' | 'paper' | null;
-  Placeholder?: string | null;
-}
-export function IngredientsHeader(props: IngredientsHeaderProps) {
+import type { cmsType } from '@llf/contracts';
+export function IngredientsHeader(
+  props: cmsType.component.CategoryDetailDeepRef & {
+    categoryData?: Category;
+    bgColor?: string;
+    onSearch?: (value: string) => void;
+    className?: string;
+    Placeholder?: string | null;
+  },
+) {
   const [open, setOpen] = useState(false);
-  const { categoryData } = props;
+  const { categoryData, popup } = props;
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (ref.current === null) return;
@@ -35,13 +34,13 @@ export function IngredientsHeader(props: IngredientsHeaderProps) {
         className={`${isSearch ? ' bg-surface-paper' : 'bg-brand-forest'} px-gutter lg:px-gutter-lg max-w-page  py-16 lg:text-center mx-auto lg:py-25 ${props.className || ''}`}
       >
         <Typography variant="eyebrow" className="font-bold lg:font-normal">
-          {categoryData?.group?.title || props?.SubTitle}
+          {categoryData?.group?.title || props.subTitle}
         </Typography>
         <Typography role="heading" as="h1" variant="headline-lg" className=" uppercase mt-10">
-          {categoryData?.title || props.Title}
+          {categoryData?.title || props.title}
         </Typography>
         <Typography variant="subhead-lg" className="mt-5">
-          {categoryData?.description || props.Description}
+          {categoryData?.description || props.description}
         </Typography>
         {props?.Placeholder && (
           <input
@@ -63,11 +62,15 @@ export function IngredientsHeader(props: IngredientsHeaderProps) {
         >
           <IconCheck className="[&_path]:fill-semantic-leaf lg:w-6 lg:h-6" />
           <div ref={ref} className="text-paragraph-regular [&_u]:cursor-pointer text-surface-sand">
-            <RichText content={props.Statement} />
+            <RichText content={props.statement} />
           </div>
         </div>
       </div>
-      <IngredientsTipsPopup open={open} onClose={() => setOpen(false)} {...props.Popup} />
+      <IngredientsTipsPopup
+        open={open}
+        onClose={() => setOpen(false)}
+        {...(popup as cmsType.component.TipsPopupDeepRef)}
+      />
     </>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
-
+import { Dialog } from 'radix-ui';
 import { useState } from 'react';
-
 const ANIMATION_CLASS_MAP = {
   translate: {
     enter: 'translate-enter',
@@ -13,7 +12,7 @@ const ANIMATION_CLASS_MAP = {
   },
 };
 
-export function Popup({
+export const Popup = ({
   children,
   open = false,
   onClose = () => {},
@@ -25,7 +24,7 @@ export function Popup({
   open?: boolean;
   onClose?: () => void;
   className?: string;
-}) {
+}) => {
   const [isRendered, setIsRendered] = useState(open);
   if (open && !isRendered) {
     setIsRendered(true);
@@ -38,27 +37,25 @@ export function Popup({
       setIsRendered(false);
     }
   };
-
   if (!isRendered) {
     return null;
   }
-
   return (
-    <div className={`popup-container fixed inset-0 w-full h-full z-1 `}>
-      <button
-        type="button"
-        aria-label="Close"
-        className={`block w-full h-full bg-[rgba(0,0,0,0.3)]  ${open ? 'opacity-enter' : 'opacity-exit'}`}
-        onClick={onClose}
-      />
-      <div
-        className={`absolute bottom-0 left-0 z-1 w-full overflow-y-auto max-h-full overscroll-y-none lg:top-0 lg:flex-center  ${
-          open ? animation.enter : animation.exit
-        } ${className}`}
-        onAnimationEnd={handleAnimationEnd}
-      >
-        {children}
-      </div>
-    </div>
+    <Dialog.Root open={open}>
+      <Dialog.Portal>
+        <Dialog.Overlay
+          onClick={onClose}
+          className={`fixed inset-0 bg-[rgba(0,0,0,0.3)] ${open ? 'opacity-enter' : 'opacity-exit'}`}
+        />
+        <Dialog.Content
+          className={`fixed bottom-0 left-0 z-1 w-full overflow-y-auto max-h-full overscroll-y-none  ${
+            open ? animation.enter : animation.exit
+          } ${className}`}
+          onAnimationEnd={handleAnimationEnd}
+        >
+          {children}
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
-}
+};

@@ -5,10 +5,11 @@
   },
   "options": {},
   "attributes": {
-    "Label": {
-      "type": "string"
+    "label": {
+      "type": "string",
+      "required": true
     },
-    "Overlay_description": {
+    "overlayDescription": {
       "type": "blocks"
     },
     "href": {

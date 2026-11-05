@@ -5,16 +5,9 @@
   },
   "options": {},
   "attributes": {
-    "Label": {
-      "type": "string"
-    },
-    "Image": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images",
-        "files"
-      ]
+    "label": {
+      "type": "string",
+      "required": true
     },
     "href": {
       "type": "string"

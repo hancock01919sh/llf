@@ -5,36 +5,42 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
-      "type": "string"
+    "title": {
+      "type": "string",
+      "required": true
     },
-    "Description": {
-      "type": "text"
+    "description": {
+      "type": "text",
+      "required": true
     },
-    "Placeholder": {
-      "type": "string"
+    "placeholder": {
+      "type": "string",
+      "required": true
     },
-    "Statement": {
-      "type": "blocks"
+    "statement": {
+      "type": "blocks",
+      "required": true
     },
-    "Hint": {
-      "type": "text"
+    "hint": {
+      "type": "text",
+      "required": true
     },
-    "Button": {
+    "button": {
       "type": "component",
       "component": "shared.links",
       "repeatable": false
     },
-    "Popup": {
+    "popup": {
       "type": "component",
       "component": "component.tips-popup",
-      "repeatable": false
+      "repeatable": false,
+      "required": false
     },
     "isFullwidth": {
       "type": "boolean",
       "default": false
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
       "enum": [
         "paper"

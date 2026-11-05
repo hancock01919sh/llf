@@ -6,15 +6,18 @@
   "options": {},
   "attributes": {
     "Title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Description": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "SmallCard": {
       "type": "component",
       "component": "shared.small-card",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     },
     "isFullwidth": {
       "type": "boolean",
@@ -22,6 +25,7 @@
     },
     "Background_color": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "paper"
       ]

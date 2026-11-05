@@ -5,10 +5,11 @@
   },
   "options": {},
   "attributes": {
-    "Copy": {
-      "type": "string"
+    "copy": {
+      "type": "string",
+      "required": true
     },
-    "Video": {
+    "video": {
       "type": "media",
       "multiple": false,
       "allowedTypes": [

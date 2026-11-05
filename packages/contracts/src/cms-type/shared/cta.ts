@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PageRef } from '../api/page';
+import { PageRef, PageDeepRef } from '../api/page';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
@@ -13,5 +13,13 @@ export const CtaRef = z.object({
   label: nullish(z.string()),
   href: nullish(z.string()),
 });
+
+export const CtaDeepRef = z.object({
+  label: nullish(z.string()),
+  href: nullish(z.string()),
+  page: nullish(z.lazy((): z.ZodType<PageDeepRef> => PageDeepRef)),
+});
+
+export type CtaDeepRef = z.infer<typeof CtaDeepRef>;
 
 export type Cta = z.infer<typeof Cta>;
