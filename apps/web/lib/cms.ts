@@ -88,13 +88,13 @@ const POPULATE = {
         },
         'component.hero': {
           populate: {
-            Link: true,
+            link: true,
             images: ImagePopulate,
           },
         },
         'component.tip-banner': {
           populate: {
-            CTA: true,
+            cta: true,
             tip: {
               populate: {
                 ingredient: {
@@ -110,27 +110,27 @@ const POPULATE = {
         },
         'component.tool-spotlight': {
           populate: {
-            Link: true,
-            SpotlightItem: {
+            link: true,
+            spotlightItem: {
               populate: {
-                Video: true,
+                video: true,
               },
             },
           },
         },
         'component.category-emoji': {
           populate: {
-            Emoji: true,
+            emoji: true,
           },
         },
         'component.category-carousel-feature': {
           populate: {
-            Feature_Card: {
+            featureCard: {
               populate: {
-                Image: ImagePopulate,
+                image: ImagePopulate,
               },
             },
-            Link: true,
+            link: true,
           },
         },
       },

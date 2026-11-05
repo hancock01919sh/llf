@@ -17,8 +17,8 @@ import 'swiper/css/pagination';
 import { carouselConfig } from '@/lib/const';
 import type { BlockProps } from './types';
 import type { cmsType } from '@llf/contracts';
-export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>) {
-  const { SubTitle, Link, SpotlightItem, Title } = props.block;
+export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlightDeepRef>) {
+  const { subTitle, link, spotlightItem, title } = props.block;
   const [swiperIndex, setSwiperIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const defaultTextColor = 'yellow';
@@ -53,7 +53,7 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
         invalidateOnRefresh: true,
       },
     });
-    const count = SpotlightItem.length;
+    const count = spotlightItem.length;
     if (videos.length !== count) return;
     for (let i = 0; i < count; i++) {
       const start = i;
@@ -130,16 +130,16 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
     >
       <div className="px-4.5 lg:px-0 lg:w-[70%] lg:mx-auto ">
         <Typography variant="headline-lg" className="text-center">
-          {Title}
+          {title}
         </Typography>
         <Typography variant="subhead-lg" className="font-bold mt-5 lg:hidden">
-          {SubTitle}
+          {subTitle}
         </Typography>
         <Typography
           variant="subhead-lg"
           className="hidden mt-5 font-normal lg:block lg:text-center"
         >
-          {SubTitle}
+          {subTitle}
         </Typography>
       </div>
       <div className="w-full aspect-402/468 lg:hidden">
@@ -156,10 +156,10 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
           {...carouselConfig[320]}
           slidesPerView={1}
         >
-          {SpotlightItem.map((item, index) => (
-            <SwiperSlide key={item.Copy} className="overflow-hidden">
+          {spotlightItem.map((item, index) => (
+            <SwiperSlide key={item.copy} className="overflow-hidden">
               <UIVideo
-                src={item?.Video?.url ?? ''}
+                src={item?.video?.url ?? ''}
                 className=" aspect-square rounded-md"
                 pause={swiperIndex !== index}
                 loop={true}
@@ -169,7 +169,7 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
                 variant="title-card"
                 className=" text-center mt-5 w-4/5 mx-auto leading-none"
               >
-                {item.Copy}
+                {item.copy}
               </Typography>
             </SwiperSlide>
           ))}
@@ -177,10 +177,10 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
       </div>
       <div className="hidden w-full lg:flex lg:mt-35 max-w-page mx-auto">
         <div className="video-wrapper relative w-1/2">
-          {SpotlightItem.map((item, index) => (
+          {spotlightItem.map((item, index) => (
             <UIVideo
-              key={item?.Video?.documentId ?? index}
-              src={item?.Video?.url ?? ''}
+              key={item?.video?.documentId ?? index}
+              src={item?.video?.url ?? ''}
               className="video-item w-[65%] mx-auto absolute! top-0 left-1/2 -translate-x-1/2 aspect-426/532 rounded-md"
               loop={true}
               muted={true}
@@ -189,24 +189,24 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlight>
         </div>
         <div className="w-1/2">
           <div className="text-wrapper flex flex-col gap-6">
-            {SpotlightItem.map((item) => (
-              <Typography key={item.Copy} variant="headline-md" className={`uppercase `}>
-                {item.Copy}
+            {spotlightItem.map((item) => (
+              <Typography key={item.copy} variant="headline-md" className={`uppercase `}>
+                {item.copy}
               </Typography>
             ))}
           </div>
 
           <div className="w-max mt-6">
-            <TransitionLink className="btn " href={Link?.href ?? '#'}>
-              {Link?.Label ?? ''}
+            <TransitionLink className="btn " href={link?.href ?? '#'}>
+              {link?.label ?? ''}
             </TransitionLink>
           </div>
         </div>
       </div>
 
       <div className="px-4.5 w-full lg:hidden">
-        <TransitionLink className="btn " href={Link?.href ?? '#'}>
-          {Link?.Label ?? ''}
+        <TransitionLink className="btn " href={link?.href ?? '#'}>
+          {link?.label ?? ''}
         </TransitionLink>
       </div>
     </div>

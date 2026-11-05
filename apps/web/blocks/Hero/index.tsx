@@ -8,7 +8,7 @@ import { findFirstVisibleContentWrapper } from '@/lib/utils';
 import type { BlockProps } from '../types';
 import type { cmsType } from '@llf/contracts';
 export function Hero(props: BlockProps<cmsType.component.Hero>) {
-  const { Title, images } = props.block;
+  const { title, images } = props.block;
   const containerRef = useRef(null);
   const [nextVisible, setNextVisible] = useState<number>();
 
@@ -29,7 +29,7 @@ export function Hero(props: BlockProps<cmsType.component.Hero>) {
     <div ref={containerRef} className="pt-8 pb-10">
       <div className="flex flex-col lg:flex-row lg:items-center ">
         <div className="lg:flex-1">
-          <HeroTitle Title={Title} />
+          <HeroTitle Title={title} />
           <HeroContent className="hidden lg:block" data={props.block} />
         </div>
         <UIVideo

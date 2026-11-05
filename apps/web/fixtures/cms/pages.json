@@ -10,9 +10,9 @@
       "main": [
         {
           "__component": "component.hero",
-          "id": 3,
-          "Description": "Everything you didn't know about the ingredients in your kitchen.",
-          "Title": [
+          "id": 16,
+          "description": "Everything you didn't know about the ingredients in your kitchen.",
+          "title": [
             {
               "type": "paragraph",
               "children": [
@@ -59,26 +59,26 @@
               ]
             }
           ],
-          "Background_color": "terra",
+          "backgroundColor": "terra",
           "isFullwidth": null,
-          "Link": [
+          "link": [
             {
-              "id": 137,
-              "Label": "Discover tips in the library",
-              "href": null,
+              "id": 419,
+              "label": "Discover tips in the library",
+              "href": "/tips",
               "isDisplay": true,
               "isButton": true,
-              "Buttontype": "Primary",
-              "NewTab": false
+              "newTab": false,
+              "buttonType": "Primary"
             },
             {
-              "id": 138,
-              "Label": "Search specific ingredient tips",
-              "href": null,
+              "id": 420,
+              "label": "Search specific ingredient tips",
+              "href": "/search",
               "isDisplay": true,
               "isButton": true,
-              "Buttontype": "Secondary",
-              "NewTab": false
+              "newTab": false,
+              "buttonType": "Secondary"
             }
           ],
           "images": [
@@ -96,28 +96,28 @@
         },
         {
           "__component": "component.tip-banner",
-          "id": 7,
-          "Label": "Tip Of The Week",
-          "Background_color": "terra",
-          "isFullwidth": null,
-          "CTA": [
+          "id": 40,
+          "label": "Tip Of The Week",
+          "backgroundColor": "terra",
+          "isFullwidth": false,
+          "cta": [
             {
-              "id": 139,
-              "Label": "Share",
+              "id": 421,
+              "label": "Share",
               "href": null,
               "isDisplay": true,
               "isButton": true,
-              "Buttontype": "Primary",
-              "NewTab": false
+              "newTab": false,
+              "buttonType": null
             },
             {
-              "id": 140,
-              "Label": "Save",
+              "id": 422,
+              "label": "Save",
               "href": null,
               "isDisplay": true,
               "isButton": true,
-              "Buttontype": "Secondary",
-              "NewTab": false
+              "newTab": false,
+              "buttonType": null
             }
           ],
           "tip": {
@@ -172,25 +172,25 @@
         },
         {
           "__component": "component.tool-spotlight",
-          "id": 3,
-          "Title": "Get tips for the ingredients in your next meal ",
-          "SubTitle": "Everything you didn't know about the ingredients in your kitchen.",
+          "id": 16,
+          "title": "Get tips for the ingredients in your next meal ",
+          "subTitle": "Everything you didn't know about the ingredients in your kitchen.",
           "isFullwidth": null,
-          "Background_color": "forest",
-          "Link": {
-            "id": 136,
-            "Label": "Use the Tool",
-            "href": null,
+          "backgroundColor": "forest",
+          "link": {
+            "id": 418,
+            "label": "See how it works",
+            "href": "/find-my-tips",
             "isDisplay": true,
             "isButton": true,
-            "Buttontype": null,
-            "NewTab": false
+            "newTab": false,
+            "buttonType": null
           },
-          "SpotlightItem": [
+          "spotlightItem": [
             {
-              "id": 11,
-              "Copy": "A recipe you're planning to cook",
-              "Video": {
+              "id": 81,
+              "copy": "A recipe you’re planning to cook",
+              "video": {
                 "id": 16,
                 "documentId": "lv9kx3stxx6am8yo5j9u1q60",
                 "name": "9558515-uhd_4096_2160_25fps.mp4",
@@ -214,9 +214,9 @@
               }
             },
             {
-              "id": 12,
-              "Copy": "A photo of what's in your fridge",
-              "Video": {
+              "id": 82,
+              "copy": "A shopping list before you go",
+              "video": {
                 "id": 18,
                 "documentId": "rd3tds5eal0noyc402pf6sjm",
                 "name": "12487432_1920_1080_60fps.mp4",
@@ -240,35 +240,35 @@
               }
             },
             {
-              "id": 13,
-              "Copy": "A shopping list before you go",
-              "Video": {
-                "id": 23,
-                "documentId": "v14e0isquqh6ocrih0nf3vzo",
-                "name": "5418706-hd_1080_1920_25fps.mp4",
+              "id": 83,
+              "copy": "A photo of what’s in your fridge",
+              "video": {
+                "id": 25,
+                "documentId": "vw0f3tdsa3unnldzv8uek64d",
+                "name": "12691867-uhd_2160_3840_60fps.mp4",
                 "alternativeText": null,
                 "caption": null,
                 "focalPoint": null,
                 "width": null,
                 "height": null,
                 "formats": null,
-                "hash": "5418706_hd_1080_1920_25fps_51d5e439a4",
+                "hash": "12691867_uhd_2160_3840_60fps_998c4b2c12",
                 "ext": ".mp4",
                 "mime": "video/mp4",
-                "size": 2925.89,
-                "url": "/uploads/5418706_hd_1080_1920_25fps_51d5e439a4.mp4",
+                "size": 18720.79,
+                "url": "/uploads/12691867_uhd_2160_3840_60fps_998c4b2c12.mp4",
                 "previewUrl": null,
                 "provider": "local",
                 "provider_metadata": null,
-                "createdAt": "2026-10-15T06:25:24.702Z",
-                "updatedAt": "2026-10-15T06:25:24.702Z",
-                "publishedAt": "2026-10-15T06:25:24.704Z"
+                "createdAt": "2026-10-15T06:25:49.270Z",
+                "updatedAt": "2026-10-15T06:25:49.270Z",
+                "publishedAt": "2026-10-15T06:25:49.270Z"
               }
             },
             {
-              "id": 14,
-              "Copy": "A receipt from today's shop",
-              "Video": {
+              "id": 84,
+              "copy": "A receipt from today’s shop",
+              "video": {
                 "id": 24,
                 "documentId": "gy8jdi2otwz65me02006r335",
                 "name": "6530563-hd_1080_1920_30fps.mp4",
@@ -292,42 +292,42 @@
               }
             },
             {
-              "id": 15,
-              "Copy": "A video you saved for later",
-              "Video": {
-                "id": 25,
-                "documentId": "vw0f3tdsa3unnldzv8uek64d",
-                "name": "12691867-uhd_2160_3840_60fps.mp4",
-                "alternativeText": null,
+              "id": 85,
+              "copy": "A video you saved for later",
+              "video": {
+                "id": 6,
+                "documentId": "ihf9pbfub16ofi5w13luqzza",
+                "name": "12691884-uhd_2160_3840_60fps.mp4",
+                "alternativeText": "wwf",
                 "caption": null,
                 "focalPoint": null,
                 "width": null,
                 "height": null,
                 "formats": null,
-                "hash": "12691867_uhd_2160_3840_60fps_998c4b2c12",
+                "hash": "12691884_uhd_2160_3840_60fps_ea8b6d8dc5",
                 "ext": ".mp4",
                 "mime": "video/mp4",
-                "size": 18720.79,
-                "url": "/uploads/12691867_uhd_2160_3840_60fps_998c4b2c12.mp4",
+                "size": 26352.05,
+                "url": "/uploads/12691884_uhd_2160_3840_60fps_ea8b6d8dc5.mp4",
                 "previewUrl": null,
                 "provider": "local",
                 "provider_metadata": null,
-                "createdAt": "2026-10-15T06:25:49.270Z",
-                "updatedAt": "2026-10-15T06:25:49.270Z",
-                "publishedAt": "2026-10-15T06:25:49.270Z"
+                "createdAt": "2026-10-16T02:16:30.070Z",
+                "updatedAt": "2026-11-04T04:15:25.949Z",
+                "publishedAt": "2026-10-16T02:16:30.070Z"
               }
             }
           ]
         },
         {
           "__component": "component.highlight-component",
-          "id": 17,
-          "Title": "About 1 in 3 groceries you buy never get eaten.",
-          "Description": "Most of us don’t know where we’re losing food.",
-          "Background_color": "forest-tint",
-          "isFullwidth": null,
-          "Link": [],
-          "Image": {
+          "id": 88,
+          "title": "About 1 in 3 groceries you buy never get eaten.",
+          "description": "Most of us don’t know where we’re losing food.",
+          "backgroundColor": "forest-tint",
+          "isFullwidth": true,
+          "link": [],
+          "image": {
             "id": 26,
             "documentId": "lpi64r4bz6uin7l8g8f836ah",
             "url": "/uploads/6a75c669d797bf8ded9c00a5f911560c1aa98631_8c09406ce6.png",
@@ -340,76 +340,76 @@
         },
         {
           "__component": "component.category-emoji",
-          "id": 5,
-          "Title": "Explore all the tips nobody told you about.",
-          "Description": "Organized by the food you cook, and the ingredients you use most. From produce to dairy to pantry staples.",
-          "Background_color": "paper",
-          "isFullwidth": null,
-          "Emoji": [
+          "id": 28,
+          "title": "Explore all the tips nobody told you about.",
+          "description": "Organized by the food you cook, and the ingredients you use most. From produce to dairy to pantry staples.",
+          "backgroundColor": "paper",
+          "isFullwidth": false,
+          "emoji": [
             {
-              "id": 25,
-              "Title": "Vegetables",
-              "Emoji": "🥕"
+              "id": 170,
+              "title": "Vegetables",
+              "emoji": "🥕"
             },
             {
-              "id": 26,
-              "Title": "Fruits",
-              "Emoji": "🍎"
+              "id": 171,
+              "title": "Fruits",
+              "emoji": "🍎"
             },
             {
-              "id": 27,
-              "Title": "Dairy",
-              "Emoji": "🧈"
+              "id": 172,
+              "title": "Dairy",
+              "emoji": "🧈"
             },
             {
-              "id": 28,
-              "Title": "Meat & Poultry",
-              "Emoji": "🥩"
+              "id": 173,
+              "title": "Meat & Poultry",
+              "emoji": "🥩"
             },
             {
-              "id": 29,
-              "Title": "Grains & Starches",
-              "Emoji": "🌾"
+              "id": 174,
+              "title": "Grains & Starches",
+              "emoji": "🌾"
             },
             {
-              "id": 30,
-              "Title": "Condiments & Spreads",
-              "Emoji": "🥫"
+              "id": 175,
+              "title": "Condiments & Spreads",
+              "emoji": "🥫"
             }
           ]
         },
         {
           "__component": "component.category-carousel-feature",
-          "id": 3,
-          "Title": "The Usual Suspects of every kitchen",
-          "Description": "Every kitchen has a few repeat offenders. See which ones keep showing up in yours.",
+          "id": 16,
+          "title": "The Usual Suspects of every kitchen",
+          "description": "Every kitchen has a few repeat offenders. See which ones keep showing up in yours.",
           "isFullwidth": true,
-          "Background_color": "terra",
-          "Link": [
+          "backgroundColor": "terra",
+          "link": [
             {
-              "id": 141,
-              "Label": "Discover tips in the library",
-              "href": null,
+              "id": 423,
+              "label": "Discover tips in the library",
+              "href": "/tips",
               "isDisplay": true,
               "isButton": true,
-              "Buttontype": "Primary",
-              "NewTab": false
+              "newTab": false,
+              "buttonType": "Primary"
             },
             {
-              "id": 142,
-              "Label": "Search specific ingredient tips",
-              "href": null,
+              "id": 424,
+              "label": "Search specific ingredient tips",
+              "href": "/search",
               "isDisplay": true,
               "isButton": true,
-              "Buttontype": "Secondary",
-              "NewTab": false
+              "newTab": false,
+              "buttonType": "Secondary"
             }
           ],
-          "Feature_Card": [
+          "featureCard": [
             {
-              "id": 7,
-              "Title": "Things that hide in the back of the fridge",
-              "Image": {
+              "id": 49,
+              "title": "Things that hide in the back of the fridge",
+              "image": {
                 "id": 28,
                 "documentId": "z08qkooic4qwl6br3qe3eo5b",
                 "url": "/uploads/feature_Card1_f8d861d35f.png",
@@ -421,9 +421,9 @@
               }
             },
             {
-              "id": 8,
-              "Title": "The ones with the shortest windows",
-              "Image": {
+              "id": 50,
+              "title": "The ones with the shortest windows",
+              "image": {
                 "id": 48,
                 "documentId": "cmxzgsc0moj30z1gz3mj4lm1",
                 "url": "/uploads/672f08aabeb3795ecc9695c3d0a033c5acc02238_0877ecad79.png",
@@ -435,9 +435,9 @@
               }
             },
             {
-              "id": 9,
-              "Title": "The ones with the shortest windows",
-              "Image": {
+              "id": 51,
+              "title": "The ones with the shortest windows",
+              "image": {
                 "id": 58,
                 "documentId": "qf73vurdnqy4e8tzpg1vmoag",
                 "url": "/uploads/de67d4de587c3eca6d4faecd20b3c7f57ef87aa9_5f88b7cb7b.png",
@@ -452,23 +452,23 @@
         },
         {
           "__component": "component.highlight-component",
-          "id": 18,
-          "Title": "Fighting wasted food, one ingredient at a time.",
-          "Description": "Most food waste isn't carelessness. It's not knowing the things nobody ever told you.",
-          "Background_color": "paper",
+          "id": 89,
+          "title": "Fighting wasted food, one ingredient at a time.",
+          "description": "Most food waste isn't carelessness. It's not knowing the things nobody ever told you.",
+          "backgroundColor": "paper",
           "isFullwidth": true,
-          "Link": [
+          "link": [
             {
-              "id": 143,
-              "Label": "Discover Tips in the Library",
+              "id": 425,
+              "label": "Discover tips in the library",
               "href": "/tips",
               "isDisplay": true,
               "isButton": true,
-              "Buttontype": "Primary",
-              "NewTab": false
+              "newTab": false,
+              "buttonType": "Primary"
             }
           ],
-          "Image": {
+          "image": {
             "id": 29,
             "documentId": "nhxo7h5ezi4zcso168g582z6",
             "url": "/uploads/e504143a14840e725a7e240d7c26fbe0647e7882_8a3e239246.png",

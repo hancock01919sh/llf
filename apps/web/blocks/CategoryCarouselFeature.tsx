@@ -14,9 +14,9 @@ import { Fragment } from 'react';
 import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
 export function CategoryCarouselFeature(
-  props: BlockProps<cmsType.component.CategoryCarouselFeature>,
+  props: BlockProps<cmsType.component.CategoryCarouselFeatureDeepRef>,
 ) {
-  const { Title, Description, Link, Feature_Card } = props.block;
+  const { title, description, link, featureCard } = props.block;
   return (
     <div className="py-15 lg:py-25 max-w-page mx-auto lg:px-gutter-lg">
       <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-5">
@@ -25,16 +25,16 @@ export function CategoryCarouselFeature(
           className="text-center mx-5 lg:mx-0 lg:text-left"
           richText={true}
         >
-          {Title}
+          {title}
         </Typography>
         <div className="lg:w-1/2 flex flex-col gap-5">
           <Typography
             variant="subhead-lg"
             className="text-center mx-5 mt-5 lg:text-left lg:mx-0 lg:mt-0"
           >
-            {Description}
+            {description}
           </Typography>
-          <LinkWrapper className="hidden lg:flex gap-5" Link={Link} />
+          <LinkWrapper className="hidden lg:flex gap-5" Link={link} />
         </div>
       </div>
       <div className="relative lg:w-150 lg:mx-auto">
@@ -48,14 +48,14 @@ export function CategoryCarouselFeature(
             }}
             {...carouselConfig[320]}
           >
-            {Feature_Card.map((item, index) => (
+            {featureCard.map((item, index) => (
               <SwiperSlide
                 key={index}
                 className="flex flex-col bg-surface-paper overflow-hidden rounded-md aspect-362/420 lg:aspect-auto"
               >
                 <Image
-                  src={item.Image?.url || ''}
-                  alt={item.Image?.alternativeText || ''}
+                  src={item.image?.url || ''}
+                  alt={item.image?.alternativeText || ''}
                   width={362}
                   height={296}
                   className="aspect-362/296 object-cover lg:aspect-535/438 lg:w-full"
@@ -64,7 +64,7 @@ export function CategoryCarouselFeature(
                   variant="headline-sm"
                   className="text-center p-9 pt-6.5 text-ink-terra uppercase leading-none"
                 >
-                  {item.Title}
+                  {item.title}
                 </Typography>
               </SwiperSlide>
             ))}
@@ -97,14 +97,14 @@ export function CategoryCarouselFeature(
             }}
             keyboard={true}
           >
-            {Feature_Card.map((item, index) => (
+            {featureCard.map((item, index) => (
               <SwiperSlide
                 key={index}
                 className="flex flex-col bg-surface-paper overflow-hidden rounded-md lg:aspect-535/583"
               >
                 <Image
-                  src={item.Image?.url || ''}
-                  alt={item.Image?.alternativeText || ''}
+                  src={item.image?.url || ''}
+                  alt={item.image?.alternativeText || ''}
                   width={362}
                   height={296}
                   className="aspect-362/296 object-cover lg:aspect-535/438 lg:w-full"
@@ -113,7 +113,7 @@ export function CategoryCarouselFeature(
                   variant="headline-sm"
                   className="text-center p-9 pt-6.5 text-ink-terra uppercase leading-none"
                 >
-                  {item.Title}
+                  {item.title}
                 </Typography>
               </SwiperSlide>
             ))}
@@ -140,7 +140,7 @@ export function CategoryCarouselFeature(
           );
         })}
       </div>
-      <LinkWrapper className="mt-lg lg:hidden" Link={Link} />
+      <LinkWrapper className="mt-lg lg:hidden" Link={link} />
     </div>
   );
 }
@@ -154,30 +154,30 @@ function LinkWrapper({
   return (
     <div className={className}>
       {Link.map((item) => {
-        if (item.Buttontype === 'Primary') {
+        if (item.buttonType === 'Primary') {
           return (
             <TransitionLink
-              key={item.Label}
+              key={item.label}
               className={`btn mx-5 lg:mx-0`}
               href={item.href || '/find'}
             >
-              {item.Label}
+              {item.label}
             </TransitionLink>
           );
         }
         return (
-          <Fragment key={item.Label}>
+          <Fragment key={item.label}>
             <TransitionLink
               className="link mx-auto block mt-5 lg:mx-0 lg:hidden"
               href={item.href || '/search'}
             >
-              {item.Label}
+              {item.label}
             </TransitionLink>
             <TransitionLink
               className="btn black hidden mx-auto lg:block lg:mx-0 lg:px-lg "
               href={'/search'}
             >
-              {item.Label}
+              {item.label}
             </TransitionLink>
           </Fragment>
         );

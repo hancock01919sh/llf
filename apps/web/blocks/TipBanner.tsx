@@ -2,33 +2,11 @@ import { IconDownload, IconShare } from '@/components/Icon';
 import { TipBadge, type TipBadgeType } from '@/components/TipBadge';
 import { Typography } from '@/components/Typography';
 import Image from 'next/image';
-import { cmsType } from '@llf/contracts';
+import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
-import type { z } from 'zod';
 import type { Media } from '@llf/contracts/cms';
-// interface TipBannerProps {
-//   CTA: LinkProps[];
-//   Label: string;
-//   Background_color: ModuleBoundaryBgColor;
-//   tip: {
-//     description: string;
-//     title: string;
-//     ingredient: {
-//       title: string;
-//       wasted: string;
-//       image: ImageProps;
-//     };
-//     tip_type: {
-//       title: string;
-//     };
-//   };
-// }
-export const TipBannerSchema = cmsType.component.TipBanner.extend({
-  tip: cmsType.api.Tip,
-});
-export type TipBannerProps = z.infer<typeof TipBannerSchema>;
-export function TipBanner(props: BlockProps<TipBannerProps>) {
-  const { tip, Label, CTA } = props.block;
+export function TipBanner(props: BlockProps<cmsType.component.TipBannerDeepRef>) {
+  const { tip, label, cta } = props.block;
   return (
     <div className="py-15 lg:py-25">
       <div className="w-full rounded-md  text-ink-terra bg-surface-forest-tint ">
@@ -37,13 +15,13 @@ export function TipBanner(props: BlockProps<TipBannerProps>) {
           className="lg:text-subhead-md bg-surface-forest-tint  border-2 border-ink-terra py-4 px-13 text-center rounded-md font-bold w-max mx-auto -translate-y-1/2  lg:w-[32%] lg:px-0 capitalize"
           as="div"
         >
-          {Label}
+          {label || ''}
         </Typography>
 
         <div className="flex items-center flex-col px-8 pb-14.5 -mt-4 lg:flex-row lg:px-15 lg:justify-end">
           <TipBannerImage className="hidden lg:block" image={tip?.ingredient?.image} />
           <div className="flex items-center flex-col lg:items-start lg:ml-33 lg:gap-sm lg:w-[58%]">
-            <TipBadge type={tip.tip_type?.title as TipBadgeType} />
+            <TipBadge type={tip?.tip_type?.title as TipBadgeType} />
             <Typography variant="headline-lg" className="mt-2.5 z-1 lg:mt-0">
               {tip?.ingredient?.title || ''}
             </Typography>
@@ -57,14 +35,14 @@ export function TipBanner(props: BlockProps<TipBannerProps>) {
             <Typography variant="paragraph-sm" className="mt-2xs text-center lg:mt-0 lg:text-left">
               {tip?.description || ''}
             </Typography>
-            {CTA && CTA.length > 0 && (
+            {cta && cta.length > 0 && (
               <div className="flex items-stretch justify-between gap-2.5 mt-2.5 w-full lg:mt-0 lg:justify-start">
-                {CTA.map((item, index) => (
+                {cta.map((item, index) => (
                   <button
                     key={index}
                     className={`btn ${index === 0 ? 'black [&_path]:fill-surface-paper' : 'white hover:active:text-ink-terra'} border-2 capitalize px-0 flex-1  lg:w-max lg:flex-0 lg:px-10`}
                   >
-                    {item.Label}
+                    {item.label || ''}
                     {index === 0 ? <IconShare /> : <IconDownload />}
                   </button>
                 ))}
