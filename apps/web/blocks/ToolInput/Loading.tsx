@@ -6,11 +6,11 @@ import { AppContext } from '@/components/Provider';
 import { Typography } from '@/components/Typography';
 import { useContext } from 'react';
 
-export function Loading({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function Loading({ open }: { open: boolean }) {
   const { global } = useContext(AppContext);
   return (
     <Popup open={open} className="bg-surface-paper" animationClass="opacity">
-      <Header showClose={true} onClose={onClose} />
+      <Header showClose={true} />
       <div className=" bg-brand-forest h-dvh flex flex-col">
         <div className="flex-1 flex flex-col justify-center items-center gap-lg px-5 text-center">
           <IconWork2 className={`animate-[spin_3s_linear_infinite]`} />

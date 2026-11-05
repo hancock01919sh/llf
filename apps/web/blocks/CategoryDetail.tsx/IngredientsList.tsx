@@ -1,0 +1,202 @@
+'use client';
+import { IngredientData, parseResultSlugs } from '@llf/contracts';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+import { Loading } from '../ToolInput/Loading';
+import { Typography } from '@/components/Typography';
+import { useDevice } from '@/components/hooks/useDevice';
+import { EasyImage } from '@/components/UIImage';
+import { IconArrow, IconDownload, IconShare, IconUpload, IconWork2 } from '@/components/Icon';
+import TransitionLink from '@/components/TransitionLink';
+import { TipBadge, type TipBadgeType } from '@/components/TipBadge';
+import { IngredientsPopup } from './IngredientsPopup';
+import type { cmsType } from '@llf/contracts';
+
+export function IngredientsList(
+  props: cmsType.component.CategoryDetailDeepRef & {
+    Placeholder?: string | null;
+    ingredients?: IngredientData[];
+    bgColor?: 'paper';
+  },
+) {
+  const { ingredients, button } = props;
+  const router = useRouter();
+  const slugs = parseResultSlugs(useSearchParams().get('i'));
+  const key = slugs.join(',');
+  const [state, setState] = useState<{
+    status: 'loading' | 'ready';
+    ingredients: IngredientData[];
+  }>({
+    status: 'loading',
+    ingredients: [],
+  });
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const { isMobile } = useDevice();
+  const isSearch = props?.Placeholder && props.bgColor === 'paper';
+  useEffect(() => {
+    if (!key) {
+      router.replace('/find-my-tips');
+      return;
+    }
+    const wanted = key ? key.split(',') : [];
+    Promise.all(wanted.map(loadIngredient)).then((loaded) => {
+      if (loaded.every((item) => item !== null)) {
+        setState({
+          status: 'ready',
+          ingredients: loaded,
+        });
+      } else {
+        router.back();
+        // console.log('no ingredients', loaded);
+      }
+    });
+  }, [key, router]);
+  const finalIngredients = useMemo(
+    () => ingredients || state.ingredients,
+    [state.ingredients, ingredients],
+  );
+  function getLeftListClass(index: number) {
+    let classText = `${isSearch ? 'border-ink-terra-15  lg:border-ink-terra-15  hover:bg-semantic-leaf hover:text-surface-sand' : 'border-surface-sand lg:border-semantic-leaf hover:bg-semantic-leaf'} border-t`;
+    if (activeIndex === index) {
+      classText = ` lg:bg-ink-terra lg:border-ink-terra text-surface-sand`;
+    }
+    if (index === finalIngredients?.length - 1) {
+      classText += ' border-b';
+    }
+    return classText;
+  }
+  return (
+    <>
+      {state.status === 'loading' && <Loading open={state.status === 'loading'} />}
+      {state.status === 'ready' && state.ingredients.length > 0 && (
+        <div className={`lg:px-gutter-lg pb-gutter-lg`}>
+          <Typography variant="paragraph-regular" className="px-5">
+            {state.ingredients?.length} ingredients |{' '}
+            {state.ingredients?.reduce((acc, cur) => acc + cur.tips.length, 0)} tips
+          </Typography>
+          <div
+            className={`flex items-start mt-lg lg:mt-12.5 gap-6 ${state.ingredients[activeIndex]?.tips.length === 0 ? ' items-stretch' : ''}`}
+          >
+            <div className="flex flex-col w-full lg:w-[29%] lg:max-w-96.25 lg:gap-5">
+              {finalIngredients.map((item, index) => (
+                <div
+                  key={item.title + index}
+                  className={`flex-center gap-5 lg:gap-2.5 w-full px-5 py-2.5 lg:px-3  cursor-pointer transition-colors duration-300 lg:border lg:rounded-full ${getLeftListClass(index)}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={activeIndex === index}
+                  onClick={() => {
+                    setActiveIndex(index);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      setActiveIndex(index);
+                    }
+                  }}
+                >
+                  <div className="w-17.5 h-17.5 aspect-square rounded-full bg-ink-terra-40">
+                    {item.image?.url && (
+                      <EasyImage
+                        {...item.image}
+                        className="w-17.5 h-17.5 aspect-square rounded-full"
+                      />
+                    )}
+                  </div>
+
+                  <div className="flex-1 flex flex-col lg:flex-row gap-2.5 lg:flex-center lg:justify-between">
+                    <Typography
+                      role="heading"
+                      as="h2"
+                      variant="subhead-md"
+                      className="font-bold font-fustat!"
+                    >
+                      {item.title}
+                    </Typography>
+                    <Typography variant="paragraph-sm" className="lg:text-paragraph-sm">
+                      {item.tips.length} tips available
+                    </Typography>
+                  </div>
+                  <IconArrow
+                    point={'right'}
+                    className={`[&_path]:stroke-surface-mint lg:hidden ${isSearch ? '[&_path]:stroke-ink-terra!' : ''}`}
+                  />
+                </div>
+              ))}
+              {button?.label && (
+                <TransitionLink
+                  href={button.href || '#'}
+                  className="btn mt-5 mx-5 lg:mx-0 px-0 flex gap-2"
+                >
+                  {button.label}
+                  <IconUpload className="w-4 h-4 " />
+                </TransitionLink>
+              )}
+            </div>
+            <div
+              className={`hidden lg:flex flex-col gap-5  flex-1 ${finalIngredients[activeIndex]?.tips.length === 0 ? 'border p-5 rounded-md items-center justify-center' + (isSearch ? ' border-ink-terra-15' : ' border-semantic-leaf') : ''}`}
+            >
+              {finalIngredients[activeIndex]?.tips.map((item) => (
+                <div
+                  key={item.title}
+                  className={`border group/item ${isSearch ? 'border-ink-terra-15 text-ink-terra' : 'border-semantic-leaf text-surface-sand'} p-10 rounded-[40px] transition-all duration-500 bg-transparent   hover:text-ink-terra hover:bg-surface-forest-tint hover:border-surface-forest-tint`}
+                >
+                  <div className="flex flex-col gap-8">
+                    <TipBadge type={item.type as TipBadgeType} />
+                    <div className="flex-col flex  gap-4">
+                      <Typography
+                        role="heading"
+                        as="h2"
+                        variant="title-card"
+                        className=" font-anton"
+                      >
+                        {item.title}
+                      </Typography>
+                      <Typography variant="paragraph-lg" className="">
+                        {item.description}
+                      </Typography>
+                    </div>
+                  </div>
+                  <div className="mt-0 opacity-0 overflow-hidden transition-all duration-500 grid grid-rows-[0fr] group-hover/item:grid-rows-[1fr] group-hover/item:opacity-100 group-hover/item:mt-10">
+                    <div className="flex gap-3 min-h-0 ">
+                      <button className="btn">
+                        Share
+                        <IconShare className="w-4 h-4" />
+                      </button>
+                      <button className="btn">
+                        Save
+                        <IconDownload className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {finalIngredients[activeIndex]?.tips.length === 0 && (
+                <div className="max-w-2/3 flex-center text-center flex-col justify-center">
+                  <IconWork2 />
+                  <Typography variant="subhead-lg" className="mt-9">
+                    Click an ingredient to view specific tips that save time, money, and food.
+                  </Typography>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      <IngredientsPopup
+        open={activeIndex !== -1 && isMobile}
+        onClose={() => setActiveIndex(-1)}
+        ingredient={finalIngredients[activeIndex] as IngredientData}
+      />
+    </>
+  );
+}
+async function loadIngredient(slug: string): Promise<IngredientData | null> {
+  try {
+    const response = await fetch(`/data/ingredients/${slug}.json`);
+    if (!response.ok) return null;
+    return IngredientData.safeParse(await response.json()).data ?? null;
+  } catch {
+    return null;
+  }
+}

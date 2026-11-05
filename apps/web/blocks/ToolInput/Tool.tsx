@@ -271,7 +271,7 @@ export function Tool(props: BlockProps<cmsType.component.ToolInput> & { classNam
       )}
 
       <Typography variant="paragraph-sm">{props.block.copy}</Typography>
-      <Loading open={showLoading} onClose={() => setShowLoading(false)} />
+      <Loading open={showLoading} />
     </div>
   );
 }
