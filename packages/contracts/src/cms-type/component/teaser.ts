@@ -23,4 +23,13 @@ export const TeaserRef = z.object({
   layout: z.enum(['Basic', 'Highlight', 'Quote']).default('Basic'),
 });
 
+export const TeaserDeepRef = z.object({
+  __component: z.literal('component.teaser'),
+  id: z.number().int(),
+  images: nullish(Media.array()),
+  layout: z.enum(['Basic', 'Highlight', 'Quote']).default('Basic'),
+});
+
+export type TeaserDeepRef = z.infer<typeof TeaserDeepRef>;
+
 export type Teaser = z.infer<typeof Teaser>;

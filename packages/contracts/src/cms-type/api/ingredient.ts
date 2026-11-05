@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { CategoryRef } from '../api/category';
+import { CategoryRef, CategoryDeepRef } from '../api/category';
 import { Media } from '../media';
-import { TipRef } from '../api/tip';
+import { TipRef, TipDeepRef } from '../api/tip';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
@@ -46,5 +46,27 @@ export const IngredientRef = z.object({
   wasted: z.number().int().default(3),
   image: nullish(Media),
 });
+
+export const IngredientDeepRef = z.object({
+  id: z.number(),
+  documentId: z.string(),
+  title: z.string(),
+  type: nullish(
+    z.enum([
+      'Baked Goods',
+      'Dairy',
+      'Dry Foods',
+      'Fresh Herbs',
+      'Leafy Greens',
+      'Produce',
+      'Protein',
+    ]),
+  ),
+  synonyms: nullish(z.string()),
+  wasted: z.number().int().default(3),
+  image: nullish(Media),
+});
+
+export type IngredientDeepRef = z.infer<typeof IngredientDeepRef>;
 
 export type Ingredient = z.infer<typeof Ingredient>;

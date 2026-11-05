@@ -20,4 +20,12 @@ export const FooterRef = z.object({
   Legal_Copy: nullish(z.string()),
 });
 
+export const FooterDeepRef = z.object({
+  __component: z.literal('component.footer'),
+  id: z.number().int(),
+  Legal_Copy: nullish(z.string()),
+});
+
+export type FooterDeepRef = z.infer<typeof FooterDeepRef>;
+
 export type Footer = z.infer<typeof Footer>;

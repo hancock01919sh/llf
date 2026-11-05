@@ -20,4 +20,13 @@ export const PageRef = z.object({
   path: z.string(),
 });
 
+export const PageDeepRef = z.object({
+  id: z.number(),
+  documentId: z.string(),
+  title: z.string(),
+  path: z.string(),
+});
+
+export type PageDeepRef = z.infer<typeof PageDeepRef>;
+
 export type Page = z.infer<typeof Page>;

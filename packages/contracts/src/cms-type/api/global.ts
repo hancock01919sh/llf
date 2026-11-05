@@ -18,4 +18,12 @@ export const GlobalRef = z.object({
   title: z.string(),
 });
 
+export const GlobalDeepRef = z.object({
+  id: z.number(),
+  documentId: z.string(),
+  title: z.string(),
+});
+
+export type GlobalDeepRef = z.infer<typeof GlobalDeepRef>;
+
 export type Global = z.infer<typeof Global>;

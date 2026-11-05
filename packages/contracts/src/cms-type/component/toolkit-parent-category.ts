@@ -14,4 +14,12 @@ export const ToolkitParentCategoryRef = z.object({
   Title: z.string(),
 });
 
+export const ToolkitParentCategoryDeepRef = z.object({
+  __component: z.literal('component.toolkit-parent-category'),
+  id: z.number().int(),
+  Title: z.string(),
+});
+
+export type ToolkitParentCategoryDeepRef = z.infer<typeof ToolkitParentCategoryDeepRef>;
+
 export type ToolkitParentCategory = z.infer<typeof ToolkitParentCategory>;

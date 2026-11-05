@@ -22,4 +22,15 @@ export const IngredientCarouselRef = z.object({
   isFullwidth: nullish(z.boolean().default(true)),
 });
 
+export const IngredientCarouselDeepRef = z.object({
+  __component: z.literal('component.ingredient-carousel'),
+  id: z.number().int(),
+  Title: z.string(),
+  Description: z.string(),
+  Background_color: z.enum(['paper']),
+  isFullwidth: nullish(z.boolean().default(true)),
+});
+
+export type IngredientCarouselDeepRef = z.infer<typeof IngredientCarouselDeepRef>;
+
 export type IngredientCarousel = z.infer<typeof IngredientCarousel>;

@@ -18,4 +18,13 @@ export const NavigationRef = z.object({
   Searchplaceholder: nullish(z.string()),
 });
 
+export const NavigationDeepRef = z.object({
+  __component: z.literal('component.navigation'),
+  id: z.number().int(),
+  Title: nullish(z.string()),
+  Searchplaceholder: nullish(z.string()),
+});
+
+export type NavigationDeepRef = z.infer<typeof NavigationDeepRef>;
+
 export type Navigation = z.infer<typeof Navigation>;

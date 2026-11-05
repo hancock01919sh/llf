@@ -7,21 +7,32 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const ToolSpotlight = z.object({
   __component: z.literal('component.tool-spotlight'),
   id: z.number().int(),
-  Title: z.string(),
-  SubTitle: z.string(),
-  Link: nullish(z.lazy(() => LinksRef)),
-  SpotlightItem: z.array(z.lazy(() => SpotlightItemRef)),
+  title: z.string(),
+  subTitle: z.string(),
+  link: nullish(z.lazy(() => LinksRef)),
+  spotlightItem: z.array(z.lazy(() => SpotlightItemRef)),
   isFullwidth: nullish(z.boolean().default(false)),
-  Background_color: z.enum(['forest']),
+  backgroundColor: z.enum(['forest']),
 });
 
 export const ToolSpotlightRef = z.object({
   __component: z.literal('component.tool-spotlight'),
   id: z.number().int(),
-  Title: z.string(),
-  SubTitle: z.string(),
+  title: z.string(),
+  subTitle: z.string(),
   isFullwidth: nullish(z.boolean().default(false)),
-  Background_color: z.enum(['forest']),
+  backgroundColor: z.enum(['forest']),
 });
+
+export const ToolSpotlightDeepRef = z.object({
+  __component: z.literal('component.tool-spotlight'),
+  id: z.number().int(),
+  title: z.string(),
+  subTitle: z.string(),
+  isFullwidth: nullish(z.boolean().default(false)),
+  backgroundColor: z.enum(['forest']),
+});
+
+export type ToolSpotlightDeepRef = z.infer<typeof ToolSpotlightDeepRef>;
 
 export type ToolSpotlight = z.infer<typeof ToolSpotlight>;

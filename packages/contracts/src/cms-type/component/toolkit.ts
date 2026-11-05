@@ -14,4 +14,12 @@ export const ToolkitRef = z.object({
   Title: z.string(),
 });
 
+export const ToolkitDeepRef = z.object({
+  __component: z.literal('component.toolkit'),
+  id: z.number().int(),
+  Title: z.string(),
+});
+
+export type ToolkitDeepRef = z.infer<typeof ToolkitDeepRef>;
+
 export type Toolkit = z.infer<typeof Toolkit>;

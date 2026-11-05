@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CategoryRef } from '../api/category';
+import { CategoryRef, CategoryDeepRef } from '../api/category';
 import { CtaRef } from '../shared/cta';
 import { TitleRef } from '../shared/title';
 
@@ -23,5 +23,15 @@ export const CarouselRef = z.object({
   mode: z.enum(['categories']).default('categories'),
   layout: z.enum(['Basic', 'Compact']).default('Basic'),
 });
+
+export const CarouselDeepRef = z.object({
+  __component: z.literal('component.carousel'),
+  id: z.number().int(),
+  description: nullish(z.string()),
+  mode: z.enum(['categories']).default('categories'),
+  layout: z.enum(['Basic', 'Compact']).default('Basic'),
+});
+
+export type CarouselDeepRef = z.infer<typeof CarouselDeepRef>;
 
 export type Carousel = z.infer<typeof Carousel>;

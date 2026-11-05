@@ -21,4 +21,14 @@ export const ToolkitHeadlineRef = z.object({
   File: nullish(Media),
 });
 
+export const ToolkitHeadlineDeepRef = z.object({
+  __component: z.literal('component.toolkit-headline'),
+  id: z.number().int(),
+  Title: z.string(),
+  Description: z.string(),
+  File: nullish(Media),
+});
+
+export type ToolkitHeadlineDeepRef = z.infer<typeof ToolkitHeadlineDeepRef>;
+
 export type ToolkitHeadline = z.infer<typeof ToolkitHeadline>;

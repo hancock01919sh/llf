@@ -9,26 +9,39 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const CategoryDetail = z.object({
   __component: z.literal('component.category-detail'),
   id: z.number().int(),
-  Title: z.string(),
-  Description: z.string(),
-  Image: nullish(Media.array()),
-  SubTitle: nullish(z.string()),
-  Statement: nullish(Block.array()),
-  Button: nullish(z.lazy(() => LinksRef)),
-  Popup: nullish(z.lazy(() => TipsPopupRef)),
+  title: nullish(z.string()),
+  description: nullish(z.string()),
+  image: nullish(Media.array()),
+  subTitle: nullish(z.string()),
+  statement: nullish(Block.array()),
+  button: nullish(z.lazy(() => LinksRef)),
+  popup: nullish(z.lazy(() => TipsPopupRef)),
   isFullwidth: nullish(z.boolean().default(false)),
-  Background_color: z.enum(['forest']),
+  backgroundColor: z.enum(['forest']),
 });
 
 export const CategoryDetailRef = z.object({
   __component: z.literal('component.category-detail'),
   id: z.number().int(),
-  Title: z.string(),
-  Description: z.string(),
-  Image: nullish(Media.array()),
-  SubTitle: nullish(z.string()),
+  title: nullish(z.string()),
+  description: nullish(z.string()),
+  image: nullish(Media.array()),
+  subTitle: nullish(z.string()),
   isFullwidth: nullish(z.boolean().default(false)),
-  Background_color: z.enum(['forest']),
+  backgroundColor: z.enum(['forest']),
 });
+
+export const CategoryDetailDeepRef = z.object({
+  __component: z.literal('component.category-detail'),
+  id: z.number().int(),
+  title: nullish(z.string()),
+  description: nullish(z.string()),
+  image: nullish(Media.array()),
+  subTitle: nullish(z.string()),
+  isFullwidth: nullish(z.boolean().default(false)),
+  backgroundColor: z.enum(['forest']),
+});
+
+export type CategoryDetailDeepRef = z.infer<typeof CategoryDetailDeepRef>;
 
 export type CategoryDetail = z.infer<typeof CategoryDetail>;

@@ -22,4 +22,15 @@ export const AccordionRef = z.object({
   isFullwidth: nullish(z.boolean().default(false)),
 });
 
+export const AccordionDeepRef = z.object({
+  __component: z.literal('component.accordion'),
+  id: z.number().int(),
+  title: z.string(),
+  subTitle: z.string(),
+  backgroundColor: z.enum(['forest-tint']),
+  isFullwidth: nullish(z.boolean().default(false)),
+});
+
+export type AccordionDeepRef = z.infer<typeof AccordionDeepRef>;
+
 export type Accordion = z.infer<typeof Accordion>;

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Block } from '../blocks';
-import { PageRef } from '../api/page';
+import { PageRef, PageDeepRef } from '../api/page';
 import { TitleRef } from '../shared/title';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
@@ -19,5 +19,13 @@ export const LinkListRef = z.object({
   id: z.number().int(),
   layout: z.enum(['Basic', 'Two Column']).default('Basic'),
 });
+
+export const LinkListDeepRef = z.object({
+  __component: z.literal('component.link-list'),
+  id: z.number().int(),
+  layout: z.enum(['Basic', 'Two Column']).default('Basic'),
+});
+
+export type LinkListDeepRef = z.infer<typeof LinkListDeepRef>;
 
 export type LinkList = z.infer<typeof LinkList>;

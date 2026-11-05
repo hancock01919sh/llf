@@ -22,4 +22,15 @@ export const CarouselSmallRef = z.object({
   Background_color: z.enum(['paper']),
 });
 
+export const CarouselSmallDeepRef = z.object({
+  __component: z.literal('component.carousel-small'),
+  id: z.number().int(),
+  Title: z.string(),
+  Description: z.string(),
+  isFullwidth: nullish(z.boolean().default(true)),
+  Background_color: z.enum(['paper']),
+});
+
+export type CarouselSmallDeepRef = z.infer<typeof CarouselSmallDeepRef>;
+
 export type CarouselSmall = z.infer<typeof CarouselSmall>;

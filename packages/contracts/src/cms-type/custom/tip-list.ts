@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { TipRef } from '../api/tip';
+import { TipRef, TipDeepRef } from '../api/tip';
 import { TitleRef } from '../shared/title';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
@@ -15,5 +15,12 @@ export const TipListRef = z.object({
   description: nullish(z.string()),
   layout: z.enum(['Basic', 'Single']).default('Basic'),
 });
+
+export const TipListDeepRef = z.object({
+  description: nullish(z.string()),
+  layout: z.enum(['Basic', 'Single']).default('Basic'),
+});
+
+export type TipListDeepRef = z.infer<typeof TipListDeepRef>;
 
 export type TipList = z.infer<typeof TipList>;

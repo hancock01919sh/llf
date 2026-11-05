@@ -20,4 +20,15 @@ export const LoadingRef = z.object({
   isFullwidth: nullish(z.boolean().default(false)),
 });
 
+export const LoadingDeepRef = z.object({
+  __component: z.literal('component.loading'),
+  id: z.number().int(),
+  Title: z.string(),
+  Statement: nullish(z.string()),
+  Background_color: z.enum(['forest']),
+  isFullwidth: nullish(z.boolean().default(false)),
+});
+
+export type LoadingDeepRef = z.infer<typeof LoadingDeepRef>;
+
 export type Loading = z.infer<typeof Loading>;

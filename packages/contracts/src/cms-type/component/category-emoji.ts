@@ -6,20 +6,31 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const CategoryEmoji = z.object({
   __component: z.literal('component.category-emoji'),
   id: z.number().int(),
-  Title: z.string(),
-  Description: z.string(),
-  Emoji: z.array(z.lazy(() => EmojiItemRef)),
-  Background_color: z.enum(['paper']),
+  title: z.string(),
+  description: z.string(),
+  emoji: z.array(z.lazy(() => EmojiItemRef)),
+  backgroundColor: z.enum(['paper']),
   isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export const CategoryEmojiRef = z.object({
   __component: z.literal('component.category-emoji'),
   id: z.number().int(),
-  Title: z.string(),
-  Description: z.string(),
-  Background_color: z.enum(['paper']),
+  title: z.string(),
+  description: z.string(),
+  backgroundColor: z.enum(['paper']),
   isFullwidth: nullish(z.boolean().default(false)),
 });
+
+export const CategoryEmojiDeepRef = z.object({
+  __component: z.literal('component.category-emoji'),
+  id: z.number().int(),
+  title: z.string(),
+  description: z.string(),
+  backgroundColor: z.enum(['paper']),
+  isFullwidth: nullish(z.boolean().default(false)),
+});
+
+export type CategoryEmojiDeepRef = z.infer<typeof CategoryEmojiDeepRef>;
 
 export type CategoryEmoji = z.infer<typeof CategoryEmoji>;

@@ -24,4 +24,16 @@ export const CarouselStandardRef = z.object({
   isFullwidth: nullish(z.boolean().default(true)),
 });
 
+export const CarouselStandardDeepRef = z.object({
+  __component: z.literal('component.carousel-standard'),
+  id: z.number().int(),
+  Title: z.string(),
+  Description: z.string(),
+  Background_color: z.enum(['sand', 'paper', 'terra']),
+  Card_Background_color: nullish(z.enum(['Bright Yellow'])),
+  isFullwidth: nullish(z.boolean().default(true)),
+});
+
+export type CarouselStandardDeepRef = z.infer<typeof CarouselStandardDeepRef>;
+
 export type CarouselStandard = z.infer<typeof CarouselStandard>;

@@ -14,4 +14,11 @@ export const OverlayLinkRef = z.object({
   href: nullish(z.string()),
 });
 
+export const OverlayLinkDeepRef = z.object({
+  Label: z.string(),
+  href: nullish(z.string()),
+});
+
+export type OverlayLinkDeepRef = z.infer<typeof OverlayLinkDeepRef>;
+
 export type OverlayLink = z.infer<typeof OverlayLink>;

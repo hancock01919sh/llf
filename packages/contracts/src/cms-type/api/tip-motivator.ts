@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { TipRef } from '../api/tip';
+import { TipRef, TipDeepRef } from '../api/tip';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
@@ -15,5 +15,13 @@ export const TipMotivatorRef = z.object({
   documentId: z.string(),
   title: z.string(),
 });
+
+export const TipMotivatorDeepRef = z.object({
+  id: z.number(),
+  documentId: z.string(),
+  title: z.string(),
+});
+
+export type TipMotivatorDeepRef = z.infer<typeof TipMotivatorDeepRef>;
 
 export type TipMotivator = z.infer<typeof TipMotivator>;

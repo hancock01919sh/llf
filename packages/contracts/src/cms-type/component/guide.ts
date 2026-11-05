@@ -16,4 +16,13 @@ export const GuideRef = z.object({
   Description: z.string(),
 });
 
+export const GuideDeepRef = z.object({
+  __component: z.literal('component.guide'),
+  id: z.number().int(),
+  Title: z.string(),
+  Description: z.string(),
+});
+
+export type GuideDeepRef = z.infer<typeof GuideDeepRef>;
+
 export type Guide = z.infer<typeof Guide>;

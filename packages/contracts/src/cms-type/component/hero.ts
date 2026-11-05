@@ -9,10 +9,10 @@ export const Hero = z.object({
   __component: z.literal('component.hero'),
   id: z.number().int(),
   images: Media.array(),
-  Link: nullish(z.array(z.lazy(() => LinksRef))),
-  Description: z.string(),
-  Title: Block.array(),
-  Background_color: z.enum(['terra']),
+  link: nullish(z.array(z.lazy(() => LinksRef))),
+  description: z.string(),
+  title: Block.array(),
+  backgroundColor: z.enum(['terra']),
   isFullwidth: nullish(z.boolean().default(false)),
 });
 
@@ -20,9 +20,20 @@ export const HeroRef = z.object({
   __component: z.literal('component.hero'),
   id: z.number().int(),
   images: Media.array(),
-  Description: z.string(),
-  Background_color: z.enum(['terra']),
+  description: z.string(),
+  backgroundColor: z.enum(['terra']),
   isFullwidth: nullish(z.boolean().default(false)),
 });
+
+export const HeroDeepRef = z.object({
+  __component: z.literal('component.hero'),
+  id: z.number().int(),
+  images: Media.array(),
+  description: z.string(),
+  backgroundColor: z.enum(['terra']),
+  isFullwidth: nullish(z.boolean().default(false)),
+});
+
+export type HeroDeepRef = z.infer<typeof HeroDeepRef>;
 
 export type Hero = z.infer<typeof Hero>;

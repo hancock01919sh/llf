@@ -17,4 +17,12 @@ export const InputCardRef = z.object({
   description: z.string(),
 });
 
+export const InputCardDeepRef = z.object({
+  title: z.string(),
+  icon: nullish(Media),
+  description: z.string(),
+});
+
+export type InputCardDeepRef = z.infer<typeof InputCardDeepRef>;
+
 export type InputCard = z.infer<typeof InputCard>;
