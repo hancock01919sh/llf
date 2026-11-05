@@ -79,9 +79,9 @@ const POPULATE = {
         'component.404': true,
         'component.search': {
           populate: {
-            Popup: {
+            popup: {
               populate: {
-                Link: true,
+                link: true,
               },
             },
           },

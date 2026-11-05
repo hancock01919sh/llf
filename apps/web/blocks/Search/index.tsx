@@ -10,4 +10,4 @@ export interface TIngredient extends Omit<cmsType.api.Ingredient, 'tips'> {
 export interface TCategoryDetail extends cmsType.api.Category {
   ingredients: TIngredient[];
 }
-export { SearchBlock } from './SearchBlock';
+export { BlockSearch } from './SearchBlock';

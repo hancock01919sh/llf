@@ -573,10 +573,10 @@
         {
           "__component": "component.search",
           "id": 2,
-          "Title": "Search for tips",
-          "Description": "Type an ingredient to find tips that save time, money, and food.",
-          "Placeholder": "Search 100+ ingredients",
-          "Statement": [
+          "title": "Search for tips",
+          "description": "Type an ingredient to find tips that save time, money, and food.",
+          "placeholder": "Search 100+ ingredients",
+          "statement": [
             {
               "type": "paragraph",
               "children": [
@@ -592,21 +592,21 @@
               ]
             }
           ],
-          "Hint": "Click an ingredient to view specific tips that save time, money, and food.",
+          "hint": "Click an ingredient to view specific tips that save time, money, and food.",
           "isFullwidth": false,
-          "Background_color": "paper",
-          "Popup": {
+          "backgroundColor": "paper",
+          "popup": {
             "id": 2,
-            "Title": "All tips reviewed by food experts.",
-            "Description": "Most of us don't know where we're losing food. ",
-            "Link": {
+            "title": "All tips reviewed by food experts.",
+            "description": "Most of us don't know where we're losing food. ",
+            "link": {
               "id": 22,
-              "Label": "Discover tips in the library",
+              "label": "Discover tips in the library",
               "href": null,
               "isDisplay": true,
               "isButton": true,
-              "Buttontype": "Primary",
-              "NewTab": false
+              "buttonType": "Primary",
+              "newTab": false
             }
           }
         }

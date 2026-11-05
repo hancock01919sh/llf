@@ -44,10 +44,7 @@ export function IngredientsPopup({
             </Typography>
           </div>
           <div className="relative aspect-402/269 ">
-            <EasyImage
-              {...(ingredient?.image ?? { url: 'https://picsum.photos/402/269', alt: '' })}
-              className="w-full h-full"
-            />
+            <EasyImage {...(ingredient?.image ?? { url: '', alt: '' })} className="w-full h-full" />
             <div className="absolute left-0 top-0 w-full h-full flex-center flex-col justify-center text-surface-sand bg-[rgba(0,0,0,0.2)]">
               <Typography variant="headline-xl" className=" uppercase">
                 {ingredient?.title}

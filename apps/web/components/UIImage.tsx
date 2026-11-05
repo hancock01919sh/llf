@@ -9,7 +9,7 @@ export function UIImage({ className = '', ...rest }: ResponsiveImageProps) {
   return (
     <picture className={`relative block overflow-hidden ${className}`}>
       <Image
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover bg-ink-terra-40"
         style={{ objectFit: 'cover' }}
         fill
         src={rest.url}
@@ -30,7 +30,7 @@ export function EasyImage({
   return (
     <picture className={`relative block overflow-hidden ${className}`}>
       <Image
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover bg-ink-terra-40"
         style={{ objectFit: 'cover' }}
         fill
         src={url}

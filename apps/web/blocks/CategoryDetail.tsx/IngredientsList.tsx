@@ -1,5 +1,5 @@
 'use client';
-import { type cmsType, IngredientData, parseResultSlugs } from '@llf/contracts';
+import { IngredientData, parseResultSlugs } from '@llf/contracts';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 // import { Loading } from '../ToolInput/Loading';
@@ -11,17 +11,17 @@ import TransitionLink from '@/components/TransitionLink';
 import { TipBadge, TipBadgeColorMapping, type TipBadgeType } from '@/components/TipBadge';
 import { IngredientsPopup } from './IngredientsPopup';
 import type { SearchDocument } from '@/lib/search';
+import type { CategoryDetailWithSearchProps } from '.';
 
 export function IngredientsList(
-  props: cmsType.component.CategoryDetailDeepRef & {
-    Placeholder?: string | null;
+  props: CategoryDetailWithSearchProps & {
     ingredients?: SearchDocument[];
     bgColor?: 'paper';
   },
 ) {
   const { ingredients, button } = props;
   const router = useRouter();
-  const isSearch = props?.Placeholder !== undefined;
+  const isSearch = props?.placeholder !== undefined;
   const slugs = parseResultSlugs(useSearchParams().get('i'));
   const key = slugs.join(',');
   const [state, setState] = useState<{

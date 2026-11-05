@@ -5,9 +5,10 @@ import { useEffect, useRef, useState } from 'react';
 import { IngredientsTipsPopup } from './IngredientsTipsPopup';
 import { RichText } from '@/components/RichText';
 import type { Category } from '@llf/contracts/cms';
+import type { CategoryDetailWithSearchProps } from '.';
 import type { cmsType } from '@llf/contracts';
 export function IngredientsHeader(
-  props: cmsType.component.CategoryDetailDeepRef & {
+  props: CategoryDetailWithSearchProps & {
     categoryData?: Category;
     bgColor?: string;
     onSearch?: (value: string) => void;
@@ -42,12 +43,12 @@ export function IngredientsHeader(
         <Typography variant="subhead-lg" className="mt-5">
           {categoryData?.description || props.description}
         </Typography>
-        {props?.Placeholder && (
+        {props?.placeholder && (
           <input
             className="mt-10 w-full bg-surface-paper border border-ink-terra-15 rounded-pill p-5 text-paragraph-sm font-bold [&_placeholder]:text-ink-terra outline-ink-terra lg:w-[46%] "
             type="text"
-            placeholder={props.Placeholder}
-            aria-label={props.Placeholder}
+            placeholder={props.placeholder}
+            aria-label={props.placeholder}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 const value = (e.target as HTMLInputElement).value as string;

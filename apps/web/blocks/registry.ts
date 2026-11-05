@@ -13,7 +13,7 @@ import { BlockAccordion } from './Accordion';
 import type { BlockProps } from './types';
 import type { Surface } from '@/components/ModuleBoundary';
 import { BlockHighlightComponent } from './HighlightComponent';
-import { CategoryDetailComponent } from './CategoryDetail.tsx';
+import { CategoryDetailComponent, CategoryDetailWithSearchSchema } from './CategoryDetail.tsx';
 import { BlockNotFound } from './NotFound';
 import { BlockSearch } from './Search/SearchBlock';
 
@@ -62,7 +62,7 @@ export const blocks = {
     type: 'highlight-component',
   }),
   'component.category-detail': entry({
-    schema: cmsType.component.CategoryDetailDeepRef,
+    schema: CategoryDetailWithSearchSchema,
     Component: CategoryDetailComponent,
     type: 'category-detail',
     surface: 'forest',
@@ -73,7 +73,7 @@ export const blocks = {
     type: 'not-found',
   }),
   'component.search': entry({
-    schema: cmsType.component.SearchDeepRef,
+    schema: CategoryDetailWithSearchSchema,
     Component: BlockSearch,
     type: 'search',
     isFullWidth: true,
