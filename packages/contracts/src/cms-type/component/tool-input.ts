@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { InputCardRef, InputCardDeepRef } from '../shared/input-card';
 import { LinksRef, LinksDeepRef } from '../shared/links';
@@ -14,10 +13,10 @@ export const ToolInput = z.object({
   description: z.string(),
   cardTitle: z.string(),
   cardDescription: nullish(z.string()),
-  cards: nullish(z.array(z.lazy((): ZodType => InputCardRef))),
+  cards: nullish(z.array(z.lazy(() => InputCardRef))),
   placeholder: nullish(z.string()),
   copy: nullish(z.string()),
-  button: nullish(z.array(z.lazy((): ZodType => LinksRef))),
+  button: nullish(z.array(z.lazy(() => LinksRef))),
   backgroundColor: z.enum(['forest', 'paper']),
   isFullwidth: nullish(z.boolean().default(false)),
   image: nullish(Media),
@@ -46,10 +45,10 @@ export const ToolInputDeepRef = z.object({
   description: z.string(),
   cardTitle: z.string(),
   cardDescription: nullish(z.string()),
-  cards: nullish(z.array(z.lazy((): ZodType => InputCardDeepRef))),
+  cards: nullish(z.array(z.lazy((): z.ZodType<InputCardDeepRef> => InputCardDeepRef))),
   placeholder: nullish(z.string()),
   copy: nullish(z.string()),
-  button: nullish(z.array(z.lazy((): ZodType => LinksDeepRef))),
+  button: nullish(z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef))),
   backgroundColor: z.enum(['forest', 'paper']),
   isFullwidth: nullish(z.boolean().default(false)),
   image: nullish(Media),

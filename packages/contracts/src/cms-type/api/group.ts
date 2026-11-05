@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { CategoryRef, CategoryDeepRef } from '../api/category';
 
@@ -9,7 +8,7 @@ export const Group = z.object({
   documentId: z.string(),
   description: nullish(z.string()),
   title: z.string(),
-  categories: nullish(z.array(z.lazy((): ZodType => CategoryRef))),
+  categories: nullish(z.array(z.lazy(() => CategoryRef))),
 });
 
 export const GroupRef = z.object({
@@ -24,7 +23,7 @@ export const GroupDeepRef = z.object({
   documentId: z.string(),
   description: nullish(z.string()),
   title: z.string(),
-  categories: nullish(z.array(z.lazy((): ZodType => CategoryDeepRef))),
+  categories: nullish(z.array(z.lazy((): z.ZodType => CategoryDeepRef))),
 });
 
 export type GroupDeepRef = z.infer<typeof GroupDeepRef>;

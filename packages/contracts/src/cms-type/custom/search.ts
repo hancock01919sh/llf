@@ -1,4 +1,4 @@
-import { z, ZodType } from 'zod';
+import { z } from 'zod';
 
 export const Search = z.object({
   placeholder: z.string().default('Search 100+ ingredients'),

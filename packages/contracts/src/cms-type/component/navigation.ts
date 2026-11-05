@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { LinksRef, LinksDeepRef } from '../shared/links';
 
@@ -8,7 +7,7 @@ export const Navigation = z.object({
   __component: z.literal('component.navigation'),
   id: z.number().int(),
   Title: nullish(z.string()),
-  Link: nullish(z.array(z.lazy((): ZodType => LinksRef))),
+  Link: nullish(z.array(z.lazy(() => LinksRef))),
   Searchplaceholder: nullish(z.string()),
 });
 
@@ -23,7 +22,7 @@ export const NavigationDeepRef = z.object({
   __component: z.literal('component.navigation'),
   id: z.number().int(),
   Title: nullish(z.string()),
-  Link: nullish(z.array(z.lazy((): ZodType => LinksDeepRef))),
+  Link: nullish(z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef))),
   Searchplaceholder: nullish(z.string()),
 });
 

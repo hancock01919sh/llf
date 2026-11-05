@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { LinksRef, LinksDeepRef } from '../shared/links';
 import { Media } from '../media';
@@ -10,7 +9,7 @@ export const ToolkitHeadline = z.object({
   id: z.number().int(),
   Title: z.string(),
   Description: z.string(),
-  CTA: nullish(z.lazy((): ZodType => LinksRef)),
+  CTA: nullish(z.lazy(() => LinksRef)),
   File: nullish(Media),
 });
 
@@ -27,7 +26,7 @@ export const ToolkitHeadlineDeepRef = z.object({
   id: z.number().int(),
   Title: z.string(),
   Description: z.string(),
-  CTA: nullish(z.lazy((): ZodType => LinksDeepRef)),
+  CTA: nullish(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
   File: nullish(Media),
 });
 

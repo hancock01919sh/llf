@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { IconlinkRef, IconlinkDeepRef } from '../shared/iconlink';
 import { LinksRef, LinksDeepRef } from '../shared/links';
@@ -8,10 +7,10 @@ export const Footer = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  link: z.array(z.lazy((): ZodType => LinksRef)),
-  iconLink: z.array(z.lazy((): ZodType => IconlinkRef)),
+  link: z.array(z.lazy(() => LinksRef)),
+  iconLink: z.array(z.lazy(() => IconlinkRef)),
   legalCopy: z.string(),
-  overlayLink: z.array(z.lazy((): ZodType => OverlayLinkRef)),
+  overlayLink: z.array(z.lazy(() => OverlayLinkRef)),
 });
 
 export const FooterRef = z.object({
@@ -25,10 +24,10 @@ export const FooterDeepRef = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  link: z.array(z.lazy((): ZodType => LinksDeepRef)),
-  iconLink: z.array(z.lazy((): ZodType => IconlinkDeepRef)),
+  link: z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
+  iconLink: z.array(z.lazy((): z.ZodType<IconlinkDeepRef> => IconlinkDeepRef)),
   legalCopy: z.string(),
-  overlayLink: z.array(z.lazy((): ZodType => OverlayLinkDeepRef)),
+  overlayLink: z.array(z.lazy((): z.ZodType<OverlayLinkDeepRef> => OverlayLinkDeepRef)),
 });
 
 export type FooterDeepRef = z.infer<typeof FooterDeepRef>;

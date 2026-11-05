@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { Block } from '../blocks';
 import { LinksRef, LinksDeepRef } from '../shared/links';
@@ -14,8 +13,8 @@ export const Search = z.object({
   placeholder: z.string(),
   statement: Block.array(),
   hint: z.string(),
-  button: nullish(z.lazy((): ZodType => LinksRef)),
-  popup: nullish(z.lazy((): ZodType => TipsPopupRef)),
+  button: nullish(z.lazy(() => LinksRef)),
+  popup: nullish(z.lazy(() => TipsPopupRef)),
   isFullwidth: nullish(z.boolean().default(false)),
   backgroundColor: nullish(z.enum(['paper'])),
 });
@@ -39,8 +38,8 @@ export const SearchDeepRef = z.object({
   placeholder: z.string(),
   statement: Block.array(),
   hint: z.string(),
-  button: nullish(z.lazy((): ZodType => LinksDeepRef)),
-  popup: nullish(z.lazy((): ZodType => TipsPopupDeepRef)),
+  button: nullish(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
+  popup: nullish(z.lazy((): z.ZodType<TipsPopupDeepRef> => TipsPopupDeepRef)),
   isFullwidth: nullish(z.boolean().default(false)),
   backgroundColor: nullish(z.enum(['paper'])),
 });

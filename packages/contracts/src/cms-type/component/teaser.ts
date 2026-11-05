@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { Block } from '../blocks';
 import { CtaRef, CtaDeepRef } from '../shared/cta';
@@ -10,9 +9,9 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const Teaser = z.object({
   __component: z.literal('component.teaser'),
   id: z.number().int(),
-  title: nullish(z.lazy((): ZodType => TitleRef)),
+  title: nullish(z.lazy(() => TitleRef)),
   description: nullish(Block.array()),
-  ctas: nullish(z.array(z.lazy((): ZodType => CtaRef))),
+  ctas: nullish(z.array(z.lazy(() => CtaRef))),
   images: nullish(Media.array()),
   layout: z.enum(['Basic', 'Highlight', 'Quote']).default('Basic'),
 });
@@ -27,9 +26,9 @@ export const TeaserRef = z.object({
 export const TeaserDeepRef = z.object({
   __component: z.literal('component.teaser'),
   id: z.number().int(),
-  title: nullish(z.lazy((): ZodType => TitleDeepRef)),
+  title: nullish(z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef)),
   description: nullish(Block.array()),
-  ctas: nullish(z.array(z.lazy((): ZodType => CtaDeepRef))),
+  ctas: nullish(z.array(z.lazy((): z.ZodType<CtaDeepRef> => CtaDeepRef))),
   images: nullish(Media.array()),
   layout: z.enum(['Basic', 'Highlight', 'Quote']).default('Basic'),
 });

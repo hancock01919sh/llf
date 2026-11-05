@@ -1,4 +1,4 @@
-import { z, ZodType } from 'zod';
+import { z } from 'zod';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 

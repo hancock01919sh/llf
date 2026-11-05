@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { IngredientCardRef, IngredientCardDeepRef } from '../shared/ingredient-card';
 
@@ -9,7 +8,7 @@ export const IngredientCarousel = z.object({
   id: z.number().int(),
   Title: z.string(),
   Description: z.string(),
-  IngredientCard: z.array(z.lazy((): ZodType => IngredientCardRef)),
+  IngredientCard: z.array(z.lazy(() => IngredientCardRef)),
   Background_color: z.enum(['paper']),
   isFullwidth: nullish(z.boolean().default(true)),
 });
@@ -28,7 +27,7 @@ export const IngredientCarouselDeepRef = z.object({
   id: z.number().int(),
   Title: z.string(),
   Description: z.string(),
-  IngredientCard: z.array(z.lazy((): ZodType => IngredientCardDeepRef)),
+  IngredientCard: z.array(z.lazy((): z.ZodType<IngredientCardDeepRef> => IngredientCardDeepRef)),
   Background_color: z.enum(['paper']),
   isFullwidth: nullish(z.boolean().default(true)),
 });

@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { SmallCardRef, SmallCardDeepRef } from '../shared/small-card';
 
@@ -9,7 +8,7 @@ export const CarouselSmall = z.object({
   id: z.number().int(),
   Title: z.string(),
   Description: z.string(),
-  SmallCard: z.array(z.lazy((): ZodType => SmallCardRef)),
+  SmallCard: z.array(z.lazy(() => SmallCardRef)),
   isFullwidth: nullish(z.boolean().default(true)),
   Background_color: z.enum(['paper']),
 });
@@ -28,7 +27,7 @@ export const CarouselSmallDeepRef = z.object({
   id: z.number().int(),
   Title: z.string(),
   Description: z.string(),
-  SmallCard: z.array(z.lazy((): ZodType => SmallCardDeepRef)),
+  SmallCard: z.array(z.lazy((): z.ZodType<SmallCardDeepRef> => SmallCardDeepRef)),
   isFullwidth: nullish(z.boolean().default(true)),
   Background_color: z.enum(['paper']),
 });

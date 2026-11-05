@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { LinksRef, LinksDeepRef } from '../shared/links';
 import { Media } from '../media';
@@ -12,7 +11,7 @@ export const HighlightComponent = z.object({
   description: z.string(),
   image: Media,
   backgroundColor: z.enum(['forest-tint', 'paper', 'forest']),
-  link: nullish(z.array(z.lazy((): ZodType => LinksRef))),
+  link: nullish(z.array(z.lazy(() => LinksRef))),
   isFullwidth: nullish(z.boolean().default(false)),
 });
 
@@ -33,7 +32,7 @@ export const HighlightComponentDeepRef = z.object({
   description: z.string(),
   image: Media,
   backgroundColor: z.enum(['forest-tint', 'paper', 'forest']),
-  link: nullish(z.array(z.lazy((): ZodType => LinksDeepRef))),
+  link: nullish(z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef))),
   isFullwidth: nullish(z.boolean().default(false)),
 });
 

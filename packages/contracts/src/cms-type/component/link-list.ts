@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { Block } from '../blocks';
 import { PageRef, PageDeepRef } from '../api/page';
@@ -9,9 +8,9 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const LinkList = z.object({
   __component: z.literal('component.link-list'),
   id: z.number().int(),
-  title: nullish(z.lazy((): ZodType => TitleRef)),
+  title: nullish(z.lazy(() => TitleRef)),
   description: nullish(Block.array()),
-  pages: nullish(z.array(z.lazy((): ZodType => PageRef))),
+  pages: nullish(z.array(z.lazy(() => PageRef))),
   layout: z.enum(['Basic', 'Two Column']).default('Basic'),
 });
 
@@ -24,9 +23,9 @@ export const LinkListRef = z.object({
 export const LinkListDeepRef = z.object({
   __component: z.literal('component.link-list'),
   id: z.number().int(),
-  title: nullish(z.lazy((): ZodType => TitleDeepRef)),
+  title: nullish(z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef)),
   description: nullish(Block.array()),
-  pages: nullish(z.array(z.lazy((): ZodType => PageDeepRef))),
+  pages: nullish(z.array(z.lazy((): z.ZodType<PageDeepRef> => PageDeepRef))),
   layout: z.enum(['Basic', 'Two Column']).default('Basic'),
 });
 

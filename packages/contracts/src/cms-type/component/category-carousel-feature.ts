@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { FeatureCardRef, FeatureCardDeepRef } from '../shared/feature-card';
 import { LinksRef, LinksDeepRef } from '../shared/links';
@@ -10,8 +9,8 @@ export const CategoryCarouselFeature = z.object({
   id: z.number().int(),
   title: z.string(),
   description: z.string(),
-  link: z.array(z.lazy((): ZodType => LinksRef)),
-  featureCard: z.array(z.lazy((): ZodType => FeatureCardRef)),
+  link: z.array(z.lazy(() => LinksRef)),
+  featureCard: z.array(z.lazy(() => FeatureCardRef)),
   isFullwidth: nullish(z.boolean().default(true)),
   backgroundColor: z.enum(['terra']).default('terra'),
 });
@@ -30,8 +29,8 @@ export const CategoryCarouselFeatureDeepRef = z.object({
   id: z.number().int(),
   title: z.string(),
   description: z.string(),
-  link: z.array(z.lazy((): ZodType => LinksDeepRef)),
-  featureCard: z.array(z.lazy((): ZodType => FeatureCardDeepRef)),
+  link: z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
+  featureCard: z.array(z.lazy((): z.ZodType<FeatureCardDeepRef> => FeatureCardDeepRef)),
   isFullwidth: nullish(z.boolean().default(true)),
   backgroundColor: z.enum(['terra']).default('terra'),
 });

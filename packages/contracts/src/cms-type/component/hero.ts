@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { Block } from '../blocks';
 import { LinksRef, LinksDeepRef } from '../shared/links';
@@ -10,7 +9,7 @@ export const Hero = z.object({
   __component: z.literal('component.hero'),
   id: z.number().int(),
   images: Media.array(),
-  link: nullish(z.array(z.lazy((): ZodType => LinksRef))),
+  link: nullish(z.array(z.lazy(() => LinksRef))),
   description: z.string(),
   title: Block.array(),
   backgroundColor: z.enum(['terra']),
@@ -30,7 +29,7 @@ export const HeroDeepRef = z.object({
   __component: z.literal('component.hero'),
   id: z.number().int(),
   images: Media.array(),
-  link: nullish(z.array(z.lazy((): ZodType => LinksDeepRef))),
+  link: nullish(z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef))),
   description: z.string(),
   title: Block.array(),
   backgroundColor: z.enum(['terra']),

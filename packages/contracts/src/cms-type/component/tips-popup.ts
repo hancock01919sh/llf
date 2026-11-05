@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { LinksRef, LinksDeepRef } from '../shared/links';
 
@@ -7,7 +6,7 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const TipsPopup = z.object({
   title: z.string(),
   description: nullish(z.string()),
-  link: nullish(z.lazy((): ZodType => LinksRef)),
+  link: nullish(z.lazy(() => LinksRef)),
 });
 
 export const TipsPopupRef = z.object({
@@ -18,7 +17,7 @@ export const TipsPopupRef = z.object({
 export const TipsPopupDeepRef = z.object({
   title: z.string(),
   description: nullish(z.string()),
-  link: nullish(z.lazy((): ZodType => LinksDeepRef)),
+  link: nullish(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
 });
 
 export type TipsPopupDeepRef = z.infer<typeof TipsPopupDeepRef>;

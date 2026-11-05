@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { CategoryRef, CategoryDeepRef } from '../api/category';
 import { IngredientRef, IngredientDeepRef } from '../api/ingredient';
@@ -13,11 +12,11 @@ export const Tip = z.object({
   documentId: z.string(),
   title: z.string(),
   description: nullish(z.string()),
-  ingredient: nullish(z.lazy((): ZodType => IngredientRef)),
-  tip_type: nullish(z.lazy((): ZodType => TipTypeRef)),
-  tip_behavior: nullish(z.lazy((): ZodType => TipBehaviorRef)),
-  tip_motivator: nullish(z.lazy((): ZodType => TipMotivatorRef)),
-  category: nullish(z.lazy((): ZodType => CategoryRef)),
+  ingredient: nullish(z.lazy(() => IngredientRef)),
+  tip_type: nullish(z.lazy(() => TipTypeRef)),
+  tip_behavior: nullish(z.lazy(() => TipBehaviorRef)),
+  tip_motivator: nullish(z.lazy(() => TipMotivatorRef)),
+  category: nullish(z.lazy(() => CategoryRef)),
 });
 
 export const TipRef = z.object({
@@ -32,11 +31,11 @@ export const TipDeepRef = z.object({
   documentId: z.string(),
   title: z.string(),
   description: nullish(z.string()),
-  ingredient: nullish(z.lazy((): ZodType => IngredientDeepRef)),
-  tip_type: nullish(z.lazy((): ZodType => TipTypeDeepRef)),
-  tip_behavior: nullish(z.lazy((): ZodType => TipBehaviorDeepRef)),
-  tip_motivator: nullish(z.lazy((): ZodType => TipMotivatorDeepRef)),
-  category: nullish(z.lazy((): ZodType => CategoryDeepRef)),
+  ingredient: nullish(z.lazy((): z.ZodType<IngredientDeepRef> => IngredientDeepRef)),
+  tip_type: nullish(z.lazy((): z.ZodType<TipTypeDeepRef> => TipTypeDeepRef)),
+  tip_behavior: nullish(z.lazy((): z.ZodType<TipBehaviorDeepRef> => TipBehaviorDeepRef)),
+  tip_motivator: nullish(z.lazy((): z.ZodType<TipMotivatorDeepRef> => TipMotivatorDeepRef)),
+  category: nullish(z.lazy((): z.ZodType => CategoryDeepRef)),
 });
 
 export type TipDeepRef = z.infer<typeof TipDeepRef>;

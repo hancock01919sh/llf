@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import {
   ToolkitParentCategoryRef,
@@ -9,7 +8,7 @@ export const Toolkit = z.object({
   __component: z.literal('component.toolkit'),
   id: z.number().int(),
   Title: z.string(),
-  toolkitCategory: z.array(z.lazy((): ZodType => ToolkitParentCategoryRef)),
+  toolkitCategory: z.array(z.lazy(() => ToolkitParentCategoryRef)),
 });
 
 export const ToolkitRef = z.object({
@@ -22,7 +21,9 @@ export const ToolkitDeepRef = z.object({
   __component: z.literal('component.toolkit'),
   id: z.number().int(),
   Title: z.string(),
-  toolkitCategory: z.array(z.lazy((): ZodType => ToolkitParentCategoryDeepRef)),
+  toolkitCategory: z.array(
+    z.lazy((): z.ZodType<ToolkitParentCategoryDeepRef> => ToolkitParentCategoryDeepRef),
+  ),
 });
 
 export type ToolkitDeepRef = z.infer<typeof ToolkitDeepRef>;

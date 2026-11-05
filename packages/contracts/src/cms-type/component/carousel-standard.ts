@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { StandardCardRef, StandardCardDeepRef } from '../shared/standard-card';
 
@@ -10,7 +9,7 @@ export const CarouselStandard = z.object({
   Title: z.string(),
   Description: z.string(),
   Background_color: z.enum(['sand', 'paper', 'terra']),
-  StandardCard: z.array(z.lazy((): ZodType => StandardCardRef)),
+  StandardCard: z.array(z.lazy(() => StandardCardRef)),
   Card_Background_color: nullish(z.enum(['Bright Yellow'])),
   isFullwidth: nullish(z.boolean().default(true)),
 });
@@ -31,7 +30,7 @@ export const CarouselStandardDeepRef = z.object({
   Title: z.string(),
   Description: z.string(),
   Background_color: z.enum(['sand', 'paper', 'terra']),
-  StandardCard: z.array(z.lazy((): ZodType => StandardCardDeepRef)),
+  StandardCard: z.array(z.lazy((): z.ZodType<StandardCardDeepRef> => StandardCardDeepRef)),
   Card_Background_color: nullish(z.enum(['Bright Yellow'])),
   isFullwidth: nullish(z.boolean().default(true)),
 });

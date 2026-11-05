@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { SeoRef, SeoDeepRef } from '../shared/seo';
 import { UnknownBlock } from '../blocks';
@@ -11,7 +10,7 @@ export const Page = z.object({
   title: z.string(),
   path: z.string(),
   main: z.array(UnknownBlock).default([]),
-  seo: nullish(z.lazy((): ZodType => SeoRef)),
+  seo: nullish(z.lazy(() => SeoRef)),
 });
 
 export const PageRef = z.object({
@@ -27,7 +26,7 @@ export const PageDeepRef = z.object({
   title: z.string(),
   path: z.string(),
   main: z.array(UnknownBlock).default([]),
-  seo: nullish(z.lazy((): ZodType => SeoDeepRef)),
+  seo: nullish(z.lazy((): z.ZodType<SeoDeepRef> => SeoDeepRef)),
 });
 
 export type PageDeepRef = z.infer<typeof PageDeepRef>;

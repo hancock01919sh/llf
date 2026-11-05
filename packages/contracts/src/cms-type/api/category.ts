@@ -1,4 +1,3 @@
-import type { ZodType } from 'zod';
 import { z } from 'zod';
 import { GroupRef, GroupDeepRef } from '../api/group';
 import { IngredientRef, IngredientDeepRef } from '../api/ingredient';
@@ -14,12 +13,12 @@ export const Category = z.object({
   title: z.string(),
   slug: z.string(),
   description: nullish(z.string()),
-  ingredients: nullish(z.array(z.lazy((): ZodType => IngredientRef))),
-  tips: nullish(z.array(z.lazy((): ZodType => TipRef))),
+  ingredients: nullish(z.array(z.lazy(() => IngredientRef))),
+  tips: nullish(z.array(z.lazy(() => TipRef))),
   mode: z.enum(['Ingredients', 'Tips']).default('Ingredients'),
   image: nullish(Media),
-  group: nullish(z.lazy((): ZodType => GroupRef)),
-  seo: nullish(z.lazy((): ZodType => SeoRef)),
+  group: nullish(z.lazy(() => GroupRef)),
+  seo: nullish(z.lazy(() => SeoRef)),
 });
 
 export const CategoryRef = z.object({
@@ -38,12 +37,12 @@ export const CategoryDeepRef = z.object({
   title: z.string(),
   slug: z.string(),
   description: nullish(z.string()),
-  ingredients: nullish(z.array(z.lazy((): ZodType => IngredientDeepRef))),
-  tips: nullish(z.array(z.lazy((): ZodType => TipDeepRef))),
+  ingredients: nullish(z.array(z.lazy((): z.ZodType<IngredientDeepRef> => IngredientDeepRef))),
+  tips: nullish(z.array(z.lazy((): z.ZodType => TipDeepRef))),
   mode: z.enum(['Ingredients', 'Tips']).default('Ingredients'),
   image: nullish(Media),
-  group: nullish(z.lazy((): ZodType => GroupDeepRef)),
-  seo: nullish(z.lazy((): ZodType => SeoDeepRef)),
+  group: nullish(z.lazy((): z.ZodType<GroupDeepRef> => GroupDeepRef)),
+  seo: nullish(z.lazy((): z.ZodType<SeoDeepRef> => SeoDeepRef)),
 });
 
 export type CategoryDeepRef = z.infer<typeof CategoryDeepRef>;
