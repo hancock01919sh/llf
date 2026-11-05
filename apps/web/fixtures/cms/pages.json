@@ -542,6 +542,25 @@
         }
       ],
       "seo": null
+    },
+    {
+      "id": 19,
+      "documentId": "k4ph70g11rfusuqrvi59rg53",
+      "title": "404",
+      "path": "/404",
+      "template": "generic",
+      "featured": [],
+      "main": [
+        {
+          "__component": "component.404",
+          "id": 3,
+          "title": "Oops. We dropped the beet.",
+          "description": "404 — Page not found",
+          "isFullwidth": false,
+          "backgroundColor": "forest"
+        }
+      ],
+      "seo": null
     }
   ],
   "meta": {

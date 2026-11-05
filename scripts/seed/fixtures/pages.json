@@ -190,6 +190,68 @@
         "description": "Fixture copy. Share a recipe and we'll find tips for its ingredients.",
         "cta_label": "Find my tips"
       }
+    },
+    {
+      "title": "NotFound",
+      "path": "404",
+      "seo": {
+        "metaDescription": "Fixture page that shows every block layout."
+      },
+      "main": [
+        {
+          "__component": "component.hero",
+          "layout": "Secondary",
+          "eyebrow": "Fixture",
+          "description": [
+            "Fixture copy. This page exists so every block layout has content in dev.",
+            "It is not part of the launch site map."
+          ]
+        },
+        {
+          "__component": "component.teaser",
+          "title": {
+            "copy": "A quote teaser",
+            "header": "h2"
+          },
+          "description": ["Fixture copy for a quote teaser."],
+          "layout": "Quote"
+        },
+        {
+          "__component": "component.teaser",
+          "title": {
+            "copy": "A basic teaser",
+            "header": "h2"
+          },
+          "description": ["Fixture copy for a basic teaser."],
+          "ctas": [
+            {
+              "label": "Example link",
+              "href": "https://example.com/"
+            }
+          ],
+          "layout": "Basic"
+        },
+        {
+          "__component": "component.link-list",
+          "title": {
+            "copy": "Two column links",
+            "header": "h2"
+          },
+          "description": ["Fixture copy for a two column link list."],
+          "pages": ["/", "tips", "find-my-tips", "about"],
+          "layout": "Two Column"
+        },
+        {
+          "__component": "custom.tip-list",
+          "title": {
+            "copy": "A single tip",
+            "header": "h2"
+          },
+          "description": "Fixture copy for a single tip list.",
+          "layout": "Single",
+          "tips": ["Turn rice into fried rice"]
+        }
+      ]
     }
   ]
 }

@@ -14,6 +14,7 @@ import type { BlockProps } from './types';
 import type { Surface } from '@/components/ModuleBoundary';
 import { BlockHighlightComponent } from './HighlightComponent';
 import { CategoryDetailComponent } from './CategoryDetail.tsx';
+import { BlockNotFound } from './NotFound';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -63,6 +64,11 @@ export const blocks = {
     Component: CategoryDetailComponent,
     type: 'category-detail',
     surface: 'forest',
+  }),
+  'component.404': entry({
+    schema: cmsType.component._404,
+    Component: BlockNotFound,
+    type: 'not-found',
   }),
 } as const;
 
