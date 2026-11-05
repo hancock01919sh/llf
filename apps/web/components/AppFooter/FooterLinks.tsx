@@ -1,9 +1,6 @@
-export interface FooterLinkProps {
-  Overlay_description: string | null;
-  Label: string;
-  href: string | null;
-}
-export function FooterLinks({ overlayLink }: { overlayLink: FooterLinkProps[] }) {
+import type { cmsType } from '@llf/contracts';
+
+export function FooterLinks({ overlayLink }: { overlayLink: cmsType.shared.OverlayLink[] }) {
   return (
     <div className="flex flex-col gap-5 lg:flex-row">
       {overlayLink?.map((item) => (

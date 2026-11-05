@@ -2,11 +2,11 @@
 import { IconClose, IconMenu, IconSearch } from './Icon';
 import TransitionLink from './TransitionLink';
 import { Typography } from './Typography';
-import { useContext } from 'react';
-// import { Menu } from './Menu';
+import { useContext, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import type { LinkProps } from '@/blocks/types';
 import { AppContext } from '@/components/Provider';
+import { Menu } from './Menu';
 export interface NavigationCmsDataProps {
   searchPlaceholder: string;
   title: string;
@@ -19,11 +19,12 @@ interface NavigationProp {
   inPopup?: boolean;
 }
 export function Header({ className = '', showClose = false, onClose = () => {} }: NavigationProp) {
-  // const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const hiddenSearch = pathname === '/search' && !showClose;
   const { navigation } = useContext(AppContext);
   if (!navigation) {
+    console.error('Navigation is not provided');
     return null;
   }
   return (
@@ -35,27 +36,33 @@ export function Header({ className = '', showClose = false, onClose = () => {} }
       </div>
       <div className="flex items-center gap-lg lg:hidden">
         {!hiddenSearch && (
-          <TransitionLink aria-label={navigation.searchPlaceholder} href="/search">
+          <TransitionLink aria-label={navigation.searchPlaceholder || 'Search'} href="/search">
             <IconSearch />
           </TransitionLink>
         )}
 
-        {showClose ? (
-          <IconClose className="cursor-pointer" onClick={onClose} />
-        ) : (
-          <IconMenu
-            className="cursor-pointer"
-            onClick={() => {
-              // setIsOpen(true);
-            }}
-          />
-        )}
+        <button
+          aria-label={showClose ? 'Close' : 'Menu'}
+          onClick={() => {
+            if (showClose) {
+              onClose();
+              return;
+            }
+            setIsOpen(true);
+          }}
+        >
+          {showClose ? (
+            <IconClose className="cursor-pointer" onClick={onClose} />
+          ) : (
+            <IconMenu className="cursor-pointer" />
+          )}
+        </button>
       </div>
       <div className="hidden lg:flex gap-lg items-center">
         {navigation.link.map((item) => (
           <TransitionLink className="capitalize" key={item.href} href={`${item.href}`}>
             <Typography variant="paragraph-regular" className="font-bold" as="span">
-              {item.Label}
+              {item.label}
             </Typography>
           </TransitionLink>
         ))}
@@ -68,12 +75,12 @@ export function Header({ className = '', showClose = false, onClose = () => {} }
           />
         </div>
       </div>
-      {/* <Menu
+      <Menu
         open={isOpen}
         onClose={() => {
           setIsOpen(false);
         }}
-      /> */}
+      />
     </nav>
   );
 }

@@ -5,21 +5,23 @@
   },
   "options": {},
   "attributes": {
-    "Label": {
-      "type": "string"
+    "label": {
+      "type": "string",
+      "required": true
     },
     "tip": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::tip.tip"
     },
-    "CTA": {
+    "cta": {
       "type": "component",
       "component": "shared.links",
       "repeatable": true
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "terra",
         "forest"

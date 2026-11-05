@@ -1,5 +1,5 @@
-import type { Media } from '@llf/contracts/cms';
 import { IconInstagram, IconTikTok, IconYoutube } from '../Icon';
+import type { cmsType } from '@llf/contracts';
 function SocialItemWrapper({
   inPopup,
   children,
@@ -21,13 +21,8 @@ function SocialItemWrapper({
     </a>
   );
 }
-export interface FooterSocialLinkProps {
-  Image: Media;
-  Label: string;
-  href: string;
-}
 interface FooterSocialShareProps {
-  iconLink: FooterSocialLinkProps[];
+  iconLink: cmsType.shared.Iconlink[];
   inPopup: boolean;
 }
 export function FooterSocialShare({ iconLink, inPopup }: FooterSocialShareProps) {
@@ -44,7 +39,7 @@ export function FooterSocialShare({ iconLink, inPopup }: FooterSocialShareProps)
           IconTemplate = IconYoutube;
         }
         return (
-          <SocialItemWrapper ariaLabel={Label} key={href} inPopup={inPopup} href={href}>
+          <SocialItemWrapper ariaLabel={Label} key={href} inPopup={inPopup} href={href || ''}>
             <IconTemplate />
           </SocialItemWrapper>
         );

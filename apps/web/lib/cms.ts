@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { cms } from '@llf/contracts';
+import { cms, cmsType } from '@llf/contracts';
 import { z } from 'zod';
 import { normalizePath } from './paths';
 
@@ -45,33 +45,33 @@ const POPULATE = {
         // 'custom.tool': true,
         'component.tool-input': {
           populate: {
-            Button: true,
-            Cards: {
+            button: true,
+            cards: {
               populate: {
-                Link: true,
+                link: true,
               },
             },
-            Image: ImagePopulate,
+            image: ImagePopulate,
           },
         },
         'component.accordion': {
           populate: {
-            AccordionItem: true,
+            accordionItem: true,
           },
         },
         'component.highlight-component': {
           populate: {
-            Link: true,
-            Image: ImagePopulate,
+            link: true,
+            image: ImagePopulate,
           },
         },
         'component.category-detail': {
           populate: {
-            Image: ImagePopulate,
-            Button: true,
-            Popup: {
+            image: ImagePopulate,
+            button: true,
+            popup: {
               populate: {
-                Link: true,
+                link: true,
               },
             },
           },
@@ -91,6 +91,9 @@ const POPULATE = {
   groups: { categories: { populate: { image: true } } },
   ingredients: { image: true, tips: { populate: { tip_type: true } } },
   tips: tipFields,
+  footer: { link: true, iconLink: true, overlayLink: true },
+  navigation: { link: true },
+  global: { load: true, seo: true },
 };
 // satisfies Record<string, Populate>;
 
@@ -100,6 +103,9 @@ const SCHEMAS = {
   groups: cms.Group,
   ingredients: cms.Ingredient,
   tips: cms.Tip,
+  footer: cmsType.api.Footer,
+  navigation: cmsType.api.Navigation,
+  global: cmsType.api.Global,
 } as const;
 
 export type CollectionKey = keyof typeof SCHEMAS;
@@ -157,8 +163,12 @@ export function validateCollection<K extends CollectionKey>(key: K, raw: unknown
 }
 
 const envelope = cms.collectionResponse(z.unknown());
+const signalSchema = envelope.extend({
+  data: z.unknown(),
+});
+const signalKey = ['footer', 'navigation', 'global'];
 
-async function fetchFromStrapi(key: CollectionKey): Promise<unknown[]> {
+async function fetchFromStrapi(key: CollectionKey): Promise<unknown[] | unknown> {
   const base = process.env.CMS_URL;
   const token = process.env.CMS_TOKEN;
   if (!base || !token) {
@@ -177,16 +187,34 @@ async function fetchFromStrapi(key: CollectionKey): Promise<unknown[]> {
     if (!res.ok) {
       throw new ContentError(`Strapi returned ${res.status} for /api/${key} (page ${page}).`);
     }
-    const body = envelope.parse(await res.json());
-    all.push(...body.data);
+
+    const raw = await res.json();
+    let body = null;
+    if (signalKey.includes(key)) {
+      body = signalSchema.parse(raw);
+      all.push(body.data);
+    } else {
+      body = envelope.parse(raw);
+      all.push(...body.data);
+    }
     const pageCount = body.meta?.pagination?.pageCount ?? 1;
-    if (page >= pageCount) return all;
+    if (page >= pageCount) {
+      if (signalKey.includes(key)) {
+        return all[0];
+      }
+      return all;
+    }
   }
 }
 
 async function readFixture(key: CollectionKey): Promise<unknown[]> {
   const file = path.join(process.cwd(), 'fixtures', 'cms', `${key}.json`);
   return envelope.parse(JSON.parse(await readFile(file, 'utf8'))).data;
+}
+async function readFixtureSingle(key: CollectionKey): Promise<unknown> {
+  const file = path.join(process.cwd(), 'fixtures', 'cms', `${key}.json`);
+  const signalSchema = cms.singleResponse(z.unknown());
+  return signalSchema.parse(JSON.parse(await readFile(file, 'utf8'))).data;
 }
 
 const cache = new Map<CollectionKey, Promise<unknown[]>>();
@@ -195,10 +223,19 @@ export async function loadCollection<K extends CollectionKey>(key: K): Promise<I
   let pending = cache.get(key);
   if (!pending) {
     const source = process.env.CMS_FIXTURES === '1' ? readFixture : fetchFromStrapi;
-    pending = source(key).then((raw) => validateCollection(key, raw));
+    pending = source(key).then((raw) => validateCollection(key, raw as unknown[]));
     cache.set(key, pending);
   }
   return (await pending) as Item<K>[];
+}
+export async function loadSingle<K extends CollectionKey>(key: K): Promise<Item<K>> {
+  let pending = cache.get(key);
+  if (!pending) {
+    const source = process.env.CMS_FIXTURES === '1' ? readFixtureSingle : fetchFromStrapi;
+    pending = source(key).then((raw) => validateCollection(key, [raw]));
+    cache.set(key, pending);
+  }
+  return (await pending)[0] as Item<K>;
 }
 
 export { normalizePath };
@@ -228,4 +265,9 @@ export async function requirePage(value: string): Promise<cms.Page> {
 
 export async function getCategory(slug: string): Promise<cms.Category | undefined> {
   return (await getCategories()).find((category) => category.slug === slug);
+}
+export async function getPageProviderData() {
+  return Promise.all([loadSingle('footer'), loadSingle('navigation'), loadSingle('global')]).then(
+    ([footer, navigation, global]) => ({ footer, navigation, global }),
+  );
 }

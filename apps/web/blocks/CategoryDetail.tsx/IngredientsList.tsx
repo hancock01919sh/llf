@@ -10,16 +10,16 @@ import { IconArrow, IconDownload, IconShare, IconUpload, IconWork2 } from '@/com
 import TransitionLink from '@/components/TransitionLink';
 import { TipBadge, type TipBadgeType } from '@/components/TipBadge';
 import { IngredientsPopup } from './IngredientsPopup';
-import type { CategoryDetailProps } from '.';
+import type { cmsType } from '@llf/contracts';
 
 export function IngredientsList(
-  props: CategoryDetailProps & {
+  props: cmsType.component.CategoryDetailDeepRef & {
     Placeholder?: string | null;
     ingredients?: IngredientData[];
     bgColor?: 'paper';
   },
 ) {
-  const { ingredients, Button } = props;
+  const { ingredients, button } = props;
   const router = useRouter();
   const slugs = parseResultSlugs(useSearchParams().get('i'));
   const key = slugs.join(',');
@@ -123,12 +123,12 @@ export function IngredientsList(
                   />
                 </div>
               ))}
-              {Button?.Label && (
+              {button?.label && (
                 <TransitionLink
-                  href={Button.href || '#'}
+                  href={button.href || '#'}
                   className="btn mt-5 mx-5 lg:mx-0 px-0 flex gap-2"
                 >
-                  {Button.Label}
+                  {button.label}
                   <IconUpload className="w-4 h-4 " />
                 </TransitionLink>
               )}

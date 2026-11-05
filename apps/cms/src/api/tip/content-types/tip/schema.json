@@ -42,9 +42,9 @@
       "target": "api::tip-motivator.tip-motivator",
       "inversedBy": "tips"
     },
-    "categories": {
+    "category": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "manyToOne",
       "target": "api::category.category",
       "inversedBy": "tips"
     }

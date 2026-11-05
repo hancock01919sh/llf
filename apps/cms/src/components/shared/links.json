@@ -5,8 +5,9 @@
   },
   "options": {},
   "attributes": {
-    "Label": {
-      "type": "string"
+    "label": {
+      "type": "string",
+      "required": true
     },
     "href": {
       "type": "string"
@@ -18,14 +19,14 @@
     "isButton": {
       "type": "boolean"
     },
-    "Buttontype": {
+    "buttonType": {
       "type": "enumeration",
       "enum": [
         "Primary",
         "Secondary"
       ]
     },
-    "NewTab": {
+    "newTab": {
       "type": "boolean",
       "default": false
     }

@@ -161,118 +161,137 @@
       "main": [
         {
           "__component": "component.tool-input",
-          "id": 9,
-          "Title": "Input ingredients,  get tips, waste less",
-          "SubTitle": "Tip Finder",
-          "Description": "Whatever you're buying, cooking, or already have, we'll help you get the most out of it.",
-          "CardTitle": "How it works",
-          "CardDescription": "Three simple steps between your ingredients and the tips that help you use them better.",
-          "Placeholder": "Enter a recipe URL or video link",
-          "Copy": "Works with any recipe site or video link from YouTube, TikTok, or Instagram.",
-          "Button": [
+          "id": 10,
+          "title": "Input ingredients,  get tips, waste less",
+          "subTitle": "Tip Finder",
+          "description": "Whatever you're buying, cooking, or already have, we'll help you get the most out of it.",
+          "cardTitle": "How it works",
+          "cardDescription": "Three simple steps between your ingredients and the tips that help you use them better.",
+          "placeholder": "Enter a recipe URL or video link",
+          "copy": "Works with any recipe site or video link from YouTube, TikTok, or Instagram.",
+          "backgroundColor": "paper",
+          "isFullwidth": true,
+          "button": [
             {
-              "id": 387,
-              "Label": "🔗 Paste Link",
+              "id": 192,
+              "label": "🔗 Paste Link",
               "href": null,
               "isDisplay": true,
               "isButton": true,
-              "Buttontype": null,
-              "NewTab": false
+              "newTab": false,
+              "buttonType": "Primary"
             },
             {
-              "id": 388,
-              "Label": "📷 Upload Image",
+              "id": 193,
+              "label": "📷 Upload Image",
               "href": null,
               "isDisplay": true,
               "isButton": true,
-              "Buttontype": null,
-              "NewTab": false
+              "newTab": false,
+              "buttonType": "Secondary"
             },
             {
-              "id": 389,
-              "Label": "Find Tips",
+              "id": 194,
+              "label": "find tips",
               "href": null,
               "isDisplay": true,
-              "isButton": true,
-              "Buttontype": null,
-              "NewTab": false
+              "isButton": null,
+              "newTab": false,
+              "buttonType": null
             }
           ],
-          "Image": {
-            "id": 85,
+          "image": {
+            "id": 6,
             "documentId": "ihf9pbfub16ofi5w13luqzza",
             "url": "/uploads/12691884_uhd_2160_3840_60fps_ea8b6d8dc5.mp4",
             "ext": ".mp4",
-            "alternativeText": null,
+            "alternativeText": "wwf",
             "height": null,
             "width": null,
             "size": 26352.05
           },
-          "Cards": [
+          "cards": [
             {
-              "id": 27,
-              "Title": "Step 1",
-              "Description": "Upload an image or recipe link",
-              "Link": {
-                "id": 385,
-                "Label": "What can I upload?",
-                "href": "/find#what-you-can-upload",
+              "id": 30,
+              "title": "Step 1",
+              "description": "Upload an image or recipe link",
+              "link": {
+                "id": 190,
+                "label": "What can I upload?",
+                "href": null,
                 "isDisplay": true,
                 "isButton": null,
-                "Buttontype": null,
-                "NewTab": false
+                "newTab": false,
+                "buttonType": null
               }
             },
             {
-              "id": 25,
-              "Title": "Step 2",
-              "Description": "We'll pull the ingredients.",
-              "Link": null
+              "id": 28,
+              "title": "Step 2",
+              "description": "You see how to waste less of each ingredient.",
+              "link": null
             },
             {
-              "id": 26,
-              "Title": "Step 3",
-              "Description": "You see how to waste less of each ingredient.",
-              "Link": null
+              "id": 29,
+              "title": "Step 3",
+              "description": "You see how to waste less of each ingredient.",
+              "link": null
             }
-          ],
-          "isFullwidth": true,
-          "Background_color": "paper"
+          ]
         },
         {
           "__component": "component.accordion",
-          "id": 13,
-          "Title": "what can you upload",
-          "SubTitle": "Not sure what to try first? Here’s what works.",
-          "Background_color": "forest-tint",
+          "id": 10,
+          "title": "what can you upload",
+          "subTitle": "Not sure what to try first? Here’s what works.",
+          "backgroundColor": "forest-tint",
           "isFullwidth": false,
-          "AccordionItem": [
+          "accordionItem": [
             {
-              "id": 61,
-              "Label": "Photo of your fridge or pantry",
-              "Description": "Take the photo in good lighting and make sure ingredients are visible. Works best when items aren't stacked or hidden behind each other."
+              "id": 29,
+              "label": "Photo of your fridge or pantry",
+              "description": "Take the photo in good lighting and make sure ingredients are visible. Works best when items aren't stacked or hidden behind each other."
             },
             {
-              "id": 62,
-              "Label": "Recipe from a website",
-              "Description": null
+              "id": 30,
+              "label": "Recipe from a website",
+              "description": null
             },
             {
-              "id": 63,
-              "Label": "Recipe from a video",
-              "Description": null
-            },
-            {
-              "id": 64,
-              "Label": "Grocery receipt",
-              "Description": null
-            },
-            {
-              "id": 65,
-              "Label": "Shopping list",
-              "Description": null
+              "id": 31,
+              "label": "Recipe from a video",
+              "description": null
             }
           ]
+        },
+        {
+          "__component": "component.highlight-component",
+          "id": 30,
+          "title": "Things no one ever told you about your food",
+          "description": "Explore hundreds of tips for the ingredients you already cook with, including some things you probably didn't know you were wasting.",
+          "backgroundColor": "paper",
+          "isFullwidth": true,
+          "link": [
+            {
+              "id": 191,
+              "label": "find my tips",
+              "href": "/tips",
+              "isDisplay": true,
+              "isButton": true,
+              "newTab": false,
+              "buttonType": "Primary"
+            }
+          ],
+          "image": {
+            "id": 36,
+            "documentId": "y9b29yr28yd7qcw4q0xe17fm",
+            "url": "/uploads/51c2de21b6ac7418ffdb02034e04457fc7018607_da50609882.png",
+            "ext": ".png",
+            "alternativeText": "leaf",
+            "height": 1282,
+            "width": 1014,
+            "size": 344.09
+          }
         }
       ]
     },
@@ -446,10 +465,10 @@
         {
           "__component": "component.category-detail",
           "id": 2,
-          "Title": "Your Ingredients List",
-          "Description": "The following ingredients have been extracted. Select one to see how to get the most out of it.",
-          "SubTitle": "Recipe Upload",
-          "Statement": [
+          "title": "Your Ingredients List",
+          "description": "The following ingredients have been extracted. Select one to see how to get the most out of it.",
+          "subTitleTitle": "Recipe Upload",
+          "statement": [
             {
               "type": "paragraph",
               "children": [
@@ -466,24 +485,24 @@
             }
           ],
           "isFullwidth": true,
-          "Background_color": "forest",
-          "Image": null,
-          "Button": {
+          "backgroundColor": "forest",
+          "image": null,
+          "button": {
             "id": 56,
-            "Label": "Upload Another Link or Image",
+            "label": "Upload Another Link or Image",
             "href": "/find",
             "isDisplay": true,
             "isButton": true,
             "Buttontype": null,
             "NewTab": false
           },
-          "Popup": {
+          "popup": {
             "id": 4,
-            "Title": "All tips reviewed by food experts.",
-            "Description": "Most of us don't know where we're losing food. ",
-            "Link": {
+            "title": "All tips reviewed by food experts.",
+            "description": "Most of us don't know where we're losing food. ",
+            "link": {
               "id": 58,
-              "Label": "Discover tips in the library",
+              "label": "Discover tips in the library",
               "href": null,
               "isDisplay": true,
               "isButton": true,
@@ -495,14 +514,14 @@
         {
           "__component": "component.highlight-component",
           "id": 6,
-          "Title": "There are 200+ tips more waiting",
-          "Description": "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis.",
-          "Background_color": "forest-tint",
+          "title": "There are 200+ tips more waiting",
+          "description": "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis.",
+          "backgroundColor": "forest-tint",
           "isFullwidth": true,
-          "Link": [
+          "links": [
             {
               "id": 57,
-              "Label": "Link to Tip Library",
+              "label": "Link to Tip Library",
               "href": null,
               "isDisplay": true,
               "isButton": true,
@@ -510,7 +529,7 @@
               "NewTab": false
             }
           ],
-          "Image": {
+          "image": {
             "id": 26,
             "documentId": "lpi64r4bz6uin7l8g8f836ah",
             "url": "/uploads/6a75c669d797bf8ded9c00a5f911560c1aa98631_8c09406ce6.png",

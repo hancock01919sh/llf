@@ -47,7 +47,9 @@
         "component.404",
         "component.toolkit-headline",
         "shared.assets-cards",
-        "component.guide"
+        "component.guide",
+        "component.toolkit-parent-category",
+        "component.toolkit"
       ]
     },
     "seo": {

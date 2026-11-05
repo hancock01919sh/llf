@@ -5,10 +5,11 @@
   },
   "options": {},
   "attributes": {
-    "Label": {
-      "type": "string"
+    "label": {
+      "type": "string",
+      "required": true
     },
-    "Description": {
+    "description": {
       "type": "string"
     }
   },
