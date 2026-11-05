@@ -15,7 +15,6 @@ export * from './ingredient-carousel';
 export * from './link-list';
 export * from './loading';
 export * from './logo-cards';
-export * from './navigation';
 export * from './search';
 export * from './teaser';
 export * from './text-and-image-card';
