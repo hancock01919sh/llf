@@ -1,9 +1,10 @@
 import { cn } from '@llf/ui';
 import type { ReactNode } from 'react';
 import { ModuleErrorBoundary } from './ModuleErrorBoundary';
+import z from 'zod';
 
 export type Surface = 'paper' | 'sand' | 'mint' | 'forest-tint' | 'forest' | 'terra';
-
+export const SurfaceSchema = z.enum(['paper', 'sand', 'mint', 'forest-tint', 'forest', 'terra']);
 interface ModuleBoundaryProps {
   /** Short module name used in analytics, e.g. `hero`, `tip-list`. */
   type: string;
@@ -13,6 +14,7 @@ interface ModuleBoundaryProps {
   surface?: Surface;
   className?: string;
   children: ReactNode;
+  isFullwidth?: boolean;
 }
 
 /**
@@ -27,6 +29,7 @@ export function ModuleBoundary({
   surface,
   className,
   children,
+  isFullwidth,
 }: ModuleBoundaryProps) {
   return (
     <section
@@ -35,9 +38,14 @@ export function ModuleBoundary({
       data-module-id={id}
       data-module-layout={layout}
       data-surface={surface}
-      className={cn('px-gutter py-xl lg:px-gutter-lg', className)}
     >
-      <div className="mx-auto max-w-page">
+      <div
+        className={cn(
+          'max-w-page mx-auto',
+          `${isFullwidth ? 'w-full max-w-full' : 'px-gutter lg:px-gutter-lg'}`,
+          className,
+        )}
+      >
         <ModuleErrorBoundary moduleType={type}>{children}</ModuleErrorBoundary>
       </div>
     </section>

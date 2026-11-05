@@ -76,12 +76,14 @@ test('typed ingredients go to the results page', async ({ page }) => {
   });
 
   await page.goto('/find-my-tips/');
-  await page.getByRole('tab', { name: 'Type it' }).click();
-  await page.getByLabel('Type your ingredients').fill('bananas, milk, saffron');
-  await page.getByRole('button', { name: 'Find my tips' }).click();
+  await page.getByRole('tab', { name: '🔗 Paste Link' }).click();
+  const typedUrl = 'https://www.google.com';
+  await page.getByPlaceholder('Enter a recipe URL or video link').fill(typedUrl);
+  await page.getByRole('button', { name: 'Find Tips' }).click();
 
   await expect(page).toHaveURL(/\/find-my-tips\/results\/\?i=banana(%2C|,)milk$/);
-  expect(body).toEqual({ inputType: 'text', text: 'bananas, milk, saffron' });
+  // The UI only offers the URL and image tabs, so a typed link is submitted as `url`.
+  expect(body).toEqual({ inputType: 'url', url: typedUrl });
   await expect(page.getByRole('heading', { level: 2, name: 'Tips for Banana' })).toBeVisible();
   await expect(page.getByRole('heading', { level: 2, name: 'Tips for Milk' })).toBeVisible();
 });

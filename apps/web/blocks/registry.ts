@@ -1,4 +1,4 @@
-import { cms } from '@llf/contracts';
+import { cms, cmsType } from '@llf/contracts';
 import type { ComponentType } from 'react';
 import type { z } from 'zod';
 import { Carousel } from './Carousel';
@@ -8,7 +8,11 @@ import { LinkList } from './LinkList';
 import { SearchBox } from './SearchBox';
 import { Teaser } from './Teaser';
 import { TipList } from './TipList';
+import { BlockToolInput } from './ToolInput';
+import { BlockAccordion } from './Accordion';
 import type { BlockProps } from './types';
+import type { Surface } from '@/components/ModuleBoundary';
+import { BlockHighlightComponent } from './HighlightComponent';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -19,6 +23,7 @@ interface BlockEntry<S extends z.ZodType> {
   Component: ComponentType<BlockProps<z.output<S>>>;
   /** Short name used for `data-module-type` and analytics (TDD §8). */
   type: string;
+  surface?: Surface;
 }
 
 const entry = <S extends z.ZodType>(e: BlockEntry<S>) => e;
@@ -36,6 +41,22 @@ export const blocks = {
   'custom.search': entry({ schema: cms.SearchBlock, Component: SearchBox, type: 'search' }),
   'custom.tip-list': entry({ schema: cms.TipListBlock, Component: TipList, type: 'tip-list' }),
   'custom.tool': entry({ schema: cms.ToolBlock, Component: FindMyTips, type: 'tool' }),
+  'component.tool-input': entry({
+    schema: cmsType.component.ToolInputDeepRef,
+    Component: BlockToolInput,
+    type: 'tool-input',
+    surface: 'paper',
+  }),
+  'component.accordion': entry({
+    schema: cmsType.component.Accordion,
+    Component: BlockAccordion,
+    type: 'accordion',
+  }),
+  'component.highlight-component': entry({
+    schema: cmsType.component.HighlightComponent,
+    Component: BlockHighlightComponent,
+    type: 'highlight-component',
+  }),
 } as const;
 
 export type BlockKey = keyof typeof blocks;

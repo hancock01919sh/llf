@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { cms } from '@llf/contracts';
+import { cms, cmsType } from '@llf/contracts';
 import { z } from 'zod';
 import { normalizePath } from './paths';
 
@@ -14,7 +14,7 @@ export const PAGE_SIZE = 100;
 
 type Populate = { [key: string]: true | Populate };
 
-const ctas: Populate = { populate: { page: true } };
+// const ctas: Populate = { populate: { page: true } };
 const tipFields: Populate = {
   tip_type: true,
   tip_behavior: true,
@@ -22,25 +22,49 @@ const tipFields: Populate = {
   ingredient: true,
 };
 const tipRelations: Populate = { populate: tipFields };
-const hero: Populate = { populate: { ctas, images: true } };
-
+// const hero: Populate = { populate: { ctas, images: true } };
+export const ImagePopulate = {
+  fields: ['url', 'ext', 'alternativeText', 'height', 'width', 'size'],
+};
 // Verified against seeded content (BD3244-24). Keep in sync with POPULATE in scripts/seed/src/seed.ts.
 const POPULATE = {
   pages: {
-    hero,
-    featured: { populate: { image: true } },
-    tool: true,
+    // hero,
+    // featured: { populate: { image: true } },
+    // tool: true,
     main: {
       on: {
-        'component.hero': hero,
-        'component.teaser': { populate: { title: true, ctas, images: true } },
-        'component.link-list': { populate: { title: true, pages: true } },
-        'component.carousel': {
-          populate: { title: true, ctas, categories: { populate: { image: true } } },
+        // 'component.hero': hero,
+        // 'component.teaser': { populate: { title: true, ctas, images: true } },
+        // 'component.link-list': { populate: { title: true, pages: true } },
+        // 'component.carousel': {
+        //   populate: { title: true, ctas, categories: { populate: { image: true } } },
+        // },
+        // 'custom.tip-list': { populate: { title: true, tips: tipRelations } },
+        // 'custom.search': true,
+        // 'custom.tool': true,
+        'component.tool-input': {
+          populate: {
+            button: true,
+            cards: {
+              populate: {
+                link: true,
+              },
+            },
+            image: ImagePopulate,
+          },
         },
-        'custom.tip-list': { populate: { title: true, tips: tipRelations } },
-        'custom.search': true,
-        'custom.tool': true,
+        'component.accordion': {
+          populate: {
+            accordionItem: true,
+          },
+        },
+        'component.highlight-component': {
+          populate: {
+            link: true,
+            image: ImagePopulate,
+          },
+        },
       },
     },
     seo: true,
@@ -55,7 +79,11 @@ const POPULATE = {
   groups: { categories: { populate: { image: true } } },
   ingredients: { image: true, tips: { populate: { tip_type: true } } },
   tips: tipFields,
-} satisfies Record<string, Populate>;
+  footer: { link: true, iconLink: true, overlayLink: true },
+  navigation: { link: true },
+  global: { load: true, seo: true },
+};
+// satisfies Record<string, Populate>;
 
 const SCHEMAS = {
   pages: cms.Page,
@@ -63,6 +91,9 @@ const SCHEMAS = {
   groups: cms.Group,
   ingredients: cms.Ingredient,
   tips: cms.Tip,
+  footer: cmsType.api.Footer,
+  navigation: cmsType.api.Navigation,
+  global: cmsType.api.Global,
 } as const;
 
 export type CollectionKey = keyof typeof SCHEMAS;
@@ -120,8 +151,12 @@ export function validateCollection<K extends CollectionKey>(key: K, raw: unknown
 }
 
 const envelope = cms.collectionResponse(z.unknown());
+const signalSchema = envelope.extend({
+  data: z.unknown(),
+});
+const signalKey = ['footer', 'navigation', 'global'];
 
-async function fetchFromStrapi(key: CollectionKey): Promise<unknown[]> {
+async function fetchFromStrapi(key: CollectionKey): Promise<unknown[] | unknown> {
   const base = process.env.CMS_URL;
   const token = process.env.CMS_TOKEN;
   if (!base || !token) {
@@ -140,16 +175,34 @@ async function fetchFromStrapi(key: CollectionKey): Promise<unknown[]> {
     if (!res.ok) {
       throw new ContentError(`Strapi returned ${res.status} for /api/${key} (page ${page}).`);
     }
-    const body = envelope.parse(await res.json());
-    all.push(...body.data);
+
+    const raw = await res.json();
+    let body = null;
+    if (signalKey.includes(key)) {
+      body = signalSchema.parse(raw);
+      all.push(body.data);
+    } else {
+      body = envelope.parse(raw);
+      all.push(...body.data);
+    }
     const pageCount = body.meta?.pagination?.pageCount ?? 1;
-    if (page >= pageCount) return all;
+    if (page >= pageCount) {
+      if (signalKey.includes(key)) {
+        return all[0];
+      }
+      return all;
+    }
   }
 }
 
 async function readFixture(key: CollectionKey): Promise<unknown[]> {
   const file = path.join(process.cwd(), 'fixtures', 'cms', `${key}.json`);
   return envelope.parse(JSON.parse(await readFile(file, 'utf8'))).data;
+}
+async function readFixtureSingle(key: CollectionKey): Promise<unknown> {
+  const file = path.join(process.cwd(), 'fixtures', 'cms', `${key}.json`);
+  const signalSchema = cms.singleResponse(z.unknown());
+  return signalSchema.parse(JSON.parse(await readFile(file, 'utf8'))).data;
 }
 
 const cache = new Map<CollectionKey, Promise<unknown[]>>();
@@ -158,10 +211,19 @@ export async function loadCollection<K extends CollectionKey>(key: K): Promise<I
   let pending = cache.get(key);
   if (!pending) {
     const source = process.env.CMS_FIXTURES === '1' ? readFixture : fetchFromStrapi;
-    pending = source(key).then((raw) => validateCollection(key, raw));
+    pending = source(key).then((raw) => validateCollection(key, raw as unknown[]));
     cache.set(key, pending);
   }
   return (await pending) as Item<K>[];
+}
+export async function loadSingle<K extends CollectionKey>(key: K): Promise<Item<K>> {
+  let pending = cache.get(key);
+  if (!pending) {
+    const source = process.env.CMS_FIXTURES === '1' ? readFixtureSingle : fetchFromStrapi;
+    pending = source(key).then((raw) => validateCollection(key, [raw]));
+    cache.set(key, pending);
+  }
+  return (await pending)[0] as Item<K>;
 }
 
 export { normalizePath };
@@ -174,7 +236,8 @@ export const getTips = () => loadCollection('tips');
 
 export async function getPageByPath(value: string): Promise<cms.Page | undefined> {
   const wanted = normalizePath(value);
-  return (await getPages()).find((page) => normalizePath(page.path) === wanted);
+  const pages = await getPages();
+  return pages.find((page) => normalizePath(page.path) === wanted);
 }
 
 /** Designed routes need their CMS page; a missing one is an editor error, not a 404. */
@@ -190,4 +253,9 @@ export async function requirePage(value: string): Promise<cms.Page> {
 
 export async function getCategory(slug: string): Promise<cms.Category | undefined> {
   return (await getCategories()).find((category) => category.slug === slug);
+}
+export async function getPageProviderData() {
+  return Promise.all([loadSingle('footer'), loadSingle('navigation'), loadSingle('global')]).then(
+    ([footer, navigation, global]) => ({ footer, navigation, global }),
+  );
 }

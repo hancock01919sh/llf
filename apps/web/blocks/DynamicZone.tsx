@@ -1,9 +1,9 @@
 import type { cms } from '@llf/contracts';
 import type { ComponentType } from 'react';
-import { ModuleBoundary } from '@/components/ModuleBoundary';
 import { ContentError } from '@/lib/cms';
 import { blockLayout, blocks, isBlockKey } from './registry';
 import type { BlockProps } from './types';
+import { ModuleBoundary, type Surface } from '@/components/ModuleBoundary';
 
 export interface ResolvedBlock {
   key: string;
@@ -12,6 +12,8 @@ export interface ResolvedBlock {
   layout: string | undefined;
   data: unknown;
   Component: ComponentType<BlockProps<unknown>>;
+  surface?: Surface;
+  isFullwidth?: boolean;
 }
 
 /**
@@ -47,6 +49,8 @@ export function resolveBlocks(
       layout: blockLayout(result.data),
       data: result.data,
       Component: entry.Component as ComponentType<BlockProps<unknown>>,
+      surface: entry.surface || (block.backgroundColor as Surface) || 'paper',
+      isFullwidth: block.isFullwidth as boolean,
     });
   });
   if (problems.length > 0) {
@@ -70,12 +74,30 @@ export function DynamicZone({
   page: Pick<cms.Page, 'title' | 'path' | 'main'>;
   offset?: number;
 }) {
-  return resolveBlocks(page, isStrict()).map(({ key, type, id, layout, data, Component }, i) => {
-    const index = i + offset;
-    return (
-      <ModuleBoundary key={key} type={type} index={index} id={String(id)} layout={layout}>
-        <Component block={data} index={index} pageTitle={page.title} />
-      </ModuleBoundary>
-    );
-  });
+  return resolveBlocks(page, isStrict()).map(
+    ({ key, type, id, layout, data, Component, surface, isFullwidth }, i) => {
+      const index = i + offset;
+      return (
+        <ModuleBoundary
+          key={key}
+          type={type}
+          index={index}
+          id={String(id)}
+          layout={layout}
+          surface={surface}
+          isFullwidth={isFullwidth}
+        >
+          <Component
+            key={key}
+            type={type}
+            index={index}
+            id={String(id)}
+            layout={layout}
+            block={data}
+            pageTitle={page.title}
+          />
+        </ModuleBoundary>
+      );
+    },
+  );
 }
