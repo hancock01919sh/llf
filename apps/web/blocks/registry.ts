@@ -13,8 +13,9 @@ import { BlockAccordion } from './Accordion';
 import type { BlockProps } from './types';
 import type { Surface } from '@/components/ModuleBoundary';
 import { BlockHighlightComponent } from './HighlightComponent';
-import { CategoryDetailComponent } from './CategoryDetail.tsx';
+import { CategoryDetailComponent, CategoryDetailWithSearchSchema } from './CategoryDetail.tsx';
 import { BlockNotFound } from './NotFound';
+import { BlockSearch } from './Search/SearchBlock';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -26,6 +27,7 @@ interface BlockEntry<S extends z.ZodType> {
   /** Short name used for `data-module-type` and analytics (TDD §8). */
   type: string;
   surface?: Surface;
+  isFullWidth?: boolean;
 }
 
 const entry = <S extends z.ZodType>(e: BlockEntry<S>) => e;
@@ -60,7 +62,7 @@ export const blocks = {
     type: 'highlight-component',
   }),
   'component.category-detail': entry({
-    schema: cmsType.component.CategoryDetailDeepRef,
+    schema: CategoryDetailWithSearchSchema,
     Component: CategoryDetailComponent,
     type: 'category-detail',
     surface: 'forest',
@@ -69,6 +71,12 @@ export const blocks = {
     schema: cmsType.component._404,
     Component: BlockNotFound,
     type: 'not-found',
+  }),
+  'component.search': entry({
+    schema: CategoryDetailWithSearchSchema,
+    Component: BlockSearch,
+    type: 'search',
+    isFullWidth: true,
   }),
 } as const;
 

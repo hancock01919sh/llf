@@ -1,6 +1,6 @@
 import { Typography } from './Typography';
 
-const TipBadgeColorMapping = {
+export const TipBadgeColorMapping = {
   'buy it': 'bg-semantic-tomato text-surface-paper',
   'store it': 'bg-semantic-squash text-ink-terra',
   'rescue it': 'bg-surface-sand text-ink-terra',

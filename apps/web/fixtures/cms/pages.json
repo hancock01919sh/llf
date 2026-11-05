@@ -455,7 +455,7 @@
       ]
     },
     {
-      "id": 10,
+      "id": 5,
       "documentId": "hebmi5cxd7c34eft2y2f5dsa",
       "title": "Output List",
       "path": "/find-my-tips/results/",
@@ -544,7 +544,7 @@
       "seo": null
     },
     {
-      "id": 19,
+      "id": 6,
       "documentId": "k4ph70g11rfusuqrvi59rg53",
       "title": "404",
       "path": "/404",
@@ -558,6 +558,57 @@
           "description": "404 — Page not found",
           "isFullwidth": false,
           "backgroundColor": "forest"
+        }
+      ],
+      "seo": null
+    },
+    {
+      "id": 7,
+      "documentId": "agqlne8ngd8nx7jxo4e17n2h",
+      "title": "Search",
+      "path": "/search",
+      "template": "generic",
+      "featured": [],
+      "main": [
+        {
+          "__component": "component.search",
+          "id": 2,
+          "title": "Search for tips",
+          "description": "Type an ingredient to find tips that save time, money, and food.",
+          "placeholder": "Search 100+ ingredients",
+          "statement": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "All tips reviewed by ",
+                  "type": "text"
+                },
+                {
+                  "text": "food experts",
+                  "type": "text",
+                  "underline": true
+                }
+              ]
+            }
+          ],
+          "hint": "Click an ingredient to view specific tips that save time, money, and food.",
+          "isFullwidth": false,
+          "backgroundColor": "paper",
+          "popup": {
+            "id": 2,
+            "title": "All tips reviewed by food experts.",
+            "description": "Most of us don't know where we're losing food. ",
+            "link": {
+              "id": 22,
+              "label": "Discover tips in the library",
+              "href": null,
+              "isDisplay": true,
+              "isButton": true,
+              "buttonType": "Primary",
+              "newTab": false
+            }
+          }
         }
       ],
       "seo": null

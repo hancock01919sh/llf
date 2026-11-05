@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { Catalog, IngredientData, toSlug, type CatalogIngredient, type cms } from '@llf/contracts';
 import MiniSearch from 'minisearch';
-import { ContentError, getIngredients, getTips } from './cms';
+import { ContentError, getIngredients } from './cms';
 import { mediaUrl } from './media';
 import { resultsHref } from './paths';
 import { SEARCH_OPTIONS, type SearchDocument } from './search';
@@ -84,10 +84,10 @@ export function toIngredientData({ slug, ingredient }: SluggedIngredient): Ingre
 
 export function buildSearchDocuments(
   ingredients: cms.Ingredient[],
-  tips: cms.Tip[],
+  // tips: cms.Tip[],
 ): SearchDocument[] {
   const slugs = slugIngredients(ingredients);
-  const slugByDocumentId = new Map(slugs.map((s) => [s.ingredient.documentId, s.slug]));
+  // const slugByDocumentId = new Map(slugs.map((s) => [s.ingredient.documentId, s.slug]));
   return [
     ...slugs.map(({ slug, ingredient }) => ({
       id: `ingredient:${slug}`,
@@ -95,18 +95,31 @@ export function buildSearchDocuments(
       title: ingredient.title,
       body: splitSynonyms(ingredient.synonyms).join(' '),
       href: resultsHref([slug]),
+      image: ingredient.image
+        ? { url: mediaUrl(ingredient.image.url), alt: ingredient.image.alternativeText ?? '' }
+        : null,
+      tips:
+        ingredient.tips?.length === 0
+          ? []
+          : ingredient.tips?.map((tip) => ({
+              title: tip.title,
+              description: tip.description,
+              type: tip.tip_type?.title ?? '',
+              tip_behavior: tip?.tip_behavior?.title ?? '',
+              tip_motivator: tip?.tip_motivator?.title ?? '',
+            })),
     })),
-    ...tips.map((tip) => {
-      const slug = tip.ingredient ? slugByDocumentId.get(tip.ingredient.documentId) : undefined;
-      return {
-        id: `tip:${tip.documentId}`,
-        kind: 'tip' as const,
-        title: tip.title,
-        body: [tip.description, tip.ingredient?.title].filter(Boolean).join(' '),
-        // TODO(BD3244-8): link to the tip itself once the Tip Modal has a deep link (TDD D22).
-        href: slug ? resultsHref([slug]) : '/tips/',
-      };
-    }),
+    // ...tips.map((tip) => {
+    //   const slug = tip.ingredient ? slugByDocumentId.get(tip.ingredient.documentId) : undefined;
+    //   return {
+    //     id: `tip:${tip.documentId}`,
+    //     kind: 'tip' as const,
+    //     title: tip.title,
+    //     body: [tip.description, tip.ingredient?.title].filter(Boolean).join(' '),
+    //     // TODO(BD3244-8): link to the tip itself once the Tip Modal has a deep link (TDD D22).
+    //     href: slug ? resultsHref([slug]) : '/tips/',
+    //   };
+    // }),
   ];
 }
 
@@ -124,6 +137,7 @@ export async function getCatalog(): Promise<Catalog> {
   return buildCatalog(await getIngredients());
 }
 
-export async function getSearchIndexJson(): Promise<string> {
-  return buildSearchIndex(buildSearchDocuments(await getIngredients(), await getTips()));
+export async function getSearchIndexJson(): Promise<SearchDocument[]> {
+  return buildSearchDocuments(await getIngredients());
+  // return buildSearchIndex(buildSearchDocuments(await getIngredients()));
 }
