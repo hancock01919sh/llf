@@ -5,21 +5,21 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "string",
       "required": true
     },
-    "Description": {
+    "description": {
       "type": "text",
       "required": true
     },
-    "IngredientCard": {
+    "ingredientCard": {
       "type": "component",
       "component": "shared.ingredient-card",
       "repeatable": true,
       "required": true
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
       "required": true,
       "enum": [

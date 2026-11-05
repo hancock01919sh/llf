@@ -5,11 +5,11 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "text",
       "required": true
     },
-    "Image": {
+    "image": {
       "type": "media",
       "multiple": false,
       "allowedTypes": [

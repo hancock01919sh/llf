@@ -5,15 +5,15 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "string",
       "required": true
     },
-    "Description": {
+    "description": {
       "type": "text",
       "required": true
     },
-    "Image_Desktop": {
+    "imageDesktop": {
       "type": "media",
       "multiple": true,
       "allowedTypes": [
@@ -23,7 +23,7 @@
         "audios"
       ]
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
       "required": true,
       "enum": [
@@ -31,7 +31,7 @@
         "forest"
       ]
     },
-    "Image_Mobile": {
+    "imageMobile": {
       "type": "media",
       "multiple": true,
       "allowedTypes": [
