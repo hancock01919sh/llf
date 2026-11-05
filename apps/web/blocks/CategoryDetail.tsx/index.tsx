@@ -7,7 +7,9 @@ import { cmsType } from '@llf/contracts';
 //   Popup: cmsType.component.TipsPopup,
 // });
 // export type CategoryDetailProps = z.infer<typeof CategoryDetailSchema>;
-export const CategoryDetailComponent = (props: BlockProps<cmsType.component.CategoryDetailDeepRef>) => {
+export const CategoryDetailComponent = (
+  props: BlockProps<cmsType.component.CategoryDetailDeepRef>,
+) => {
   return (
     <>
       <IngredientsHeader {...props.block} />

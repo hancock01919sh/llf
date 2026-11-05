@@ -16,7 +16,7 @@ export function IngredientsHeader(
   },
 ) {
   const [open, setOpen] = useState(false);
-  const { categoryData,popup } = props;
+  const { categoryData, popup } = props;
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (ref.current === null) return;
@@ -65,7 +65,11 @@ export function IngredientsHeader(
           </div>
         </div>
       </div>
-      <IngredientsTipsPopup open={open} onClose={() => setOpen(false)} {...popup as cmsType.component.TipsPopupDeepRef} />
+      <IngredientsTipsPopup
+        open={open}
+        onClose={() => setOpen(false)}
+        {...(popup as cmsType.component.TipsPopupDeepRef)}
+      />
     </>
   );
 }
