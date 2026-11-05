@@ -7,11 +7,11 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const HighlightComponent = z.object({
   __component: z.literal('component.highlight-component'),
   id: z.number().int(),
-  Title: z.string(),
-  Description: z.string(),
-  Image: Media,
-  Background_color: z.enum(['forest-tint', 'paper', 'forest']),
-  Link: nullish(z.array(z.lazy(() => LinksRef))),
+  title: z.string(),
+  description: z.string(),
+  image: Media,
+  backgroundColor: z.enum(['forest-tint', 'paper', 'forest']),
+  link: nullish(z.array(z.lazy(() => LinksRef))),
   isFullwidth: nullish(z.boolean().default(false)),
 });
 

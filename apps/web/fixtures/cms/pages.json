@@ -267,11 +267,11 @@
         {
           "__component": "component.highlight-component",
           "id": 30,
-          "Title": "Things no one ever told you about your food",
-          "Description": "Explore hundreds of tips for the ingredients you already cook with, including some things you probably didn't know you were wasting.",
-          "Background_color": "paper",
+          "title": "Things no one ever told you about your food",
+          "description": "Explore hundreds of tips for the ingredients you already cook with, including some things you probably didn't know you were wasting.",
+          "backgroundColor": "paper",
           "isFullwidth": true,
-          "Link": [
+          "link": [
             {
               "id": 191,
               "label": "find my tips",
@@ -282,7 +282,7 @@
               "buttonType": "Primary"
             }
           ],
-          "Image": {
+          "image": {
             "id": 36,
             "documentId": "y9b29yr28yd7qcw4q0xe17fm",
             "url": "/uploads/51c2de21b6ac7418ffdb02034e04457fc7018607_da50609882.png",
