@@ -31,7 +31,7 @@ export const TipDeepRef = z.object({
   documentId: z.string(),
   title: z.string(),
   description: nullish(z.string()),
-  ingredient: nullish(z.lazy((): z.ZodType<IngredientDeepRef> => IngredientDeepRef)),
+  ingredient: nullish(z.lazy((): z.ZodType => IngredientDeepRef)),
   tip_type: nullish(z.lazy((): z.ZodType<TipTypeDeepRef> => TipTypeDeepRef)),
   tip_behavior: nullish(z.lazy((): z.ZodType<TipBehaviorDeepRef> => TipBehaviorDeepRef)),
   tip_motivator: nullish(z.lazy((): z.ZodType<TipMotivatorDeepRef> => TipMotivatorDeepRef)),
