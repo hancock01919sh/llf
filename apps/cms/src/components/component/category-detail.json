@@ -5,15 +5,15 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "string",
-      "required": true
+      "required": false
     },
-    "Description": {
+    "description": {
       "type": "text",
-      "required": true
+      "required": false
     },
-    "Image": {
+    "image": {
       "type": "media",
       "multiple": true,
       "required": false,
@@ -24,19 +24,19 @@
         "audios"
       ]
     },
-    "SubTitle": {
+    "subTitle": {
       "type": "string",
       "required": false
     },
-    "Statement": {
+    "statement": {
       "type": "blocks"
     },
-    "Button": {
+    "button": {
       "type": "component",
       "component": "shared.links",
       "repeatable": false
     },
-    "Popup": {
+    "popup": {
       "type": "component",
       "component": "component.tips-popup",
       "repeatable": false
@@ -45,7 +45,7 @@
       "type": "boolean",
       "default": false
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
       "required": true,
       "enum": [
