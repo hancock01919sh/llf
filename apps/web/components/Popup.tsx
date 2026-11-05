@@ -48,7 +48,7 @@ export const Popup = ({
           className={`fixed inset-0 bg-[rgba(0,0,0,0.3)] ${open ? 'opacity-enter' : 'opacity-exit'}`}
         />
         <Dialog.Content
-          className={`fixed bottom-0 left-0 z-1 w-full overflow-y-auto max-h-full overscroll-y-none  ${
+          className={`fixed bottom-0 left-0 z-1 w-full overflow-y-auto h-auto max-h-full overscroll-y-none lg:top-1/2 lg:translate-y-[-50%]   ${
             open ? animation.enter : animation.exit
           } ${className}`}
           onAnimationEnd={handleAnimationEnd}
