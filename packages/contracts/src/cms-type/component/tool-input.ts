@@ -57,3 +57,5 @@ export const ToolInputDeepRef = z.object({
 export type ToolInputDeepRef = z.infer<typeof ToolInputDeepRef>;
 
 export type ToolInput = z.infer<typeof ToolInput>;
+
+export type ToolInputRef = z.infer<typeof ToolInputRef>;

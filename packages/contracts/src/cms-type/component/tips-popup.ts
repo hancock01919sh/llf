@@ -26,3 +26,5 @@ export const TipsPopupDeepRef = z.object({
 export type TipsPopupDeepRef = z.infer<typeof TipsPopupDeepRef>;
 
 export type TipsPopup = z.infer<typeof TipsPopup>;
+
+export type TipsPopupRef = z.infer<typeof TipsPopupRef>;

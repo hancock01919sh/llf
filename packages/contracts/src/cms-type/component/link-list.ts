@@ -29,3 +29,5 @@ export const LinkListDeepRef = z.object({
 export type LinkListDeepRef = z.infer<typeof LinkListDeepRef>;
 
 export type LinkList = z.infer<typeof LinkList>;
+
+export type LinkListRef = z.infer<typeof LinkListRef>;

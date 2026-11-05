@@ -35,3 +35,5 @@ export const TipBannerDeepRef = z.object({
 export type TipBannerDeepRef = z.infer<typeof TipBannerDeepRef>;
 
 export type TipBanner = z.infer<typeof TipBanner>;
+
+export type TipBannerRef = z.infer<typeof TipBannerRef>;

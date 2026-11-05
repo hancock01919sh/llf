@@ -38,3 +38,5 @@ export const CategoryCarouselFeatureDeepRef = z.object({
 export type CategoryCarouselFeatureDeepRef = z.infer<typeof CategoryCarouselFeatureDeepRef>;
 
 export type CategoryCarouselFeature = z.infer<typeof CategoryCarouselFeature>;
+
+export type CategoryCarouselFeatureRef = z.infer<typeof CategoryCarouselFeatureRef>;

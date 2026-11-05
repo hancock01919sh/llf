@@ -20,3 +20,5 @@ export const AccordionItemDeepRef = z.object({
 export type AccordionItemDeepRef = z.infer<typeof AccordionItemDeepRef>;
 
 export type AccordionItem = z.infer<typeof AccordionItem>;
+
+export type AccordionItemRef = z.infer<typeof AccordionItemRef>;

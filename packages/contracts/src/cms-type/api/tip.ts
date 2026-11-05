@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { CategoryRef, CategoryDeepRef } from '../api/category';
-import { IngredientRef, IngredientDeepRef } from '../api/ingredient';
+import { IngredientRef } from '../api/ingredient';
 import { TipBehaviorRef, TipBehaviorDeepRef } from '../api/tip-behavior';
 import { TipMotivatorRef, TipMotivatorDeepRef } from '../api/tip-motivator';
 import { TipTypeRef, TipTypeDeepRef } from '../api/tip-type';
@@ -31,7 +31,7 @@ export const TipDeepRef = z.object({
   documentId: z.string(),
   title: z.string(),
   description: nullish(z.string()),
-  ingredient: nullish(z.lazy((): z.ZodType => IngredientDeepRef)),
+  ingredient: nullish(z.lazy((): z.ZodType<IngredientRef> => IngredientRef)),
   tip_type: nullish(z.lazy((): z.ZodType<TipTypeDeepRef> => TipTypeDeepRef)),
   tip_behavior: nullish(z.lazy((): z.ZodType<TipBehaviorDeepRef> => TipBehaviorDeepRef)),
   tip_motivator: nullish(z.lazy((): z.ZodType<TipMotivatorDeepRef> => TipMotivatorDeepRef)),
@@ -41,3 +41,5 @@ export const TipDeepRef = z.object({
 export type TipDeepRef = z.infer<typeof TipDeepRef>;
 
 export type Tip = z.infer<typeof Tip>;
+
+export type TipRef = z.infer<typeof TipRef>;

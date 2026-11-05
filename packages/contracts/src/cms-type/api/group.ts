@@ -29,3 +29,5 @@ export const GroupDeepRef = z.object({
 export type GroupDeepRef = z.infer<typeof GroupDeepRef>;
 
 export type Group = z.infer<typeof Group>;
+
+export type GroupRef = z.infer<typeof GroupRef>;

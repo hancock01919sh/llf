@@ -48,3 +48,5 @@ export const CategoryDeepRef = z.object({
 export type CategoryDeepRef = z.infer<typeof CategoryDeepRef>;
 
 export type Category = z.infer<typeof Category>;
+
+export type CategoryRef = z.infer<typeof CategoryRef>;

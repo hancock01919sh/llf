@@ -39,3 +39,5 @@ export const HeroDeepRef = z.object({
 export type HeroDeepRef = z.infer<typeof HeroDeepRef>;
 
 export type Hero = z.infer<typeof Hero>;
+
+export type HeroRef = z.infer<typeof HeroRef>;

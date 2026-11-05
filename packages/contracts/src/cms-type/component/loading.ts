@@ -29,3 +29,5 @@ export const LoadingDeepRef = z.object({
 export type LoadingDeepRef = z.infer<typeof LoadingDeepRef>;
 
 export type Loading = z.infer<typeof Loading>;
+
+export type LoadingRef = z.infer<typeof LoadingRef>;
