@@ -61,8 +61,8 @@ const POPULATE = {
         },
         'component.highlight-component': {
           populate: {
-            Link: true,
-            Image: ImagePopulate,
+            link: true,
+            image: ImagePopulate,
           },
         },
       },
@@ -79,9 +79,9 @@ const POPULATE = {
   groups: { categories: { populate: { image: true } } },
   ingredients: { image: true, tips: { populate: { tip_type: true } } },
   tips: tipFields,
-  footer: true,
-  navigation: true,
-  global: true,
+  footer: { link: true, iconLink: true, overlayLink: true },
+  navigation: { link: true },
+  global: { load: true, seo: true },
 };
 // satisfies Record<string, Populate>;
 
@@ -151,8 +151,12 @@ export function validateCollection<K extends CollectionKey>(key: K, raw: unknown
 }
 
 const envelope = cms.collectionResponse(z.unknown());
+const signalSchema = envelope.extend({
+  data: z.unknown(),
+});
+const signalKey = ['footer', 'navigation', 'global'];
 
-async function fetchFromStrapi(key: CollectionKey): Promise<unknown[]> {
+async function fetchFromStrapi(key: CollectionKey): Promise<unknown[] | unknown> {
   const base = process.env.CMS_URL;
   const token = process.env.CMS_TOKEN;
   if (!base || !token) {
@@ -171,10 +175,23 @@ async function fetchFromStrapi(key: CollectionKey): Promise<unknown[]> {
     if (!res.ok) {
       throw new ContentError(`Strapi returned ${res.status} for /api/${key} (page ${page}).`);
     }
-    const body = envelope.parse(await res.json());
-    all.push(...body.data);
+
+    const raw = await res.json();
+    let body = null;
+    if (signalKey.includes(key)) {
+      body = signalSchema.parse(raw);
+      all.push(body.data);
+    } else {
+      body = envelope.parse(raw);
+      all.push(...body.data);
+    }
     const pageCount = body.meta?.pagination?.pageCount ?? 1;
-    if (page >= pageCount) return all;
+    if (page >= pageCount) {
+      if (signalKey.includes(key)) {
+        return all[0];
+      }
+      return all;
+    }
   }
 }
 
@@ -194,7 +211,7 @@ export async function loadCollection<K extends CollectionKey>(key: K): Promise<I
   let pending = cache.get(key);
   if (!pending) {
     const source = process.env.CMS_FIXTURES === '1' ? readFixture : fetchFromStrapi;
-    pending = source(key).then((raw) => validateCollection(key, raw));
+    pending = source(key).then((raw) => validateCollection(key, raw as unknown[]));
     cache.set(key, pending);
   }
   return (await pending) as Item<K>[];

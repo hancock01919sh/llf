@@ -4,7 +4,8 @@ import { Typography } from '@/components/Typography';
 import { UIImage } from '@/components/UIImage';
 import type { cmsType } from '@llf/contracts';
 export function BlockHighlightComponent(props: BlockProps<cmsType.component.HighlightComponent>) {
-  const { Image: backgroundImage, Link, Title, Description } = props.block;
+  const { image: backgroundImage, link, title, description } = props.block;
+
   return (
     <div className={`w-full text-surface-paper lg:aspect-1440/865 lg:px-[5.625%] lg:py-[6.94%] `}>
       <div
@@ -15,22 +16,24 @@ export function BlockHighlightComponent(props: BlockProps<cmsType.component.High
           className={`absolute inset-0 bg-[rgba(0,0,0,0.2)] lg:bg-black/30 flex flex-col items-center text-center justify-center px-5 lg:px-[19%]`}
         >
           <Typography variant="headline-lg" className="uppercase lg:text-headline-xl">
-            {Title}
+            {title}
           </Typography>
           <Typography variant="subhead-lg" className="lg:font-normal mt-3 lg:mt-5">
-            {Description}
+            {description}
           </Typography>
-          {Link?.filter((l) => l.isDisplay).map((l) => {
-            return (
-              <TransitionLink
-                key={l.label}
-                className={`${l.buttonType === 'Primary' ? 'btn' : 'link'} mt-5`}
-                href={l.href as string}
-              >
-                {l.label}
-              </TransitionLink>
-            );
-          })}
+          {link
+            ?.filter((l) => l.isDisplay)
+            .map((l) => {
+              return (
+                <TransitionLink
+                  key={l.label}
+                  className={`${l.buttonType === 'Primary' ? 'btn' : 'link'} mt-5`}
+                  href={l.href || '#'}
+                >
+                  {l.label}
+                </TransitionLink>
+              );
+            })}
         </div>
       </div>
     </div>
