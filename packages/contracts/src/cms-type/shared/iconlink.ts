@@ -20,3 +20,5 @@ export const IconlinkDeepRef = z.object({
 export type IconlinkDeepRef = z.infer<typeof IconlinkDeepRef>;
 
 export type Iconlink = z.infer<typeof Iconlink>;
+
+export type IconlinkRef = z.infer<typeof IconlinkRef>;

@@ -21,3 +21,5 @@ export const SpotlightItemDeepRef = z.object({
 export type SpotlightItemDeepRef = z.infer<typeof SpotlightItemDeepRef>;
 
 export type SpotlightItem = z.infer<typeof SpotlightItem>;
+
+export type SpotlightItemRef = z.infer<typeof SpotlightItemRef>;

@@ -32,3 +32,5 @@ export const _404DeepRef = z.object({
 export type _404DeepRef = z.infer<typeof _404DeepRef>;
 
 export type _404 = z.infer<typeof _404>;
+
+export type _404Ref = z.infer<typeof _404Ref>;

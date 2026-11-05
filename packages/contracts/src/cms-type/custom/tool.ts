@@ -42,3 +42,5 @@ export const ToolDeepRef = z.object({
 export type ToolDeepRef = z.infer<typeof ToolDeepRef>;
 
 export type Tool = z.infer<typeof Tool>;
+
+export type ToolRef = z.infer<typeof ToolRef>;

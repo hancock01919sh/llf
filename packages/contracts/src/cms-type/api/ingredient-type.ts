@@ -21,3 +21,5 @@ export const IngredientTypeDeepRef = z.object({
 export type IngredientTypeDeepRef = z.infer<typeof IngredientTypeDeepRef>;
 
 export type IngredientType = z.infer<typeof IngredientType>;
+
+export type IngredientTypeRef = z.infer<typeof IngredientTypeRef>;

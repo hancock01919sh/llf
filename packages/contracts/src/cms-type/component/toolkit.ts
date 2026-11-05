@@ -7,20 +7,20 @@ import {
 export const Toolkit = z.object({
   __component: z.literal('component.toolkit'),
   id: z.number().int(),
-  Title: z.string(),
+  title: z.string(),
   toolkitCategory: z.array(z.lazy(() => ToolkitParentCategoryRef)),
 });
 
 export const ToolkitRef = z.object({
   __component: z.literal('component.toolkit'),
   id: z.number().int(),
-  Title: z.string(),
+  title: z.string(),
 });
 
 export const ToolkitDeepRef = z.object({
   __component: z.literal('component.toolkit'),
   id: z.number().int(),
-  Title: z.string(),
+  title: z.string(),
   toolkitCategory: z.array(
     z.lazy((): z.ZodType<ToolkitParentCategoryDeepRef> => ToolkitParentCategoryDeepRef),
   ),
@@ -29,3 +29,5 @@ export const ToolkitDeepRef = z.object({
 export type ToolkitDeepRef = z.infer<typeof ToolkitDeepRef>;
 
 export type Toolkit = z.infer<typeof Toolkit>;
+
+export type ToolkitRef = z.infer<typeof ToolkitRef>;

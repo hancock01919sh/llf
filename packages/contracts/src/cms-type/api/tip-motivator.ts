@@ -26,3 +26,5 @@ export const TipMotivatorDeepRef = z.object({
 export type TipMotivatorDeepRef = z.infer<typeof TipMotivatorDeepRef>;
 
 export type TipMotivator = z.infer<typeof TipMotivator>;
+
+export type TipMotivatorRef = z.infer<typeof TipMotivatorRef>;

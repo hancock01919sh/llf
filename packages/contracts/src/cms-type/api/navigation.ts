@@ -29,3 +29,5 @@ export const NavigationDeepRef = z.object({
 export type NavigationDeepRef = z.infer<typeof NavigationDeepRef>;
 
 export type Navigation = z.infer<typeof Navigation>;
+
+export type NavigationRef = z.infer<typeof NavigationRef>;

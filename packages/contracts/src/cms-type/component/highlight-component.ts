@@ -39,3 +39,5 @@ export const HighlightComponentDeepRef = z.object({
 export type HighlightComponentDeepRef = z.infer<typeof HighlightComponentDeepRef>;
 
 export type HighlightComponent = z.infer<typeof HighlightComponent>;
+
+export type HighlightComponentRef = z.infer<typeof HighlightComponentRef>;

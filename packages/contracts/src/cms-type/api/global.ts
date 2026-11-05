@@ -29,3 +29,5 @@ export const GlobalDeepRef = z.object({
 export type GlobalDeepRef = z.infer<typeof GlobalDeepRef>;
 
 export type Global = z.infer<typeof Global>;
+
+export type GlobalRef = z.infer<typeof GlobalRef>;

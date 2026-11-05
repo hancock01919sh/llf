@@ -5,15 +5,15 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "string",
       "required": true
     },
-    "Description": {
+    "description": {
       "type": "text",
       "required": true
     },
-    "SmallCard": {
+    "smallCard": {
       "type": "component",
       "component": "shared.small-card",
       "repeatable": true,
@@ -23,7 +23,7 @@
       "type": "boolean",
       "default": true
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
       "required": true,
       "enum": [

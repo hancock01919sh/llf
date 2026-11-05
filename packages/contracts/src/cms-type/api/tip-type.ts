@@ -26,3 +26,5 @@ export const TipTypeDeepRef = z.object({
 export type TipTypeDeepRef = z.infer<typeof TipTypeDeepRef>;
 
 export type TipType = z.infer<typeof TipType>;
+
+export type TipTypeRef = z.infer<typeof TipTypeRef>;

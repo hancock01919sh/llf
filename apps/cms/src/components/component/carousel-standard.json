@@ -5,15 +5,15 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "string",
       "required": true
     },
-    "Description": {
+    "description": {
       "type": "text",
       "required": true
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
       "required": true,
       "enum": [
@@ -22,13 +22,13 @@
         "terra"
       ]
     },
-    "StandardCard": {
+    "standardCard": {
       "type": "component",
       "component": "shared.standard-card",
       "repeatable": true,
       "required": true
     },
-    "Card_Background_color": {
+    "cardBackgroundColor": {
       "type": "enumeration",
       "enum": [
         "Bright Yellow"

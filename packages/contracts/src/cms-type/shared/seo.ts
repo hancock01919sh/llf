@@ -23,3 +23,5 @@ export const SeoDeepRef = z.object({
 export type SeoDeepRef = z.infer<typeof SeoDeepRef>;
 
 export type Seo = z.infer<typeof Seo>;
+
+export type SeoRef = z.infer<typeof SeoRef>;

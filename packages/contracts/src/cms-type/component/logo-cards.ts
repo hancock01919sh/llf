@@ -6,36 +6,38 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const LogoCards = z.object({
   __component: z.literal('component.logo-cards'),
   id: z.number().int(),
-  Title: z.string(),
-  Description: z.string(),
-  Image_Desktop: nullish(Media.array()),
-  Background_color: z.enum(['paper', 'forest']),
-  Image_Mobile: nullish(Media.array()),
+  title: z.string(),
+  description: z.string(),
+  imageDesktop: nullish(Media.array()),
+  backgroundColor: z.enum(['paper', 'forest']),
+  imageMobile: nullish(Media.array()),
   isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export const LogoCardsRef = z.object({
   __component: z.literal('component.logo-cards'),
   id: z.number().int(),
-  Title: z.string(),
-  Description: z.string(),
-  Image_Desktop: nullish(Media.array()),
-  Background_color: z.enum(['paper', 'forest']),
-  Image_Mobile: nullish(Media.array()),
+  title: z.string(),
+  description: z.string(),
+  imageDesktop: nullish(Media.array()),
+  backgroundColor: z.enum(['paper', 'forest']),
+  imageMobile: nullish(Media.array()),
   isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export const LogoCardsDeepRef = z.object({
   __component: z.literal('component.logo-cards'),
   id: z.number().int(),
-  Title: z.string(),
-  Description: z.string(),
-  Image_Desktop: nullish(Media.array()),
-  Background_color: z.enum(['paper', 'forest']),
-  Image_Mobile: nullish(Media.array()),
+  title: z.string(),
+  description: z.string(),
+  imageDesktop: nullish(Media.array()),
+  backgroundColor: z.enum(['paper', 'forest']),
+  imageMobile: nullish(Media.array()),
   isFullwidth: nullish(z.boolean().default(false)),
 });
 
 export type LogoCardsDeepRef = z.infer<typeof LogoCardsDeepRef>;
 
 export type LogoCards = z.infer<typeof LogoCards>;
+
+export type LogoCardsRef = z.infer<typeof LogoCardsRef>;

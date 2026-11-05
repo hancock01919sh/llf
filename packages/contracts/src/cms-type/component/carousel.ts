@@ -35,3 +35,5 @@ export const CarouselDeepRef = z.object({
 export type CarouselDeepRef = z.infer<typeof CarouselDeepRef>;
 
 export type Carousel = z.infer<typeof Carousel>;
+
+export type CarouselRef = z.infer<typeof CarouselRef>;

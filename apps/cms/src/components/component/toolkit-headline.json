@@ -5,20 +5,20 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "string",
       "required": true
     },
-    "Description": {
+    "description": {
       "type": "text",
       "required": true
     },
-    "CTA": {
+    "cta": {
       "type": "component",
       "component": "shared.links",
       "repeatable": false
     },
-    "File": {
+    "file": {
       "type": "media",
       "multiple": false,
       "allowedTypes": [

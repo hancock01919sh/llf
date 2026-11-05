@@ -32,3 +32,5 @@ export const PageDeepRef = z.object({
 export type PageDeepRef = z.infer<typeof PageDeepRef>;
 
 export type Page = z.infer<typeof Page>;
+
+export type PageRef = z.infer<typeof PageRef>;

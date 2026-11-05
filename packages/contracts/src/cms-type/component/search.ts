@@ -47,3 +47,5 @@ export const SearchDeepRef = z.object({
 export type SearchDeepRef = z.infer<typeof SearchDeepRef>;
 
 export type Search = z.infer<typeof Search>;
+
+export type SearchRef = z.infer<typeof SearchRef>;
