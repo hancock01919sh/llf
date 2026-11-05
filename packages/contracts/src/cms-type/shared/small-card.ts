@@ -13,4 +13,11 @@ export const SmallCardRef = z.object({
   Image: nullish(Media),
 });
 
+export const SmallCardDeepRef = z.object({
+  Title: z.string(),
+  Image: nullish(Media),
+});
+
+export type SmallCardDeepRef = z.infer<typeof SmallCardDeepRef>;
+
 export type SmallCard = z.infer<typeof SmallCard>;

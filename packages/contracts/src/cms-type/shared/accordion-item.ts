@@ -12,4 +12,11 @@ export const AccordionItemRef = z.object({
   description: nullish(z.string()),
 });
 
+export const AccordionItemDeepRef = z.object({
+  label: z.string(),
+  description: nullish(z.string()),
+});
+
+export type AccordionItemDeepRef = z.infer<typeof AccordionItemDeepRef>;
+
 export type AccordionItem = z.infer<typeof AccordionItem>;

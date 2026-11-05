@@ -13,4 +13,11 @@ export const IngredientCardRef = z.object({
   Image: nullish(Media),
 });
 
+export const IngredientCardDeepRef = z.object({
+  Title: z.string(),
+  Image: nullish(Media),
+});
+
+export type IngredientCardDeepRef = z.infer<typeof IngredientCardDeepRef>;
+
 export type IngredientCard = z.infer<typeof IngredientCard>;
