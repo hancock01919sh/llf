@@ -9,9 +9,9 @@
     "seo": null,
     "load": {
       "id": 2,
-      "Title": "Finding ways to waste less of the food you love.",
-      "Statement": "Extracting ingredients...",
-      "Background_color": "forest",
+      "title": "Finding ways to waste less of the food you love.",
+      "statement": "Extracting ingredients...",
+      "backgroundColor": "forest",
       "isFullwidth": false
     }
   },

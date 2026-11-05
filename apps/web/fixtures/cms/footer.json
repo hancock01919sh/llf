@@ -57,37 +57,37 @@
     "iconLink": [
       {
         "id": 4,
-        "Label": "Instagram",
+        "label": "Instagram",
         "href": "https://www.instagram.com/"
       },
       {
         "id": 5,
-        "Label": "Tiktok",
+        "label": "Tiktok",
         "href": "https://www.tiktok.com/"
       },
       {
         "id": 6,
-        "Label": "Youtube",
+        "label": "Youtube",
         "href": "https://www.youtube.com/"
       }
     ],
     "overlayLink": [
       {
         "id": 4,
-        "Label": "Terms of Use",
-        "Overlay_description": null,
+        "label": "Terms of Use",
+        "overlayDescription": null,
         "href": null
       },
       {
         "id": 5,
-        "Label": "Privacy Policy",
-        "Overlay_description": null,
+        "label": "Privacy Policy",
+        "overlayDescription": null,
         "href": null
       },
       {
         "id": 6,
-        "Label": "Manage Preferences",
-        "Overlay_description": null,
+        "label": "Manage Preferences",
+        "overlayDescription": null,
         "href": null
       }
     ]

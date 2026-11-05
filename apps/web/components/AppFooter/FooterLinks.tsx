@@ -6,12 +6,12 @@ export function FooterLinks({ overlayLink }: { overlayLink: cmsType.shared.Overl
       {overlayLink?.map((item) => (
         <a
           href={item.href || '#'}
-          key={item.Label}
+          key={item.label}
           className="underline text-subhead-sm cursor-pointer"
           target="_blank"
           rel="noopener noreferrer"
         >
-          {item.Label}
+          {item.label}
         </a>
       ))}
     </div>
