@@ -3,8 +3,6 @@ import { z } from 'zod';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const Loading = z.object({
-  __component: z.literal('component.loading'),
-  id: z.number().int(),
   Title: z.string(),
   Statement: nullish(z.string()),
   Background_color: z.enum(['forest']),
@@ -12,8 +10,6 @@ export const Loading = z.object({
 });
 
 export const LoadingRef = z.object({
-  __component: z.literal('component.loading'),
-  id: z.number().int(),
   Title: z.string(),
   Statement: nullish(z.string()),
   Background_color: z.enum(['forest']),
@@ -21,8 +17,6 @@ export const LoadingRef = z.object({
 });
 
 export const LoadingDeepRef = z.object({
-  __component: z.literal('component.loading'),
-  id: z.number().int(),
   Title: z.string(),
   Statement: nullish(z.string()),
   Background_color: z.enum(['forest']),
