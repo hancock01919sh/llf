@@ -1,0 +1,56 @@
+{
+  "collectionName": "components_component_headers",
+  "info": {
+    "displayName": "Header"
+  },
+  "options": {},
+  "attributes": {
+    "Title": {
+      "type": "string",
+      "required": true
+    },
+    "SubTitle": {
+      "type": "string",
+      "required": true
+    },
+    "Description": {
+      "type": "text",
+      "required": true
+    },
+    "Image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "Background_color": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "terra",
+        "forest"
+      ]
+    },
+    "Add_background_color": {
+      "type": "boolean",
+      "default": false
+    },
+    "Position_of_Adding_BgColor": {
+      "type": "enumeration",
+      "enum": [
+        "up",
+        "down"
+      ]
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "config": {}
+}

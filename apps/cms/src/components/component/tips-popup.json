@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_component_tips_popups",
+  "info": {
+    "displayName": "Tips Popup"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "link": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_shared_iconlinks",
+  "info": {
+    "displayName": "iconlink"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "href": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

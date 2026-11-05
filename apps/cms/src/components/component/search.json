@@ -1,0 +1,51 @@
+{
+  "collectionName": "components_component_searches",
+  "info": {
+    "displayName": "Search"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "placeholder": {
+      "type": "string",
+      "required": true
+    },
+    "statement": {
+      "type": "blocks",
+      "required": true
+    },
+    "hint": {
+      "type": "text",
+      "required": true
+    },
+    "button": {
+      "type": "component",
+      "component": "shared.links",
+      "repeatable": false
+    },
+    "popup": {
+      "type": "component",
+      "component": "component.tips-popup",
+      "repeatable": false,
+      "required": false
+    },
+    "isFullwidth": {
+      "type": "boolean",
+      "default": false
+    },
+    "backgroundColor": {
+      "type": "enumeration",
+      "enum": [
+        "paper"
+      ]
+    }
+  },
+  "config": {}
+}
