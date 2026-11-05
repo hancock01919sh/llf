@@ -38,3 +38,5 @@ export const ToolSpotlightDeepRef = z.object({
 export type ToolSpotlightDeepRef = z.infer<typeof ToolSpotlightDeepRef>;
 
 export type ToolSpotlight = z.infer<typeof ToolSpotlight>;
+
+export type ToolSpotlightRef = z.infer<typeof ToolSpotlightRef>;

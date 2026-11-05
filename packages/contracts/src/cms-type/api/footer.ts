@@ -33,3 +33,5 @@ export const FooterDeepRef = z.object({
 export type FooterDeepRef = z.infer<typeof FooterDeepRef>;
 
 export type Footer = z.infer<typeof Footer>;
+
+export type FooterRef = z.infer<typeof FooterRef>;

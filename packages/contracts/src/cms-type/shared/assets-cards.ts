@@ -5,13 +5,13 @@ import { Media } from '../media';
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const AssetsCards = z.object({
-  Title: z.string(),
-  Description: z.string(),
-  Label: z.string(),
-  Image: Media,
-  CTA: nullish(z.lazy(() => LinksRef)),
-  File: nullish(Media),
-  Display_Mode: z.enum([
+  title: z.string(),
+  description: z.string(),
+  label: z.string(),
+  image: Media,
+  cta: nullish(z.lazy(() => LinksRef)),
+  file: nullish(Media),
+  displayMode: z.enum([
     'aspect-16/9',
     'aspect-9/16',
     'aspect-4/5',
@@ -21,12 +21,12 @@ export const AssetsCards = z.object({
 });
 
 export const AssetsCardsRef = z.object({
-  Title: z.string(),
-  Description: z.string(),
-  Label: z.string(),
-  Image: Media,
-  File: nullish(Media),
-  Display_Mode: z.enum([
+  title: z.string(),
+  description: z.string(),
+  label: z.string(),
+  image: Media,
+  file: nullish(Media),
+  displayMode: z.enum([
     'aspect-16/9',
     'aspect-9/16',
     'aspect-4/5',
@@ -36,13 +36,13 @@ export const AssetsCardsRef = z.object({
 });
 
 export const AssetsCardsDeepRef = z.object({
-  Title: z.string(),
-  Description: z.string(),
-  Label: z.string(),
-  Image: Media,
-  CTA: nullish(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
-  File: nullish(Media),
-  Display_Mode: z.enum([
+  title: z.string(),
+  description: z.string(),
+  label: z.string(),
+  image: Media,
+  cta: nullish(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
+  file: nullish(Media),
+  displayMode: z.enum([
     'aspect-16/9',
     'aspect-9/16',
     'aspect-4/5',
@@ -54,3 +54,5 @@ export const AssetsCardsDeepRef = z.object({
 export type AssetsCardsDeepRef = z.infer<typeof AssetsCardsDeepRef>;
 
 export type AssetsCards = z.infer<typeof AssetsCards>;
+
+export type AssetsCardsRef = z.infer<typeof AssetsCardsRef>;

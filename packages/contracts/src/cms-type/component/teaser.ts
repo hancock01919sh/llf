@@ -33,3 +33,5 @@ export const TeaserDeepRef = z.object({
 export type TeaserDeepRef = z.infer<typeof TeaserDeepRef>;
 
 export type Teaser = z.infer<typeof Teaser>;
+
+export type TeaserRef = z.infer<typeof TeaserRef>;

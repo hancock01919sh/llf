@@ -23,3 +23,5 @@ export const OverlayLinkDeepRef = z.object({
 export type OverlayLinkDeepRef = z.infer<typeof OverlayLinkDeepRef>;
 
 export type OverlayLink = z.infer<typeof OverlayLink>;
+
+export type OverlayLinkRef = z.infer<typeof OverlayLinkRef>;

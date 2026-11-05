@@ -5,15 +5,15 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "string",
       "required": true
     },
-    "Description": {
+    "description": {
       "type": "text",
       "required": true
     },
-    "Image": {
+    "image": {
       "type": "media",
       "multiple": false,
       "required": true,
@@ -24,14 +24,14 @@
         "audios"
       ]
     },
-    "Make_Image_left": {
+    "makeImageLeft": {
       "type": "boolean"
     },
-    "Add_Background_Color": {
+    "addBackgroundColor": {
       "type": "boolean",
       "default": false
     },
-    "Position_of_Adding_BgColor": {
+    "positionOfAddingBgColor": {
       "type": "enumeration",
       "enum": [
         "Up ",
@@ -42,7 +42,7 @@
       "type": "boolean",
       "default": false
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
       "required": true,
       "enum": [

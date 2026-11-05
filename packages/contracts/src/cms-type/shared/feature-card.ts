@@ -21,3 +21,5 @@ export const FeatureCardDeepRef = z.object({
 export type FeatureCardDeepRef = z.infer<typeof FeatureCardDeepRef>;
 
 export type FeatureCard = z.infer<typeof FeatureCard>;
+
+export type FeatureCardRef = z.infer<typeof FeatureCardRef>;

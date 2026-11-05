@@ -32,3 +32,5 @@ export const LinksDeepRef = z.object({
 export type LinksDeepRef = z.infer<typeof LinksDeepRef>;
 
 export type Links = z.infer<typeof Links>;
+
+export type LinksRef = z.infer<typeof LinksRef>;

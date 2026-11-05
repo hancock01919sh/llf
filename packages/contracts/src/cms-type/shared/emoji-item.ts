@@ -20,3 +20,5 @@ export const EmojiItemDeepRef = z.object({
 export type EmojiItemDeepRef = z.infer<typeof EmojiItemDeepRef>;
 
 export type EmojiItem = z.infer<typeof EmojiItem>;
+
+export type EmojiItemRef = z.infer<typeof EmojiItemRef>;

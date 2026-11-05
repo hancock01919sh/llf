@@ -20,3 +20,5 @@ export const TitleDeepRef = z.object({
 export type TitleDeepRef = z.infer<typeof TitleDeepRef>;
 
 export type Title = z.infer<typeof Title>;
+
+export type TitleRef = z.infer<typeof TitleRef>;

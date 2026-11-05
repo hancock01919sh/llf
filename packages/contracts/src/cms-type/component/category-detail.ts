@@ -18,6 +18,7 @@ export const CategoryDetail = z.object({
   popup: nullish(z.lazy(() => TipsPopupRef)),
   isFullwidth: nullish(z.boolean().default(false)),
   backgroundColor: z.enum(['forest']),
+  hint: nullish(z.string()),
 });
 
 export const CategoryDetailRef = z.object({
@@ -29,6 +30,7 @@ export const CategoryDetailRef = z.object({
   subTitle: nullish(z.string()),
   isFullwidth: nullish(z.boolean().default(false)),
   backgroundColor: z.enum(['forest']),
+  hint: nullish(z.string()),
 });
 
 export const CategoryDetailDeepRef = z.object({
@@ -43,8 +45,11 @@ export const CategoryDetailDeepRef = z.object({
   popup: nullish(z.lazy((): z.ZodType<TipsPopupDeepRef> => TipsPopupDeepRef)),
   isFullwidth: nullish(z.boolean().default(false)),
   backgroundColor: z.enum(['forest']),
+  hint: nullish(z.string()),
 });
 
 export type CategoryDetailDeepRef = z.infer<typeof CategoryDetailDeepRef>;
 
 export type CategoryDetail = z.infer<typeof CategoryDetail>;
+
+export type CategoryDetailRef = z.infer<typeof CategoryDetailRef>;

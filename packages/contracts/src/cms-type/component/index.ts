@@ -6,7 +6,6 @@ export * from './category-carousel-feature';
 export * from './category-detail';
 export * from './category-emoji';
 export * from './content-spotlight';
-export * from './footer';
 export * from './guide';
 export * from './header';
 export * from './hero';

@@ -27,3 +27,5 @@ export const InputCardDeepRef = z.object({
 export type InputCardDeepRef = z.infer<typeof InputCardDeepRef>;
 
 export type InputCard = z.infer<typeof InputCard>;
+
+export type InputCardRef = z.infer<typeof InputCardRef>;

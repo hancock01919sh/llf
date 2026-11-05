@@ -7,29 +7,31 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const ToolkitHeadline = z.object({
   __component: z.literal('component.toolkit-headline'),
   id: z.number().int(),
-  Title: z.string(),
-  Description: z.string(),
-  CTA: nullish(z.lazy(() => LinksRef)),
-  File: nullish(Media),
+  title: z.string(),
+  description: z.string(),
+  cta: nullish(z.lazy(() => LinksRef)),
+  file: nullish(Media),
 });
 
 export const ToolkitHeadlineRef = z.object({
   __component: z.literal('component.toolkit-headline'),
   id: z.number().int(),
-  Title: z.string(),
-  Description: z.string(),
-  File: nullish(Media),
+  title: z.string(),
+  description: z.string(),
+  file: nullish(Media),
 });
 
 export const ToolkitHeadlineDeepRef = z.object({
   __component: z.literal('component.toolkit-headline'),
   id: z.number().int(),
-  Title: z.string(),
-  Description: z.string(),
-  CTA: nullish(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
-  File: nullish(Media),
+  title: z.string(),
+  description: z.string(),
+  cta: nullish(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
+  file: nullish(Media),
 });
 
 export type ToolkitHeadlineDeepRef = z.infer<typeof ToolkitHeadlineDeepRef>;
 
 export type ToolkitHeadline = z.infer<typeof ToolkitHeadline>;
+
+export type ToolkitHeadlineRef = z.infer<typeof ToolkitHeadlineRef>;

@@ -23,3 +23,5 @@ export const CtaDeepRef = z.object({
 export type CtaDeepRef = z.infer<typeof CtaDeepRef>;
 
 export type Cta = z.infer<typeof Cta>;
+
+export type CtaRef = z.infer<typeof CtaRef>;
