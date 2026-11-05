@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { LoadingRef, LoadingDeepRef, Loading } from '../component/loading';
+import { LoadingDeepRef, Loading } from '../component/loading';
 import { SeoRef, SeoDeepRef } from '../shared/seo';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
