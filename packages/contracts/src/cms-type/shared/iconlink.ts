@@ -15,4 +15,12 @@ export const IconlinkRef = z.object({
   href: nullish(z.string()),
 });
 
+export const IconlinkDeepRef = z.object({
+  Label: z.string(),
+  Image: Media,
+  href: nullish(z.string()),
+});
+
+export type IconlinkDeepRef = z.infer<typeof IconlinkDeepRef>;
+
 export type Iconlink = z.infer<typeof Iconlink>;

@@ -16,20 +16,20 @@
         "videos"
       ]
     },
-    "Link": {
+    "link": {
       "type": "component",
       "component": "shared.links",
       "repeatable": true
     },
-    "Description": {
+    "description": {
       "type": "text",
       "required": true
     },
-    "Title": {
+    "title": {
       "type": "blocks",
       "required": true
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
       "required": true,
       "enum": [

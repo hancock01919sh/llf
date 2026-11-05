@@ -23,7 +23,7 @@ export function ToolHeader(props: BlockProps<cmsType.component.ToolInput>) {
           </div>
           <UIVideo
             className="mt-10 lg:mt-0 aspect-363/272 lg:aspect-538/698  rounded-md lg:w-2/5"
-            src={props.block.image.url || ''}
+            src={props.block.image?.url || ''}
           />
         </div>
       </div>

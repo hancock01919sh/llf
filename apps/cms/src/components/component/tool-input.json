@@ -17,17 +17,6 @@
       "type": "text",
       "required": true
     },
-    "image": {
-      "type": "media",
-      "multiple": false,
-      "required": true,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
-    },
     "cardTitle": {
       "type": "string",
       "required": true
@@ -62,6 +51,16 @@
     "isFullwidth": {
       "type": "boolean",
       "default": false
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     }
   },
   "config": {}

@@ -42,7 +42,7 @@ export const blocks = {
   'custom.tip-list': entry({ schema: cms.TipListBlock, Component: TipList, type: 'tip-list' }),
   'custom.tool': entry({ schema: cms.ToolBlock, Component: FindMyTips, type: 'tool' }),
   'component.tool-input': entry({
-    schema: cmsType.component.ToolInput,
+    schema: cmsType.component.ToolInputDeepRef,
     Component: BlockToolInput,
     type: 'tool-input',
     surface: 'paper',

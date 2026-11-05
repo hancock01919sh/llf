@@ -4,7 +4,7 @@ import { Anchor } from './Anchor';
 import type { BlockProps } from '../types';
 import type { cmsType } from '@llf/contracts';
 const IconComponent = [IconWork1, IconWork2, IconWork3];
-export function ToolBody(props: BlockProps<cmsType.component.ToolInput>) {
+export function ToolBody(props: BlockProps<cmsType.component.ToolInputDeepRef>) {
   return (
     <div className="px-gutter lg:px-gutter-lg max-w-page mx-auto pt-12 pb-15 lg:pb-25">
       <div className="lg:w-2/3 mx-auto lg:text-center">
