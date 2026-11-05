@@ -12,25 +12,30 @@
   "pluginOptions": {},
   "attributes": {
     "title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "link": {
       "type": "component",
       "component": "shared.links",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     },
     "iconLink": {
       "type": "component",
       "component": "shared.iconlink",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     },
     "legalCopy": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "overlayLink": {
       "type": "component",
       "component": "shared.overlay-link",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     }
   }
 }

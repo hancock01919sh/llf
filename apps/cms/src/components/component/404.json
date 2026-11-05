@@ -5,18 +5,21 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
-      "type": "string"
+    "title": {
+      "type": "string",
+      "required": true
     },
-    "Description": {
-      "type": "text"
+    "description": {
+      "type": "text",
+      "required": true
     },
     "isFullwidth": {
       "type": "boolean",
       "default": false
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "forest"
       ]

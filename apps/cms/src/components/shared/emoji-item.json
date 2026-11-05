@@ -5,10 +5,11 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
-      "type": "string"
+    "title": {
+      "type": "string",
+      "required": true
     },
-    "Emoji": {
+    "emoji": {
       "type": "string"
     }
   },

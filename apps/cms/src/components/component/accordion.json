@@ -5,19 +5,23 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
-      "type": "string"
+    "title": {
+      "type": "string",
+      "required": true
     },
-    "SubTitle": {
-      "type": "string"
+    "subTitle": {
+      "type": "string",
+      "required": true
     },
-    "AccordionItem": {
+    "accordionItem": {
       "type": "component",
       "component": "shared.accordion-item",
-      "repeatable": true
+      "repeatable": true,
+      "required": true
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "forest-tint"
       ]

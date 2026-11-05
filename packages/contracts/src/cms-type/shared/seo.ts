@@ -14,4 +14,12 @@ export const SeoRef = z.object({
   metaDescription: nullish(z.string()),
 });
 
+export const SeoDeepRef = z.object({
+  metaTitle: nullish(z.string()),
+  metaKeywords: nullish(z.string()),
+  metaDescription: nullish(z.string()),
+});
+
+export type SeoDeepRef = z.infer<typeof SeoDeepRef>;
+
 export type Seo = z.infer<typeof Seo>;

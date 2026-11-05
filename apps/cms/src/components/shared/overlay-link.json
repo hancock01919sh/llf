@@ -6,7 +6,8 @@
   "options": {},
   "attributes": {
     "Label": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Overlay_description": {
       "type": "blocks"

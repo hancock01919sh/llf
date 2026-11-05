@@ -19,5 +19,11 @@ export const Block = z.object({
   text: z.string().optional(),
 });
 
+export const UnknownBlock = z.looseObject({
+  __component: z.string(),
+  id: z.number().int(),
+});
+
 export type Block = z.infer<typeof Block>;
 export type BlockChild = z.infer<typeof BlockChild>;
+export type UnknownBlock = z.infer<typeof UnknownBlock>;

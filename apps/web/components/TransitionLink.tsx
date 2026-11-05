@@ -19,11 +19,16 @@ export default function TransitionLink(props: Props) {
   return (
     <Link
       href={href || '#'}
-      onClick={() => {
+      onClick={(e) => {
+        e.preventDefault();
         if (pathname === href) {
           return;
         }
         const navigate = () => router.push(href);
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          navigate();
+          return;
+        }
         if ('startViewTransition' in document) {
           document.startViewTransition(navigate);
         } else {

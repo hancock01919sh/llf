@@ -5,49 +5,44 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
-      "type": "string"
+    "title": {
+      "type": "string",
+      "required": true
     },
-    "SubTitle": {
-      "type": "string"
+    "subTitle": {
+      "type": "string",
+      "required": true
     },
-    "Description": {
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "cardTitle": {
+      "type": "string",
+      "required": true
+    },
+    "cardDescription": {
       "type": "text"
     },
-    "Image": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
-    },
-    "CardTitle": {
-      "type": "string"
-    },
-    "CardDescription": {
-      "type": "text"
-    },
-    "Cards": {
+    "cards": {
       "type": "component",
       "component": "shared.input-card",
       "repeatable": true
     },
-    "Placeholder": {
+    "placeholder": {
       "type": "string"
     },
-    "Copy": {
+    "copy": {
       "type": "string"
     },
-    "Button": {
+    "button": {
       "type": "component",
       "component": "shared.links",
       "repeatable": true
     },
-    "Background_color": {
+    "backgroundColor": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "forest",
         "paper"
@@ -56,6 +51,16 @@
     "isFullwidth": {
       "type": "boolean",
       "default": false
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     }
   },
   "config": {}

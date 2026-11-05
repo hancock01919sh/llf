@@ -6,7 +6,8 @@
   "options": {},
   "attributes": {
     "Title": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "Image": {
       "type": "media",
