@@ -554,10 +554,10 @@
         {
           "__component": "component.404",
           "id": 3,
-          "Title": "Oops. We dropped the beet.",
-          "Description": "404 — Page not found",
+          "title": "Oops. We dropped the beet.",
+          "description": "404 — Page not found",
           "isFullwidth": false,
-          "Background_color": "forest"
+          "backgroundColor": "forest"
         }
       ],
       "seo": null

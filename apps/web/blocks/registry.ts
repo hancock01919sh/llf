@@ -8,13 +8,13 @@ import { LinkList } from './LinkList';
 import { SearchBox } from './SearchBox';
 import { Teaser } from './Teaser';
 import { TipList } from './TipList';
-import { ToolInput, ToolInputSchema } from './ToolInput';
-import { Accordion } from './Accordion';
+import { BlockToolInput } from './ToolInput';
+import { BlockAccordion } from './Accordion';
 import type { BlockProps } from './types';
 import type { Surface } from '@/components/ModuleBoundary';
-import { HighlightComponent, HighlightComponentSchema } from './HighlightComponent';
-import { CategoryDetailComponent, CategoryDetailSchema } from './CategoryDetail.tsx';
-import { NotFound } from './NotFound';
+import { BlockHighlightComponent } from './HighlightComponent';
+import { CategoryDetailComponent } from './CategoryDetail.tsx';
+import { BlockNotFound } from './NotFound';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -44,30 +44,30 @@ export const blocks = {
   'custom.tip-list': entry({ schema: cms.TipListBlock, Component: TipList, type: 'tip-list' }),
   'custom.tool': entry({ schema: cms.ToolBlock, Component: FindMyTips, type: 'tool' }),
   'component.tool-input': entry({
-    schema: ToolInputSchema,
-    Component: ToolInput,
+    schema: cmsType.component.ToolInputDeepRef,
+    Component: BlockToolInput,
     type: 'tool-input',
     surface: 'paper',
   }),
   'component.accordion': entry({
     schema: cmsType.component.Accordion,
-    Component: Accordion,
+    Component: BlockAccordion,
     type: 'accordion',
   }),
   'component.highlight-component': entry({
-    schema: HighlightComponentSchema,
-    Component: HighlightComponent,
+    schema: cmsType.component.HighlightComponent,
+    Component: BlockHighlightComponent,
     type: 'highlight-component',
   }),
   'component.category-detail': entry({
-    schema: CategoryDetailSchema,
+    schema: cmsType.component.CategoryDetailDeepRef,
     Component: CategoryDetailComponent,
     type: 'category-detail',
     surface: 'forest',
   }),
   'component.404': entry({
     schema: cmsType.component._404,
-    Component: NotFound,
+    Component: BlockNotFound,
     type: 'not-found',
   }),
 } as const;
