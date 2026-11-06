@@ -34,7 +34,7 @@ Status key: ✅ usable · ⚠️ partial or blocked · ❌ missing · ➖ not ne
 
 ## 2. Approved vendors
 
-Any new SaaS or tool needs **Ad Council IT approval** first [CONFIRMED]. Approved so far: **GitHub, AWS, Strapi, Anthropic** (the only authorized AI vendor). **OpenAI is not authorized** (confirmed Oct 19; earlier drafts said it was). Pending: **Render** for development, and **Google (Gemini)** for any use beyond ddd's dev/eval key (OPEN-2). Don't add any other third-party runtime service without raising it in the TDD first.
+Any new SaaS or tool needs **Ad Council IT approval** first [CONFIRMED]. Approved so far: **GitHub, AWS, Strapi, Anthropic**, and since Nov 6 **Google (Gemini)** on Vertex AI in Ad Council's own GCP project (TDD D37). **OpenAI is not authorized** (confirmed Oct 19; earlier drafts said it was). Pending: **Render** for development, and **Google (Gemini)** for any use beyond ddd's dev/eval key (OPEN-2). Don't add any other third-party runtime service without raising it in the TDD first.
 
 ## 3. Strapi repo findings (summary)
 
