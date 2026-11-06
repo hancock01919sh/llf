@@ -16,7 +16,7 @@ import { BlockHighlightComponent } from './HighlightComponent';
 import { CategoryDetailComponent, CategoryDetailWithSearchSchema } from './CategoryDetail.tsx';
 import { BlockNotFound } from './NotFound';
 import { BlockSearch } from './Search';
-import TipBanner from './TipBanner';
+import { BlockTipBanner } from './TipBanner';
 import { ToolSpotlight } from './ToolSpotlight';
 import { CategoryEmoji } from './CategoryEmoji';
 import { CategoryCarouselFeature } from './CategoryCarouselFeature';
@@ -24,6 +24,10 @@ import { BlockHeader } from './Header';
 import { BlockCarouselStandard } from './CarouselStandard';
 import { BlockIngredientCarousel } from './IngredientCarousel';
 import { BlockCarouselSmall } from './CarouselSmall';
+import { BlockTextAndImage55 } from './TextAndImage55';
+import { BlockContentSpotlight } from './ContentSpotlight';
+import { BlockTextAndImageCard } from './TextAndImageCard';
+import { BlockLogoCards } from './LogoCards';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -90,7 +94,7 @@ export const blocks = {
   }),
   'component.tip-banner': entry({
     schema: cmsType.component.TipBannerDeepRef,
-    Component: TipBanner,
+    Component: BlockTipBanner,
     type: 'tip-banner',
   }),
   'component.tool-spotlight': entry({
@@ -133,6 +137,26 @@ export const blocks = {
     Component: BlockCarouselSmall,
     type: 'carousel-small',
     isFullWidth: true,
+  }),
+  'component.5050-text-and-image': entry({
+    schema: cmsType.component._5050TextAndImageDeepRef,
+    Component: BlockTextAndImage55,
+    type: 'text-and-image-55',
+  }),
+  'component.content-spotlight': entry({
+    schema: cmsType.component.ContentSpotlightDeepRef,
+    Component: BlockContentSpotlight,
+    type: 'content-spotlight',
+  }),
+  'component.text-and-image-card': entry({
+    schema: cmsType.component.TextAndImageCardDeepRef,
+    Component: BlockTextAndImageCard,
+    type: 'text-and-image-card',
+  }),
+  'component.logo-cards': entry({
+    schema: cmsType.component.LogoCardsDeepRef,
+    Component: BlockLogoCards,
+    type: 'logo-cards',
   }),
 } as const;
 
