@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1640" height="1180" viewBox="0 0 1640 1180" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">
+  <title>Long Live Food: Phase B architecture on Ad Council AWS (TDD D36)</title>
+  <defs>
+    <marker id="a-site" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#16794A"/></marker>
+    <marker id="a-tool" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C2560F"/></marker>
+    <marker id="a-cms" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6D3FC0"/></marker>
+    <marker id="a-ci" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F5FBF"/></marker>
+    <marker id="a-ops" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B7280"/></marker>
+  </defs>
+
+  <rect width="1640" height="1180" fill="#FFFFFF"/>
+
+  <!-- Title -->
+  <text x="40" y="48" font-size="26" font-weight="700" fill="#111827">Long Live Food: Phase B on Ad Council AWS</text>
+  <text x="40" y="74" font-size="14" fill="#4B5563">TDD v0.3.27, decision D36 (Nov 6). Containers on ECS Fargate, no Lambda, no Elastic Beanstalk. Same topology for staging and prod, each with its own CMS and database. Dev stays on Render.</text>
+
+  <!-- Actors -->
+  <g font-size="13" fill="#111827">
+    <rect x="80" y="104" width="190" height="58" rx="10" fill="#F5F3FF" stroke="#6D3FC0"/>
+    <text x="175" y="128" text-anchor="middle" font-weight="600">CMS editors</text>
+    <text x="175" y="147" text-anchor="middle" font-size="11" fill="#4B5563">allow-listed IPs + Strapi login</text>
+
+    <rect x="800" y="104" width="220" height="58" rx="10" fill="#ECFDF3" stroke="#16794A"/>
+    <text x="910" y="128" text-anchor="middle" font-weight="600">Visitors</text>
+    <text x="910" y="147" text-anchor="middle" font-size="11" fill="#4B5563">longlivefood.org · anonymous</text>
+  </g>
+
+  <!-- AWS cloud -->
+  <rect x="40" y="186" width="1210" height="954" rx="16" fill="#FAFAFB" stroke="#9CA3AF" stroke-dasharray="6 4"/>
+  <text x="640" y="214" font-size="15" font-weight="700" fill="#374151">AWS · Ad Council account</text>
+
+  <!-- Edge band -->
+  <rect x="64" y="230" width="1162" height="118" rx="12" fill="#F3F4F6" stroke="#D1D5DB"/>
+  <text x="352" y="254" font-size="12" font-weight="700" fill="#6B7280" letter-spacing="0.5">GLOBAL EDGE</text>
+  <g font-size="13" fill="#111827">
+    <rect x="90" y="266" width="250" height="66" rx="10" fill="#FFFFFF" stroke="#6D3FC0" stroke-width="1.5"/>
+    <text x="215" y="292" text-anchor="middle" font-weight="600">CloudFront + WAF · CMS</text>
+    <text x="215" y="312" text-anchor="middle" font-size="11" fill="#4B5563">cms domain · WAF IP set on every path</text>
+
+    <rect x="470" y="266" width="220" height="66" rx="10" fill="#FFFFFF" stroke="#16794A" stroke-width="1.5"/>
+    <text x="580" y="292" text-anchor="middle" font-weight="600">CloudFront · media</text>
+    <text x="580" y="312" text-anchor="middle" font-size="11" fill="#4B5563">public, read-only (OAC)</text>
+
+    <rect x="780" y="266" width="260" height="66" rx="10" fill="#FFFFFF" stroke="#16794A" stroke-width="1.5"/>
+    <text x="910" y="292" text-anchor="middle" font-weight="600">CloudFront + WAF · site</text>
+    <text x="910" y="312" text-anchor="middle" font-size="11" fill="#4B5563">Bot Control · rate rules · Challenge</text>
+  </g>
+
+  <!-- Region -->
+  <rect x="64" y="368" width="1162" height="752" rx="12" fill="#FFFFFF" stroke="#D1D5DB"/>
+  <text x="84" y="392" font-size="12" font-weight="700" fill="#6B7280" letter-spacing="0.5">REGION us-east-1</text>
+
+  <!-- VPC -->
+  <rect x="84" y="404" width="1122" height="388" rx="12" fill="#F8FAFF" stroke="#93B4E8"/>
+  <text x="360" y="428" font-size="12" font-weight="700" fill="#1F5FBF" letter-spacing="0.5">VPC · 2 AZs · no NAT gateway</text>
+
+  <g font-size="13" fill="#111827">
+    <!-- ALBs -->
+    <rect x="100" y="446" width="230" height="56" rx="10" fill="#FFFFFF" stroke="#6D3FC0" stroke-width="1.5"/>
+    <text x="215" y="470" text-anchor="middle" font-weight="600">ALB · CMS</text>
+    <text x="215" y="488" text-anchor="middle" font-size="11" fill="#4B5563">CloudFront prefix list + origin header</text>
+
+    <rect x="795" y="446" width="230" height="56" rx="10" fill="#FFFFFF" stroke="#16794A" stroke-width="1.5"/>
+    <text x="910" y="470" text-anchor="middle" font-weight="600">ALB · app</text>
+    <text x="910" y="488" text-anchor="middle" font-size="11" fill="#4B5563">CloudFront prefix list + origin header</text>
+
+    <!-- Public subnet label -->
+    <text x="378" y="536" font-size="11" font-weight="700" fill="#6B7280" letter-spacing="0.5">PUBLIC SUBNETS</text>
+
+    <!-- Strapi -->
+    <rect x="100" y="550" width="260" height="92" rx="10" fill="#F5F3FF" stroke="#6D3FC0" stroke-width="1.5"/>
+    <text x="230" y="576" text-anchor="middle" font-weight="700">Strapi 5 CMS</text>
+    <text x="230" y="596" text-anchor="middle" font-size="11" fill="#4B5563">ECS Fargate · 1 task</text>
+    <text x="230" y="613" text-anchor="middle" font-size="11" fill="#4B5563">sg-strapi: 1337 from CMS ALB + sg-web</text>
+    <text x="230" y="630" text-anchor="middle" font-size="11" fill="#4B5563">admin via ECS Exec only</text>
+
+    <!-- Next.js -->
+    <rect x="760" y="550" width="300" height="92" rx="10" fill="#ECFDF3" stroke="#16794A" stroke-width="1.5"/>
+    <text x="910" y="576" text-anchor="middle" font-weight="700">Next.js server</text>
+    <text x="910" y="596" text-anchor="middle" font-size="11" fill="#4B5563">ECS Fargate · 2 tasks · SSR + ISR (60 s)</text>
+    <text x="910" y="613" text-anchor="middle" font-size="11" fill="#4B5563">/api/find-tips/* route handlers · safeFetch</text>
+    <text x="910" y="630" text-anchor="middle" font-size="11" fill="#4B5563">sg-web: 3000 from app ALB + sg-strapi</text>
+
+    <!-- Private subnet -->
+    <text x="104" y="676" font-size="11" font-weight="700" fill="#6B7280" letter-spacing="0.5">PRIVATE SUBNETS</text>
+    <rect x="100" y="688" width="260" height="84" rx="10" fill="#FFFFFF" stroke="#6D3FC0" stroke-width="1.5"/>
+    <text x="230" y="714" text-anchor="middle" font-weight="700">RDS Postgres 18</text>
+    <text x="230" y="733" text-anchor="middle" font-size="11" fill="#4B5563">backups · PITR · deletion protection</text>
+    <text x="230" y="750" text-anchor="middle" font-size="11" fill="#4B5563">sg-rds: 5432 from sg-strapi only</text>
+
+    <!-- S3 media (region, outside VPC) -->
+    <rect x="470" y="806" width="220" height="60" rx="10" fill="#FFFFFF" stroke="#16794A" stroke-width="1.5"/>
+    <text x="580" y="831" text-anchor="middle" font-weight="600">S3 · media</text>
+    <text x="580" y="850" text-anchor="middle" font-size="11" fill="#4B5563">private · uploads only via Strapi</text>
+  </g>
+
+  <!-- Ops band -->
+  <rect x="84" y="884" width="1122" height="96" rx="12" fill="#F9FAFB" stroke="#E5E7EB"/>
+  <text x="104" y="906" font-size="12" font-weight="700" fill="#6B7280" letter-spacing="0.5">SECURITY AND OPERATIONS</text>
+  <g font-size="12" fill="#111827" text-anchor="middle">
+    <rect x="104" y="918" width="160" height="46" rx="8" fill="#FFFFFF" stroke="#D1D5DB"/><text x="184" y="937" font-weight="600">Secrets Manager</text><text x="184" y="953" font-size="10" fill="#6B7280">keys, tokens, origin secret</text>
+    <rect x="280" y="918" width="160" height="46" rx="8" fill="#FFFFFF" stroke="#D1D5DB"/><text x="360" y="937" font-weight="600">CloudWatch</text><text x="360" y="953" font-size="10" fill="#6B7280">logs 30 days · alarms</text>
+    <rect x="456" y="918" width="160" height="46" rx="8" fill="#FFFFFF" stroke="#D1D5DB"/><text x="536" y="937" font-weight="600">SNS</text><text x="536" y="953" font-size="10" fill="#6B7280">alerts → Slack + email</text>
+    <rect x="632" y="918" width="160" height="46" rx="8" fill="#FFFFFF" stroke="#D1D5DB"/><text x="712" y="937" font-weight="600">AWS Budgets</text><text x="712" y="953" font-size="10" fill="#6B7280">spend + forecast</text>
+    <rect x="808" y="918" width="160" height="46" rx="8" fill="#FFFFFF" stroke="#D1D5DB"/><text x="888" y="937" font-weight="600">SSM parameters</text><text x="888" y="953" font-size="10" fill="#6B7280">kill switch · quota · model</text>
+    <rect x="984" y="918" width="200" height="46" rx="8" fill="#FFFFFF" stroke="#D1D5DB"/><text x="1084" y="937" font-weight="600">IAM + CloudTrail</text><text x="1084" y="953" font-size="10" fill="#6B7280">task roles · SSO (OPEN-3)</text>
+  </g>
+
+  <!-- CI/CD band -->
+  <rect x="84" y="996" width="1122" height="106" rx="12" fill="#EFF5FF" stroke="#93B4E8"/>
+  <text x="104" y="1018" font-size="12" font-weight="700" fill="#1F5FBF" letter-spacing="0.5">CI/CD · one CodePipeline per environment (staging, prod)</text>
+  <g font-size="12" fill="#111827" text-anchor="middle">
+    <rect x="104" y="1032" width="170" height="52" rx="8" fill="#FFFFFF" stroke="#1F5FBF"/><text x="189" y="1053" font-weight="600">GitHub</text><text x="189" y="1070" font-size="10" fill="#6B7280">staging / prod branches</text>
+    <rect x="320" y="1032" width="170" height="52" rx="8" fill="#FFFFFF" stroke="#1F5FBF"/><text x="405" y="1053" font-weight="600">CodeConnections</text><text x="405" y="1070" font-size="10" fill="#6B7280">GitHub App · no keys</text>
+    <rect x="536" y="1032" width="170" height="52" rx="8" fill="#FFFFFF" stroke="#1F5FBF"/><text x="621" y="1053" font-weight="600">CodePipeline</text><text x="621" y="1070" font-size="10" fill="#6B7280">prod: manual approval</text>
+    <rect x="752" y="1032" width="170" height="52" rx="8" fill="#FFFFFF" stroke="#1F5FBF"/><text x="837" y="1053" font-weight="600">CodeBuild</text><text x="837" y="1070" font-size="10" fill="#6B7280">tests · 2 images · cdk synth</text>
+    <rect x="968" y="1032" width="216" height="52" rx="8" fill="#FFFFFF" stroke="#1F5FBF"/><text x="1076" y="1053" font-weight="600">ECR → CDK → ECS deploy</text><text x="1076" y="1070" font-size="10" fill="#6B7280">rolling, circuit breaker</text>
+  </g>
+  <g stroke="#1F5FBF" stroke-width="1.6" fill="none">
+    <path d="M274 1058 H316" marker-end="url(#a-ci)"/>
+    <path d="M490 1058 H532" marker-end="url(#a-ci)"/>
+    <path d="M706 1058 H748" marker-end="url(#a-ci)"/>
+    <path d="M922 1058 H964" marker-end="url(#a-ci)"/>
+  </g>
+
+  <!-- External column -->
+  <g font-size="13" fill="#111827">
+    <text x="1280" y="214" font-size="15" font-weight="700" fill="#374151">Outside AWS</text>
+    <rect x="1280" y="266" width="320" height="66" rx="10" fill="#FFFFFF" stroke="#9CA3AF"/>
+    <text x="1440" y="292" text-anchor="middle" font-weight="600">GA4 + GTM</text>
+    <text x="1440" y="312" text-anchor="middle" font-size="11" fill="#4B5563">events only · no user input (§8)</text>
+
+    <rect x="1280" y="550" width="320" height="76" rx="10" fill="#FFF7ED" stroke="#C2560F" stroke-width="1.5"/>
+    <text x="1440" y="576" text-anchor="middle" font-weight="700">AI model provider</text>
+    <text x="1440" y="596" text-anchor="middle" font-size="11" fill="#4B5563">ingredient extraction only · US processing</text>
+    <text x="1440" y="613" text-anchor="middle" font-size="11" fill="#4B5563">production provider and key: OPEN-1</text>
+
+    <rect x="1280" y="660" width="320" height="66" rx="10" fill="#FFF7ED" stroke="#C2560F" stroke-width="1.5"/>
+    <text x="1440" y="686" text-anchor="middle" font-weight="700">Public recipe sites</text>
+    <text x="1440" y="705" text-anchor="middle" font-size="11" fill="#4B5563">JSON-LD first · blocked → 424</text>
+  </g>
+
+  <!-- Legend -->
+  <g font-size="12" fill="#374151">
+    <rect x="1280" y="790" width="320" height="214" rx="10" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <text x="1298" y="816" font-weight="700">Legend</text>
+    <line x1="1298" y1="840" x2="1338" y2="840" stroke="#16794A" stroke-width="2.5"/><text x="1350" y="844">Public site traffic</text>
+    <line x1="1298" y1="866" x2="1338" y2="866" stroke="#C2560F" stroke-width="2.5"/><text x="1350" y="870">Find My Tips (/api/find-tips/*)</text>
+    <line x1="1298" y1="892" x2="1338" y2="892" stroke="#6D3FC0" stroke-width="2.5"/><text x="1350" y="896">CMS editing and content reads</text>
+    <line x1="1298" y1="918" x2="1338" y2="918" stroke="#1F5FBF" stroke-width="2.5"/><text x="1350" y="922">CI/CD</text>
+    <line x1="1298" y1="944" x2="1338" y2="944" stroke="#6B7280" stroke-width="2.5" stroke-dasharray="5 4"/><text x="1350" y="948">Publish → refresh</text>
+    <text x="1298" y="976" font-size="11" fill="#6B7280">User input is processed in memory and</text>
+    <text x="1298" y="991" font-size="11" fill="#6B7280">never stored or logged. Visitors never reach Strapi.</text>
+  </g>
+
+  <!-- Flows: site -->
+  <g stroke="#16794A" stroke-width="2" fill="none">
+    <path d="M910 162 V262" marker-end="url(#a-site)"/>
+    <path d="M910 332 V442" marker-end="url(#a-site)"/>
+    <path d="M910 502 V546" marker-end="url(#a-site)"/>
+    <path d="M800 140 H580 V262" marker-end="url(#a-site)"/>
+    <path d="M580 332 V802" marker-end="url(#a-site)"/>
+  </g>
+  <text x="920" y="214" font-size="11" fill="#16794A">HTTPS</text>
+  <text x="920" y="392" font-size="11" fill="#16794A">pages + /api/*</text>
+  <text x="590" y="182" font-size="11" fill="#16794A">images</text>
+
+  <!-- Flows: CMS -->
+  <g stroke="#6D3FC0" stroke-width="2" fill="none">
+    <path d="M175 162 V262" marker-end="url(#a-cms)"/>
+    <path d="M215 332 V442" marker-end="url(#a-cms)"/>
+    <path d="M215 502 V546" marker-end="url(#a-cms)"/>
+    <path d="M230 642 V684" marker-end="url(#a-cms)"/>
+    <path d="M360 610 H520 V802" marker-end="url(#a-cms)"/>
+    <path d="M756 580 H364" marker-end="url(#a-cms)"/>
+  </g>
+  <text x="372" y="572" font-size="11" fill="#6D3FC0">content reads · read-only token</text>
+  <text x="370" y="604" font-size="11" fill="#6D3FC0">uploads</text>
+
+  <!-- Flows: publish refresh -->
+  <g stroke="#6B7280" stroke-width="1.8" fill="none" stroke-dasharray="6 4">
+    <path d="M364 628 H756" marker-end="url(#a-ops)"/>
+    <path d="M1060 560 H1110 V300 H1044" marker-end="url(#a-ops)"/>
+  </g>
+  <text x="596" y="660" font-size="11" fill="#6B7280">publish webhook → POST /api/hooks/publish</text>
+  <text x="1118" y="430" font-size="11" fill="#6B7280">invalidate</text>
+
+  <!-- Flows: tool -->
+  <g stroke="#C2560F" stroke-width="2" fill="none">
+    <path d="M1060 590 H1276" marker-end="url(#a-tool)"/>
+    <path d="M1060 625 H1180 V693 H1276" marker-end="url(#a-tool)"/>
+  </g>
+  <text x="1150" y="582" font-size="11" fill="#C2560F">extract</text>
+  <text x="1190" y="686" font-size="11" fill="#C2560F">safeFetch</text>
+
+  <!-- Flows: analytics -->
+  <path d="M1020 120 H1440 V262" stroke="#6B7280" stroke-width="1.6" fill="none" marker-end="url(#a-ops)"/>
+  <text x="1180" y="112" font-size="11" fill="#6B7280">browser → GA4 (consent mode)</text>
+
+  <!-- Flows: deploy to ECS -->
+  <path d="M1076 1032 V1010 H1230 V600 H1064" stroke="#1F5FBF" stroke-width="1.6" fill="none" marker-end="url(#a-ci)" opacity="0.8"/>
+  <text x="1236" y="760" font-size="11" fill="#1F5FBF" transform="rotate(90 1236 760)">deploy</text>
+</svg>
