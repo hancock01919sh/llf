@@ -134,7 +134,6 @@ export const blocks = {
     type: 'carousel-small',
     isFullWidth: true,
   }),
-
 } as const;
 
 export type BlockKey = keyof typeof blocks;

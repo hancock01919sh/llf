@@ -2,7 +2,7 @@
 import { carouselConfig } from '@/lib/const';
 import { Typography } from '@/components/Typography';
 import { IconCarouselNavigation } from '@/components/Icon';
-import { EasyImage, UIImage } from '@/components/UIImage';
+import { EasyImage } from '@/components/UIImage';
 import { useRef, useState, useEffect } from 'react';
 import { Pagination, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';

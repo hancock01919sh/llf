@@ -2,7 +2,6 @@
 import { Typography } from '@/components/Typography';
 import { useEffect, useRef, useState } from 'react';
 import { useAdjacent } from '@/components/hooks/useAdjacent';
-import { rgbToHex } from '@/lib/utils';
 import { UIVideo } from '@/components/UIVideo';
 import type { BlockProps } from './types';
 import type { cmsType } from '@llf/contracts';
@@ -41,6 +40,7 @@ export function BlockHeader(props: BlockProps<cmsType.component.Header>) {
             {subTitle}
           </Typography>
           <Typography
+            as="h1"
             className={`mt-10 lg:mt-6.25  ${hasImage ? 'lg:mt-10!' : ''}`}
             variant="headline-lg"
           >

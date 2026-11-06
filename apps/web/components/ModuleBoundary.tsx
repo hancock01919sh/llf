@@ -31,7 +31,7 @@ export function ModuleBoundary({
   children,
   isFullwidth,
 }: ModuleBoundaryProps) {
-  const lgFullWidth = ['tool-input','highlight-component']
+  const lgFullWidth = ['tool-input', 'highlight-component'];
   return (
     <section
       data-module-type={type}
@@ -44,7 +44,7 @@ export function ModuleBoundary({
         className={cn(
           'lg:max-w-page mx-auto lg:px-gutter-lg',
           `${isFullwidth ? 'w-full px-0' : 'px-gutter'}`,
-          `${lgFullWidth.includes(type)? 'lg:px-0 lg:max-w-full' : ''}`,
+          `${lgFullWidth.includes(type) ? 'lg:px-0 lg:max-w-full' : ''}`,
           className,
         )}
       >

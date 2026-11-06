@@ -10,7 +10,7 @@ export function Loading({ open }: { open: boolean }) {
   const { global } = useContext(AppContext);
   return (
     <Popup open={open} className="bg-surface-paper lg:h-full" animationClass="opacity">
-      <Header className='bg-brand-forest!' />
+      <Header className="bg-brand-forest!" />
       <div className="bg-brand-forest h-dvh flex flex-col">
         <div className="flex-1 flex flex-col justify-center items-center gap-lg px-5 text-center">
           <IconWork2 className={`animate-[spin_3s_linear_infinite]`} />

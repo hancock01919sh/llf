@@ -139,13 +139,13 @@ const POPULATE = {
           },
         },
         'component.carousel-standard': {
-          populate:{
-            standardCard:{
-               populate:{
-                 image: ImagePopulate,
-               }
-            }
-          }
+          populate: {
+            standardCard: {
+              populate: {
+                image: ImagePopulate,
+              },
+            },
+          },
         },
         'component.ingredient-carousel': {
           populate: {
