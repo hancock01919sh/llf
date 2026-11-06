@@ -20,6 +20,10 @@ import TipBanner from './TipBanner';
 import { ToolSpotlight } from './ToolSpotlight';
 import { CategoryEmoji } from './CategoryEmoji';
 import { CategoryCarouselFeature } from './CategoryCarouselFeature';
+import { BlockHeader } from './Header';
+import { BlockCarouselStandard } from './CarouselStandard';
+import { BlockIngredientCarousel } from './IngredientCarousel';
+import { BlockCarouselSmall } from './CarouselSmall';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -104,6 +108,30 @@ export const blocks = {
     schema: cmsType.component.CategoryCarouselFeatureDeepRef,
     Component: CategoryCarouselFeature,
     type: 'category-carousel-feature',
+    isFullWidth: true,
+  }),
+  'component.header': entry({
+    schema: cmsType.component.Header,
+    Component: BlockHeader,
+    type: 'header',
+    isFullWidth: true,
+  }),
+  'component.carousel-standard': entry({
+    schema: cmsType.component.CarouselStandardDeepRef,
+    Component: BlockCarouselStandard,
+    type: 'carousel-standard',
+    isFullWidth: true,
+  }),
+  'component.ingredient-carousel': entry({
+    schema: cmsType.component.IngredientCarouselDeepRef,
+    Component: BlockIngredientCarousel,
+    type: 'ingredient-carousel',
+    isFullWidth: true,
+  }),
+  'component.carousel-small': entry({
+    schema: cmsType.component.CarouselSmallDeepRef,
+    Component: BlockCarouselSmall,
+    type: 'carousel-small',
     isFullWidth: true,
   }),
 } as const;

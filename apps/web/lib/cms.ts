@@ -133,6 +133,38 @@ const POPULATE = {
             link: true,
           },
         },
+        'component.header': {
+          populate: {
+            image: ImagePopulate,
+          },
+        },
+        'component.carousel-standard': {
+          populate: {
+            standardCard: {
+              populate: {
+                image: ImagePopulate,
+              },
+            },
+          },
+        },
+        'component.ingredient-carousel': {
+          populate: {
+            ingredientCard: {
+              populate: {
+                image: ImagePopulate,
+              },
+            },
+          },
+        },
+        'component.carousel-small': {
+          populate: {
+            smallCard: {
+              populate: {
+                image: ImagePopulate,
+              },
+            },
+          },
+        },
       },
     },
     seo: true,
