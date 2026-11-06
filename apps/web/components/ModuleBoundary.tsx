@@ -41,8 +41,8 @@ export function ModuleBoundary({
     >
       <div
         className={cn(
-          'max-w-page mx-auto',
-          `${isFullwidth ? 'w-full max-w-full' : 'px-gutter lg:px-gutter-lg'}`,
+          'lg:max-w-page mx-auto lg:px-gutter-lg',
+          `${isFullwidth ? 'w-full px-0' : 'px-gutter'}`,
           className,
         )}
       >
