@@ -42,6 +42,7 @@ export function ModuleBoundary({
       <div
         className={cn(
           'lg:max-w-page mx-auto lg:px-gutter-lg',
+          `${type === 'highlight-component'? 'lg:px-0' : ''}`,
           `${isFullwidth ? 'w-full px-0' : 'px-gutter'}`,
           className,
         )}

@@ -7,7 +7,7 @@ export function BlockHighlightComponent(props: BlockProps<cmsType.component.High
   const { image: backgroundImage, link, title, description } = props.block;
 
   return (
-    <div className={`w-full text-surface-paper lg:aspect-1440/865 lg:px-[5.625%] lg:py-[6.94%] `}>
+    <div className={`w-full text-surface-paper lg:aspect-1440/865 lg:px-20 lg:py-[6.94%] `}>
       <div
         className={`relative w-full h-full lg:rounded-[35px] overflow-hidden aspect-402/725 mx-auto max-w-page  `}
       >
