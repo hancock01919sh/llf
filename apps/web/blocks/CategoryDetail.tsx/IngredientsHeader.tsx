@@ -32,7 +32,7 @@ export function IngredientsHeader(
   return (
     <>
       <div
-        className={`${isSearch ? ' bg-surface-paper' : 'bg-brand-forest'} px-gutter lg:px-gutter-lg max-w-page  py-16 lg:text-center mx-auto lg:py-25 ${props.className || ''}`}
+        className={`${isSearch ? ' bg-surface-paper' : 'bg-brand-forest'} px-gutter lg:px-0 py-16 lg:text-center mx-auto lg:py-25 ${props.className || ''}`}
       >
         <Typography variant="eyebrow" className="font-bold lg:font-normal">
           {categoryData?.group?.title || props.subTitle}

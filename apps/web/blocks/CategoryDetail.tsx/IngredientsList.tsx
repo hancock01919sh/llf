@@ -73,7 +73,7 @@ export function IngredientsList(
     <>
       {/* {state.status === 'loading' && !isSearch && <Loading open={state.status === 'loading'} />} */}
       {state.status === 'ready' && finalIngredients.length > 0 && (
-        <div className={`lg:px-gutter-lg pb-gutter-lg max-w-page mx-auto`}>
+        <div className={`pb-gutter-lg`}>
           <Typography variant="paragraph-regular" className="px-5">
             {finalIngredients?.length} ingredients |{' '}
             {finalIngredients?.reduce((acc, cur) => acc + (cur.tips?.length || 0), 0)} tips

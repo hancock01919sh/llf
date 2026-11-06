@@ -18,7 +18,7 @@ export function CategoryCarouselFeature(
 ) {
   const { title, description, link, featureCard } = props.block;
   return (
-    <div className="py-15 lg:py-25 max-w-page mx-auto lg:px-gutter-lg">
+    <div className="py-15 lg:py-25">
       <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-5">
         <Typography
           variant="headline-lg"
