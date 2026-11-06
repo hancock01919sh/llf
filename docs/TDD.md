@@ -236,7 +236,7 @@ See [§12.3](#123-decision-deadlines).
 
 ![Phase B architecture on Ad Council AWS](./architecture/phase-b.svg)
 
-*Phase B at a glance (D36). Source: [`docs/architecture/phase-b.svg`](./architecture/phase-b.svg), also on the "Clean v2" page of the [Figma architecture file](https://www.figma.com/design/fbvFTow5YUbtCoXNfrQC4n/).*
+*Phase B at a glance (D36, D37). Source: the "LLF · Phase B · AWS + Google Cloud · D36/D37" frame in the [Figma architecture file](https://www.figma.com/design/fbvFTow5YUbtCoXNfrQC4n/?node-id=54-710), exported to [`docs/architecture/phase-b.svg`](./architecture/phase-b.svg). Edit it in Figma and re-export; AWS-style icons are stand-ins.*
 
 **Phase A: local + Render (ddd account), from now until AWS staging is ready** [TL DECISION]
 
