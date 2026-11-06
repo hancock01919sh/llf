@@ -42,8 +42,12 @@ To use a real model locally (TDD D33), add these to your git-ignored `.env`. Art
 ```sh
 AI_PROVIDER=gemini
 AI_MODEL=gemini-3.8-flash
-GEMINI_API_KEY=<from the secure share>
+GEMINI_VERTEX=1
+GOOGLE_CLOUD_PROJECT=iconic-indexer-513915-t1
+GOOGLE_CLOUD_LOCATION=us
+GEMINI_API_KEY=<the Vertex dev key, from the secure share>
 ```
+This calls Gemini on Vertex AI in Ad Council's Google Cloud project, on the US multi-region endpoint (TDD D37).
 Restart `pnpm dev`. From mainland China, the live API needs a VPN. Tests and CI always use mock.
 
 To try the tool:

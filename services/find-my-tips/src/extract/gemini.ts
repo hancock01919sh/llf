@@ -10,8 +10,13 @@ import {
   type ReasoningEffort,
 } from './types';
 
-// Google Gemini API adapter (TDD §7.4, §7.7). Dev and eval only, on ddd's own
-// key, pending acceptance (TDD D25). Uses JSON mode with the report_ingredients
+// Google Gemini adapter (TDD §7.4, §7.7). Two backends, chosen by env:
+// - Vertex AI in Ad Council's Google Cloud project (TDD D37): `vertex` set. Location
+//   `us` is the US multi-region endpoint, the default; `global` gives no data residency.
+//   Render dev and local use an API key bound to the llf-gemini-dev service account.
+// - The Gemini API on ddd's own key (eval arena only, TDD D25): no `vertex`.
+// Staging and prod sign in with Workload Identity Federation from the ECS task role
+// (TDD D37), passed in as `getAccessToken`. Uses JSON mode with the report_ingredients
 // schema, sends only the input and the system prompt, and never logs the input,
 // the model output, or the response body.
 //
@@ -31,8 +36,33 @@ export const GEMINI_THINKING_BUDGETS: Record<ReasoningEffort, number> = {
 
 export interface GeminiProviderOptions {
   apiKey?: string | undefined;
+  /** Vertex AI project and location (TDD D37). Unset = the Gemini API. */
+  vertex?: { project: string; location: string } | undefined;
+  /** OAuth token source for Vertex without a key (WIF in staging and prod). */
+  getAccessToken?: (() => Promise<string>) | undefined;
   baseUrl?: string;
   fetch?: typeof fetch;
+}
+
+/** Vertex host for a location: `global`, a multi-region (`us`, `eu`), or a region. */
+export function vertexHost(location: string): string {
+  if (location === 'global') return 'https://aiplatform.googleapis.com';
+  if (location === 'us' || location === 'eu')
+    return `https://aiplatform.${location}.rep.googleapis.com`;
+  return `https://${location}-aiplatform.googleapis.com`;
+}
+
+export function geminiUrl(options: GeminiProviderOptions, model: string): string {
+  const m = encodeURIComponent(model);
+  const { vertex } = options;
+  if (vertex) {
+    const base = (options.baseUrl ?? vertexHost(vertex.location)).replace(/\/+$/, '');
+    const project = encodeURIComponent(vertex.project);
+    const location = encodeURIComponent(vertex.location);
+    return `${base}/v1/projects/${project}/locations/${location}/publishers/google/models/${m}:generateContent`;
+  }
+  const base = (options.baseUrl ?? 'https://generativelanguage.googleapis.com').replace(/\/+$/, '');
+  return `${base}/v1beta/models/${m}:generateContent`;
 }
 
 interface GenerateContentResponse {
@@ -97,29 +127,26 @@ export function buildGeminiRequest(input: ExtractionInput, ctx: Omit<ExtractionC
 }
 
 export function createGeminiProvider(options: GeminiProviderOptions = {}): ExtractionProvider {
-  const baseUrl = (options.baseUrl ?? 'https://generativelanguage.googleapis.com').replace(
-    /\/+$/,
-    '',
-  );
   const doFetch = options.fetch ?? fetch;
 
   return {
     name: 'gemini',
     async extract(input, ctx): Promise<ProviderOutput> {
-      if (!options.apiKey) throw new ProviderNotConfiguredError('gemini');
+      const tokenSource = options.vertex ? options.getAccessToken : undefined;
+      let auth: Record<string, string>;
+      if (options.apiKey) auth = { 'x-goog-api-key': options.apiKey };
+      else if (tokenSource) auth = { authorization: `Bearer ${await tokenSource()}` };
+      else throw new ProviderNotConfiguredError('gemini');
 
-      const res = await doFetch(
-        `${baseUrl}/v1beta/models/${encodeURIComponent(ctx.model)}:generateContent`,
-        {
-          method: 'POST',
-          headers: {
-            'x-goog-api-key': options.apiKey,
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify(buildGeminiRequest(input, ctx)),
-          signal: ctx.signal,
+      const res = await doFetch(geminiUrl(options, ctx.model), {
+        method: 'POST',
+        headers: {
+          ...auth,
+          'content-type': 'application/json',
         },
-      );
+        body: JSON.stringify(buildGeminiRequest(input, ctx)),
+        signal: ctx.signal,
+      });
       if (!res.ok) {
         await res.body?.cancel();
         throw new Error(`gemini: HTTP ${res.status}`);

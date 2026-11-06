@@ -23,6 +23,13 @@ envVarGroups:
         value: p3
       - key: FIND_TIPS_MODE
         value: live
+      # Gemini on Vertex AI in Ad Council's Google Cloud project, US multi-region (TDD D37).
+      - key: GEMINI_VERTEX
+        value: '1'
+      - key: GOOGLE_CLOUD_PROJECT
+        value: iconic-indexer-513915-t1
+      - key: GOOGLE_CLOUD_LOCATION
+        value: us
       - key: QUOTA_DAILY_MODEL_CALLS
         value: '500'
 
@@ -105,7 +112,7 @@ services:
       # server.mjs passes it on unchanged, so the visitor is 2nd from the right (PROOF_DOC P4).
       - key: TRUSTED_PROXY_HOPS
         value: '2'
-      # ddd's Gemini key (dev only, TDD D25). Never commit a value.
+      # Vertex AI dev key bound to llf-gemini-dev in Ad Council's project (TDD D37). Never commit a value.
       - key: GEMINI_API_KEY
         sync: false
 

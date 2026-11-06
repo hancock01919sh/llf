@@ -76,6 +76,33 @@ describe('loadConfig', () => {
     expect(() => loadConfig({ GEMINI_API_KEY: 'g-secret', PORT: 'abc' })).not.toThrow(/g-secret/);
   });
 
+  it('turns on Gemini on Vertex AI with a project, defaulting to the US multi-region (D37)', () => {
+    expect(loadConfig({}).geminiVertex).toBeUndefined();
+    expect(loadConfig({ GOOGLE_CLOUD_PROJECT: 'p' }).geminiVertex).toBeUndefined();
+    expect(loadConfig({ GEMINI_VERTEX: '1', GOOGLE_CLOUD_PROJECT: 'p' }).geminiVertex).toEqual({
+      project: 'p',
+      location: 'us',
+    });
+    expect(
+      loadConfig({
+        GEMINI_VERTEX: 'true',
+        GOOGLE_CLOUD_PROJECT: 'p',
+        GOOGLE_CLOUD_LOCATION: 'global',
+      }).geminiVertex,
+    ).toEqual({ project: 'p', location: 'global' });
+    expect(
+      loadConfig({ GEMINI_VERTEX: '0', GOOGLE_CLOUD_PROJECT: 'p' }).geminiVertex,
+    ).toBeUndefined();
+    expect(() => loadConfig({ GEMINI_VERTEX: '1' })).toThrow(/GOOGLE_CLOUD_PROJECT/);
+    expect(() =>
+      loadConfig({
+        GEMINI_VERTEX: '1',
+        GOOGLE_CLOUD_PROJECT: 'p',
+        GOOGLE_CLOUD_LOCATION: 'us/../x',
+      }),
+    ).toThrow(/GOOGLE_CLOUD_LOCATION/);
+  });
+
   it('accepts gemini as AI_PROVIDER', () => {
     expect(loadConfig({ AI_PROVIDER: 'gemini' }).provider).toBe('gemini');
   });
