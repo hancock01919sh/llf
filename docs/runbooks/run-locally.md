@@ -36,7 +36,17 @@ Every developer, including the China team.
 6. When you finish, stop with Ctrl-C. Stop Postgres with `pnpm db:down` (data stays in the Docker volume).
 
 ## The AI provider
-The tool runs on `AI_PROVIDER=mock` by default: recorded fixtures, no network. Live providers are for Render dev and the manual `eval` suite only ([AGENTS.md](../../AGENTS.md)). To try the tool:
+The tool runs on `AI_PROVIDER=mock` by default: recorded fixtures, no network.
+
+To use a real model locally (TDD D33), add these to your git-ignored `.env`. Art sends the key through a secure share; never paste it into Jira, Slack, a PR, or chat:
+```sh
+AI_PROVIDER=gemini
+AI_MODEL=gemini-3.8-flash
+GEMINI_API_KEY=<from the secure share>
+```
+Restart `pnpm dev`. From mainland China, the live API needs a VPN. Tests and CI always use mock.
+
+To try the tool:
 ```sh
 curl -s -X POST localhost:8787/api/find-tips/extract -H 'content-type: application/json' \
   -d '{"inputType":"text","text":"milk, eggs, spinach, bananas"}'

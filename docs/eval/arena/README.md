@@ -44,7 +44,7 @@ This folder holds the working drafts for the Oct 8 arena action items. They feed
 
 ## Ground rules
 
-- CI and local dev stay on `AI_PROVIDER=mock`. Live keys are used only for manual arena runs.
+- CI stays on `AI_PROVIDER=mock`. Live keys are used for manual arena runs and, optionally, local dev (TDD D33).
 - No user data in any set. Image cases must name a source and pass the provenance check.
 - Keys in use for the Oct 12 run: Anthropic (ddd dev key), OpenAI (TBWA capped test key), Gemini (ddd key, D25). All three are dev/eval only.
 - Prices in the matrix are assumed list prices (Oct 2025). Re-check them on the run date and record the source in the report.

@@ -25,7 +25,7 @@ Status key: ⏳ not started · 🔬 in progress · ✅ confirmed · ❌ disprove
 | P1 | [BD3244-23](https://dotdotdash.atlassian.net/browse/BD3244-23) | Strapi relation semantics | §5.1, §5.2 | Art | Oct 14 | ✅ (admin UI picker unchecked) |
 | P2 | [BD3244-13](https://dotdotdash.atlassian.net/browse/BD3244-13) | Strapi 5 in a pnpm workspace | §4.4 | Art | Oct 12 | ✅ |
 | P3 | [BD3244-22](https://dotdotdash.atlassian.net/browse/BD3244-22) | Static export routing and `?i=` | §6.2 | Art | Oct 15 | ✅ |
-| P4 | [BD3244-28](https://dotdotdash.atlassian.net/browse/BD3244-28) | Render client-IP header for the admin allow-list | §5.4, §10 | James S + Art | Oct 14 | ⏳ |
+| P4 | [BD3244-28](https://dotdotdash.atlassian.net/browse/BD3244-28) | Render client-IP header for the admin allow-list | §5.4, §10 | James S + Art | Oct 14 | ✅ passed Oct 19 |
 | P5 | [BD3244-27](https://dotdotdash.atlassian.net/browse/BD3244-27) | Publish → rebuild (Render deploy hook; Phase B relay via GitHub App) | §5.3 | James S + Art | Oct 16 | ⏳ |
 | P6 | [BD3244-30](https://dotdotdash.atlassian.net/browse/BD3244-30) | Scrape → seed pipeline | §5.5 | China team + Art | Oct 21 | ⏳ |
 | P7 | [BD3244-34](https://dotdotdash.atlassian.net/browse/BD3244-34) | `strapi transfer` between environments (incl. media) | §5.5, §12.2 | James S + Art | Oct 21 | ⏳ |
