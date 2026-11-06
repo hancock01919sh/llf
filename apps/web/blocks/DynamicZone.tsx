@@ -50,7 +50,7 @@ export function resolveBlocks(
       data: result.data,
       Component: entry.Component as ComponentType<BlockProps<unknown>>,
       surface: entry.surface || (block?.backgroundColor as Surface) || 'paper',
-      isFullwidth: block?.isFullwidth as boolean,
+      isFullwidth: entry.isFullWidth || block?.isFullwidth as boolean,
     });
   });
   if (problems.length > 0) {
