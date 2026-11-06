@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getPageByPath, getPages, normalizePath } from '@/lib/cms';
 import { pageMetadata } from '@/lib/seo';
-import { templateFor } from '@/templates/registry';
+import { PageTemplate } from '@/templates/PageTemplate';
 
 /** Paths with their own route. A CMS page at one of these renders there, not here (TDD §6.1). */
 const RESERVED = ['', 'find-my-tips', 'tips', 'search', 'find-my-tips/results'];
@@ -41,6 +41,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 
 export default async function CmsPage(props: Params) {
   const page = await load(props);
-  const Template = templateFor(page);
-  return <Template page={page} />;
+  return <PageTemplate page={page} />;
+  // const Template = templateFor(page);
+  // return <Template page={page} />;
 }

@@ -165,6 +165,27 @@ const POPULATE = {
             },
           },
         },
+        'component.5050-text-and-image': {
+          populate: {
+            image: ImagePopulate,
+          },
+        },
+        'component.content-spotlight': {
+          populate: {
+            image: ImagePopulate,
+          },
+        },
+        'component.text-and-image-card': {
+          populate: {
+            image: ImagePopulate,
+          },
+        },
+        'component.logo-cards': {
+          populate: {
+            imageMobile: true,
+            imageDesktop: true,
+          },
+        },
       },
     },
     seo: true,
