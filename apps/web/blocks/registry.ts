@@ -28,6 +28,8 @@ import { BlockTextAndImage55 } from './TextAndImage55';
 import { BlockContentSpotlight } from './ContentSpotlight';
 import { BlockTextAndImageCard } from './TextAndImageCard';
 import { BlockLogoCards } from './LogoCards';
+import { BlockToolkitHeadline } from './ToolkitHeadline';
+import { BlockToolkit } from './Toolkit';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -157,6 +159,17 @@ export const blocks = {
     schema: cmsType.component.LogoCardsDeepRef,
     Component: BlockLogoCards,
     type: 'logo-cards',
+  }),
+  'component.toolkit-headline': entry({
+    schema: cmsType.component.ToolkitHeadlineDeepRef,
+    Component: BlockToolkitHeadline,
+    type: 'toolkit-headline',
+  }),
+  'component.toolkit': entry({
+    schema: cmsType.component.ToolkitDeepRef,
+    Component: BlockToolkit,
+    type: 'toolkit',
+    isFullWidth: true,
   }),
 } as const;
 

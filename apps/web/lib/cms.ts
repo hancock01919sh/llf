@@ -186,6 +186,30 @@ const POPULATE = {
             imageDesktop: true,
           },
         },
+        'component.toolkit-headline': {
+          populate: {
+            cta: true,
+            file: true,
+            title: true,
+          },
+        },
+        'component.toolkit': {
+          populate: {
+            toolkitCategory: {
+              populate: {
+                subCategory: {
+                  populate: {
+                    assets: {
+                      populate: {
+                        image: ImagePopulate,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     },
     seo: true,
