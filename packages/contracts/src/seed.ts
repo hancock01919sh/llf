@@ -1,18 +1,18 @@
 import { z } from 'zod';
 import { Slug, toSlug } from './catalog';
 import {
-  CAROUSEL_LAYOUTS,
+  // CAROUSEL_LAYOUTS,
   CAROUSEL_MODES,
   CATEGORY_MODES,
   BACKGROUND_COLOR,
-  HERO_LAYOUTS,
+  // HERO_LAYOUTS,
   HeadingLevel,
   INGREDIENT_TYPES,
-  LINK_LIST_LAYOUTS,
+  // LINK_LIST_LAYOUTS,
   // PAGE_TEMPLATES,
   // type PageTemplate,
-  TEASER_LAYOUTS,
-  TIP_LIST_LAYOUTS,
+  // TEASER_LAYOUTS,
+  // TIP_LIST_LAYOUTS,
 } from './cms';
 
 /**

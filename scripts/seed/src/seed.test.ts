@@ -243,7 +243,7 @@ describe('runSeed', () => {
     const pages = [...(fake.store.get('pages') ?? new Map<string, Data>()).values()];
     const home = pages.find((page) => page.path === '/');
     expect(home?.template).toBe('home');
-    const hero = home?.hero as Data;
+    // const hero = home?.hero as Data;
     // const ctas = hero.ctas as Data[];
     // expect(ctas.length).toBeGreaterThan(0);
     // for (const cta of ctas) {

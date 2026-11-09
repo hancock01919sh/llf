@@ -228,7 +228,7 @@ function toCta(cta: SeedCta, { pageIds }: BlockIds) {
   return { label: cta.label, href: cta.href ?? null };
 }
 
-const PAGE_SLOTS = ['hero', 'intro', 'featured', 'tool'] as const;
+// const PAGE_SLOTS = ['hero', 'intro', 'featured', 'tool'] as const;
 
 /**
  * The page's template slots and `main`. Every slot is written (null or empty when absent) so a
@@ -246,7 +246,8 @@ export function toPageContent(page: SeedPage, ids: BlockIds) {
   };
 }
 
-function toHero(hero: SeedHero, ids: BlockIds) {
+// function toHero(hero: SeedHero, ids: BlockIds) {
+function toHero(hero: SeedHero) {
   return {
     ...hero,
     // eyebrow: hero.eyebrow ?? null,
@@ -260,7 +261,8 @@ function toHero(hero: SeedHero, ids: BlockIds) {
 function toBlock(block: SeedBlock, ids: BlockIds): Record<string, unknown> {
   switch (block.__component) {
     case 'component.hero':
-      return toHero(block, ids);
+      // return toHero(block, ids);
+      return toHero(block);
     case 'component.teaser':
       return {
         ...block,
