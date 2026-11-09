@@ -236,12 +236,7 @@
       "main": [
         {
           "__component": "component.hero",
-          "layout": "Secondary",
-          "eyebrow": "Fixture",
-          "description": [
-            "Fixture copy. This page exists so every block layout has content in dev.",
-            "It is not part of the launch site map."
-          ]
+          "description": "Fixture copy. This page exists so every block layout has content in dev. It is not part of the launch site map."
         }
       ],
       "seo": {
