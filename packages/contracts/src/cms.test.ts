@@ -47,7 +47,6 @@ describe('cms schemas', () => {
     // expect(home.hero?.eyebrow).toBe('Long Live Food');
     // expect(home.featured.map((c) => c.slug)).toEqual(['fruits']);
     // expect(home.intro).toHaveLength(1);
-    
     // const tool = {
     //   id: 4,
     //   url_label: 'a',

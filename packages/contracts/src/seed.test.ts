@@ -113,14 +113,14 @@ describe('seed schemas', () => {
 
   it('defaults the page template to generic and fills template slots', () => {
     // expect(SeedPage.parse({ title: 'About', path: 'about' }).template).toBe('generic');
-    const home = SeedPage.parse({
-      title: 'Home',
-      path: '/',
-      // template: 'home',
-      // hero: { eyebrow: 'Hi' },
-      // intro: ['Welcome'],
-      // featured: ['fruits'],
-    });
+    // const home = SeedPage.parse({
+    //   title: 'Home',
+    //   path: '/',
+    // template: 'home',
+    // hero: { eyebrow: 'Hi' },
+    // intro: ['Welcome'],
+    // featured: ['fruits'],
+    // });
     // expect(home.hero).toEqual({ layout: 'Primary', eyebrow: 'Hi', description: [], ctas: [] });
     // expect(home.featured).toEqual(['fruits']);
   });
