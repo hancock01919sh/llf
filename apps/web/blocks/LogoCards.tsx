@@ -2,14 +2,16 @@ import { Typography } from '@/components/Typography';
 import type { BlockProps } from './types';
 import type { cmsType } from '@llf/contracts';
 import { UIImage } from '@/components/UIImage';
+import { BlockTitle } from '@/components/BlockTitle';
 export function BlockLogoCards(props: BlockProps<cmsType.component.LogoCardsDeepRef>) {
   const { imageDesktop, imageMobile, title, description } = props.block;
   return (
     <div className="flex items-center flex-col py-15 lg:py-25">
       <div className="text-center lg:w-2/3 mx-auto">
-        <Typography variant="headline-lg" className="uppercase ">
+        {/* <Typography variant="headline-lg" className="uppercase ">
           {title}
-        </Typography>
+        </Typography> */}
+        <BlockTitle title={title!} moduleIndex={props.index} />
         <Typography variant="paragraph-lg" className="mt-5 ">
           {description}
         </Typography>

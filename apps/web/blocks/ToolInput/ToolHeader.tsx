@@ -3,6 +3,7 @@ import { Tool } from './Tool';
 import { UIVideo } from '@/components/UIVideo';
 import type { BlockProps } from '../types';
 import type { cmsType } from '@llf/contracts';
+import { BlockTitle } from '@/components/BlockTitle';
 
 export function ToolHeader(props: BlockProps<cmsType.component.ToolInput>) {
   return (
@@ -13,9 +14,8 @@ export function ToolHeader(props: BlockProps<cmsType.component.ToolInput>) {
             <Typography variant="eyebrow" className=" font-bold">
               {props.block.subTitle}
             </Typography>
-            <Typography variant="headline-lg" className="uppercase mt-10 " as="h1">
-              {props.block.title}
-            </Typography>
+            <BlockTitle title={props.block.title} moduleIndex={props.index} />
+
             <Typography variant="subhead-lg" className="font-bold mt-5">
               {props.block.description}
             </Typography>

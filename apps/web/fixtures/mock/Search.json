@@ -1,0 +1,57 @@
+{
+  "id": 127,
+  "documentId": "agqlne8ngd8nx7jxo4e17n2h",
+  "title": "Search",
+  "path": "/search",
+  "main": [
+    {
+      "__component": "component.search",
+      "id": 6,
+      "description": "Type an ingredient to find tips that save time, money, and food.",
+      "placeholder": "Search 100+ ingredients",
+      "statement": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "All tips reviewed by ",
+              "type": "text"
+            },
+            {
+              "text": "food experts",
+              "type": "text",
+              "underline": true
+            }
+          ]
+        }
+      ],
+      "hint": "Click an ingredient to view specific tips that save time, money, and food.",
+      "isFullwidth": false,
+      "backgroundColor": "paper",
+      "title": {
+        "id": 104,
+        "copy": "Search for tips",
+        "header": "h1"
+      },
+      "popup": {
+        "id": 32,
+        "description": "Most of us don't know where we're losing food. ",
+        "link": {
+          "id": 578,
+          "label": "Discover tips in the library",
+          "href": "/tips",
+          "isDisplay": true,
+          "isButton": true,
+          "newTab": false,
+          "buttonType": null
+        },
+        "title": {
+          "id": 103,
+          "copy": "About 1 in 3 groceries you buy never get eaten.",
+          "header": "h2"
+        }
+      }
+    }
+  ],
+  "seo": null
+}

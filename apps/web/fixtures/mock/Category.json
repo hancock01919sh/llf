@@ -1,0 +1,100 @@
+{
+  "id": 132,
+  "documentId": "w9v2q7enka93sttzygjeyeps",
+  "title": "Category",
+  "path": "/tips/category",
+  "main": [
+    {
+      "__component": "component.category-detail",
+      "id": 25,
+      "description": "The following ingredients have been extracted. Select one to see how to get the most out of it.",
+      "subTitle": null,
+      "statement": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "All tips reviewed by ",
+              "type": "text"
+            },
+            {
+              "text": "food experts",
+              "type": "text",
+              "underline": true
+            }
+          ]
+        }
+      ],
+      "isFullwidth": true,
+      "backgroundColor": "forest",
+      "hint": "Click an ingredient to view specific tips that save time, money, and food.",
+      "image": null,
+      "button": {
+        "id": 607,
+        "label": "Upload Another Link or Image",
+        "href": null,
+        "isDisplay": true,
+        "isButton": true,
+        "newTab": false,
+        "buttonType": null
+      },
+      "title": {
+        "id": 139,
+        "copy": null,
+        "header": "h2"
+      },
+      "popup": {
+        "id": 33,
+        "description": "Most of us don't know where we're losing food. ",
+        "link": {
+          "id": 609,
+          "label": "Discover tips in the library",
+          "href": "/tips",
+          "isDisplay": true,
+          "isButton": true,
+          "newTab": false,
+          "buttonType": null
+        },
+        "title": {
+          "id": 138,
+          "copy": "All tips reviewed by food experts.",
+          "header": "h2"
+        }
+      }
+    },
+    {
+      "__component": "component.highlight-component",
+      "id": 131,
+      "description": "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis.",
+      "backgroundColor": "forest-tint",
+      "isFullwidth": true,
+      "link": [
+        {
+          "id": 608,
+          "label": "Find my tips",
+          "href": "/tips",
+          "isDisplay": true,
+          "isButton": true,
+          "newTab": false,
+          "buttonType": "Primary"
+        }
+      ],
+      "image": {
+        "id": 63,
+        "documentId": "ovqws8bgfngulksjp86rzt8c",
+        "url": "/uploads/mind_95fc04a8d9.png",
+        "ext": ".png",
+        "alternativeText": "mind",
+        "height": 1582,
+        "width": 1274,
+        "size": 635.01
+      },
+      "title": {
+        "id": 137,
+        "copy": "There are 200+ tips more waiting",
+        "header": "h2"
+      }
+    }
+  ],
+  "seo": null
+}

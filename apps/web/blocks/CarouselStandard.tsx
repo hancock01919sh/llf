@@ -11,6 +11,7 @@ import { IconCarouselNavigation } from '@/components/Icon';
 import { EasyImage } from '@/components/UIImage';
 import type { BlockProps } from './types';
 import type { cmsType } from '@llf/contracts';
+import { BlockTitle } from '@/components/BlockTitle';
 const cardColoMapping = {
   paper: 'bg-surface-sand',
   sand: 'bg-surface-paper',
@@ -33,7 +34,7 @@ export function BlockCarouselStandard(
   return (
     <div className="py-15 lg:py-25">
       <div className="px-gutter text-center">
-        <Typography variant="headline-lg">{title}</Typography>
+        <BlockTitle title={title} moduleIndex={props.index} />
         <Typography variant="subhead-lg" className="mt-5">
           {description}
         </Typography>

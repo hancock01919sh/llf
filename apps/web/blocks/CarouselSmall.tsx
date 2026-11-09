@@ -8,6 +8,7 @@ import { Pagination, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
+import { BlockTitle } from '@/components/BlockTitle';
 
 export function BlockCarouselSmall(props: BlockProps<cmsType.component.CarouselSmallDeepRef>) {
   const { smallCard, title, description } = props.block;
@@ -23,7 +24,7 @@ export function BlockCarouselSmall(props: BlockProps<cmsType.component.CarouselS
   return (
     <div className="py-15 lg:py-25">
       <div className="px-gutter text-center">
-        <Typography variant="headline-lg">{title}</Typography>
+        <BlockTitle title={title} moduleIndex={props.index} />
         <Typography variant="subhead-lg" className="mt-5">
           {description}
         </Typography>
