@@ -7,6 +7,7 @@ import { RichText } from '@/components/RichText';
 import type { CategoryDetailWithSearchProps } from '.';
 import type { cmsType } from '@llf/contracts';
 import { EasyImage } from '@/components/UIImage';
+import { BlockTitle } from '@/components/BlockTitle';
 export function IngredientsHeader(
   props: CategoryDetailWithSearchProps & {
     bgColor?: string;
@@ -56,9 +57,18 @@ export function IngredientsHeader(
             <Typography variant="eyebrow" className="font-bold lg:font-normal">
               {categoryData?.group?.title || props.subTitle}
             </Typography>
-            <Typography role="heading" as="h1" variant="headline-lg" className=" uppercase mt-10">
+            {/* <Typography role="heading" as="h1" variant="headline-lg" className=" uppercase mt-10">
               {categoryData?.title || props.title}
-            </Typography>
+            </Typography> */}
+            <BlockTitle
+              title={{
+                copy: categoryData?.title || props.title?.copy || '',
+                header: 'h1',
+              }}
+              moduleIndex={0}
+              className="mt-10"
+            />
+
             <Typography variant="subhead-lg" className="mt-5">
               {categoryData?.description || props.description}
             </Typography>

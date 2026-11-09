@@ -3,6 +3,7 @@ import { Popup } from '@/components/Popup';
 import { Typography } from '@/components/Typography';
 import TransitionLink from '@/components/TransitionLink';
 import type { cmsType } from '@llf/contracts';
+import { BlockTitle } from '@/components/BlockTitle';
 
 export function IngredientsTipsPopup(
   props: cmsType.component.TipsPopupDeepRef & {
@@ -20,9 +21,10 @@ export function IngredientsTipsPopup(
           </button>
         </div>
         <div className="flex flex-col gap-5 lg:mt-5 lg:w-4/5 lg:mx-auto">
-          <Typography variant="headline-lg" className="uppercase">
+          {/* <Typography variant="headline-lg" className="uppercase">
             {title}
-          </Typography>
+          </Typography> */}
+          <BlockTitle title={title} moduleIndex={0} />
           <Typography variant="subhead-lg" className="font-bold">
             {description}
           </Typography>

@@ -171,8 +171,8 @@
       }
     },
     {
-      "title": "NotFound",
-      "path": "404",
+      "title": "Toolkit",
+      "path": "toolkit",
       "seo": {
         "metaDescription": "Fixture page that shows every block layout."
       },
@@ -236,12 +236,7 @@
       "main": [
         {
           "__component": "component.hero",
-          "layout": "Secondary",
-          "eyebrow": "Fixture",
-          "description": [
-            "Fixture copy. This page exists so every block layout has content in dev.",
-            "It is not part of the launch site map."
-          ]
+          "description": "Fixture copy. This page exists so every block layout has content in dev. It is not part of the launch site map."
         }
       ],
       "seo": {
