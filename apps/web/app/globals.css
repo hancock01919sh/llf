@@ -118,8 +118,8 @@
 }
 @layer components {
   .btn {
-    @apply cursor-pointer flex items-center justify-center gap-2.5 text-ink-terra bg-surface-mint rounded-pill py-6 leading-none px-6 border-0 transition-colors duration-300 box-border active:bg-surface-mint-dark font-semibold text-cta text-nowrap;
-
+    @apply cursor-pointer flex items-center justify-center gap-2.5 text-ink-terra bg-surface-mint rounded-pill leading-none px-6 border-0 transition-colors duration-300 box-border active:bg-surface-mint-dark font-semibold text-cta text-nowrap;
+    height: 52px;
     @variant focus-visible {
       @apply border-solid border-[3px] border-brand-forest bg-surface-mint outline-0;
     }
