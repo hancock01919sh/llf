@@ -174,7 +174,7 @@ function LinkWrapper({
               {item.label}
             </TransitionLink>
             <TransitionLink
-              className="btn black hidden mx-auto lg:block lg:mx-0 lg:px-lg "
+              className="btn black hidden mx-auto lg:inline-flex lg:mx-0 lg:px-lg "
               href={'/search'}
             >
               {item.label}
