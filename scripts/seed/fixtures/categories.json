@@ -33,6 +33,14 @@
       "mode": "Tips",
       "group": "Your kitchen",
       "tips": ["Shop your fridge first", "First in, first out"]
+    },
+    {
+      "title": "chicken & Rice bowls",
+      "slug": "chicken-and-rice-bowls",
+      "description": "A weeknight regular. Here’s how to waste less of what goes into it.",
+      "mode": "Tips",
+      "group": "Your kitchen",
+      "tips": ["Shop your fridge first", "First in, first out"]
     }
   ]
 }
