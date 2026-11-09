@@ -7,7 +7,7 @@ import type { SearchDocument } from '@/lib/search';
 export const CategoryDetailWithSearchSchema = z.object({
   __component: z.enum(['component.category-detail', 'component.search']),
   id: z.number().int(),
-  title: z.string().nullish(),
+  title: cmsType.shared.Title.nullish(),
   description: z.string(),
   image: cmsType.Media.array().nullish(),
   subTitle: z.string().nullish(),

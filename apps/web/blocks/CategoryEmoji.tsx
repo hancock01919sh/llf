@@ -1,14 +1,13 @@
 import { Typography } from '@/components/Typography';
 import type { BlockProps } from '@/blocks/types';
 import type { cmsType } from '@llf/contracts';
+import { BlockTitle } from '@/components/BlockTitle';
 export function CategoryEmoji(props: BlockProps<cmsType.component.CategoryEmoji>) {
   const { title, description, emoji } = props.block;
   return (
     <div className="py-15 lg:py-25">
       <div className="lg:w-[60%] lg:mx-auto text-center">
-        <Typography variant="headline-lg" className="uppercase">
-          {title}
-        </Typography>
+        <BlockTitle title={title!} moduleIndex={props.index} />
         <Typography variant="subhead-lg" className="mt-lg">
           {description}
         </Typography>

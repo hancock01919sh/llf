@@ -1,14 +1,12 @@
 {
-  "id": 84,
+  "id": 131,
   "documentId": "ydgx9h9y5qdb3z4q4nx9qwag",
   "title": "Home",
   "path": "/",
-  "template": "generic",
-  "featured": [],
   "main": [
     {
       "__component": "component.hero",
-      "id": 16,
+      "id": 18,
       "description": "Everything you didn't know about the ingredients in your kitchen.",
       "title": [
         {
@@ -61,7 +59,7 @@
       "isFullwidth": null,
       "link": [
         {
-          "id": 419,
+          "id": 600,
           "label": "Discover tips in the library",
           "href": "/tips",
           "isDisplay": true,
@@ -70,7 +68,7 @@
           "buttonType": "Primary"
         },
         {
-          "id": 420,
+          "id": 601,
           "label": "Search specific ingredient tips",
           "href": "/search",
           "isDisplay": true,
@@ -94,13 +92,13 @@
     },
     {
       "__component": "component.tip-banner",
-      "id": 40,
+      "id": 54,
       "label": "Tip Of The Week",
       "backgroundColor": "terra",
       "isFullwidth": false,
       "cta": [
         {
-          "id": 421,
+          "id": 602,
           "label": "Share",
           "href": null,
           "isDisplay": true,
@@ -109,7 +107,7 @@
           "buttonType": null
         },
         {
-          "id": 422,
+          "id": 603,
           "label": "Save",
           "href": null,
           "isDisplay": true,
@@ -170,13 +168,12 @@
     },
     {
       "__component": "component.tool-spotlight",
-      "id": 16,
-      "title": "Get tips for the ingredients in your next meal ",
+      "id": 18,
       "subTitle": "Everything you didn't know about the ingredients in your kitchen.",
       "isFullwidth": null,
       "backgroundColor": "forest",
       "link": {
-        "id": 418,
+        "id": 599,
         "label": "See how it works",
         "href": "/find-my-tips",
         "isDisplay": true,
@@ -184,9 +181,14 @@
         "newTab": false,
         "buttonType": null
       },
+      "title": {
+        "id": 135,
+        "copy": "Get tips for the ingredients in your next meal",
+        "header": "h2"
+      },
       "spotlightItem": [
         {
-          "id": 81,
+          "id": 91,
           "copy": "A recipe you’re planning to cook",
           "video": {
             "id": 16,
@@ -212,7 +214,7 @@
           }
         },
         {
-          "id": 82,
+          "id": 92,
           "copy": "A shopping list before you go",
           "video": {
             "id": 18,
@@ -238,7 +240,7 @@
           }
         },
         {
-          "id": 83,
+          "id": 93,
           "copy": "A photo of what’s in your fridge",
           "video": {
             "id": 25,
@@ -264,7 +266,7 @@
           }
         },
         {
-          "id": 84,
+          "id": 94,
           "copy": "A receipt from today’s shop",
           "video": {
             "id": 24,
@@ -290,7 +292,7 @@
           }
         },
         {
-          "id": 85,
+          "id": 95,
           "copy": "A video you saved for later",
           "video": {
             "id": 6,
@@ -319,8 +321,7 @@
     },
     {
       "__component": "component.highlight-component",
-      "id": 88,
-      "title": "About 1 in 3 groceries you buy never get eaten.",
+      "id": 129,
       "description": "Most of us don’t know where we’re losing food.",
       "backgroundColor": "forest-tint",
       "isFullwidth": true,
@@ -334,58 +335,71 @@
         "height": 1458,
         "width": 1188,
         "size": 1161.68
+      },
+      "title": {
+        "id": 132,
+        "copy": "About 1 in 3 groceries you buy never get eaten.",
+        "header": "h2"
       }
     },
     {
       "__component": "component.category-emoji",
-      "id": 28,
-      "title": "Explore all the tips nobody told you about.",
+      "id": 36,
       "description": "Organized by the food you cook, and the ingredients you use most. From produce to dairy to pantry staples.",
       "backgroundColor": "paper",
       "isFullwidth": false,
       "emoji": [
         {
-          "id": 170,
+          "id": 218,
           "title": "Vegetables",
           "emoji": "🥕"
         },
         {
-          "id": 171,
+          "id": 219,
           "title": "Fruits",
           "emoji": "🍎"
         },
         {
-          "id": 172,
+          "id": 220,
           "title": "Dairy",
           "emoji": "🧈"
         },
         {
-          "id": 173,
+          "id": 221,
           "title": "Meat & Poultry",
           "emoji": "🥩"
         },
         {
-          "id": 174,
+          "id": 222,
           "title": "Grains & Starches",
           "emoji": "🌾"
         },
         {
-          "id": 175,
+          "id": 223,
           "title": "Condiments & Spreads",
           "emoji": "🥫"
         }
-      ]
+      ],
+      "title": {
+        "id": 133,
+        "copy": "explore all the tips nobody told you about.",
+        "header": "h2"
+      }
     },
     {
       "__component": "component.category-carousel-feature",
-      "id": 16,
-      "title": "The Usual Suspects of every kitchen",
+      "id": 18,
       "description": "Every kitchen has a few repeat offenders. See which ones keep showing up in yours.",
       "isFullwidth": true,
       "backgroundColor": "terra",
+      "title": {
+        "id": 136,
+        "copy": "The Usual Suspects of every kitchen",
+        "header": "h2"
+      },
       "link": [
         {
-          "id": 423,
+          "id": 604,
           "label": "Discover tips in the library",
           "href": "/tips",
           "isDisplay": true,
@@ -394,7 +408,7 @@
           "buttonType": "Primary"
         },
         {
-          "id": 424,
+          "id": 605,
           "label": "Search specific ingredient tips",
           "href": "/search",
           "isDisplay": true,
@@ -405,7 +419,7 @@
       ],
       "featureCard": [
         {
-          "id": 49,
+          "id": 55,
           "title": "Things that hide in the back of the fridge",
           "image": {
             "id": 28,
@@ -419,7 +433,7 @@
           }
         },
         {
-          "id": 50,
+          "id": 56,
           "title": "The ones with the shortest windows",
           "image": {
             "id": 48,
@@ -433,7 +447,7 @@
           }
         },
         {
-          "id": 51,
+          "id": 57,
           "title": "The ones with the shortest windows",
           "image": {
             "id": 58,
@@ -450,14 +464,13 @@
     },
     {
       "__component": "component.highlight-component",
-      "id": 89,
-      "title": "Fighting wasted food, one ingredient at a time.",
+      "id": 130,
       "description": "Most food waste isn't carelessness. It's not knowing the things nobody ever told you.",
       "backgroundColor": "paper",
       "isFullwidth": true,
       "link": [
         {
-          "id": 425,
+          "id": 606,
           "label": "Discover tips in the library",
           "href": "/tips",
           "isDisplay": true,
@@ -475,6 +488,11 @@
         "height": 1534,
         "width": 1168,
         "size": 1000.72
+      },
+      "title": {
+        "id": 134,
+        "copy": "fighting wasted food, one ingredient at a time.",
+        "header": "h2"
       }
     }
   ],

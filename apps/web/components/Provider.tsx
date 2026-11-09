@@ -6,7 +6,7 @@ import type { cmsType } from '@llf/contracts';
 export const AppContext = createContext<{
   footer?: cmsType.api.Footer;
   navigation?: cmsType.api.Navigation;
-  global?: cmsType.api.Global;
+  global?: cmsType.api.GlobalDeepRef;
 }>({});
 export function Provider({
   children,
@@ -17,7 +17,7 @@ export function Provider({
   children: React.ReactNode;
   footer: cmsType.api.Footer;
   navigation: cmsType.api.Navigation;
-  global: cmsType.api.Global;
+  global: cmsType.api.GlobalDeepRef;
 }) {
   return (
     <AppContext.Provider value={{ footer, navigation, global }}>

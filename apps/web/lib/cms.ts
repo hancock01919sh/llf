@@ -46,6 +46,7 @@ const POPULATE = {
         'component.tool-input': {
           populate: {
             button: true,
+            title: true,
             cards: {
               populate: {
                 link: true,
@@ -57,31 +58,36 @@ const POPULATE = {
         'component.accordion': {
           populate: {
             accordionItem: true,
+            title: true,
           },
         },
         'component.highlight-component': {
           populate: {
             link: true,
             image: ImagePopulate,
+            title: true,
           },
         },
         'component.category-detail': {
           populate: {
             image: ImagePopulate,
             button: true,
+            title: true,
             popup: {
               populate: {
                 link: true,
+                title: true,
               },
             },
           },
         },
-        'component.404': true,
         'component.search': {
           populate: {
+            title: true,
             popup: {
               populate: {
                 link: true,
+                title: true,
               },
             },
           },
@@ -111,6 +117,7 @@ const POPULATE = {
         'component.tool-spotlight': {
           populate: {
             link: true,
+            title: true,
             spotlightItem: {
               populate: {
                 video: true,
@@ -121,10 +128,12 @@ const POPULATE = {
         'component.category-emoji': {
           populate: {
             emoji: true,
+            title: true,
           },
         },
         'component.category-carousel-feature': {
           populate: {
+            title: true,
             featureCard: {
               populate: {
                 image: ImagePopulate,
@@ -135,11 +144,13 @@ const POPULATE = {
         },
         'component.header': {
           populate: {
+            title: true,
             image: ImagePopulate,
           },
         },
         'component.carousel-standard': {
           populate: {
+            title: true,
             standardCard: {
               populate: {
                 image: ImagePopulate,
@@ -149,6 +160,7 @@ const POPULATE = {
         },
         'component.ingredient-carousel': {
           populate: {
+            title: true,
             ingredientCard: {
               populate: {
                 image: ImagePopulate,
@@ -158,6 +170,7 @@ const POPULATE = {
         },
         'component.carousel-small': {
           populate: {
+            title: true,
             smallCard: {
               populate: {
                 image: ImagePopulate,
@@ -167,16 +180,19 @@ const POPULATE = {
         },
         'component.5050-text-and-image': {
           populate: {
+            title: true,
             image: ImagePopulate,
           },
         },
         'component.content-spotlight': {
           populate: {
+            title: true,
             image: ImagePopulate,
           },
         },
         'component.text-and-image-card': {
           populate: {
+            title: true,
             image: ImagePopulate,
           },
         },
@@ -184,6 +200,35 @@ const POPULATE = {
           populate: {
             imageMobile: true,
             imageDesktop: true,
+            title: true,
+          },
+        },
+        'component.toolkit-headline': {
+          populate: {
+            cta: true,
+            file: true,
+            title: true,
+          },
+        },
+        'component.toolkit': {
+          populate: {
+            toolkitCategory: {
+              populate: {
+                title: true,
+                subCategory: {
+                  populate: {
+                    title: true,
+                    assets: {
+                      populate: {
+                        image: ImagePopulate,
+                        file: true,
+                        cta: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -202,7 +247,7 @@ const POPULATE = {
   tips: tipFields,
   footer: { link: true, iconLink: true, overlayLink: true },
   navigation: { link: true },
-  global: { load: true, seo: true },
+  global: { load: { populate: { title: true } }, seo: true },
 };
 // satisfies Record<string, Populate>;
 
@@ -214,7 +259,7 @@ const SCHEMAS = {
   tips: cms.Tip,
   footer: cmsType.api.Footer,
   navigation: cmsType.api.Navigation,
-  global: cmsType.api.Global,
+  global: cmsType.api.GlobalDeepRef,
 } as const;
 
 export type CollectionKey = keyof typeof SCHEMAS;
@@ -296,7 +341,6 @@ async function fetchFromStrapi(key: CollectionKey): Promise<unknown[] | unknown>
     if (!res.ok) {
       throw new ContentError(`Strapi returned ${res.status} for /api/${key} (page ${page}).`);
     }
-
     const raw = await res.json();
     let body = null;
     if (signalKey.includes(key)) {

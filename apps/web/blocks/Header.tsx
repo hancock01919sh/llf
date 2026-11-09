@@ -5,6 +5,7 @@ import { useAdjacent } from '@/components/hooks/useAdjacent';
 import { UIVideo } from '@/components/UIVideo';
 import type { BlockProps } from './types';
 import type { cmsType } from '@llf/contracts';
+import { BlockTitle } from '@/components/BlockTitle';
 
 export function BlockHeader(props: BlockProps<cmsType.component.Header>) {
   const hasImage = props.block.image !== null;
@@ -39,13 +40,18 @@ export function BlockHeader(props: BlockProps<cmsType.component.Header>) {
           <Typography className="font-bold text-lg-subhead-sm" variant="eyebrow">
             {subTitle}
           </Typography>
-          <Typography
+          {/* <Typography
             as="h1"
             className={`mt-10 lg:mt-6.25  ${hasImage ? 'lg:mt-10!' : ''}`}
             variant="headline-lg"
           >
             {title}
-          </Typography>
+          </Typography> */}
+          <BlockTitle
+            title={title!}
+            moduleIndex={props.index}
+            className={`mt-10 lg:mt-6.25  ${hasImage ? 'lg:mt-10!' : ''}`}
+          />
           <Typography
             className={`mt-5 lg:mt-6.25 ${hasImage ? 'lg:mt-5!' : ''}`}
             variant="subhead-lg"
