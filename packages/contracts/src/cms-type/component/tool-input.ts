@@ -2,13 +2,13 @@ import { z } from 'zod';
 import { InputCardRef, InputCardDeepRef } from '../shared/input-card';
 import { LinksRef, LinksDeepRef } from '../shared/links';
 import { Media } from '../media';
+import { TitleRef, TitleDeepRef } from '../shared/title';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const ToolInput = z.object({
   __component: z.literal('component.tool-input'),
   id: z.number().int(),
-  title: z.string(),
   subTitle: z.string(),
   description: z.string(),
   cardTitle: z.string(),
@@ -20,12 +20,12 @@ export const ToolInput = z.object({
   backgroundColor: z.enum(['forest', 'paper']),
   isFullwidth: nullish(z.boolean().default(false)),
   image: nullish(Media),
+  title: z.lazy(() => TitleRef),
 });
 
 export const ToolInputRef = z.object({
   __component: z.literal('component.tool-input'),
   id: z.number().int(),
-  title: z.string(),
   subTitle: z.string(),
   description: z.string(),
   cardTitle: z.string(),
@@ -40,7 +40,6 @@ export const ToolInputRef = z.object({
 export const ToolInputDeepRef = z.object({
   __component: z.literal('component.tool-input'),
   id: z.number().int(),
-  title: z.string(),
   subTitle: z.string(),
   description: z.string(),
   cardTitle: z.string(),
@@ -52,6 +51,7 @@ export const ToolInputDeepRef = z.object({
   backgroundColor: z.enum(['forest', 'paper']),
   isFullwidth: nullish(z.boolean().default(false)),
   image: nullish(Media),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type ToolInputDeepRef = z.infer<typeof ToolInputDeepRef>;
