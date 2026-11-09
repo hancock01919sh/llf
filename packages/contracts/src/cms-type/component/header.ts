@@ -39,7 +39,7 @@ export const HeaderDeepRef = z.object({
   addBackgroundColor: nullish(z.boolean().default(false)),
   positionOfAddingBgColor: nullish(z.enum(['up', 'down'])),
   isFullwidth: nullish(z.boolean().default(false)),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type HeaderDeepRef = z.infer<typeof HeaderDeepRef>;

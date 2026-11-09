@@ -21,8 +21,8 @@ export const GuideRef = z.object({
 export const GuideDeepRef = z.object({
   id: z.number().int(),
   description: z.string(),
-  assets: z.array(z.lazy((): z.ZodType<AssetsCardsDeepRef>  => AssetsCardsDeepRef)),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  assets: z.array(z.lazy((): z.ZodType<AssetsCardsDeepRef> => AssetsCardsDeepRef)),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
   backgroundColor: nullish(z.enum(['paper'])),
 });
 

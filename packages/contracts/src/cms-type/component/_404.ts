@@ -26,7 +26,7 @@ export const _404DeepRef = z.object({
   description: z.string(),
   isFullwidth: nullish(z.boolean().default(false)),
   backgroundColor: z.enum(['forest']),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type _404DeepRef = z.infer<typeof _404DeepRef>;

@@ -14,8 +14,8 @@ export const ToolkitParentCategoryRef = z.object({
 
 export const ToolkitParentCategoryDeepRef = z.object({
   id: z.number().int(),
-  subCategory: z.array(z.lazy((): z.ZodType<GuideDeepRef>  => GuideDeepRef)),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  subCategory: z.array(z.lazy((): z.ZodType<GuideDeepRef> => GuideDeepRef)),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type ToolkitParentCategoryDeepRef = z.infer<typeof ToolkitParentCategoryDeepRef>;

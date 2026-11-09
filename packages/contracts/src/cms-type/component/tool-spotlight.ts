@@ -28,11 +28,11 @@ export const ToolSpotlightDeepRef = z.object({
   __component: z.literal('component.tool-spotlight'),
   id: z.number().int(),
   subTitle: z.string(),
-  link: nullish(z.lazy((): z.ZodType<LinksDeepRef>  => LinksDeepRef)),
-  spotlightItem: z.array(z.lazy((): z.ZodType<SpotlightItemDeepRef>  => SpotlightItemDeepRef)),
+  link: nullish(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
+  spotlightItem: z.array(z.lazy((): z.ZodType<SpotlightItemDeepRef> => SpotlightItemDeepRef)),
   isFullwidth: nullish(z.boolean().default(false)),
   backgroundColor: z.enum(['forest']),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type ToolSpotlightDeepRef = z.infer<typeof ToolSpotlightDeepRef>;

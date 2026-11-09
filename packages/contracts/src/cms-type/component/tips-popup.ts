@@ -19,8 +19,8 @@ export const TipsPopupRef = z.object({
 export const TipsPopupDeepRef = z.object({
   id: z.number().int(),
   description: nullish(z.string()),
-  link: nullish(z.lazy((): z.ZodType<LinksDeepRef>  => LinksDeepRef)),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  link: nullish(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type TipsPopupDeepRef = z.infer<typeof TipsPopupDeepRef>;

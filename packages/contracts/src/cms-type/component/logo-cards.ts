@@ -33,7 +33,7 @@ export const LogoCardsDeepRef = z.object({
   backgroundColor: z.enum(['paper', 'forest']),
   imageMobile: nullish(Media.array()),
   isFullwidth: nullish(z.boolean().default(false)),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type LogoCardsDeepRef = z.infer<typeof LogoCardsDeepRef>;

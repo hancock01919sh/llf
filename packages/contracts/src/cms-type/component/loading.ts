@@ -23,7 +23,7 @@ export const LoadingDeepRef = z.object({
   statement: nullish(z.string()),
   backgroundColor: z.enum(['forest']),
   isFullwidth: nullish(z.boolean().default(false)),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type LoadingDeepRef = z.infer<typeof LoadingDeepRef>;

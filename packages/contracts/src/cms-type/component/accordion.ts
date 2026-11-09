@@ -26,10 +26,10 @@ export const AccordionDeepRef = z.object({
   __component: z.literal('component.accordion'),
   id: z.number().int(),
   subTitle: z.string(),
-  accordionItem: z.array(z.lazy((): z.ZodType<AccordionItemDeepRef>  => AccordionItemDeepRef)),
+  accordionItem: z.array(z.lazy((): z.ZodType<AccordionItemDeepRef> => AccordionItemDeepRef)),
   backgroundColor: z.enum(['forest-tint']),
   isFullwidth: nullish(z.boolean().default(false)),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type AccordionDeepRef = z.infer<typeof AccordionDeepRef>;
