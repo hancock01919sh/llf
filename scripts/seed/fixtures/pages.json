@@ -171,8 +171,8 @@
       }
     },
     {
-      "title": "NotFound",
-      "path": "404",
+      "title": "Toolkit",
+      "path": "toolkit",
       "seo": {
         "metaDescription": "Fixture page that shows every block layout."
       },
