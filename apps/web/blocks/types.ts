@@ -10,7 +10,8 @@ export interface BlockProps<T> {
   id?: string;
   layout?: string;
   isFullwidth?: boolean;
-  Background_color?: Surface;
+  backgroundColor?: Surface;
+  categoryData?: cms.Category;
 }
 
 export const BlockBaseSchema = z.object({

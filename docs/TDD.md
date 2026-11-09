@@ -7,8 +7,8 @@
 | **Delivery** | dotdotdash (ddd) |
 | **Owner / author** | Art Longbottom (tech lead) |
 | **Reviewers** | James Calhoun (tech lead), James Steele (AWS/DevOps), Adam Paikowsky (analytics), Danish Aziz (PM), China dev team (Eva Fan, Alessandro Grena, Maggie Ding) |
-| **Status** | **DRAFT v0.3.23.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
-| **Last updated** | 2026-10-26 |
+| **Status** | **DRAFT v0.3.26.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
+| **Last updated** | 2026-11-04 |
 | **Go-live** | **Friday, January 8, 2027** (go/no-go Thursday, January 7). There's **no contingency** after final QA |
 
 > **How to read this document.** Every significant statement has a label:
@@ -162,7 +162,7 @@ See [§12.3](#123-decision-deadlines).
 | FR-5 | Handle these UX states: loading, success, partial, no-match, unreadable, rate-limited, unavailable, error. All copy comes from the CMS | [CONFIRMED]/[PROPOSED] |
 | FR-6 | Site search across ingredients, tips, and categories ("Search 100+ ingredients") | [CONFIRMED] (Figma Search frames `1:1609`, `1:1702`, `1:4327` and the header search popover `1:7183`). The repo has only a `custom.search` placeholder component, and the behavior is **not built** |
 | FR-7 | Category pages: show either all tips for the category's ingredients or hand-picked tips | [VERIFIED] (`mode` enum) |
-| FR-8 | Help editors find gaps in the catalog (unmatched ingredients) **without storing what users type** | [PROPOSED]. **Off at launch** until legal agrees (OPEN-5, [§7.8](#78-catalog-gaps)) |
+| FR-8 | Help editors find gaps in the catalog: a report of unmatched items, classified as **edible, inedible, or compostable**, so new tips can be written (Ad Council request, Nov 4). **No data retention on our side**: one stateless request, with people, pets, and personal data filtered out (D35) | [PROPOSED]. Built behind `GAP_LOG`, **off until legal agrees** (OPEN-5, [§7.8](#78-catalog-gaps)) |
 | FR-9 | `finishthefridge` domains redirect (301) to longlivefood.org | [CONFIRMED] |
 | FR-10 | An About/FAQ page that explains Finish the Fridge | [CONFIRMED] |
 | FR-11 | A **General Tips** page built from existing blocks (generic template), with its navigation entry restored | [CONFIRMED] (weekly status) |
@@ -313,7 +313,7 @@ The same code runs in both phases. Only the adapters and the environment configu
 
 | Env | Branch | Phase A host | Phase B host | CMS / DB | AI key | Who uses it |
 |---|---|---|---|---|---|---|
-| **local** | any | Laptop (Docker Compose: Postgres) | n/a | Local Strapi + seed data | **Mock** by default. ddd Anthropic key optional | Every developer, **including the China team** |
+| **local** | any | Laptop (Docker Compose: Postgres) | n/a | Local Strapi + seed data | **Mock** by default. ddd's dev key (Gemini or Anthropic) optional (D33) | Every developer, **including the China team** |
 | **dev** | `dev` (trunk, default) | Render | Render until launch. After handoff: recreated on AWS or retired (OPEN-24) | cms-dev / own DB | ddd Anthropic key, low cap | Developers, internal QA |
 | **staging** (PM sheet: **UAT**) | `staging` | Render, until AWS staging is ready | **AWS** | cms-staging / own DB | Client key once one exists. Until then, ddd's dev key with test inputs only | Internal QA, TBWA UAT, Ad Council UAT, coalition review, **pre-launch content entry** |
 | **prod** (PM sheet: **Live**) | `prod` | **None. Production never runs on Render** | **AWS** | cms-prod / own DB | Client production key (OPEN-1) | The public |
@@ -417,7 +417,7 @@ A single **pnpm workspace** monorepo, so the contracts and matching code are sha
   - The PR title starts with its Jira key (`BD3244-123: …`), checked by `pr-title.yml`. Promotion PRs are exempt.
   - No direct pushes, and no force pushes. ddd admins can bypass in an emergency and note it on the PR.
   - A hotfix branches from `prod`, then merges back to `staging` and `dev`.
-- **Toolchain:** Node 22 LTS (`.nvmrc`; `engines` `>=22.12 <23`), pnpm **9.15.2** pinned by `packageManager` (Corepack), ESLint flat config (with `jsx-a11y`), Prettier (`format:check` runs in CI), Vitest, Playwright, and `@axe-core/playwright`. Turborepo isn't used yet; plain `pnpm -r` is fast enough at this size. `.github/CODEOWNERS` routes workflows, infra, `docs/`, and `packages/contracts/` to the tech lead.
+- **Toolchain:** Node 22 LTS (`.nvmrc`; `engines` `>=22.12 <23`), pnpm **9.15.2** pinned by `packageManager` (Corepack), ESLint flat config (with `jsx-a11y`), Prettier (`format:check` runs in CI), Vitest, Playwright, and `@axe-core/playwright`. Turborepo isn't used yet; plain `pnpm -r` is fast enough at this size. `.github/CODEOWNERS` makes the China team leads code owners everywhere, so they approve and merge into `dev`; the tech lead reviews after merge (D34).
 
 ---
 
@@ -520,7 +520,7 @@ erDiagram
 | **Global** (new single type, API ID `global`) | As built in BD3244-42: `title` (site name), `navigation`, `footer` (link groups, legal text including the EPA assistance-agreement line, social, "Manage Preferences" link if a CMP is needed, OPEN-18), `seo` (default SEO), `load` (loading screen). Add `defaultOgImage` and `organization` (for JSON-LD) with the SEO work. Field names in camelCase so the Zod contracts stay consistent | `navigation` and `footer` feed shared UI, never page blocks (D22, D32). The "All tips reviewed by food experts" badge in the designs is a site string (§6.4) |
 | **Tool Copy** (new single type) | Copy for every Find My Tips state: loading messages, success heading, partial-match note, no-match, unreadable, rate-limited, **unavailable** (kill switch), error, privacy notice, "unmatched count" template | FR-5. The client still has to supply the no-match and unreadable copy (OPEN-8) |
 | ~~Microcopy~~ | **Not a CMS type** (D21). Site strings (button labels, form hints, aria labels, the 404 page, empty states) live in typed files in `apps/web/content/` and ship with a deploy | Covers "Strings" from the walkthrough. Strings rarely change, and agents and developers can edit them safely by PR with types and a preview (§6.4) |
-| ~~Ingredient Gap~~ | **Not at launch.** v0.1 proposed storing unmatched terms. Free-text terms can contain personal data, so we store **no user text** until legal decides (OPEN-5, §7.8) | Privacy |
+| ~~Ingredient Gap~~ | **Not a CMS type** (D35). The gap report is built from a GA4 event (`tips_tool_gap`, §8), so nothing about submissions is stored by us | No data retention (D20, D35) |
 
 **Component changes and additions**
 | Component | Change |
@@ -1031,7 +1031,7 @@ export async function extractIngredients(input, ctx): Promise<ExtractionResult> 
 ```
 | Adapter | Use | Config | Vendor status |
 |---|---|---|---|
-| `mock` | **Default for local and CI.** Returns fixtures keyed on an input hash, or a deterministic stub | `AI_PROVIDER=mock` | — |
+| `mock` | **Always used in CI; the default locally** (a dev key is optional, D33). Returns fixtures keyed on an input hash, or a deterministic stub | `AI_PROVIDER=mock` | — |
 | `anthropic` | **Dev and Phase A**, on **ddd's Anthropic key** [TL DECISION]. **Built** (`extract/anthropic.ts`, BD3244-33): Messages API with a forced `report_ingredients` tool call, output checked with Zod. `bedrock` stays a stub until OPEN-1 | `AI_PROVIDER=anthropic`, `AI_MODEL=…`, `PROMPT_VERSION=p1`, `ANTHROPIC_API_KEY` in a Render env group | **Authorized** by Ad Council IT [CONFIRMED (Art, Oct 19)]. Dev uses ddd's account with test data (D17); production needs a client account and key (OPEN-1) |
 | `openai` | The prototype's provider (PROJECT.md §7.4), kept as an arena comparison point. **Built** (`extract/openai.ts`, BD3244-37) for the arena: Chat Completions with a strict JSON schema, output checked with Zod, and `reasoning_effort` sent only when `AI_REASONING_EFFORT` is set (`minimal`, `low`, `medium`, `high`). With no key it fails as `upstream_error` | `AI_PROVIDER=openai`, `AI_MODEL=…`, optional `AI_REASONING_EFFORT`. For eval, `OPENAI_API_KEY` is **TBWA's capped test key**, used locally and on Render dev only. No production key | **Not authorized** by Ad Council IT [CONFIRMED (Art, Oct 19)]. Eval only, on TBWA's capped key. No production use unless IT approves OpenAI |
 | `bedrock` | An alternative that runs in Ad Council's AWS with IAM-only auth | `AI_PROVIDER=bedrock`, `AI_MODEL=…`, `AWS_REGION` | **Still a vendor decision.** Anthropic models on Bedrock run in AWS-owned accounts under Anthropic's model terms. IT may treat this as a new vendor (OPEN-2) |
@@ -1043,15 +1043,43 @@ export async function extractIngredients(input, ctx): Promise<ExtractionResult> 
 
 **Choosing the model:** run the **eval suite** (§7.9) on the candidate models and pick **the cheapest one that meets the G2 target**. Dev keys are used for the eval until the client key exists. Decision due **Nov 13** (OPEN-1). The **arena** (`pnpm arena`, §7.9, D24) runs the candidates side by side and adds a **$/month forecast** at 25K and 50K uses against the client's **~$500/month cap**. If we add a guardrail pre-call, each use costs two calls (`callsPerUse: 2` in the matrix). The model only **classifies**: it returns ingredient names, never user-facing text (D21).
 
-### 7.8 Catalog gaps
-**FR-8 is off at launch** [PROPOSED], until Ad Council legal decides (OPEN-5). Terms that users type or that come from their receipts can contain names, card digits, store loyalty numbers, or health information. Removing digits doesn't reliably clean them, so **we don't store user text at all**.
+### 7.8 Catalog gaps [PROPOSED, D35]
+Ad Council wants a report of the items people submit that we have no tips for, sorted into **edible, inedible, and compostable**, so editors can write new tips (Cat Boyce, Nov 4). Extraction output (§7.4) can contain names, card digits, loyalty numbers, pets, or pharmacy items. So the gap signal comes from a **second, text-only step inside the same request** that turns each unmatched term into a generic item name and a class, then code filters.
 
-Gap signals we can collect safely:
-1. **Counts only:** `unmatchedCount` and match rate per input type, as metrics (no terms).
-2. **Eval misses:** terms from the labeled eval set (our own data) that don't match.
-3. **Public recipe pages:** unmatched terms from URL inputs where the terms came from the **page's JSON-LD**, which is public content and not user text. Only if legal agrees, aggregated, with a minimum count of 5 before an editor sees a term.
+**No data retention, one stateless and idempotent request.**
+- **Nothing is stored or logged by us:** no database, no cache, no queue, no counter, and no CMS collection.
+- **Stateless:** each tool request runs extract → match → classify → filter in memory and then forgets everything.
+- **Idempotent:** the same terms always produce the same output, because the classifier runs at temperature 0 with a versioned prompt and the filters are pure functions. A retried request yields the same result and the same event, which carries the `requestId`, so a retry can't double-count.
+- **Where the report comes from:** the only thing that leaves the request is a GA4 event with the filtered generic names (§8). The report is built in GA4, where Ad Council already reports.
 
-If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD terms: a DynamoDB counter with a 90-day TTL, then a daily sync into an **Ingredient Gap** collection in Strapi for editors to work through.
+**Off until legal agrees.** Everything below sits behind `GAP_LOG` (`off` by default). Until OPEN-5 is answered, it's `off` wherever real users can submit (staging with UAT testers, and prod), and it runs on dev with test data only.
+
+**Flow (inside the tool request)**
+1. **Input:** after matching (§7.5), the unmatched terms, including items the extractor marked `isFood: false`. At most 60. Never the image, the URL, or the user's own text, only the extractor's terms. If there are none, the step is skipped.
+2. **Classify:** `classifyGapTerms(terms, ctx): Promise<GapResult>`, through the same provider adapter as extraction (§7.7), with the same provider-swap rules and strict output, validated with Zod. Text only, at temperature 0, on the cheapest model that passes the eval. Budget about **3 s**; on a timeout or error the step returns nothing, and the user's result is unaffected.
+   - The output for each term is `{ name, class }`. `name` is a **generic, singular, lowercase item name** with no brand, store, quantity, or person: "Kirkland 2% milk" becomes "milk", and "mom's lasagna" becomes "lasagna".
+   - `class` is one of:
+     - `edible`: food or drink people eat
+     - `compostable`: food scraps and inedible food parts (peels, cores, bones, coffee grounds, eggshells)
+     - `inedible`: non-food household items (packaging, foil, containers)
+     - `exclude`: people, pets and other animals, body parts, medicines and pharmacy items, brands or stores, anything that identifies a person (names, numbers, addresses, account or card details), and anything that isn't a physical item
+3. **Filter (pure function, after the model).** Drop the term if any of these is true:
+   - its class is `exclude`;
+   - its `name` contains digits, `@`, `/`, `.` or `:`;
+   - it's longer than 32 characters or 3 words;
+   - it isn't lowercase letters, spaces and hyphens;
+   - it hits a denylist (people words, pet and animal names, pharmacy terms, common first names);
+   - it now matches the catalog.
+
+   Duplicates are collapsed, and at most 20 terms are kept. **Defence in depth:** the model is asked to exclude, and code drops anything that slips through.
+4. **Return, never render.** The API response gains `gaps: [{ name, class }]`. The web app **never displays it** (D21). It pushes one `tips_tool_gap` event per gap to the `dataLayer`, once per `requestId`, subject to consent (§8). Logs keep only a `gap_terms_kept` count (§7.6).
+5. **Report:** GA4 aggregates the events, and its reporting thresholds hide rare values. A saved exploration ("unmatched items by class, last 30 days") is the editors' list for writing tips and adding aliases. Its retention is GA4's setting, which Ad Council owns (§8).
+
+**Cost:** one small text-only call per tool use that has unmatched items. It's measured in the arena (`callsPerUse` adds about 0.1–0.3 of a call, §7.9) before it's switched on.
+
+**Eval:** the labeled set gains gap cases with known answers: planted names, card and phone numbers, pets ("Max", "my dog"), prescriptions, brands, and injected instructions. **The bar is 100% exclusion of planted personal data**, plus class accuracy on food, scrap, and packaging terms. The gap step doesn't ship without passing it.
+
+**Privacy notice:** if `GAP_LOG` goes on, the tool's privacy notice (Tool Copy) should say that anonymous, generic names of unmatched food items are counted in analytics so we can write new tips. Legal owns the wording (OPEN-5).
 
 ### 7.9 Evaluation (`eval/`) [VERIFIED harness; labeled set PROPOSED]
 - **Labeled set** (aim for 80–120 items by the end of tech validation, **Oct 16**, growing to 150+ before UAT):
@@ -1116,6 +1144,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 | `tips_tool_start` | `input_type` |
 | `tips_tool_submit` | `input_type` |
 | `tips_tool_result` | `input_type`, `source`, `ingredients_matched`, `unmatched_count`, `tips_shown`, `latency_ms`, `catalog_version` |
+| `tips_tool_gap` | `gap_name` (generic item name from the filtered gap classifier, §7.8), `gap_class` (`edible` / `inedible` / `compostable`), `input_type`, `request_id`. **Only when `GAP_LOG` is on** (D35, OPEN-5) |
 | `tips_tool_no_match` | `input_type`, `readable` |
 | `tips_tool_unavailable` | `mode` (`off`, `jsonld-only`) |
 | `tips_tool_error` | `input_type`, `reason` (`rate_limited`, `challenge`, `timeout`, `invalid_url`, `too_large`, `site_blocked`, `server`) |
@@ -1127,7 +1156,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
   - search terms (GA4's built-in `search_term` / `view_search_results` is **turned off**: Enhanced Measurement site search is disabled. The term lives only in the URL fragment, `/search/#q=…`, §6.1, so it never reaches a server)
   - ingredient text
   - URLs that users submit
-  - anything the model extracted
+  - anything the model extracted (the one exception is `tips_tool_gap`: a **generic, filtered** item name from the gap classifier, behind `GAP_LOG` and legal sign-off, D35)
 
   Only **catalog slugs**, enums, and counts.
 - The results page URL contains `?i=` with **catalog slugs only**, which is safe to collect.
@@ -1194,7 +1223,7 @@ If legal approves option 3, the v0.1 design comes back, limited to URL/JSON-LD t
 ### 9.3 CI/CD and the branch model [TL DECISION for the branches; VERIFIED for `ci.yml`; PROPOSED for the other workflows]
 
 **Branches.** `dev` is the **default branch** (trunk). Work happens on short-lived feature branches that open PRs into `dev`. **Promotion is a PR**: `dev` → `staging` → `prod`.
-- All three branches are **protected** (§4.4, D28): PR required, CI green, 1 approving code-owner review (a tech lead for `staging` and `prod`), resolved threads, and no force-push. `main` is locked the same way.
+- All three branches are **protected** (§4.4, D28; on `dotdotdashdev` the plan doesn't allow it yet, so these rules are followed by agreement): PR required, CI green, 1 approving code-owner review (a tech lead for `staging` and `prod`), resolved threads, and no force-push. `main` is locked the same way.
 - **Required checks on `dev`:** `Format, lint, typecheck, unit tests`, `Build and e2e (Playwright + axe)`, `CMS image build and smoke`, and `Jira key in PR title`.
 - **PR titles start with the Jira key**: `BD3244-123: feat(web): hero block`. Commits keep conventional prefixes (AGENTS.md).
 - `prod` can only receive merges from `staging` or a `hotfix/*` branch.
@@ -1353,7 +1382,7 @@ See [`AGENTS.md`](../AGENTS.md) and the [PR template](../.github/pull_request_te
 - **Ticket flow:** Art writes and grooms **Jira** tickets with acceptance criteria and Figma links. The China team picks them up, and every PR links its ticket (the PR template enforces this). Daily async updates in Jira. A weekly sync with Art.
   - **Board:** Jira project **BD3244** ([backlog](https://dotdotdash.atlassian.net/jira/software/projects/BD3244/boards/873/backlog)), epics in §12.4. Keys look like `BD3244-123`.
   - **China team starter tickets (Oct 8–16):** onboarding from the docs ([BD3244-17](https://dotdotdash.atlassian.net/browse/BD3244-17)), local toolchain ([BD3244-20](https://dotdotdash.atlassian.net/browse/BD3244-20)), network check from China ([BD3244-19](https://dotdotdash.atlassian.net/browse/BD3244-19)), TDD WIP review ([BD3244-14](https://dotdotdash.atlassian.net/browse/BD3244-14)), and the Figma review, component inventory, and spec template ([BD3244-25](https://dotdotdash.atlassian.net/browse/BD3244-25)).
-- **Repo access** [TL DECISION, updated Oct 19]: the China team has **write** access to **this repo only** (`dotdotdashdev/3244_tbw_ad_council`), because the move to Ad Council's GitHub slipped (OPEN-11). `dev` and `main` are protected, so everything goes through a reviewed PR (D28). The plan below was the pre-move arrangement; it's kept for the record.
+- **Repo access** [TL DECISION, updated Oct 19]: the China team has **write** access to **this repo only** (`dotdotdashdev/3244_tbw_ad_council`), because the move to Ad Council's GitHub slipped (OPEN-11). Everything goes through a reviewed PR (D28, D34). The current GitHub plan doesn't allow branch protection on this private repo, so the rules are followed by agreement until the repo move or a plan change. The plan below was the pre-move arrangement; it's kept for the record.
 - **Work from the scaffold** [TL DECISION, D29]: **`dev` is the only starting point.** Every branch is cut from `dev` and every PR targets `dev`. Work the team built before they had access (a separate frontend, a hosted Strapi with its own content types) is **ported into the scaffold**, piece by piece, under Jira tickets:
   - **Components and pages** → `apps/web/blocks/` (with registry entries) and `packages/ui`, using Tailwind + shadcn and the Figma tokens. Strings go to `apps/web/content/`. Each comes with its Zod schema, a story, and tests ([add-template-block-or-string](./runbooks/add-template-block-or-string.md)).
   - **Content types** → `apps/cms/src` as code, additive only (§5.2), with matching Zod schemas in `packages/contracts`. No Content-Type Builder changes on a hosted instance.
@@ -1367,7 +1396,7 @@ See [`AGENTS.md`](../AGENTS.md) and the [PR template](../.github/pull_request_te
 - **Local stack:** `pnpm dev` starts the web app, the CMS against **Postgres in Docker Compose** (the same engine as every environment), and the tool handler with `AI_PROVIDER=mock`. **No Render, AWS, or AI credentials are needed** for about 95% of the work. **[VERIFIED]** `pnpm dev` runs `db:up` → `ensure-cms-env` → web (port 3000) + tool (8787, `TOOL_PORT`) + Strapi (1337). `pnpm dev:fe` runs only web + tool, and `pnpm dev:cms` runs only Postgres + Strapi. See the [README Quickstart](../README.md).
 - **Seed data [VERIFIED]:** `pnpm seed` loads JSON into the local CMS. Until the validated project seed exists (P6, Oct 21), it loads the **synthetic fixture seed** (BD3244-24): made-up ingredients and tips, every block, and a page for every template route, validated against the `contracts` schemas. It's idempotent, and it verifies what it wrote. After P6, it loads the scraped set from §5.5. See [`scripts/seed/README.md`](../scripts/seed/README.md).
 - **Fixture mode:** with `CMS_FIXTURES=1`, the frontend builds entirely from `apps/web/fixtures/cms/*.json`, so frontend work doesn't depend on Strapi running. Without it, `CMS_URL` and `CMS_TOKEN` are required and the build fails fast if they're missing.
-- **Network from China:** mainland China can't reach the Anthropic or OpenAI APIs directly, and GitHub, npm, and Docker Hub can be slow. The team uses the **mock adapter** locally and the shared **dev environment on Render** (behind basic auth) for live tests. We'll ask about VPN and registry mirrors at the Oct 8 kickoff.
+- **Network from China:** mainland China can't reach the Anthropic, OpenAI, or Google (Gemini) APIs directly, and GitHub, npm, and Docker Hub can be slow. The team uses the **mock adapter** locally, or a live dev key over a VPN (D33), and the shared **dev environment on Render** (behind basic auth) for live tests. We'll ask about VPN and registry mirrors at the Oct 8 kickoff.
 - **Deploys and previews:** the China team doesn't touch AWS or the Render dashboard. They open a PR into `dev`; CI runs; after review and merge, `deploy-dev.yml` puts the commit on the **dev review link** (§9.1). A PR can get its own **Render preview link** by adding `[render preview]` to its title. Render workspace seats for logs are added when needed.
 - **CMS access:** Strapi admin accounts on **cms-dev**: Super Admin for the team leads (to manage users) and Editor for the rest (§5.4). The admin is IP-restricted, so each person sends the **public IP** they'll work from (OPEN-17). Schema changes and migrations ship as code through a deploy.
 - **Process docs** [kickoff, James Calhoun]: because of the language barrier and the time-zone gap, the standard processes are written down step by step in `docs/runbooks/`: branching and PRs, running the stack locally, adding a template, block, or string, schema changes and migrations, seeding, creating CMS users, and reading logs. Short, numbered, with commands that can be copied. James Calhoun owns them ([BD3244-18](https://dotdotdash.atlassian.net/browse/BD3244-18)), and Art reviews them for technical accuracy.
@@ -1583,6 +1612,9 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | D30 | **Render builds from a deploy mirror in ddd's EMU org** (BD3244-15). `dotdotdash-OMC/3244_tbw_ad_council` is a private, push-only mirror; `deploy-dev.yml` pushes the tested tree (without workflow files) to it with a write deploy key before each deploy. `dotdotdashdev` stays canonical | TL DECISION | Render's GitHub link returned "repository URL is invalid or unfetchable" for the canonical repo, and ddd's other Render projects build from `dotdotdash-OMC`. The China team can't join an EMU org, so the work stays in `dotdotdashdev`. Removed when the repo moves (OPEN-11) |
 | D31 | **The CMS admin IP allow-list is lifted on dev during the build** (Oct 20). `ADMIN_IP_OPEN=true` is honoured only with `DEPLOY_ENV=dev`; anywhere else the CMS refuses to start. The first-admin sign-up stays on the allow-list, and Strapi login still applies. Staging and production keep the allow-list (D16) | TL DECISION | The China team and editors can work on cms-dev without collecting IPs first (OPEN-17 stays open for staging). cms-dev holds only seed and draft content. Accepted risk: the dev admin login faces the internet, so we use strong unique passwords, keep Strapi's login rate limit, and give no real content or user data to dev. Revisit before real content is entered |
 | D32 | **Pages are built from design-named blocks; Page templates are retired** (Oct 26, BD3244-42). Page keeps `title`, `path`, `main`, and `seo`; the `template` enum and slot fields go. Every Page renders through one block renderer, and the designed pages are seeded in the Figma order. Data-driven routes (Category, Search, tool results, 404) stay in code. `navigation` and `footer` live in Global as shared UI. Replaces the template half of D21 | TL DECISION (proposed by the China team, Eva Fan, BD3244-42) | The team found the designed pages unlikely to be reused, so per-page templates added code without editor value. Block names match Figma, which keeps design-to-code mapping direct. Accepted risk: editors can reorder designed pages, mitigated by the seed and a visual review on dev. The schema break is accepted once because cms-dev has no real content |
+| D33 | **Local dev may use a real AI dev key; CI stays on mock** (Nov 2, BD3244-72). Mock remains the default. A developer may set `AI_PROVIDER` and ddd's capped dev key (Gemini or Anthropic) in their git-ignored `.env`. CI keeps `AI_PROVIDER=mock` with no secrets. Unit and component tests run on mock regardless. Keys are shared by Art through a secure share and are revocable. Replaces the "local dev runs on mock" half of the AGENTS.md rule | TL DECISION | The team needs to see real model behaviour while building the tool UI (loading time, partial matches, unreadable input) without waiting on Render dev. CI stays deterministic and secret-free. Accepted risks: more spend, mitigated by the key's cap and the service's daily quota; key exposure on more machines, mitigated by revocable dev-only keys that are rotated if a developer leaves; and no change to the vendor position, since Gemini stays dev-only pending IT (OPEN-2) |
+| D34 | **The China team merges its own PRs into `dev`; Art reviews after merge** (Nov 2, BD3244-72). Feihu (`omc-panghu`) and Davis (`DavisWang-Omc`) are code owners for every path, Chad (`chadwang0919`) also for `apps/cms/`, and any one of them can approve and merge into `dev`. Art is a co-owner everywhere but **never a gate on `dev`**: he reviews merged work and raises problems as follow-up Jira tickets or PRs, and a "changes requested" review from him is a checklist, not a block. The other §9.3 rules stand: PR only, green CI, Jira key in the title, 1 approving review from a teammate, resolved threads. `staging` and `prod` promotions still need a tech lead | TL DECISION | Waiting on Art's review was holding up the build team, which owns delivery to Alpha (Nov 11) and feature-complete (Nov 18). CI, the TDD, and AGENTS.md carry the rules, and fixes after merge are cheap on `dev`. The gate stays where mistakes are costly: promotion to `staging` and `prod`. Accepted risk: issues found after merge land on `dev` first and reach the dev review link before they're fixed |
+| D35 | **Catalog gaps from a second, text-only classification step in the same stateless request** (Nov 4, Ad Council request). Unmatched extractor terms go to `classifyGapTerms()` (temperature 0), which returns a generic item name and a class (`edible` / `inedible` / `compostable` / `exclude`). Pure-function filters drop anything personal. The only output is a `tips_tool_gap` GA4 event per kept term, keyed by `requestId`. **No data retention on our side**: no store, cache, queue, counter, or CMS collection. Behind `GAP_LOG`, off until legal answers OPEN-5 | PROPOSED (OPEN-5) | Ad Council needs to know which items lack tips in order to write new ones. Keeping it stateless and idempotent means there's nothing of ours to secure, retain, or delete, and retries can't double-count. Accepted: one small extra call per tool use with unmatched items, and a narrow exception to "nothing the model extracted goes to analytics" (generic, filtered names only). Accepted risk: a model miss could pass a personal term; mitigated by the code filters, GA4 thresholds, and a 100% eval bar on planted personal data |
 
 Bigger decisions get a short ADR in `docs/adr/NNNN-title.md` once they're approved.
 
@@ -1598,7 +1630,7 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | OPEN-2 | ~~Does Ad Council IT accept ddd's Anthropic key for development?~~ **Answered (Oct 19):** Anthropic is authorized; OpenAI is not. **Still open:** will IT approve **Google (Gemini)** for production? **One production model, no backup model** (decided Oct 26). | Ad Council IT | Nov 13 |
 | OPEN-3 | **Usable AWS access**: the current IAM users can't list users or pipelines. We need scoped access (SSO ReadOnly + project admin), GitHub OIDC deploy role, account structure, and how the DevOps partner change affects CI/CD (§9.1). Danish's account waits on this | Ad Council IT / James S (via Danish → Cat) | Oct 16 |
 | OPEN-4 | Rendering mode: static export (recommended) or SSR/ISR? Spike P3 found no blocker for static | ddd → Ad Council | Oct 16 |
-| OPEN-5 | Are uploaded images or typed text kept? (Recommendation: no.) This affects the privacy policy, FAQ, and FR-8 | Ad Council legal | Nov 13 |
+| OPEN-5 | Are uploaded images or typed text kept? (Recommendation: no.) Also: may we send **generic unmatched item names** (edible/inedible/compostable, filtered for people, pets, and personal data) to GA4 for the catalog-gap report? Nothing is stored by us (D35, §7.8). This affects the privacy policy, FAQ, the tool's privacy notice, and FR-8 | Ad Council legal | Nov 13 |
 | OPEN-6 | Are recipes in scope, and who owns them? | Ad Council | Oct 23 |
 | OPEN-7 | Fridge photos at launch? | Ad Council | Oct 23 |
 | OPEN-8 | No-match and unreadable copy. What accuracy is "good enough"? (Proposed: P ≥ 0.9, R ≥ 0.8) | Ad Council | Nov 20 |
@@ -1698,3 +1730,6 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.3.21 | 2026-10-20 | Art Longbottom (with Copilot) | **D31: CMS admin open on dev.** `ADMIN_IP_OPEN` (dev only, the CMS won't start with it elsewhere). The first-admin sign-up stays allow-listed and is smoke-tested on every deploy. Staging and production unchanged (§5.4, §10, AGENTS.md) |
 | 0.3.22 | 2026-10-20 | Art Longbottom (with Copilot) | **OPEN-41:** dropped the question of who ran the host (not needed). Still open: deletion or token revocation, and porting its content types as code |
 | 0.3.23 | 2026-10-26 | Art Longbottom (with Copilot) | **D32: pages from design-named blocks**, templates and slots retired (China team proposal, BD3244-42). Updated §1, FR-1, §4.4, §5.2 (Page, Global), §6.1, §6.4, glossary. **Security:** TLS 1.2 minimum and AES-256 at rest stated in §10 (Render dev TLS verified). Observability ownership and CloudTrail in §9.3/§9.4, new OPEN-42. **No backup AI model** (§7.7, OPEN-2): one production model, no fallback |
+| 0.3.24 | 2026-11-02 | Art Longbottom (with Claude) | **D33:** local dev may use a real AI dev key; CI stays on the mock |
+| 0.3.25 | 2026-11-03 | Art Longbottom (with Claude) | **D34:** the China team approves and merges its own PRs into `dev`; Art reviews after merge. Branch protection isn't available on the current GitHub plan, so the rules are followed by agreement. P4 passed |
+| 0.3.26 | 2026-11-04 | Art Longbottom (with Claude) | **D35: catalog gaps** (Ad Council request). A second, text-only `classifyGapTerms()` step sorts unmatched items into edible, inedible, and compostable, with personal data, people, and pets filtered out by the model and by code. **One stateless, idempotent request, with no data retention on our side.** The only output is a `tips_tool_gap` GA4 event. Behind `GAP_LOG`, off until legal answers OPEN-5. Updated FR-8, §5.2, §7.8, §8, OPEN-5 |

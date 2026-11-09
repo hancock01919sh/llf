@@ -133,6 +133,59 @@ const POPULATE = {
             link: true,
           },
         },
+        'component.header': {
+          populate: {
+            image: ImagePopulate,
+          },
+        },
+        'component.carousel-standard': {
+          populate: {
+            standardCard: {
+              populate: {
+                image: ImagePopulate,
+              },
+            },
+          },
+        },
+        'component.ingredient-carousel': {
+          populate: {
+            ingredientCard: {
+              populate: {
+                image: ImagePopulate,
+              },
+            },
+          },
+        },
+        'component.carousel-small': {
+          populate: {
+            smallCard: {
+              populate: {
+                image: ImagePopulate,
+              },
+            },
+          },
+        },
+        'component.5050-text-and-image': {
+          populate: {
+            image: ImagePopulate,
+          },
+        },
+        'component.content-spotlight': {
+          populate: {
+            image: ImagePopulate,
+          },
+        },
+        'component.text-and-image-card': {
+          populate: {
+            image: ImagePopulate,
+          },
+        },
+        'component.logo-cards': {
+          populate: {
+            imageMobile: true,
+            imageDesktop: true,
+          },
+        },
       },
     },
     seo: true,
