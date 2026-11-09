@@ -10,12 +10,12 @@ const { navigation, footer, global } = await getPageProviderData();
 //   await mkdir(path.dirname(file), { recursive: true });
 //   await writeFile(file, JSON.stringify(data, null, 2));
 // }
-export function PageTemplate({ page }: TemplateProps) {
+export function PageTemplate({ page, categoryData }: TemplateProps) {
   // writeFixture(page.title, page);
   return (
     <>
       <Provider navigation={navigation} footer={footer} global={global}>
-        <DynamicZone page={page} />
+        <DynamicZone page={page} categoryData={categoryData} />
       </Provider>
     </>
   );

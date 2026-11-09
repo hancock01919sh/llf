@@ -69,9 +69,11 @@ const isStrict = () => process.env.NODE_ENV !== 'development';
  */
 export function DynamicZone({
   page,
+  categoryData,
   offset = 0,
 }: {
   page: Pick<cms.Page, 'title' | 'path' | 'main'>;
+  categoryData?: cms.Category;
   offset?: number;
 }) {
   return resolveBlocks(page, isStrict()).map(
@@ -95,6 +97,7 @@ export function DynamicZone({
             layout={layout}
             block={data}
             pageTitle={page.title}
+            categoryData={categoryData}
           />
         </ModuleBoundary>
       );

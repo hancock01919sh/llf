@@ -239,6 +239,148 @@
         "title": "Your kitchen"
       },
       "seo": null
+    },
+    {
+      "id": 4,
+      "documentId": "cocy48y148ttigtvoxolvd99",
+      "title": "chicken & Rice bowls",
+      "slug": "chicken-and-rice-bowls",
+      "description": "A weeknight regular. Here’s how to waste less of what goes into it.",
+      "mode": "Ingredients",
+      "image": {
+        "id": 69,
+        "documentId": "av6ps1h8yqx64ns6bt92cpbb",
+        "url": "/uploads/4ab2d307085b0badcb07d868a994713703d4aff0_cdc28e5f7c.jpg",
+        "alternativeText": "chickenbowl",
+        "caption": null,
+        "width": 1080,
+        "height": 1080,
+        "mime": "image/jpeg",
+        "name": "4ab2d307085b0badcb07d868a994713703d4aff0.jpg"
+      },
+      "ingredients": [
+        {
+          "id": 49,
+          "documentId": "xihs97mulruynaebsmvymxud",
+          "title": "Green Onions",
+          "type": null,
+          "synonyms": null,
+          "wasted": 3,
+          "image": {
+            "id": 76,
+            "documentId": "swtjbg9ot3xbqvgui5zxpjpl",
+            "url": "/uploads/green_onions_d4a325eafb.png",
+            "alternativeText": "green onions",
+            "caption": null,
+            "width": 856,
+            "height": 1438,
+            "mime": "image/png",
+            "name": "green onions.png"
+          },
+          "tips": []
+        },
+        {
+          "id": 24,
+          "documentId": "py6icl5638ofmd0g2qtts2o8",
+          "title": "Milk",
+          "type": null,
+          "synonyms": null,
+          "wasted": 3,
+          "image": null,
+          "tips": [
+            {
+              "id": 12,
+              "documentId": "djsjubgenqdipoja5z0u8ta0",
+              "title": "Check your household weekly consumption before sizing up to a gallon",
+              "description": "A smaller carton finished on time beats a larger one that ends up down the drain. Buy to match how much you actually go through, not what feels like the better deal per ounce.",
+              "tip_type": {
+                "id": 8,
+                "documentId": "jx1ssjev8r4nb2kyc3fn9hde",
+                "title": "Buy it"
+              }
+            },
+            {
+              "id": 14,
+              "documentId": "fv627i1ovkku18903ckgfann",
+              "title": "Milk doesn't belong in the fridge door",
+              "description": "The door is the warmest spot and fluctuates with every open and close. Keep it on a middle or bottom shelf toward the back where the temperature stays consistently cold.",
+              "tip_type": {
+                "id": 6,
+                "documentId": "l5j2f7d2oviv5uybla6f46if",
+                "title": "Store it"
+              }
+            },
+            {
+              "id": 16,
+              "documentId": "ode6rxr8z58obg8w1wl272g9",
+              "title": "Milk that's just past its label date but still smells fine works perfectly in cooking",
+              "description": "Pancakes, muffins, and sauces are all good uses — heat and other ingredients do the rest. Save the freshest milk for drinking straight and use the older carton for cooking first.",
+              "tip_type": {
+                "id": 4,
+                "documentId": "twofxttr1y6aldue8k79owbb",
+                "title": "Use it"
+              }
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "documentId": "g9glql1w0t6moy9j5fyc8nc9",
+          "title": "Tomatoes",
+          "type": null,
+          "synonyms": null,
+          "wasted": 3,
+          "image": null,
+          "tips": []
+        },
+        {
+          "id": 47,
+          "documentId": "uv9y7lgf4qdge97miskfiukq",
+          "title": "Sour Cream",
+          "type": "Dairy",
+          "synonyms": null,
+          "wasted": 3,
+          "image": {
+            "id": 73,
+            "documentId": "k2j7b4gsxvskoms14lq4o7a2",
+            "url": "/uploads/sour_cream_ae915b4bfa.png",
+            "alternativeText": "sour cream",
+            "caption": null,
+            "width": 1068,
+            "height": 1326,
+            "mime": "image/png",
+            "name": "sour cream.png"
+          },
+          "tips": []
+        },
+        {
+          "id": 48,
+          "documentId": "okp55o9if3a4xa68bu6bf6gl",
+          "title": "Rice",
+          "type": null,
+          "synonyms": null,
+          "wasted": 3,
+          "image": {
+            "id": 77,
+            "documentId": "ukeskbf8jkg14ee7evdput8u",
+            "url": "/uploads/rice_533be69f65.jpg",
+            "alternativeText": "rice",
+            "caption": null,
+            "width": 4096,
+            "height": 2731,
+            "mime": "image/jpeg",
+            "name": "rice.jpg"
+          },
+          "tips": []
+        }
+      ],
+      "tips": [],
+      "group": {
+        "id": 2,
+        "documentId": "bag1z3cufnozu7sdn0o79f72",
+        "title": "Weeknight Staples"
+      },
+      "seo": null
     }
   ],
   "meta": {
