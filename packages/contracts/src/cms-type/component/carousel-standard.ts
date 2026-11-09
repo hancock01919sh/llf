@@ -29,10 +29,10 @@ export const CarouselStandardDeepRef = z.object({
   id: z.number().int(),
   description: z.string(),
   backgroundColor: z.enum(['sand', 'paper', 'terra']),
-  standardCard: z.array(z.lazy((): z.ZodType<StandardCardDeepRef>  => StandardCardDeepRef)),
+  standardCard: z.array(z.lazy((): z.ZodType<StandardCardDeepRef> => StandardCardDeepRef)),
   cardBackgroundColor: nullish(z.enum(['Bright Yellow'])),
   isFullwidth: nullish(z.boolean().default(true)),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type CarouselStandardDeepRef = z.infer<typeof CarouselStandardDeepRef>;

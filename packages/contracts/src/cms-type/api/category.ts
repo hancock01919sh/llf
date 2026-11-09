@@ -13,11 +13,11 @@ export const Category = z.object({
   title: z.string(),
   slug: z.string(),
   description: nullish(z.string()),
-  ingredients: nullish(z.array(z.lazy(()=> IngredientRef))),
-  tips: nullish(z.array(z.lazy(()=> TipRef))),
+  ingredients: nullish(z.array(z.lazy(() => IngredientRef))),
+  tips: nullish(z.array(z.lazy(() => TipRef))),
   mode: z.enum(['Ingredients', 'Tips']).default('Ingredients'),
   image: nullish(Media),
-  group: nullish(z.lazy(()=> GroupRef)),
+  group: nullish(z.lazy(() => GroupRef)),
   seo: nullish(z.lazy(() => SeoRef)),
 });
 
@@ -42,7 +42,7 @@ export const CategoryDeepRef = z.object({
   mode: z.enum(['Ingredients', 'Tips']).default('Ingredients'),
   image: nullish(Media),
   group: nullish(z.lazy((): z.ZodType<GroupDeepRef> => GroupDeepRef)),
-  seo: nullish(z.lazy((): z.ZodType<SeoDeepRef>  => SeoDeepRef)),
+  seo: nullish(z.lazy((): z.ZodType<SeoDeepRef> => SeoDeepRef)),
 });
 
 export type CategoryDeepRef = z.infer<typeof CategoryDeepRef>;

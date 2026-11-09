@@ -184,7 +184,7 @@ export async function runSeed({
     const data = {
       title: page.title,
       path: page.path,
-      template: page.template,
+      // template: page.template,
       seo: page.seo ?? null,
     };
     pageIds.set(contract.pathKey(page.path), await upsert('pages', 'path', page.path, data));
@@ -194,11 +194,11 @@ export async function runSeed({
     const documentId = lookup(pageIds, contract.pathKey(page.path), 'page');
     const data = toPageContent(page, ids);
     if (!dryRun) await client.update('pages', documentId, data);
-    const slots = PAGE_SLOTS.filter((slot) => page[slot] !== undefined);
-    log(
-      `${dryRun ? 'would write' : 'wrote'} pages ${JSON.stringify(page.path)} ${page.template}` +
-        `${slots.length > 0 ? ` [${slots.join(', ')}]` : ''} main (${data.main.length} blocks)`,
-    );
+    // const slots = PAGE_SLOTS.filter((slot) => page[slot] !== undefined);
+    // log(
+    //   `${dryRun ? 'would write' : 'wrote'} pages ${JSON.stringify(page.path)} ${page.template}` +
+    //     `${slots.length > 0 ? ` [${slots.join(', ')}]` : ''} main (${data.main.length} blocks)`,
+    // );
   }
 
   return report;
@@ -214,6 +214,10 @@ function toTitle(title: SeedTitle | undefined) {
   return title === undefined ? null : { copy: title.copy, header: title.header };
 }
 
+function toLongText(longText: contract.SeedLongText | undefined) {
+  return longText === undefined ? null : longText;
+}
+
 function toCta(cta: SeedCta, { pageIds }: BlockIds) {
   if (cta.page !== undefined) {
     return {
@@ -224,7 +228,7 @@ function toCta(cta: SeedCta, { pageIds }: BlockIds) {
   return { label: cta.label, href: cta.href ?? null };
 }
 
-const PAGE_SLOTS = ['hero', 'intro', 'featured', 'tool'] as const;
+// const PAGE_SLOTS = ['hero', 'intro', 'featured', 'tool'] as const;
 
 /**
  * The page's template slots and `main`. Every slot is written (null or empty when absent) so a
@@ -232,41 +236,47 @@ const PAGE_SLOTS = ['hero', 'intro', 'featured', 'tool'] as const;
  */
 export function toPageContent(page: SeedPage, ids: BlockIds) {
   return {
-    hero: page.hero === undefined ? null : toHero(page.hero, ids),
-    intro: page.intro === undefined ? null : contract.toBlocks(page.intro),
-    featured: {
-      set: (page.featured ?? []).map((slug) => lookup(ids.categoryIds, slug, 'category')),
-    },
-    tool: page.tool === undefined ? null : { ...page.tool },
+    // hero: page.hero === undefined ? null : toHero(page.hero, ids),
+    // intro: page.intro === undefined ? null : contract.toBlocks(page.intro),
+    // featured: {
+    //   set: (page.featured ?? []).map((slug) => lookup(ids.categoryIds, slug, 'category')),
+    // },
+    // tool: page.tool === undefined ? null : { ...page.tool },
     main: page.main.map((block) => toBlock(block, ids)),
   };
 }
 
-function toHero(hero: SeedHero, ids: BlockIds) {
+// function toHero(hero: SeedHero, ids: BlockIds) {
+function toHero(hero: SeedHero) {
   return {
     ...hero,
-    eyebrow: hero.eyebrow ?? null,
-    description: contract.toBlocks(hero.description),
-    ctas: hero.ctas.map((cta) => toCta(cta, ids)),
+    // eyebrow: hero.eyebrow ?? null,
+    //description: contract.toBlocks(block.description),
+    description: toLongText(hero.description),
+    // ctas: hero.ctas.map((cta) => toCta(cta, ids)),
+    title: contract.toBlocks(hero.title),
   };
 }
 
 function toBlock(block: SeedBlock, ids: BlockIds): Record<string, unknown> {
   switch (block.__component) {
     case 'component.hero':
-      return toHero(block, ids);
+      // return toHero(block, ids);
+      return toHero(block);
     case 'component.teaser':
       return {
         ...block,
         title: toTitle(block.title),
-        description: contract.toBlocks(block.description),
-        ctas: block.ctas.map((cta) => toCta(cta, ids)),
+        //description: contract.toBlocks(block.description),
+        description: toLongText(block.description),
+        // ctas: block.ctas.map((cta) => toCta(cta, ids)),
       };
     case 'component.link-list':
       return {
         ...block,
         title: toTitle(block.title),
-        description: contract.toBlocks(block.description),
+        //description: contract.toBlocks(block.description),
+        description: toLongText(block.description),
         pages: {
           set: block.pages.map((path) => lookup(ids.pageIds, contract.pathKey(path), 'page')),
         },
@@ -304,12 +314,13 @@ const tipFields = {
   ingredient: true,
 } satisfies Populate;
 const tipRelations = { populate: tipFields } satisfies Populate;
-const hero = { populate: { ctas, images: true } } satisfies Populate;
+//const hero = { populate: { ctas, images: true } } satisfies Populate;
+const hero = { populate: { images: true } } satisfies Populate;
 export const POPULATE = {
   pages: {
-    hero,
-    featured: { populate: { image: true } },
-    tool: true,
+    // hero,
+    // featured: { populate: { image: true } },
+    // tool: true,
     main: {
       on: {
         'component.hero': hero,

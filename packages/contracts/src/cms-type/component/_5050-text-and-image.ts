@@ -39,7 +39,7 @@ export const _5050TextAndImageDeepRef = z.object({
   positionOfAddingBgColor: nullish(z.enum(['Up ', 'Down'])),
   isFullwidth: nullish(z.boolean().default(false)),
   backgroundColor: z.enum(['paper', 'forest']),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type _5050TextAndImageDeepRef = z.infer<typeof _5050TextAndImageDeepRef>;

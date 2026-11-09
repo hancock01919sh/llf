@@ -26,10 +26,10 @@ export const CarouselSmallDeepRef = z.object({
   __component: z.literal('component.carousel-small'),
   id: z.number().int(),
   description: z.string(),
-  smallCard: z.array(z.lazy((): z.ZodType<SmallCardDeepRef>  => SmallCardDeepRef)),
+  smallCard: z.array(z.lazy((): z.ZodType<SmallCardDeepRef> => SmallCardDeepRef)),
   isFullwidth: nullish(z.boolean().default(true)),
   backgroundColor: z.enum(['paper']),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type CarouselSmallDeepRef = z.infer<typeof CarouselSmallDeepRef>;

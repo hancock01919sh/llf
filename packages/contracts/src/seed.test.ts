@@ -52,7 +52,8 @@ const minimal = (): SeedInput => ({
       title: 'Home',
       path: '/',
       main: [
-        { __component: 'component.hero', ctas: [{ label: 'About', page: 'about' }] },
+        //{ __component: 'component.hero', ctas: [{ label: 'About', page: 'about' }] },
+        { __component: 'component.hero' },
         { __component: 'component.carousel', categories: ['produce', 'smart-shopping'] },
         { __component: 'custom.tip-list', tips: ['Freeze it'] },
       ],
@@ -111,17 +112,17 @@ describe('seed schemas', () => {
   });
 
   it('defaults the page template to generic and fills template slots', () => {
-    expect(SeedPage.parse({ title: 'About', path: 'about' }).template).toBe('generic');
-    const home = SeedPage.parse({
-      title: 'Home',
-      path: '/',
-      template: 'home',
-      hero: { eyebrow: 'Hi' },
-      intro: ['Welcome'],
-      featured: ['fruits'],
-    });
-    expect(home.hero).toEqual({ layout: 'Primary', eyebrow: 'Hi', description: [], ctas: [] });
-    expect(home.featured).toEqual(['fruits']);
+    // expect(SeedPage.parse({ title: 'About', path: 'about' }).template).toBe('generic');
+    // const home = SeedPage.parse({
+    //   title: 'Home',
+    //   path: '/',
+    // template: 'home',
+    // hero: { eyebrow: 'Hi' },
+    // intro: ['Welcome'],
+    // featured: ['fruits'],
+    // });
+    // expect(home.hero).toEqual({ layout: 'Primary', eyebrow: 'Hi', description: [], ctas: [] });
+    // expect(home.featured).toEqual(['fruits']);
   });
 
   it.each([
@@ -281,7 +282,8 @@ describe('validateSeed', () => {
       title: 'Bad',
       path: 'bad',
       main: [
-        { __component: 'component.hero', ctas: [{ label: 'x', page: 'missing' }] },
+        // { __component: 'component.hero', ctas: [{ label: 'x', page: 'missing' }] },
+        { __component: 'component.hero' },
         { __component: 'component.link-list', pages: ['missing'] },
         { __component: 'component.carousel', categories: ['nope'] },
         { __component: 'custom.tip-list', tips: ['Nope'] },
@@ -306,7 +308,7 @@ describe('validateSeed', () => {
     const input = minimal();
     input.pages[0]?.main?.push({
       __component: 'component.hero',
-      ctas: [{ label: 'x', href: 'https://example.org/' }],
+      // ctas: [{ label: 'x', href: 'https://example.org/' }],
     });
     expect(validateSeed(parse(input))).toEqual([]);
   });

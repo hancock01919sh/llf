@@ -31,9 +31,9 @@ export const HighlightComponentDeepRef = z.object({
   description: z.string(),
   image: Media,
   backgroundColor: z.enum(['forest-tint', 'paper', 'forest']),
-  link: nullish(z.array(z.lazy((): z.ZodType<LinksDeepRef>  => LinksDeepRef))),
+  link: nullish(z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef))),
   isFullwidth: nullish(z.boolean().default(false)),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type HighlightComponentDeepRef = z.infer<typeof HighlightComponentDeepRef>;

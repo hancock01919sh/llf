@@ -26,10 +26,10 @@ export const IngredientCarouselDeepRef = z.object({
   __component: z.literal('component.ingredient-carousel'),
   id: z.number().int(),
   description: z.string(),
-  ingredientCard: z.array(z.lazy((): z.ZodType<IngredientCardDeepRef>  => IngredientCardDeepRef)),
+  ingredientCard: z.array(z.lazy((): z.ZodType<IngredientCardDeepRef> => IngredientCardDeepRef)),
   backgroundColor: z.enum(['paper']),
   isFullwidth: nullish(z.boolean().default(true)),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type IngredientCarouselDeepRef = z.infer<typeof IngredientCarouselDeepRef>;

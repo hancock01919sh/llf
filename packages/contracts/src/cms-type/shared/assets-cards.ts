@@ -11,7 +11,13 @@ export const AssetsCards = z.object({
   image: Media,
   cta: nullish(z.lazy(() => LinksRef)),
   file: nullish(Media),
-  displayMode: z.enum(['aspect-16/9', 'aspect-9/16', 'aspect-4/5', 'aspect-1/1', 'aspect-4/5 10 second']),
+  displayMode: z.enum([
+    'aspect-16/9',
+    'aspect-9/16',
+    'aspect-4/5',
+    'aspect-1/1',
+    'aspect-4/5 10 second',
+  ]),
 });
 
 export const AssetsCardsRef = z.object({
@@ -20,7 +26,13 @@ export const AssetsCardsRef = z.object({
   label: z.string(),
   image: Media,
   file: nullish(Media),
-  displayMode: z.enum(['aspect-16/9', 'aspect-9/16', 'aspect-4/5', 'aspect-1/1', 'aspect-4/5 10 second']),
+  displayMode: z.enum([
+    'aspect-16/9',
+    'aspect-9/16',
+    'aspect-4/5',
+    'aspect-1/1',
+    'aspect-4/5 10 second',
+  ]),
 });
 
 export const AssetsCardsDeepRef = z.object({
@@ -28,9 +40,15 @@ export const AssetsCardsDeepRef = z.object({
   description: z.string(),
   label: z.string(),
   image: Media,
-  cta: nullish(z.lazy((): z.ZodType<LinksDeepRef>  => LinksDeepRef)),
+  cta: nullish(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
   file: nullish(Media),
-  displayMode: z.enum(['aspect-16/9', 'aspect-9/16', 'aspect-4/5', 'aspect-1/1', 'aspect-4/5 10 second']),
+  displayMode: z.enum([
+    'aspect-16/9',
+    'aspect-9/16',
+    'aspect-4/5',
+    'aspect-1/1',
+    'aspect-4/5 10 second',
+  ]),
 });
 
 export type AssetsCardsDeepRef = z.infer<typeof AssetsCardsDeepRef>;

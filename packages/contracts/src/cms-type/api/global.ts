@@ -22,8 +22,8 @@ export const GlobalDeepRef = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  seo: nullish(z.lazy((): z.ZodType<SeoDeepRef>  => SeoDeepRef)),
-  load: z.lazy((): z.ZodType<LoadingDeepRef>  => LoadingDeepRef),
+  seo: nullish(z.lazy((): z.ZodType<SeoDeepRef> => SeoDeepRef)),
+  load: z.lazy((): z.ZodType<LoadingDeepRef> => LoadingDeepRef),
 });
 
 export type GlobalDeepRef = z.infer<typeof GlobalDeepRef>;

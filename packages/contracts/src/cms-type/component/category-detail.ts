@@ -40,12 +40,12 @@ export const CategoryDetailDeepRef = z.object({
   image: nullish(Media.array()),
   subTitle: nullish(z.string()),
   statement: nullish(Block.array()),
-  button: nullish(z.lazy((): z.ZodType<LinksDeepRef>  => LinksDeepRef)),
-  popup: nullish(z.lazy((): z.ZodType<TipsPopupDeepRef>  => TipsPopupDeepRef)),
+  button: nullish(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
+  popup: nullish(z.lazy((): z.ZodType<TipsPopupDeepRef> => TipsPopupDeepRef)),
   isFullwidth: nullish(z.boolean().default(false)),
   backgroundColor: z.enum(['forest']),
   hint: nullish(z.string()),
-  title: nullish(z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef)),
+  title: nullish(z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef)),
 });
 
 export type CategoryDetailDeepRef = z.infer<typeof CategoryDetailDeepRef>;

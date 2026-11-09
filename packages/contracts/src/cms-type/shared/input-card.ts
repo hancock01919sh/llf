@@ -20,7 +20,7 @@ export const InputCardRef = z.object({
 export const InputCardDeepRef = z.object({
   title: z.string(),
   icon: nullish(Media),
-  link: nullish(z.lazy((): z.ZodType<LinksDeepRef>  => LinksDeepRef)),
+  link: nullish(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
   description: z.string(),
 });
 

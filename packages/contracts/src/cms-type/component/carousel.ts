@@ -9,7 +9,7 @@ export const Carousel = z.object({
   id: z.number().int(),
   title: nullish(z.lazy(() => TitleRef)),
   description: nullish(z.string()),
-  categories: nullish(z.array(z.lazy(()=> CategoryRef))),
+  categories: nullish(z.array(z.lazy(() => CategoryRef))),
   mode: z.enum(['categories']).default('categories'),
   layout: z.enum(['Basic', 'Compact']).default('Basic'),
   ctas: nullish(z.array(z.lazy(() => CtaRef))),
@@ -24,12 +24,12 @@ export const CarouselRef = z.object({
 
 export const CarouselDeepRef = z.object({
   id: z.number().int(),
-  title: nullish(z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef)),
+  title: nullish(z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef)),
   description: nullish(z.string()),
   categories: nullish(z.array(z.lazy((): z.ZodType<CategoryDeepRef> => CategoryDeepRef))),
   mode: z.enum(['categories']).default('categories'),
   layout: z.enum(['Basic', 'Compact']).default('Basic'),
-  ctas: nullish(z.array(z.lazy((): z.ZodType<CtaDeepRef>  => CtaDeepRef))),
+  ctas: nullish(z.array(z.lazy((): z.ZodType<CtaDeepRef> => CtaDeepRef))),
 });
 
 export type CarouselDeepRef = z.infer<typeof CarouselDeepRef>;

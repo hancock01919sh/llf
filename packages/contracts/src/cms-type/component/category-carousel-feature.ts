@@ -28,11 +28,11 @@ export const CategoryCarouselFeatureDeepRef = z.object({
   __component: z.literal('component.category-carousel-feature'),
   id: z.number().int(),
   description: z.string(),
-  link: z.array(z.lazy((): z.ZodType<LinksDeepRef>  => LinksDeepRef)),
-  featureCard: z.array(z.lazy((): z.ZodType<FeatureCardDeepRef>  => FeatureCardDeepRef)),
+  link: z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
+  featureCard: z.array(z.lazy((): z.ZodType<FeatureCardDeepRef> => FeatureCardDeepRef)),
   isFullwidth: nullish(z.boolean().default(true)),
   backgroundColor: z.enum(['terra']).default('terra'),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type CategoryCarouselFeatureDeepRef = z.infer<typeof CategoryCarouselFeatureDeepRef>;

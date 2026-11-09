@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { SeoRef, SeoDeepRef } from '../shared/seo';
-import {UnknownBlock} from '../blocks';
+import { UnknownBlock } from '../blocks';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
@@ -26,7 +26,7 @@ export const PageDeepRef = z.object({
   title: z.string(),
   path: z.string(),
   main: z.array(UnknownBlock).default([]),
-  seo: nullish(z.lazy((): z.ZodType<SeoDeepRef>  => SeoDeepRef)),
+  seo: nullish(z.lazy((): z.ZodType<SeoDeepRef> => SeoDeepRef)),
 });
 
 export type PageDeepRef = z.infer<typeof PageDeepRef>;

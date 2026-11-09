@@ -1,17 +1,18 @@
 import { z } from 'zod';
 import { Slug, toSlug } from './catalog';
 import {
-  CAROUSEL_LAYOUTS,
+  // CAROUSEL_LAYOUTS,
   CAROUSEL_MODES,
   CATEGORY_MODES,
-  HERO_LAYOUTS,
+  BACKGROUND_COLOR,
+  // HERO_LAYOUTS,
   HeadingLevel,
   INGREDIENT_TYPES,
-  LINK_LIST_LAYOUTS,
-  PAGE_TEMPLATES,
-  type PageTemplate,
-  TEASER_LAYOUTS,
-  TIP_LIST_LAYOUTS,
+  // LINK_LIST_LAYOUTS,
+  // PAGE_TEMPLATES,
+  // type PageTemplate,
+  // TEASER_LAYOUTS,
+  // TIP_LIST_LAYOUTS,
 } from './cms';
 
 /**
@@ -128,26 +129,31 @@ export type SeedCategory = z.infer<typeof SeedCategory>;
 // Dynamic-zone blocks (Page.main). Images come later (OPEN-28).
 export const SeedHeroBlock = z.strictObject({
   __component: z.literal('component.hero'),
-  layout: z.enum(HERO_LAYOUTS).default('Primary'),
-  eyebrow: text.optional(),
-  description: SeedRichText.default([]),
-  ctas: z.array(SeedCta).default([]),
+  // layout: z.enum(HERO_LAYOUTS).default('Primary'),
+  // eyebrow: text.optional(),
+  //description: SeedRichText.default([]),
+  description: text.optional(),
+  // ctas: z.array(SeedCta).default([]),
+  title: SeedRichText.default([]),
+  backgroundColor: z.enum(BACKGROUND_COLOR).default('terra'),
 });
 
 export const SeedTeaserBlock = z.strictObject({
   __component: z.literal('component.teaser'),
   title: SeedTitle.optional(),
-  description: SeedRichText.default([]),
+  //description: SeedRichText.default([]),
+  description: text.optional(),
   ctas: z.array(SeedCta).default([]),
-  layout: z.enum(TEASER_LAYOUTS).default('Basic'),
+  // layout: z.enum(TEASER_LAYOUTS).default('Basic'),
 });
 
 export const SeedLinkListBlock = z.strictObject({
   __component: z.literal('component.link-list'),
   title: SeedTitle.optional(),
-  description: SeedRichText.default([]),
+  //description: SeedRichText.default([]),
+  description: text.optional(),
   pages: z.array(SeedPath).default([]),
-  layout: z.enum(LINK_LIST_LAYOUTS).default('Basic'),
+  // layout: z.enum(LINK_LIST_LAYOUTS).default('Basic'),
 });
 
 export const SeedCarouselBlock = z.strictObject({
@@ -156,7 +162,7 @@ export const SeedCarouselBlock = z.strictObject({
   description: text.optional(),
   categories: z.array(Slug).default([]),
   mode: z.enum(CAROUSEL_MODES).default('categories'),
-  layout: z.enum(CAROUSEL_LAYOUTS).default('Basic'),
+  // layout: z.enum(CAROUSEL_LAYOUTS).default('Basic'),
   ctas: z.array(SeedCta).default([]),
 });
 
@@ -170,7 +176,7 @@ export const SeedTipListBlock = z.strictObject({
   title: SeedTitle.optional(),
   description: text.optional(),
   tips: z.array(text).default([]),
-  layout: z.enum(TIP_LIST_LAYOUTS).default('Basic'),
+  // layout: z.enum(TIP_LIST_LAYOUTS).default('Basic'),
 });
 
 export const SeedToolBlock = z.strictObject({
@@ -198,40 +204,39 @@ export const SEED_BLOCK_COMPONENTS = SeedBlock.options.map(
 );
 
 /** Which template each Page slot belongs to; mirrors the field conditions in the Strapi Page schema (TDD §6.4). */
-export const PAGE_SLOT_TEMPLATES = {
-  hero: ['home'],
-  intro: ['home'],
-  featured: ['home'],
-  tool: ['find-my-tips'],
-  main: ['generic', 'home'],
-} as const satisfies Record<string, readonly PageTemplate[]>;
+// export const PAGE_SLOT_TEMPLATES = {
+//   hero: ['home'],
+//   intro: ['home'],
+//   featured: ['home'],
+//   tool: ['find-my-tips'],
+//   main: ['generic', 'home'],
+// } as const satisfies Record<string, readonly PageTemplate[]>;
 
 /** Keyed by path (compared with `pathKey`). Template slots are only allowed on the template that shows them. */
-export const SeedPage = z
-  .strictObject({
-    title: text,
-    path: SeedPath,
-    template: z.enum(PAGE_TEMPLATES).default('generic'),
-    seo: SeedSeo.optional(),
-    hero: SeedHeroBlock.omit({ __component: true }).optional(),
-    intro: SeedRichText.optional(),
-    featured: z.array(Slug).optional(),
-    tool: SeedToolBlock.omit({ __component: true }).optional(),
-    main: z.array(SeedBlock).default([]),
-  })
-  .superRefine((page, ctx) => {
-    for (const [slot, templates] of Object.entries(PAGE_SLOT_TEMPLATES)) {
-      const value = page[slot as keyof typeof PAGE_SLOT_TEMPLATES];
-      const empty = value === undefined || (Array.isArray(value) && value.length === 0);
-      if (!empty && !(templates as readonly PageTemplate[]).includes(page.template)) {
-        ctx.addIssue({
-          code: 'custom',
-          path: [slot],
-          message: `"${slot}" is not shown by the "${page.template}" template`,
-        });
-      }
-    }
-  });
+export const SeedPage = z.strictObject({
+  title: text,
+  path: SeedPath,
+  // template: z.enum(PAGE_TEMPLATES).default('generic'),
+  seo: SeedSeo.optional(),
+  // hero: SeedHeroBlock.omit({ __component: true }).optional(),
+  // intro: SeedRichText.optional(),
+  // featured: z.array(Slug).optional(),
+  // tool: SeedToolBlock.omit({ __component: true }).optional(),
+  main: z.array(SeedBlock).default([]),
+});
+// .superRefine((page, ctx) => {
+//   for (const [slot, templates] of Object.entries(PAGE_SLOT_TEMPLATES)) {
+//     const value = page[slot as keyof typeof PAGE_SLOT_TEMPLATES];
+//     const empty = value === undefined || (Array.isArray(value) && value.length === 0);
+//     if (!empty && !(templates as readonly PageTemplate[]).includes(page.template)) {
+//       ctx.addIssue({
+//         code: 'custom',
+//         path: [slot],
+//         message: `"${slot}" is not shown by the "${page.template}" template`,
+//       });
+//     }
+//   }
+// });
 export type SeedPage = z.infer<typeof SeedPage>;
 
 export const Seed = z.strictObject({
@@ -355,3 +360,11 @@ export function validateSeed(seed: Seed): SeedIssue[] {
   });
   return issues;
 }
+
+// For "ShortText" fields, it is generally recommended to include a `max` constraint, aligning with the 255-character limit used in Strapi.
+export const SeedShortText = z.string().max(255).optional().nullable();
+export type SeedShortText = z.infer<typeof SeedShortText>;
+
+// LongText: Typically has no `max` limit and allows line breaks.
+export const SeedLongText = z.string().optional().nullable();
+export type SeedLongText = z.infer<typeof SeedLongText>;
