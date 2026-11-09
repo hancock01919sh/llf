@@ -1,12 +1,12 @@
 # Runbook: branching and pull requests
 
-**Status:** in use (BD3244-15). `dev` and `main` are protected on `dotdotdashdev/3244_tbw_ad_council` as of Oct 19; `staging` and `prod` get the same rules when they're created. The settings are re-applied after the repo move to Ad Council's GitHub (OPEN-11).
+**Status:** in use (BD3244-15). The rules below are **followed by agreement**: GitHub's current plan for `dotdotdashdev` doesn't allow branch protection on this private repo (the API returns 403), so nothing enforces them yet. `staging` and `prod` get the same rules when they're created. The settings are re-applied after the repo move to Ad Council's GitHub (OPEN-11).
 
 ## Purpose
 Make every change reviewable and traceable to a Jira ticket. Source: [TDD §9.3](../TDD.md#93-cicd-and-the-branch-model-tl-decision-for-the-branches-verified-for-ciyml-proposed-for-the-other-workflows) and [AGENTS.md](../../AGENTS.md).
 
 ## Who
-Everyone who changes the repo, including the China team. **All work starts from `dev`** (the scaffold that follows the TDD); work done elsewhere is ported into it, not merged from another base. Art reviews for technical accuracy.
+Everyone who changes the repo, including the China team. **All work starts from `dev`** (the scaffold that follows the TDD); work done elsewhere is ported into it, not merged from another base. **The China team approves and merges its own PRs into `dev`** (TDD D34): a teammate reviews, CI is green, you merge. Art reviews after merge and raises anything as a follow-up ticket, so don't wait for him. He approves `staging` and `prod` promotions.
 
 ## Branch model
 | Branch | Purpose |
@@ -17,7 +17,7 @@ Everyone who changes the repo, including the China team. **All work starts from 
 
 All three are protected: a PR, green CI, 1 approving review (a tech lead for `staging` and `prod`), no force-push. `main` is legacy (the original upload) and is locked the same way; nothing new goes there.
 
-Required checks on `dev`: **Format, lint, typecheck, unit tests**, **Build and e2e (Playwright + axe)**, **CMS image build and smoke**, and **Jira key in PR title**. A code-owner review is required (`.github/CODEOWNERS`), stale approvals are dismissed on new commits, and review threads must be resolved. ddd admins can bypass in an emergency and say so on the PR.
+Required checks on `dev`: **Format, lint, typecheck, unit tests**, **Build and e2e (Playwright + axe)**, **CMS image build and smoke**, and **Jira key in PR title**. A code-owner review is required (`.github/CODEOWNERS`; a China team lead is enough, D34), stale approvals are dismissed on new commits, and review threads must be resolved. ddd admins can bypass in an emergency and say so on the PR.
 
 ## Prerequisites
 - Repo access. A Jira ticket (`BD3244-123`) with acceptance criteria.

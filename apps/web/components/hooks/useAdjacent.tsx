@@ -4,7 +4,7 @@ export function useAdjacent({
   originalRef,
   tagName = 'section',
 }: {
-  originalRef: React.RefObject<HTMLOptionElement | null>;
+  originalRef: React.RefObject<HTMLDivElement | null>;
   tagName?: string;
 }) {
   const [Adjacent, setAdjacent] = useState<{
@@ -19,8 +19,8 @@ export function useAdjacent({
     if (!originalRef.current) {
       return;
     }
-    let next = originalRef.current.nextElementSibling as HTMLElement;
-    let prev = originalRef.current.previousElementSibling as HTMLElement;
+    let next = originalRef.current.closest(tagName)!.nextElementSibling as HTMLElement;
+    let prev = originalRef.current.closest(tagName)!.previousElementSibling as HTMLElement;
     while (next && next.tagName.toLowerCase() !== tagName.toLowerCase()) {
       next = next.nextElementSibling as HTMLElement;
     }

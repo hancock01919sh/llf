@@ -26,7 +26,7 @@ pnpm install
 
 - Put `CMS_FIXTURES=1` in `.env` to make fixtures the default. Without it, web needs `CMS_URL` and `CMS_TOKEN` (a **read-only** Strapi API token: Strapi admin → Settings → API Tokens).
 - `pnpm dev` and `pnpm dev:cms` create `apps/cms/.env` with random local-only secrets on first run. If Homebrew Postgres holds 5432, set `POSTGRES_PORT=5433` in `.env`.
-- Find My Tips runs on the **mock** AI provider by default (`AI_PROVIDER=mock`): recorded fixtures, no keys, no network. Live providers are for Render dev and the manual `eval` suite only ([AGENTS.md](AGENTS.md)).
+- Find My Tips runs on the **mock** AI provider by default (`AI_PROVIDER=mock`): recorded fixtures, no keys, no network. To try a live model locally, set a provider and ddd's dev key in your `.env` (see [run-locally](docs/runbooks/run-locally.md)). CI always stays on mock ([AGENTS.md](AGENTS.md), TDD D33).
 - Every env key is documented in [`.env.example`](.env.example). Never commit `.env`.
 
 ### Checks

@@ -5,14 +5,16 @@
   },
   "options": {},
   "attributes": {
-    "title": {
-      "type": "string",
-      "required": true
-    },
     "subCategory": {
       "type": "component",
       "component": "component.guide",
       "repeatable": true,
+      "required": true
+    },
+    "title": {
+      "type": "component",
+      "component": "shared.title",
+      "repeatable": false,
       "required": true
     }
   },

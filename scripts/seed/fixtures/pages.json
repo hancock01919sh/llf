@@ -270,6 +270,24 @@
       "seo": {
         "metaDescription": "Fixture page that shows every block layout."
       }
+    },
+    {
+      "title": "Tips Library Landing Page",
+      "path": "tips/category",
+      "main": [
+        {
+          "__component": "component.hero",
+          "layout": "Secondary",
+          "eyebrow": "Fixture",
+          "description": [
+            "Fixture copy. This page exists so every block layout has content in dev.",
+            "It is not part of the launch site map."
+          ]
+        }
+      ],
+      "seo": {
+        "metaDescription": "Fixture page that shows every block layout."
+      }
     }
   ]
 }

@@ -1,20 +1,13 @@
 # Code owners are requested for review automatically. Last matching pattern wins.
-# Branch protection on dev / staging / prod requires one code-owner approval (TDD §9.3).
+# The China team leads approve and merge into dev. Art reviews after merge and
+# raises issues as follow-up tickets; he is never a gate on dev (TDD D34).
+# staging and prod promotions still need a tech lead (TDD §9.3).
 
-# Default: ddd tech lead
-*                         @artokun
+# Default
+*                         @omc-panghu @DavisWang-Omc @artokun
 
-# DevOps: CI, containers, infrastructure
-# TODO(BD3244-15): add James Steele's GitHub handle once he has repo access.
-/.github/workflows/       @artokun
-/docker-compose.yml       @artokun
-/infra/                   @artokun
-/render.yaml              @artokun
-**/Dockerfile             @artokun
+# CMS schema and config
+/apps/cms/                @DavisWang-Omc @chadwang0919 @omc-panghu @artokun
 
-# Docs
-# TODO: add James Calhoun's GitHub handle once he has repo access.
-/docs/                    @artokun
-
-# Contracts are shared by web, tool, and CMS. Changes need a tech-lead review.
-/packages/contracts/      @artokun
+# Contracts are shared by web, tool, and CMS.
+/packages/contracts/      @DavisWang-Omc @omc-panghu @artokun

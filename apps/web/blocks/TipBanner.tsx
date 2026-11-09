@@ -5,7 +5,7 @@ import Image from 'next/image';
 import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
 import type { Media } from '@llf/contracts/cms';
-export function TipBanner(props: BlockProps<cmsType.component.TipBannerDeepRef>) {
+export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeepRef>) {
   const { tip, label, cta } = props.block;
   return (
     <div className="py-15 lg:py-25">
@@ -54,7 +54,6 @@ export function TipBanner(props: BlockProps<cmsType.component.TipBannerDeepRef>)
     </div>
   );
 }
-export default TipBanner;
 function TipBannerImage({
   className = '',
   image,

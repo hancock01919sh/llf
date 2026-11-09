@@ -50,7 +50,7 @@ export function resolveBlocks(
       data: result.data,
       Component: entry.Component as ComponentType<BlockProps<unknown>>,
       surface: entry.surface || (block?.backgroundColor as Surface) || 'paper',
-      isFullwidth: block?.isFullwidth as boolean,
+      isFullwidth: (entry.isFullWidth || block?.isFullwidth) as boolean,
     });
   });
   if (problems.length > 0) {
@@ -69,9 +69,11 @@ const isStrict = () => process.env.NODE_ENV !== 'development';
  */
 export function DynamicZone({
   page,
+  categoryData,
   offset = 0,
 }: {
   page: Pick<cms.Page, 'title' | 'path' | 'main'>;
+  categoryData?: cms.Category;
   offset?: number;
 }) {
   return resolveBlocks(page, isStrict()).map(
@@ -95,6 +97,7 @@ export function DynamicZone({
             layout={layout}
             block={data}
             pageTitle={page.title}
+            categoryData={categoryData}
           />
         </ModuleBoundary>
       );

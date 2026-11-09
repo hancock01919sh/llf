@@ -2,7 +2,6 @@
 import { IngredientData, parseResultSlugs } from '@llf/contracts';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-// import { Loading } from '../ToolInput/Loading';
 import { Typography } from '@/components/Typography';
 import { useDevice } from '@/components/hooks/useDevice';
 import { EasyImage } from '@/components/UIImage';
@@ -35,7 +34,7 @@ export function IngredientsList(
   const { isMobile } = useDevice();
 
   useEffect(() => {
-    if (!key && !isSearch) {
+    if (!key && !ingredients?.length && !isSearch) {
       router.replace('/find-my-tips');
       return;
     }
@@ -51,7 +50,7 @@ export function IngredientsList(
         // console.log('no ingredients', loaded);
       }
     });
-  }, [key, router, isSearch]);
+  }, [key, router, isSearch, ingredients?.length]);
   const finalIngredients = useMemo(
     () => ingredients || state.ingredients,
     [state.ingredients, ingredients],
@@ -73,7 +72,7 @@ export function IngredientsList(
     <>
       {/* {state.status === 'loading' && !isSearch && <Loading open={state.status === 'loading'} />} */}
       {state.status === 'ready' && finalIngredients.length > 0 && (
-        <div className={`lg:px-gutter-lg pb-gutter-lg max-w-page mx-auto`}>
+        <div className={`pb-gutter-lg`}>
           <Typography variant="paragraph-regular" className="px-5">
             {finalIngredients?.length} ingredients |{' '}
             {finalIngredients?.reduce((acc, cur) => acc + (cur.tips?.length || 0), 0)} tips
