@@ -99,10 +99,14 @@ describe('seed schemas', () => {
     // expect(linkList).toMatchObject({ layout: 'Basic', pages: [] });
     // expect(carousel).toMatchObject({ layout: 'Basic', mode: 'categories', categories: [] });
     // expect(tipList).toMatchObject({ layout: 'Basic', tips: [] });
-    expect(hero).toMatchObject({ "__component": "component.hero","backgroundColor": "terra","title": [],});
-    expect(teaser).toMatchObject({title: { copy: 'Hi', header: 'h3' } });
+    expect(hero).toMatchObject({
+      __component: 'component.hero',
+      backgroundColor: 'terra',
+      title: [],
+    });
+    expect(teaser).toMatchObject({ title: { copy: 'Hi', header: 'h3' } });
     expect(linkList).toMatchObject({ pages: [] });
-    expect(carousel).toMatchObject({mode: 'categories', categories: [] });
+    expect(carousel).toMatchObject({ mode: 'categories', categories: [] });
     expect(tipList).toMatchObject({ tips: [] });
     expect(seed.pages[1]?.main).toEqual([]);
   });
@@ -129,7 +133,7 @@ describe('seed schemas', () => {
     // expect(home.hero).toEqual({ layout: 'Primary', eyebrow: 'Hi', description: [], ctas: [] });
     // expect(home.featured).toEqual(['fruits']);
   });
-  
+
   // it.each([
   //   [{ template: 'generic', hero: { eyebrow: 'Hi' } }, 'hero'],
   //   [{ template: 'generic', featured: ['fruits'] }, 'featured'],
