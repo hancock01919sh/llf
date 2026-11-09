@@ -13,6 +13,7 @@ import { IconArrow } from '@/components/Icon';
 import { Fragment } from 'react';
 import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
+import { BlockTitle } from '@/components/BlockTitle';
 export function CategoryCarouselFeature(
   props: BlockProps<cmsType.component.CategoryCarouselFeatureDeepRef>,
 ) {
@@ -20,13 +21,7 @@ export function CategoryCarouselFeature(
   return (
     <div className="py-15 lg:py-25">
       <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-5">
-        <Typography
-          variant="headline-lg"
-          className="text-center mx-5 lg:mx-0 lg:text-left"
-          richText={true}
-        >
-          {title}
-        </Typography>
+        <BlockTitle title={title!} moduleIndex={props.index} />
         <div className="lg:w-1/2 flex flex-col gap-5">
           <Typography
             variant="subhead-lg"

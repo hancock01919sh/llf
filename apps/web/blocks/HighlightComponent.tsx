@@ -1,4 +1,5 @@
 import { type BlockProps } from '@/blocks/types';
+import { BlockTitle } from '@/components/BlockTitle';
 import TransitionLink from '@/components/TransitionLink';
 import { Typography } from '@/components/Typography';
 import { UIImage } from '@/components/UIImage';
@@ -15,9 +16,10 @@ export function BlockHighlightComponent(props: BlockProps<cmsType.component.High
         <div
           className={`absolute inset-0 bg-[rgba(0,0,0,0.2)] lg:bg-black/30 flex flex-col items-center text-center justify-center px-5 lg:px-[19%]`}
         >
-          <Typography variant="headline-lg" className="uppercase lg:text-headline-xl">
+          {/* <Typography variant="headline-lg" className="uppercase lg:text-headline-xl">
             {title}
-          </Typography>
+          </Typography> */}
+          <BlockTitle title={title!} moduleIndex={props.index} />
           <Typography variant="subhead-lg" className="lg:font-normal mt-3 lg:mt-5">
             {description}
           </Typography>

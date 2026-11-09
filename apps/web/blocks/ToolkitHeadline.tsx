@@ -8,11 +8,11 @@ export function BlockToolkitHeadline(props: BlockProps<cmsType.component.Toolkit
   const { title, description, cta } = props.block;
   return (
     <div className="py-15 lg:py-25 text-center">
-      <BlockTitle title={title} moduleIndex={props.index} />
+      <BlockTitle title={title!} moduleIndex={props.index} />
       <Typography variant="subhead-lg" className="mt-5 font-bold">
         {description}
       </Typography>
-      <button className="btn mt-10 mx-5 lg:mx-auto">
+      <button className="btn mt-10 w-auto mx-auto lg:w-max lg:mx-auto">
         {cta?.label} <IconDownload />
       </button>
     </div>

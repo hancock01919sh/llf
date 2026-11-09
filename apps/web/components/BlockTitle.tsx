@@ -1,10 +1,8 @@
+import type { cmsType } from '@llf/contracts';
 import { Typography } from './Typography';
 
 export function BlockTitle(props: {
-  title: {
-    copy: string;
-    header: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-  };
+  title: cmsType.shared.TitleDeepRef;
   moduleIndex: number;
   className?: string;
 }) {

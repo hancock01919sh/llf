@@ -3,6 +3,7 @@ import { Typography } from '@/components/Typography';
 import { UIImage } from '@/components/UIImage';
 import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
+import { BlockTitle } from '@/components/BlockTitle';
 export function BlockContentSpotlight(
   props: BlockProps<cmsType.component.ContentSpotlightDeepRef>,
 ) {
@@ -15,7 +16,7 @@ export function BlockContentSpotlight(
           {...image}
         />
         <div className={`flex flex-1 flex-col text-center gap-5 lg:text-left  `}>
-          <Typography variant="headline-lg">{title}</Typography>
+          <BlockTitle title={title} moduleIndex={props.index} />
           <Typography variant="paragraph-lg">{description}</Typography>
         </div>
       </div>

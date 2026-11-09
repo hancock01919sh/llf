@@ -17,6 +17,7 @@ import 'swiper/css/pagination';
 import { carouselConfig } from '@/lib/const';
 import type { BlockProps } from './types';
 import type { cmsType } from '@llf/contracts';
+import { BlockTitle } from '@/components/BlockTitle';
 export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlightDeepRef>) {
   const { subTitle, link, spotlightItem, title } = props.block;
   const [swiperIndex, setSwiperIndex] = useState(0);
@@ -129,9 +130,10 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlightD
       className="py-15 lg:py-25 flex flex-col gap-lg max-w-page mx-auto lg:px-gutter-lg"
     >
       <div className="px-4.5 lg:px-0 lg:w-[70%] lg:mx-auto ">
-        <Typography variant="headline-lg" className="text-center">
+        {/* <Typography variant="headline-lg" className="text-center">
           {title}
-        </Typography>
+        </Typography> */}
+        <BlockTitle title={title!} moduleIndex={props.index} className=" text-center" />
         <Typography variant="subhead-lg" className="font-bold mt-5 lg:hidden">
           {subTitle}
         </Typography>
