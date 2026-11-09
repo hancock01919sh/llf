@@ -14,7 +14,6 @@ import type { BlockProps } from './types';
 import type { Surface } from '@/components/ModuleBoundary';
 import { BlockHighlightComponent } from './HighlightComponent';
 import { CategoryDetailComponent, CategoryDetailWithSearchSchema } from './CategoryDetail.tsx';
-import { BlockNotFound } from './NotFound';
 import { BlockSearch } from './Search';
 import { BlockTipBanner } from './TipBanner';
 import { ToolSpotlight } from './ToolSpotlight';
@@ -80,12 +79,6 @@ export const blocks = {
     schema: CategoryDetailWithSearchSchema,
     Component: CategoryDetailComponent,
     type: 'category-detail',
-    surface: 'forest',
-  }),
-  'component.404': entry({
-    schema: cmsType.component._404,
-    Component: BlockNotFound,
-    type: 'not-found',
     surface: 'forest',
   }),
   'component.search': entry({

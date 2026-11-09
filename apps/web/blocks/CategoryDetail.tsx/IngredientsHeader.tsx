@@ -66,6 +66,7 @@ export function IngredientsHeader(
                 header: 'h1',
               }}
               moduleIndex={0}
+              className="mt-10"
             />
 
             <Typography variant="subhead-lg" className="mt-5">
