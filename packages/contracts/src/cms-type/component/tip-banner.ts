@@ -8,7 +8,7 @@ export const TipBanner = z.object({
   __component: z.literal('component.tip-banner'),
   id: z.number().int(),
   label: z.string(),
-  tip: nullish(z.lazy(() => TipRef)),
+  tip: nullish(z.lazy(()=> TipRef)),
   cta: nullish(z.array(z.lazy(() => LinksRef))),
   backgroundColor: z.enum(['terra', 'forest']),
   isFullwidth: nullish(z.boolean().default(false)),
@@ -27,7 +27,7 @@ export const TipBannerDeepRef = z.object({
   id: z.number().int(),
   label: z.string(),
   tip: nullish(z.lazy((): z.ZodType<TipDeepRef> => TipDeepRef)),
-  cta: nullish(z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef))),
+  cta: nullish(z.array(z.lazy((): z.ZodType<LinksDeepRef>  => LinksDeepRef))),
   backgroundColor: z.enum(['terra', 'forest']),
   isFullwidth: nullish(z.boolean().default(false)),
 });

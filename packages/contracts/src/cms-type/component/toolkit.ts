@@ -1,8 +1,5 @@
 import { z } from 'zod';
-import {
-  ToolkitParentCategoryRef,
-  ToolkitParentCategoryDeepRef,
-} from '../component/toolkit-parent-category';
+import { ToolkitParentCategoryRef, ToolkitParentCategoryDeepRef } from '../component/toolkit-parent-category';
 
 export const Toolkit = z.object({
   __component: z.literal('component.toolkit'),
@@ -21,9 +18,7 @@ export const ToolkitDeepRef = z.object({
   __component: z.literal('component.toolkit'),
   id: z.number().int(),
   title: z.string(),
-  toolkitCategory: z.array(
-    z.lazy((): z.ZodType<ToolkitParentCategoryDeepRef> => ToolkitParentCategoryDeepRef),
-  ),
+  toolkitCategory: z.array(z.lazy((): z.ZodType<ToolkitParentCategoryDeepRef>  => ToolkitParentCategoryDeepRef)),
 });
 
 export type ToolkitDeepRef = z.infer<typeof ToolkitDeepRef>;

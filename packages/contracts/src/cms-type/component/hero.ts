@@ -29,7 +29,7 @@ export const HeroDeepRef = z.object({
   __component: z.literal('component.hero'),
   id: z.number().int(),
   images: Media.array(),
-  link: nullish(z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef))),
+  link: nullish(z.array(z.lazy((): z.ZodType<LinksDeepRef>  => LinksDeepRef))),
   description: z.string(),
   title: Block.array(),
   backgroundColor: z.enum(['terra']),

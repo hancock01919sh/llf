@@ -24,10 +24,10 @@ export const FooterDeepRef = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  link: z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
-  iconLink: z.array(z.lazy((): z.ZodType<IconlinkDeepRef> => IconlinkDeepRef)),
+  link: z.array(z.lazy((): z.ZodType<LinksDeepRef>  => LinksDeepRef)),
+  iconLink: z.array(z.lazy((): z.ZodType<IconlinkDeepRef>  => IconlinkDeepRef)),
   legalCopy: z.string(),
-  overlayLink: z.array(z.lazy((): z.ZodType<OverlayLinkDeepRef> => OverlayLinkDeepRef)),
+  overlayLink: z.array(z.lazy((): z.ZodType<OverlayLinkDeepRef>  => OverlayLinkDeepRef)),
 });
 
 export type FooterDeepRef = z.infer<typeof FooterDeepRef>;

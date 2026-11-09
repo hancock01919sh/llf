@@ -23,9 +23,9 @@ export const TeaserRef = z.object({
 
 export const TeaserDeepRef = z.object({
   id: z.number().int(),
-  title: nullish(z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef)),
+  title: nullish(z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef)),
   description: nullish(Block.array()),
-  ctas: nullish(z.array(z.lazy((): z.ZodType<CtaDeepRef> => CtaDeepRef))),
+  ctas: nullish(z.array(z.lazy((): z.ZodType<CtaDeepRef>  => CtaDeepRef))),
   images: nullish(Media.array()),
   layout: z.enum(['Basic', 'Highlight', 'Quote']).default('Basic'),
 });

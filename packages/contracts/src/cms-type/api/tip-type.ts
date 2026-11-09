@@ -7,7 +7,7 @@ export const TipType = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  tips: nullish(z.array(z.lazy(() => TipRef))),
+  tips: nullish(z.array(z.lazy(()=> TipRef))),
 });
 
 export const TipTypeRef = z.object({
@@ -20,7 +20,7 @@ export const TipTypeDeepRef = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  tips: nullish(z.array(z.lazy((): z.ZodType => TipDeepRef))),
+  tips: nullish(z.array(z.lazy((): z.ZodType=> TipDeepRef))),
 });
 
 export type TipTypeDeepRef = z.infer<typeof TipTypeDeepRef>;
