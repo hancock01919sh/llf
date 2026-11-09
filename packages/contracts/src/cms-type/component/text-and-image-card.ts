@@ -30,7 +30,7 @@ export const TextAndImageCardDeepRef = z.object({
   image: Media.array(),
   backgroundColor: z.enum(['paper']),
   isFullwidth: nullish(z.boolean().default(false)),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type TextAndImageCardDeepRef = z.infer<typeof TextAndImageCardDeepRef>;

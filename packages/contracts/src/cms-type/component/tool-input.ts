@@ -44,14 +44,14 @@ export const ToolInputDeepRef = z.object({
   description: z.string(),
   cardTitle: z.string(),
   cardDescription: nullish(z.string()),
-  cards: nullish(z.array(z.lazy((): z.ZodType<InputCardDeepRef>  => InputCardDeepRef))),
+  cards: nullish(z.array(z.lazy((): z.ZodType<InputCardDeepRef> => InputCardDeepRef))),
   placeholder: nullish(z.string()),
   copy: nullish(z.string()),
-  button: nullish(z.array(z.lazy((): z.ZodType<LinksDeepRef>  => LinksDeepRef))),
+  button: nullish(z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef))),
   backgroundColor: z.enum(['forest', 'paper']),
   isFullwidth: nullish(z.boolean().default(false)),
   image: nullish(Media),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type ToolInputDeepRef = z.infer<typeof ToolInputDeepRef>;

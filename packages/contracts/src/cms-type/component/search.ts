@@ -37,11 +37,11 @@ export const SearchDeepRef = z.object({
   placeholder: z.string(),
   statement: Block.array(),
   hint: z.string(),
-  button: nullish(z.lazy((): z.ZodType<LinksDeepRef>  => LinksDeepRef)),
-  popup: nullish(z.lazy((): z.ZodType<TipsPopupDeepRef>  => TipsPopupDeepRef)),
+  button: nullish(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
+  popup: nullish(z.lazy((): z.ZodType<TipsPopupDeepRef> => TipsPopupDeepRef)),
   isFullwidth: nullish(z.boolean().default(false)),
   backgroundColor: nullish(z.enum(['paper'])),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type SearchDeepRef = z.infer<typeof SearchDeepRef>;

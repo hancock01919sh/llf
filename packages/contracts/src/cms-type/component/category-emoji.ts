@@ -26,10 +26,10 @@ export const CategoryEmojiDeepRef = z.object({
   __component: z.literal('component.category-emoji'),
   id: z.number().int(),
   description: z.string(),
-  emoji: z.array(z.lazy((): z.ZodType<EmojiItemDeepRef>  => EmojiItemDeepRef)),
+  emoji: z.array(z.lazy((): z.ZodType<EmojiItemDeepRef> => EmojiItemDeepRef)),
   backgroundColor: z.enum(['paper']),
   isFullwidth: nullish(z.boolean().default(false)),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type CategoryEmojiDeepRef = z.infer<typeof CategoryEmojiDeepRef>;

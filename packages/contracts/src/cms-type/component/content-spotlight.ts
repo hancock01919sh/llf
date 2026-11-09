@@ -33,7 +33,7 @@ export const ContentSpotlightDeepRef = z.object({
   backgroundColor: z.enum(['paper', 'sand']),
   makeImageLeft: nullish(z.boolean().default(false)),
   isFullwidth: nullish(z.boolean().default(false)),
-  title: z.lazy((): z.ZodType<TitleDeepRef>  => TitleDeepRef),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type ContentSpotlightDeepRef = z.infer<typeof ContentSpotlightDeepRef>;
