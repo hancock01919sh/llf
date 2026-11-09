@@ -11,6 +11,7 @@ export function UIVideo(
   const { className, pause, lazyLoad, ...restProps } = props;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [loadedData, setLoadedData] = useState(false);
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -79,10 +80,17 @@ export function UIVideo(
         preload={lazyLoad ? 'metadata' : 'auto'}
         onPlay={handlePlay}
         onPause={handlePause}
+        onLoadedData={() => {
+          setLoadedData(true);
+        }}
         {...restProps}
       />
-      <IconPlay aria-label="Play" className={getTransitionClass(isPlaying, 'play')} />
-      <IconPause aria-label="Pause" className={getTransitionClass(isPlaying, 'pause')} />
+      {loadedData && (
+        <>
+          <IconPlay aria-label="Play" className={getTransitionClass(isPlaying, 'play')} />
+          <IconPause aria-label="Pause" className={getTransitionClass(isPlaying, 'pause')} />
+        </>
+      )}
     </div>
   );
 }

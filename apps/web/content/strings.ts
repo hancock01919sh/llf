@@ -173,7 +173,7 @@ export const strings: SiteStrings = SiteStrings.parse({
   },
   notFound: {
     title: 'Oops. We dropped the beet.',
-    body: "404 — Page not found",
+    body: '404 — Page not found',
     home: 'Go to the home page',
   },
   home: { featuredTitle: 'Browse by category' },

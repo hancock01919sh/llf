@@ -5,12 +5,10 @@
       "documentId": "ydgx9h9y5qdb3z4q4nx9qwag",
       "title": "Home",
       "path": "/",
-      "template": "generic",
-      "featured": [],
       "main": [
         {
           "__component": "component.hero",
-          "id": 16,
+          "id": 18,
           "description": "Everything you didn't know about the ingredients in your kitchen.",
           "title": [
             {
@@ -63,7 +61,7 @@
           "isFullwidth": null,
           "link": [
             {
-              "id": 419,
+              "id": 600,
               "label": "Discover tips in the library",
               "href": "/tips",
               "isDisplay": true,
@@ -72,7 +70,7 @@
               "buttonType": "Primary"
             },
             {
-              "id": 420,
+              "id": 601,
               "label": "Search specific ingredient tips",
               "href": "/search",
               "isDisplay": true,
@@ -96,13 +94,13 @@
         },
         {
           "__component": "component.tip-banner",
-          "id": 40,
+          "id": 54,
           "label": "Tip Of The Week",
           "backgroundColor": "terra",
           "isFullwidth": false,
           "cta": [
             {
-              "id": 421,
+              "id": 602,
               "label": "Share",
               "href": null,
               "isDisplay": true,
@@ -111,7 +109,7 @@
               "buttonType": null
             },
             {
-              "id": 422,
+              "id": 603,
               "label": "Save",
               "href": null,
               "isDisplay": true,
@@ -172,13 +170,12 @@
         },
         {
           "__component": "component.tool-spotlight",
-          "id": 16,
-          "title": "Get tips for the ingredients in your next meal ",
+          "id": 18,
           "subTitle": "Everything you didn't know about the ingredients in your kitchen.",
           "isFullwidth": null,
           "backgroundColor": "forest",
           "link": {
-            "id": 418,
+            "id": 599,
             "label": "See how it works",
             "href": "/find-my-tips",
             "isDisplay": true,
@@ -186,9 +183,14 @@
             "newTab": false,
             "buttonType": null
           },
+          "title": {
+            "id": 135,
+            "copy": "Get tips for the ingredients in your next meal",
+            "header": "h2"
+          },
           "spotlightItem": [
             {
-              "id": 81,
+              "id": 91,
               "copy": "A recipe you’re planning to cook",
               "video": {
                 "id": 16,
@@ -214,7 +216,7 @@
               }
             },
             {
-              "id": 82,
+              "id": 92,
               "copy": "A shopping list before you go",
               "video": {
                 "id": 18,
@@ -240,7 +242,7 @@
               }
             },
             {
-              "id": 83,
+              "id": 93,
               "copy": "A photo of what’s in your fridge",
               "video": {
                 "id": 25,
@@ -266,7 +268,7 @@
               }
             },
             {
-              "id": 84,
+              "id": 94,
               "copy": "A receipt from today’s shop",
               "video": {
                 "id": 24,
@@ -292,7 +294,7 @@
               }
             },
             {
-              "id": 85,
+              "id": 95,
               "copy": "A video you saved for later",
               "video": {
                 "id": 6,
@@ -321,8 +323,7 @@
         },
         {
           "__component": "component.highlight-component",
-          "id": 88,
-          "title": "About 1 in 3 groceries you buy never get eaten.",
+          "id": 129,
           "description": "Most of us don’t know where we’re losing food.",
           "backgroundColor": "forest-tint",
           "isFullwidth": true,
@@ -336,58 +337,71 @@
             "height": 1458,
             "width": 1188,
             "size": 1161.68
+          },
+          "title": {
+            "id": 132,
+            "copy": "About 1 in 3 groceries you buy never get eaten.",
+            "header": "h2"
           }
         },
         {
           "__component": "component.category-emoji",
-          "id": 28,
-          "title": "Explore all the tips nobody told you about.",
+          "id": 36,
           "description": "Organized by the food you cook, and the ingredients you use most. From produce to dairy to pantry staples.",
           "backgroundColor": "paper",
           "isFullwidth": false,
           "emoji": [
             {
-              "id": 170,
+              "id": 218,
               "title": "Vegetables",
               "emoji": "🥕"
             },
             {
-              "id": 171,
+              "id": 219,
               "title": "Fruits",
               "emoji": "🍎"
             },
             {
-              "id": 172,
+              "id": 220,
               "title": "Dairy",
               "emoji": "🧈"
             },
             {
-              "id": 173,
+              "id": 221,
               "title": "Meat & Poultry",
               "emoji": "🥩"
             },
             {
-              "id": 174,
+              "id": 222,
               "title": "Grains & Starches",
               "emoji": "🌾"
             },
             {
-              "id": 175,
+              "id": 223,
               "title": "Condiments & Spreads",
               "emoji": "🥫"
             }
-          ]
+          ],
+          "title": {
+            "id": 133,
+            "copy": "explore all the tips nobody told you about.",
+            "header": "h2"
+          }
         },
         {
           "__component": "component.category-carousel-feature",
-          "id": 16,
-          "title": "The Usual Suspects of every kitchen",
+          "id": 18,
           "description": "Every kitchen has a few repeat offenders. See which ones keep showing up in yours.",
           "isFullwidth": true,
           "backgroundColor": "terra",
+          "title": {
+            "id": 136,
+            "copy": "The Usual Suspects of every kitchen",
+            "header": "h2"
+          },
           "link": [
             {
-              "id": 423,
+              "id": 604,
               "label": "Discover tips in the library",
               "href": "/tips",
               "isDisplay": true,
@@ -396,7 +410,7 @@
               "buttonType": "Primary"
             },
             {
-              "id": 424,
+              "id": 605,
               "label": "Search specific ingredient tips",
               "href": "/search",
               "isDisplay": true,
@@ -407,7 +421,7 @@
           ],
           "featureCard": [
             {
-              "id": 49,
+              "id": 55,
               "title": "Things that hide in the back of the fridge",
               "image": {
                 "id": 28,
@@ -421,7 +435,7 @@
               }
             },
             {
-              "id": 50,
+              "id": 56,
               "title": "The ones with the shortest windows",
               "image": {
                 "id": 48,
@@ -435,7 +449,7 @@
               }
             },
             {
-              "id": 51,
+              "id": 57,
               "title": "The ones with the shortest windows",
               "image": {
                 "id": 58,
@@ -452,14 +466,13 @@
         },
         {
           "__component": "component.highlight-component",
-          "id": 89,
-          "title": "Fighting wasted food, one ingredient at a time.",
+          "id": 130,
           "description": "Most food waste isn't carelessness. It's not knowing the things nobody ever told you.",
           "backgroundColor": "paper",
           "isFullwidth": true,
           "link": [
             {
-              "id": 425,
+              "id": 606,
               "label": "Discover tips in the library",
               "href": "/tips",
               "isDisplay": true,
@@ -477,6 +490,11 @@
             "height": 1534,
             "width": 1168,
             "size": 1000.72
+          },
+          "title": {
+            "id": 134,
+            "copy": "fighting wasted food, one ingredient at a time.",
+            "header": "h2"
           }
         }
       ],
@@ -484,32 +502,13 @@
     },
     {
       "id": 2,
-      "documentId": "fxpg0002",
-      "title": "Find My Tips",
-      "path": "find-my-tips",
-      "template": "find-my-tips",
-      "seo": {
-        "metaTitle": null,
-        "metaKeywords": null,
-        "metaDescription": "Share a recipe and get tips for its ingredients."
-      },
-      "hero": null,
-      "intro": null,
-      "featured": [],
-      "tool": {
-        "id": 5,
-        "url_label": "Recipe link",
-        "url_placeholder": "https://",
-        "upload_label": "Recipe photo",
-        "upload_placeholder": "Choose a photo",
-        "description": "Fixture copy. Share a recipe and we'll find tips for its ingredients.",
-        "cta_label": "Find my tips"
-      },
+      "documentId": "i6brnovoo2ehb0jegt5lpav1",
+      "title": "Tool Landing",
+      "path": "/find-my-tips",
       "main": [
         {
           "__component": "component.tool-input",
-          "id": 10,
-          "title": "Input ingredients,  get tips, waste less",
+          "id": 16,
           "subTitle": "Tip Finder",
           "description": "Whatever you're buying, cooking, or already have, we'll help you get the most out of it.",
           "cardTitle": "How it works",
@@ -520,7 +519,7 @@
           "isFullwidth": true,
           "button": [
             {
-              "id": 192,
+              "id": 612,
               "label": "🔗 Paste Link",
               "href": null,
               "isDisplay": true,
@@ -529,7 +528,7 @@
               "buttonType": "Primary"
             },
             {
-              "id": 193,
+              "id": 613,
               "label": "📷 Upload Image",
               "href": null,
               "isDisplay": true,
@@ -538,15 +537,20 @@
               "buttonType": "Secondary"
             },
             {
-              "id": 194,
+              "id": 614,
               "label": "find tips",
-              "href": null,
+              "href": "/search",
               "isDisplay": true,
               "isButton": null,
               "newTab": false,
               "buttonType": null
             }
           ],
+          "title": {
+            "id": 142,
+            "copy": "Input ingredients,  get tips, waste less",
+            "header": "h1"
+          },
           "image": {
             "id": 6,
             "documentId": "ihf9pbfub16ofi5w13luqzza",
@@ -559,11 +563,11 @@
           },
           "cards": [
             {
-              "id": 30,
+              "id": 48,
               "title": "Step 1",
               "description": "Upload an image or recipe link",
               "link": {
-                "id": 190,
+                "id": 610,
                 "label": "What can I upload?",
                 "href": null,
                 "isDisplay": true,
@@ -573,13 +577,13 @@
               }
             },
             {
-              "id": 28,
+              "id": 46,
               "title": "Step 2",
               "description": "You see how to waste less of each ingredient.",
               "link": null
             },
             {
-              "id": 29,
+              "id": 47,
               "title": "Step 3",
               "description": "You see how to waste less of each ingredient.",
               "link": null
@@ -588,39 +592,42 @@
         },
         {
           "__component": "component.accordion",
-          "id": 10,
-          "title": "what can you upload",
+          "id": 25,
           "subTitle": "Not sure what to try first? Here’s what works.",
           "backgroundColor": "forest-tint",
           "isFullwidth": false,
           "accordionItem": [
             {
-              "id": 29,
+              "id": 89,
               "label": "Photo of your fridge or pantry",
               "description": "Take the photo in good lighting and make sure ingredients are visible. Works best when items aren't stacked or hidden behind each other."
             },
             {
-              "id": 30,
+              "id": 90,
               "label": "Recipe from a website",
-              "description": null
+              "description": "Take the photo in good lighting and make sure ingredients are visible. Works best when items aren't stacked or hidden behind each other."
             },
             {
-              "id": 31,
+              "id": 91,
               "label": "Recipe from a video",
-              "description": null
+              "description": "Take the photo in good lighting and make sure ingredients are visible. Works best when items aren't stacked or hidden behind each other."
             }
-          ]
+          ],
+          "title": {
+            "id": 140,
+            "copy": "what can you upload?",
+            "header": "h2"
+          }
         },
         {
           "__component": "component.highlight-component",
-          "id": 30,
-          "title": "Things no one ever told you about your food",
+          "id": 132,
           "description": "Explore hundreds of tips for the ingredients you already cook with, including some things you probably didn't know you were wasting.",
           "backgroundColor": "paper",
           "isFullwidth": true,
           "link": [
             {
-              "id": 191,
+              "id": 611,
               "label": "find my tips",
               "href": "/tips",
               "isDisplay": true,
@@ -638,28 +645,36 @@
             "height": 1282,
             "width": 1014,
             "size": 344.09
+          },
+          "title": {
+            "id": 141,
+            "copy": "things no one ever told you about your food",
+            "header": "h2"
           }
         }
-      ]
+      ],
+      "seo": null
     },
     {
       "id": 3,
       "documentId": "c2w37umr8pbwds5r6m0nclo8",
       "title": "Library Landing",
       "path": "/tips",
-      "template": "generic",
-      "featured": [],
       "main": [
         {
           "__component": "component.header",
-          "id": 21,
-          "title": "Every ingredient has a secret. This is where you find them.",
+          "id": 38,
           "subTitle": "Discover",
           "description": "Find yours by meal, ingredient, or something \nthat sounds like you.",
           "backgroundColor": "forest",
           "addBackgroundColor": true,
           "positionOfAddingBgColor": "down",
           "isFullwidth": false,
+          "title": {
+            "id": 122,
+            "copy": "Every ingredient has a secret. This is where you find them.",
+            "header": "h1"
+          },
           "image": {
             "id": 22,
             "documentId": "eh77r15sb504c2pglb3ubx2q",
@@ -673,15 +688,19 @@
         },
         {
           "__component": "component.carousel-standard",
-          "id": 49,
-          "title": "Ingredients with Reputations",
+          "id": 69,
           "description": "Every kitchen has a few repeat offenders. See which ones keep showing up in yours.",
           "backgroundColor": "sand",
           "cardBackgroundColor": null,
           "isFullwidth": true,
+          "title": {
+            "id": 126,
+            "copy": "Ingredients with Reputations",
+            "header": "h2"
+          },
           "standardCard": [
             {
-              "id": 183,
+              "id": 253,
               "title": "The ones with the shortest expiration windows",
               "image": {
                 "id": 35,
@@ -695,7 +714,7 @@
               }
             },
             {
-              "id": 184,
+              "id": 254,
               "title": "The ones whose labels might \nbe tricking you",
               "image": {
                 "id": 41,
@@ -709,7 +728,7 @@
               }
             },
             {
-              "id": 185,
+              "id": 255,
               "title": "The ones everyone buys and nobody finishes",
               "image": {
                 "id": 57,
@@ -723,7 +742,7 @@
               }
             },
             {
-              "id": 186,
+              "id": 256,
               "title": "The ones everyone buys and nobody finishes",
               "image": {
                 "id": 35,
@@ -737,7 +756,7 @@
               }
             },
             {
-              "id": 187,
+              "id": 257,
               "title": "The ones everyone buys and nobody finishes",
               "image": {
                 "id": 37,
@@ -754,15 +773,19 @@
         },
         {
           "__component": "component.carousel-standard",
-          "id": 50,
-          "title": "Before you go to the store",
+          "id": 70,
           "description": "The patterns most kitchens share, and the small fixes \nthat change them.",
           "backgroundColor": "paper",
           "cardBackgroundColor": null,
           "isFullwidth": true,
+          "title": {
+            "id": 127,
+            "copy": "Before you go to the store",
+            "header": "h2"
+          },
           "standardCard": [
             {
-              "id": 188,
+              "id": 258,
               "title": "What to buy less of",
               "image": {
                 "id": 64,
@@ -776,7 +799,7 @@
               }
             },
             {
-              "id": 189,
+              "id": 259,
               "title": "What to buy less of",
               "image": {
                 "id": 53,
@@ -790,7 +813,7 @@
               }
             },
             {
-              "id": 190,
+              "id": 260,
               "title": "What to buy less of",
               "image": {
                 "id": 51,
@@ -807,13 +830,13 @@
         },
         {
           "__component": "component.tip-banner",
-          "id": 42,
+          "id": 52,
           "label": "Tip Of The Week",
           "backgroundColor": "forest",
           "isFullwidth": false,
           "cta": [
             {
-              "id": 429,
+              "id": 593,
               "label": "Share",
               "href": null,
               "isDisplay": true,
@@ -822,7 +845,7 @@
               "buttonType": null
             },
             {
-              "id": 430,
+              "id": 594,
               "label": "Save",
               "href": null,
               "isDisplay": true,
@@ -883,14 +906,18 @@
         },
         {
           "__component": "component.ingredient-carousel",
-          "id": 13,
-          "title": "Ingredients by popular cuisine",
+          "id": 18,
           "description": "Find tips for the cuisine you cook most, and the ingredients that come with it.",
           "backgroundColor": "paper",
           "isFullwidth": true,
+          "title": {
+            "id": 128,
+            "copy": "Ingredients by popular cuisine",
+            "header": "h2"
+          },
           "ingredientCard": [
             {
-              "id": 63,
+              "id": 83,
               "title": "Mexican",
               "image": {
                 "id": 42,
@@ -904,7 +931,7 @@
               }
             },
             {
-              "id": 64,
+              "id": 84,
               "title": "Italian",
               "image": {
                 "id": 52,
@@ -918,7 +945,7 @@
               }
             },
             {
-              "id": 65,
+              "id": 85,
               "title": "asian",
               "image": {
                 "id": 51,
@@ -932,7 +959,7 @@
               }
             },
             {
-              "id": 66,
+              "id": 86,
               "title": "american",
               "image": {
                 "id": 46,
@@ -949,15 +976,19 @@
         },
         {
           "__component": "component.carousel-standard",
-          "id": 51,
-          "title": "Easy to miss, easy to fix",
+          "id": 71,
           "description": "The patterns most kitchens share, and the small fixes that change them.",
           "backgroundColor": "terra",
           "cardBackgroundColor": null,
           "isFullwidth": true,
+          "title": {
+            "id": 129,
+            "copy": "Easy to miss, easy to fix",
+            "header": "h2"
+          },
           "standardCard": [
             {
-              "id": 191,
+              "id": 261,
               "title": "Things that hide in the back of the fridge",
               "image": {
                 "id": 35,
@@ -971,7 +1002,7 @@
               }
             },
             {
-              "id": 192,
+              "id": 262,
               "title": "The ones everyone buys and nobody finishes",
               "image": {
                 "id": 61,
@@ -985,7 +1016,7 @@
               }
             },
             {
-              "id": 193,
+              "id": 263,
               "title": "The ones everyone buys and nobody finishes",
               "image": {
                 "id": 61,
@@ -1002,14 +1033,18 @@
         },
         {
           "__component": "component.carousel-small",
-          "id": 13,
-          "title": "WEEKNIGHT STAPLES",
+          "id": 18,
           "description": "You likely know all these meals. You probably didn’t know everything you could do with the ingredients in them.",
           "isFullwidth": true,
           "backgroundColor": "paper",
+          "title": {
+            "id": 130,
+            "copy": "WEEKNIGHT STAPLES",
+            "header": "h2"
+          },
           "smallCard": [
             {
-              "id": 66,
+              "id": 91,
               "title": "CHICKEN & RICE BOWLS",
               "image": {
                 "id": 69,
@@ -1023,7 +1058,7 @@
               }
             },
             {
-              "id": 67,
+              "id": 92,
               "title": "Sheet Pan Dinners",
               "image": {
                 "id": 50,
@@ -1037,7 +1072,7 @@
               }
             },
             {
-              "id": 68,
+              "id": 93,
               "title": "Burrito Bowls",
               "image": {
                 "id": 62,
@@ -1051,7 +1086,7 @@
               }
             },
             {
-              "id": 69,
+              "id": 94,
               "title": "CHICKEN & RICE BOWLS",
               "image": {
                 "id": 69,
@@ -1065,7 +1100,7 @@
               }
             },
             {
-              "id": 70,
+              "id": 95,
               "title": "CHICKEN & RICE BOWLS",
               "image": {
                 "id": 69,
@@ -1082,14 +1117,13 @@
         },
         {
           "__component": "component.highlight-component",
-          "id": 91,
-          "title": "Got a specific ingredient in mind?",
+          "id": 127,
           "description": "Search for any ingredient and find out what you've been missing.",
           "backgroundColor": "forest",
           "isFullwidth": true,
           "link": [
             {
-              "id": 431,
+              "id": 595,
               "label": "search ingredients for tips",
               "href": "/search",
               "isDisplay": true,
@@ -1107,55 +1141,83 @@
             "height": 1282,
             "width": 1014,
             "size": 344.09
+          },
+          "title": {
+            "id": 123,
+            "copy": "Got a specific ingredient in mind?",
+            "header": "h2"
           }
         },
         {
           "__component": "component.category-emoji",
-          "id": 29,
-          "title": "Ingredients by Grocery Aisle",
+          "id": 35,
           "description": "From produce to dairy to pantry staples, find tips organized \naround how you shop.",
           "backgroundColor": "paper",
           "isFullwidth": false,
           "emoji": [
             {
-              "id": 176,
+              "id": 212,
               "title": "Vegetables",
               "emoji": "🥕"
             },
             {
-              "id": 177,
+              "id": 213,
               "title": "Fruits",
               "emoji": "🍎"
             },
             {
-              "id": 178,
+              "id": 214,
               "title": "Dairy",
               "emoji": "🧈"
             },
             {
-              "id": 179,
+              "id": 215,
               "title": "Meat & Poultry",
               "emoji": "🥩"
             },
             {
-              "id": 180,
+              "id": 216,
               "title": "Grains & Starches",
               "emoji": "🌾"
             },
             {
-              "id": 181,
+              "id": 217,
               "title": "Condiments & Spreads",
               "emoji": "🥫"
             }
-          ]
+          ],
+          "title": {
+            "id": 124,
+            "copy": "ingredients by grocery aisle",
+            "header": "h2"
+          }
         },
         {
           "__component": "component.tip-banner",
-          "id": 41,
+          "id": 53,
           "label": "Tip Of The Week",
           "backgroundColor": "terra",
           "isFullwidth": false,
-          "cta": [],
+          "cta": [
+            {
+              "id": 596,
+              "label": "Share",
+              "href": null,
+              "isDisplay": true,
+              "isButton": true,
+              "newTab": false,
+              "buttonType": null
+            },
+            {
+              "id": 597,
+              "label": "Save",
+              "href": null,
+              "isDisplay": true,
+              "isButton": true,
+              "newTab": false,
+              "buttonType": null
+            }
+          ],
           "tip": {
             "id": 6,
             "documentId": "aso8i0z2t6ij0eleuv5vwk9n",
@@ -1208,15 +1270,19 @@
         },
         {
           "__component": "component.carousel-standard",
-          "id": 52,
-          "title": "Food personalities",
+          "id": 72,
           "description": "Find the one that sounds like you, and the ingredients that \ncome with it.",
           "backgroundColor": "paper",
           "cardBackgroundColor": "Bright Yellow",
           "isFullwidth": null,
+          "title": {
+            "id": 131,
+            "copy": "Food personalities",
+            "header": "h2"
+          },
           "standardCard": [
             {
-              "id": 194,
+              "id": 264,
               "title": "smoothie queen",
               "image": {
                 "id": 79,
@@ -1230,7 +1296,7 @@
               }
             },
             {
-              "id": 195,
+              "id": 265,
               "title": "Salad Whisperer",
               "image": {
                 "id": 65,
@@ -1244,7 +1310,7 @@
               }
             },
             {
-              "id": 196,
+              "id": 266,
               "title": "Spice Collector",
               "image": {
                 "id": 66,
@@ -1261,16 +1327,15 @@
         },
         {
           "__component": "component.highlight-component",
-          "id": 92,
-          "title": "Have a recipe you’re planning to cook?",
+          "id": 128,
           "description": "Upload a recipe link or image and discovery tips for every ingredient that you’ll be using in your kitchen.",
           "backgroundColor": "forest-tint",
           "isFullwidth": true,
           "link": [
             {
-              "id": 432,
+              "id": 598,
               "label": "Discover tips in the library",
-              "href": null,
+              "href": "/tips/category",
               "isDisplay": true,
               "isButton": true,
               "newTab": false,
@@ -1286,6 +1351,11 @@
             "height": 1458,
             "width": 1188,
             "size": 1161.68
+          },
+          "title": {
+            "id": 125,
+            "copy": "Have a recipe you’re planning to cook?",
+            "header": "h2"
           }
         }
       ],
@@ -1296,31 +1366,37 @@
       "documentId": "zou87m943nyr7ulo3i0aszfk",
       "title": "About",
       "path": "/about",
-      "template": "generic",
-      "featured": [],
       "main": [
         {
           "__component": "component.header",
-          "id": 28,
-          "title": "A LITTLE KNOW-HOW GOES A LONG WAY",
+          "id": 40,
           "subTitle": "About",
           "description": "Most waste happens quietly, in the back of the fridge.  We're here to make it visible.",
           "backgroundColor": "terra",
           "addBackgroundColor": null,
           "positionOfAddingBgColor": null,
           "isFullwidth": false,
+          "title": {
+            "id": 153,
+            "copy": "the food you already bought is the easiest to save",
+            "header": "h1"
+          },
           "image": null
         },
         {
           "__component": "component.5050-text-and-image",
-          "id": 44,
-          "title": "The invisible problem",
+          "id": 64,
           "description": "About a third of the groceries Americans buy never get eaten. Not because people don't care, but because it happens slowly, out of sight, one forgotten bag at a time.",
           "makeImageLeft": true,
           "addBackgroundColor": true,
           "positionOfAddingBgColor": "Up ",
           "isFullwidth": false,
           "backgroundColor": "paper",
+          "title": {
+            "id": 154,
+            "copy": "The invisible problem",
+            "header": "h2"
+          },
           "image": {
             "id": 31,
             "documentId": "zwfpfvewa272mvaowuz3d2y9",
@@ -1334,12 +1410,16 @@
         },
         {
           "__component": "component.content-spotlight",
-          "id": 14,
-          "title": "Why it happen",
+          "id": 18,
           "description": "It's rarely one bad decision. It's a bag of greens behind the milk. A jar opened for one recipe. A date label that sounds more final than it is. Most kitchens share the same handful of patterns, and most people have never had a reason to notice them. Once you see the pattern, the fixes are small, and they hold.",
           "backgroundColor": "sand",
           "makeImageLeft": null,
           "isFullwidth": false,
+          "title": {
+            "id": 155,
+            "copy": "why it happens",
+            "header": "h2"
+          },
           "image": {
             "id": 56,
             "documentId": "voyhfjwk31ydqibwqokr082t",
@@ -1353,11 +1433,15 @@
         },
         {
           "__component": "component.text-and-image-card",
-          "id": 14,
-          "title": "The ingredient lens",
+          "id": 18,
           "description": "We organize everything around the ingredient, not the recipe. That's how food actually reaches your kitchen, and it's how waste starts. Learn what one ingredient needs and it applies to every meal you make with it, for as long as you cook.",
           "backgroundColor": "paper",
           "isFullwidth": false,
+          "title": {
+            "id": 156,
+            "copy": "the ingredient lens",
+            "header": "h2"
+          },
           "image": [
             {
               "id": 33,
@@ -1393,14 +1477,18 @@
         },
         {
           "__component": "component.5050-text-and-image",
-          "id": 45,
-          "title": "small changes, real impact",
+          "id": 65,
           "description": "Store it differently. Freeze it before it turns. Use the part you were about to throw away. None of it takes more time than what you're doing now.",
           "makeImageLeft": false,
           "addBackgroundColor": null,
           "positionOfAddingBgColor": null,
           "isFullwidth": false,
           "backgroundColor": "paper",
+          "title": {
+            "id": 157,
+            "copy": "small changes, real impact",
+            "header": "h2"
+          },
           "image": {
             "id": 80,
             "documentId": "u7ntkkqkffa5u7uq5xlpnksf",
@@ -1414,8 +1502,7 @@
         },
         {
           "__component": "component.logo-cards",
-          "id": 27,
-          "title": "Reviewed by the people who know this space ",
+          "id": 35,
           "description": "Every tip is reviewed by a panel of food safety and culinary experts before it publishes. Nothing goes live without it.",
           "backgroundColor": "paper",
           "isFullwidth": false,
@@ -1632,12 +1719,16 @@
               "updatedAt": "2026-11-06T06:22:30.512Z",
               "publishedAt": "2026-11-06T05:58:24.838Z"
             }
-          ]
+          ],
+          "title": {
+            "id": 158,
+            "copy": "reviewed by the people who know this space",
+            "header": "h2"
+          }
         },
         {
           "__component": "component.logo-cards",
-          "id": 28,
-          "title": "Explore other partner efforts  to waste less food",
+          "id": 36,
           "description": "Every tip is reviewed by a panel of food safety and culinary experts before it publishes. Nothing goes live without it.",
           "backgroundColor": "forest",
           "isFullwidth": false,
@@ -1784,18 +1875,22 @@
               "updatedAt": "2026-11-06T06:02:06.598Z",
               "publishedAt": "2026-11-06T06:01:20.536Z"
             }
-          ]
+          ],
+          "title": {
+            "id": 159,
+            "copy": "explore other partner efforts to waste less food",
+            "header": "h2"
+          }
         },
         {
           "__component": "component.highlight-component",
-          "id": 107,
-          "title": "About 1 in 3 groceries you buy never get eaten.",
+          "id": 135,
           "description": "Most of us don't know where we're losing food. ",
           "backgroundColor": "paper",
           "isFullwidth": true,
           "link": [
             {
-              "id": 475,
+              "id": 639,
               "label": "Link to Tip Library",
               "href": "/tips",
               "isDisplay": true,
@@ -1804,7 +1899,7 @@
               "buttonType": "Primary"
             },
             {
-              "id": 476,
+              "id": 640,
               "label": "Link to Library",
               "href": "/find-my-tips",
               "isDisplay": true,
@@ -1822,6 +1917,11 @@
             "height": 1458,
             "width": 1188,
             "size": 1161.68
+          },
+          "title": {
+            "id": 160,
+            "copy": "Explore other partner efforts to waste less food",
+            "header": "h2"
           }
         }
       ],
@@ -1831,16 +1931,13 @@
       "id": 5,
       "documentId": "hebmi5cxd7c34eft2y2f5dsa",
       "title": "Output List",
-      "path": "/find-my-tips/results/",
-      "template": "generic",
-      "featured": [],
+      "path": "/find-my-tips/results",
       "main": [
         {
           "__component": "component.category-detail",
-          "id": 2,
-          "title": "Your Ingredients List",
+          "id": 28,
           "description": "The following ingredients have been extracted. Select one to see how to get the most out of it.",
-          "subTitleTitle": "Recipe Upload",
+          "subTitle": "Recipe Upload",
           "statement": [
             {
               "type": "paragraph",
@@ -1857,50 +1954,58 @@
               ]
             }
           ],
-          "hint": "Click an ingredient to view specific tips that save time, money, and food.",
           "isFullwidth": true,
           "backgroundColor": "forest",
+          "hint": "Click an ingredient to view specific tips that save time, money, and food.",
           "image": null,
           "button": {
-            "id": 56,
+            "id": 644,
             "label": "Upload Another Link or Image",
-            "href": "/find-my-tips",
+            "href": null,
             "isDisplay": true,
             "isButton": true,
-            "Buttontype": null,
-            "NewTab": false
+            "newTab": false,
+            "buttonType": null
+          },
+          "title": {
+            "id": 166,
+            "copy": "Your ingredients list",
+            "header": "h2"
           },
           "popup": {
-            "id": 4,
-            "title": "All tips reviewed by food experts.",
+            "id": 36,
             "description": "Most of us don't know where we're losing food. ",
             "link": {
-              "id": 58,
+              "id": 646,
               "label": "Discover tips in the library",
-              "href": null,
+              "href": "/tips",
               "isDisplay": true,
               "isButton": true,
-              "Buttontype": "Primary",
-              "NewTab": false
+              "newTab": false,
+              "buttonType": null
+            },
+            "title": {
+              "id": 165,
+              "copy": "All tips reviewed by food experts.",
+              "header": "h2"
             }
           }
         },
         {
           "__component": "component.highlight-component",
-          "id": 6,
-          "title": "There are 200+ tips more waiting",
+          "id": 137,
           "description": "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis.",
           "backgroundColor": "forest-tint",
           "isFullwidth": true,
-          "links": [
+          "link": [
             {
-              "id": 57,
-              "label": "Link to Tip Library",
-              "href": null,
+              "id": 645,
+              "label": "Discover tips in the library",
+              "href": "/tips",
               "isDisplay": true,
               "isButton": true,
-              "Buttontype": "Primary",
-              "NewTab": false
+              "newTab": false,
+              "buttonType": "Primary"
             }
           ],
           "image": {
@@ -1912,26 +2017,12 @@
             "height": 1458,
             "width": 1188,
             "size": 1161.68
+          },
+          "title": {
+            "id": 164,
+            "copy": "About 1 in 3 groceries you buy never get eaten.",
+            "header": "h2"
           }
-        }
-      ],
-      "seo": null
-    },
-    {
-      "id": 6,
-      "documentId": "k4ph70g11rfusuqrvi59rg53",
-      "title": "404",
-      "path": "/404",
-      "template": "generic",
-      "featured": [],
-      "main": [
-        {
-          "__component": "component.404",
-          "id": 3,
-          "title": "Oops. We dropped the beet.",
-          "description": "404 — Page not found",
-          "isFullwidth": false,
-          "backgroundColor": "forest"
         }
       ],
       "seo": null
@@ -1941,13 +2032,10 @@
       "documentId": "agqlne8ngd8nx7jxo4e17n2h",
       "title": "Search",
       "path": "/search",
-      "template": "generic",
-      "featured": [],
       "main": [
         {
           "__component": "component.search",
-          "id": 5,
-          "title": "Search for tips",
+          "id": 6,
           "description": "Type an ingredient to find tips that save time, money, and food.",
           "placeholder": "Search 100+ ingredients",
           "statement": [
@@ -1969,18 +2057,27 @@
           "hint": "Click an ingredient to view specific tips that save time, money, and food.",
           "isFullwidth": false,
           "backgroundColor": "paper",
+          "title": {
+            "id": 104,
+            "copy": "Search for tips",
+            "header": "h1"
+          },
           "popup": {
-            "id": 24,
-            "title": "All tips reviewed by food experts.",
+            "id": 32,
             "description": "Most of us don't know where we're losing food. ",
             "link": {
-              "id": 449,
+              "id": 578,
               "label": "Discover tips in the library",
               "href": "/tips",
               "isDisplay": true,
               "isButton": true,
               "newTab": false,
               "buttonType": null
+            },
+            "title": {
+              "id": 103,
+              "copy": "About 1 in 3 groceries you buy never get eaten.",
+              "header": "h2"
             }
           }
         }
@@ -1990,17 +2087,14 @@
     {
       "id": 8,
       "documentId": "w9v2q7enka93sttzygjeyeps",
-      "title": "Tips Category Detail",
+      "title": "Category",
       "path": "/tips/category",
-      "template": "generic",
-      "featured": [],
       "main": [
         {
           "__component": "component.category-detail",
-          "id": 2,
-          "title": "Your Ingredients List",
+          "id": 25,
           "description": "The following ingredients have been extracted. Select one to see how to get the most out of it.",
-          "subTitleTitle": "Recipe Upload",
+          "subTitle": null,
           "statement": [
             {
               "type": "paragraph",
@@ -2017,61 +2111,469 @@
               ]
             }
           ],
-          "hint": "Click an ingredient to view specific tips that save time, money, and food.",
           "isFullwidth": true,
           "backgroundColor": "forest",
+          "hint": "Click an ingredient to view specific tips that save time, money, and food.",
           "image": null,
           "button": {
-            "id": 56,
+            "id": 607,
             "label": "Upload Another Link or Image",
-            "href": "/find-my-tips",
+            "href": null,
             "isDisplay": true,
             "isButton": true,
-            "Buttontype": null,
-            "NewTab": false
+            "newTab": false,
+            "buttonType": null
+          },
+          "title": {
+            "id": 139,
+            "copy": null,
+            "header": "h2"
           },
           "popup": {
-            "id": 4,
-            "title": "All tips reviewed by food experts.",
+            "id": 33,
             "description": "Most of us don't know where we're losing food. ",
             "link": {
-              "id": 58,
+              "id": 609,
               "label": "Discover tips in the library",
-              "href": null,
+              "href": "/tips",
               "isDisplay": true,
               "isButton": true,
-              "Buttontype": "Primary",
-              "NewTab": false
+              "newTab": false,
+              "buttonType": null
+            },
+            "title": {
+              "id": 138,
+              "copy": "All tips reviewed by food experts.",
+              "header": "h2"
             }
           }
         },
         {
           "__component": "component.highlight-component",
-          "id": 6,
-          "title": "There are 200+ tips more waiting",
+          "id": 131,
           "description": "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis.",
           "backgroundColor": "forest-tint",
           "isFullwidth": true,
-          "links": [
+          "link": [
             {
-              "id": 57,
-              "label": "Link to Tip Library",
-              "href": null,
+              "id": 608,
+              "label": "Find my tips",
+              "href": "/tips",
               "isDisplay": true,
               "isButton": true,
-              "Buttontype": "Primary",
-              "NewTab": false
+              "newTab": false,
+              "buttonType": "Primary"
             }
           ],
           "image": {
-            "id": 26,
-            "documentId": "lpi64r4bz6uin7l8g8f836ah",
-            "url": "/uploads/6a75c669d797bf8ded9c00a5f911560c1aa98631_8c09406ce6.png",
+            "id": 63,
+            "documentId": "ovqws8bgfngulksjp86rzt8c",
+            "url": "/uploads/mind_95fc04a8d9.png",
             "ext": ".png",
-            "alternativeText": "fresh",
-            "height": 1458,
-            "width": 1188,
-            "size": 1161.68
+            "alternativeText": "mind",
+            "height": 1582,
+            "width": 1274,
+            "size": 635.01
+          },
+          "title": {
+            "id": 137,
+            "copy": "There are 200+ tips more waiting",
+            "header": "h2"
+          }
+        }
+      ],
+      "seo": null
+    },
+    {
+      "id": 129,
+      "documentId": "j6tf83yuw87mnyz7o3u98jth",
+      "title": "Toolkit",
+      "path": "/toolkit",
+      "main": [
+        {
+          "__component": "component.toolkit-headline",
+          "id": 49,
+          "description": "This is the toolkit overview.",
+          "cta": {
+            "id": 584,
+            "label": "download campaign overview",
+            "href": null,
+            "isDisplay": true,
+            "isButton": true,
+            "newTab": false,
+            "buttonType": null
+          },
+          "file": {
+            "id": 2,
+            "documentId": "uw2g4fsghdx7r63ujtkpj76l",
+            "name": "PDPECert.pdf",
+            "alternativeText": null,
+            "caption": null,
+            "focalPoint": null,
+            "width": null,
+            "height": null,
+            "formats": null,
+            "hash": "PDPE_Cert_b124ac2c60",
+            "ext": ".pdf",
+            "mime": "application/pdf",
+            "size": 73.98,
+            "url": "/uploads/PDPE_Cert_b124ac2c60.pdf",
+            "previewUrl": null,
+            "provider": "local",
+            "provider_metadata": null,
+            "createdAt": "2026-10-29T03:03:09.376Z",
+            "updatedAt": "2026-10-29T03:03:09.376Z",
+            "publishedAt": "2026-10-29T03:03:09.378Z"
+          },
+          "title": {
+            "id": 114,
+            "copy": "Toolkit headline",
+            "header": "h1"
+          }
+        },
+        {
+          "__component": "component.toolkit",
+          "id": 17,
+          "title": "MainCategory",
+          "toolkitCategory": [
+            {
+              "id": 39,
+              "title": {
+                "id": 120,
+                "copy": "Guidelines",
+                "header": "h2"
+              },
+              "subCategory": [
+                {
+                  "id": 66,
+                  "description": "This is a description of what this asset category is.",
+                  "backgroundColor": "paper",
+                  "title": {
+                    "id": 118,
+                    "copy": "brand guidelines",
+                    "header": "h2"
+                  },
+                  "assets": [
+                    {
+                      "id": 91,
+                      "title": "Asset Title Goes Here",
+                      "description": "Lorem ipsum dolor sit amet, consect adipisc elit, sed do eiusmod tempor. ",
+                      "displayMode": "aspect-16/9",
+                      "label": "16x9 :30 second",
+                      "image": {
+                        "id": 4,
+                        "documentId": "osmlnlzapxmh3btnnv9jo78z",
+                        "url": "/uploads/0463f55167f2aa4fa754c47cd7895be7d1a5db56_0db62a4435.png",
+                        "ext": ".png",
+                        "alternativeText": "guide",
+                        "height": 796,
+                        "width": 814,
+                        "size": 141.85
+                      },
+                      "file": {
+                        "id": 2,
+                        "documentId": "uw2g4fsghdx7r63ujtkpj76l",
+                        "name": "PDPECert.pdf",
+                        "alternativeText": null,
+                        "caption": null,
+                        "focalPoint": null,
+                        "width": null,
+                        "height": null,
+                        "formats": null,
+                        "hash": "PDPE_Cert_b124ac2c60",
+                        "ext": ".pdf",
+                        "mime": "application/pdf",
+                        "size": 73.98,
+                        "url": "/uploads/PDPE_Cert_b124ac2c60.pdf",
+                        "previewUrl": null,
+                        "provider": "local",
+                        "provider_metadata": null,
+                        "createdAt": "2026-10-29T03:03:09.376Z",
+                        "updatedAt": "2026-10-29T03:03:09.376Z",
+                        "publishedAt": "2026-10-29T03:03:09.378Z"
+                      },
+                      "cta": {
+                        "id": 586,
+                        "label": "Download",
+                        "href": null,
+                        "isDisplay": true,
+                        "isButton": true,
+                        "newTab": false,
+                        "buttonType": null
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": 40,
+              "title": {
+                "id": 121,
+                "copy": "PSA Assets",
+                "header": "h2"
+              },
+              "subCategory": [
+                {
+                  "id": 67,
+                  "description": "This is a description of what this asset category is.",
+                  "backgroundColor": null,
+                  "title": {
+                    "id": 119,
+                    "copy": "televison",
+                    "header": "h3"
+                  },
+                  "assets": [
+                    {
+                      "id": 92,
+                      "title": "Brand Guidelines",
+                      "description": "Lorem ipsum dolor sit amet, consect adipisc elit, sed do eiusmod tempor. ",
+                      "displayMode": "aspect-16/9",
+                      "label": "16x9 :30 second",
+                      "image": {
+                        "id": 4,
+                        "documentId": "osmlnlzapxmh3btnnv9jo78z",
+                        "url": "/uploads/0463f55167f2aa4fa754c47cd7895be7d1a5db56_0db62a4435.png",
+                        "ext": ".png",
+                        "alternativeText": "guide",
+                        "height": 796,
+                        "width": 814,
+                        "size": 141.85
+                      },
+                      "file": {
+                        "id": 2,
+                        "documentId": "uw2g4fsghdx7r63ujtkpj76l",
+                        "name": "PDPECert.pdf",
+                        "alternativeText": null,
+                        "caption": null,
+                        "focalPoint": null,
+                        "width": null,
+                        "height": null,
+                        "formats": null,
+                        "hash": "PDPE_Cert_b124ac2c60",
+                        "ext": ".pdf",
+                        "mime": "application/pdf",
+                        "size": 73.98,
+                        "url": "/uploads/PDPE_Cert_b124ac2c60.pdf",
+                        "previewUrl": null,
+                        "provider": "local",
+                        "provider_metadata": null,
+                        "createdAt": "2026-10-29T03:03:09.376Z",
+                        "updatedAt": "2026-10-29T03:03:09.376Z",
+                        "publishedAt": "2026-10-29T03:03:09.378Z"
+                      },
+                      "cta": {
+                        "id": 587,
+                        "label": "Download",
+                        "href": null,
+                        "isDisplay": true,
+                        "isButton": true,
+                        "newTab": false,
+                        "buttonType": null
+                      }
+                    },
+                    {
+                      "id": 93,
+                      "title": "Brand Guidelines1",
+                      "description": "Lorem ipsum dolor sit amet, consect adipisc elit, sed do eiusmod tempor. 1",
+                      "displayMode": "aspect-4/5",
+                      "label": "4x5 :15 second",
+                      "image": {
+                        "id": 96,
+                        "documentId": "mzlxqch7f6y3fl8umhvys7eq",
+                        "url": "/uploads/img_68b66f397b.png",
+                        "ext": ".png",
+                        "alternativeText": "img",
+                        "height": 658,
+                        "width": 370,
+                        "size": 53.03
+                      },
+                      "file": {
+                        "id": 2,
+                        "documentId": "uw2g4fsghdx7r63ujtkpj76l",
+                        "name": "PDPECert.pdf",
+                        "alternativeText": null,
+                        "caption": null,
+                        "focalPoint": null,
+                        "width": null,
+                        "height": null,
+                        "formats": null,
+                        "hash": "PDPE_Cert_b124ac2c60",
+                        "ext": ".pdf",
+                        "mime": "application/pdf",
+                        "size": 73.98,
+                        "url": "/uploads/PDPE_Cert_b124ac2c60.pdf",
+                        "previewUrl": null,
+                        "provider": "local",
+                        "provider_metadata": null,
+                        "createdAt": "2026-10-29T03:03:09.376Z",
+                        "updatedAt": "2026-10-29T03:03:09.376Z",
+                        "publishedAt": "2026-10-29T03:03:09.378Z"
+                      },
+                      "cta": {
+                        "id": 588,
+                        "label": "Download",
+                        "href": null,
+                        "isDisplay": true,
+                        "isButton": true,
+                        "newTab": false,
+                        "buttonType": null
+                      }
+                    },
+                    {
+                      "id": 94,
+                      "title": "Brand Guidelines2",
+                      "description": "Lorem ipsum dolor sit amet, consect adipisc elit, sed do eiusmod tempor. 2",
+                      "displayMode": "aspect-4/5",
+                      "label": "4x5 :15 second",
+                      "image": {
+                        "id": 96,
+                        "documentId": "mzlxqch7f6y3fl8umhvys7eq",
+                        "url": "/uploads/img_68b66f397b.png",
+                        "ext": ".png",
+                        "alternativeText": "img",
+                        "height": 658,
+                        "width": 370,
+                        "size": 53.03
+                      },
+                      "file": null,
+                      "cta": {
+                        "id": 589,
+                        "label": "Download",
+                        "href": null,
+                        "isDisplay": true,
+                        "isButton": true,
+                        "newTab": false,
+                        "buttonType": null
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": 65,
+                  "description": "Lorem ipsum dolor sit amet, consect adipisc elit, sed do eiusmod tempor. 2",
+                  "backgroundColor": null,
+                  "title": {
+                    "id": 117,
+                    "copy": "radio",
+                    "header": "h2"
+                  },
+                  "assets": [
+                    {
+                      "id": 95,
+                      "title": "Brand Guidelines3",
+                      "description": "Lorem ipsum dolor sit amet, consect adipisc elit, sed do eiusmod tempor. 3",
+                      "displayMode": "aspect-1/1",
+                      "label": "1x1 :15 second",
+                      "image": {
+                        "id": 4,
+                        "documentId": "osmlnlzapxmh3btnnv9jo78z",
+                        "url": "/uploads/0463f55167f2aa4fa754c47cd7895be7d1a5db56_0db62a4435.png",
+                        "ext": ".png",
+                        "alternativeText": "guide",
+                        "height": 796,
+                        "width": 814,
+                        "size": 141.85
+                      },
+                      "file": null,
+                      "cta": {
+                        "id": 590,
+                        "label": "Download",
+                        "href": null,
+                        "isDisplay": true,
+                        "isButton": true,
+                        "newTab": false,
+                        "buttonType": null
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "__component": "component.5050-text-and-image",
+          "id": 61,
+          "description": "Bfdsfdsa",
+          "makeImageLeft": true,
+          "addBackgroundColor": false,
+          "positionOfAddingBgColor": null,
+          "isFullwidth": false,
+          "backgroundColor": "forest",
+          "image": {
+            "id": 4,
+            "documentId": "osmlnlzapxmh3btnnv9jo78z",
+            "url": "/uploads/0463f55167f2aa4fa754c47cd7895be7d1a5db56_0db62a4435.png",
+            "ext": ".png",
+            "alternativeText": "guide",
+            "height": 796,
+            "width": 814,
+            "size": 141.85
+          },
+          "title": {
+            "id": 113,
+            "copy": "need another asset?",
+            "header": "h2"
+          }
+        },
+        {
+          "__component": "component.toolkit-headline",
+          "id": 50,
+          "description": "Contact LongLiveFood@adcouncil.org with any questions.",
+          "cta": {
+            "id": 585,
+            "label": "contact us",
+            "href": null,
+            "isDisplay": true,
+            "isButton": true,
+            "newTab": false,
+            "buttonType": null
+          },
+          "file": null,
+          "title": {
+            "id": 115,
+            "copy": "Got questions?",
+            "header": "h2"
+          }
+        },
+        {
+          "__component": "component.accordion",
+          "id": 24,
+          "subTitle": "Not sure what to try first? Here's what works.",
+          "backgroundColor": "forest-tint",
+          "isFullwidth": false,
+          "accordionItem": [
+            {
+              "id": 84,
+              "label": "Photo of your fridge or pantry",
+              "description": "Take the photo in good lighting and make sure ingredients are visible. Works best when items aren't stacked or hidden behind each other."
+            },
+            {
+              "id": 85,
+              "label": "Recipe from a website",
+              "description": "Take the photo in good lighting and make sure ingredients are visible. Works best when items aren't stacked or hidden behind each other."
+            },
+            {
+              "id": 86,
+              "label": "Recipe from a video",
+              "description": "Take the photo in good lighting and make sure ingredients are visible. Works best when items aren't stacked or hidden behind each other."
+            },
+            {
+              "id": 87,
+              "label": "Grocery receipt",
+              "description": "Take the photo in good lighting and make sure ingredients are visible. Works best when items aren't stacked or hidden behind each other."
+            },
+            {
+              "id": 88,
+              "label": "Shooping list",
+              "description": "Take the photo in good lighting and make sure ingredients are visible. Works best when items aren't stacked or hidden behind each other."
+            }
+          ],
+          "title": {
+            "id": 116,
+            "copy": "faq",
+            "header": "h2"
           }
         }
       ],

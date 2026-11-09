@@ -1,0 +1,100 @@
+{
+  "id": 138,
+  "documentId": "hebmi5cxd7c34eft2y2f5dsa",
+  "title": "Output List",
+  "path": "/find-my-tips/results",
+  "main": [
+    {
+      "__component": "component.category-detail",
+      "id": 28,
+      "description": "The following ingredients have been extracted. Select one to see how to get the most out of it.",
+      "subTitle": "Recipe Upload",
+      "statement": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "All tips reviewed by ",
+              "type": "text"
+            },
+            {
+              "text": "food experts",
+              "type": "text",
+              "underline": true
+            }
+          ]
+        }
+      ],
+      "isFullwidth": true,
+      "backgroundColor": "forest",
+      "hint": "Click an ingredient to view specific tips that save time, money, and food.",
+      "image": null,
+      "button": {
+        "id": 644,
+        "label": "Upload Another Link or Image",
+        "href": null,
+        "isDisplay": true,
+        "isButton": true,
+        "newTab": false,
+        "buttonType": null
+      },
+      "title": {
+        "id": 166,
+        "copy": "Your ingredients list",
+        "header": "h2"
+      },
+      "popup": {
+        "id": 36,
+        "description": "Most of us don't know where we're losing food. ",
+        "link": {
+          "id": 646,
+          "label": "Discover tips in the library",
+          "href": "/tips",
+          "isDisplay": true,
+          "isButton": true,
+          "newTab": false,
+          "buttonType": null
+        },
+        "title": {
+          "id": 165,
+          "copy": "All tips reviewed by food experts.",
+          "header": "h2"
+        }
+      }
+    },
+    {
+      "__component": "component.highlight-component",
+      "id": 137,
+      "description": "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis.",
+      "backgroundColor": "forest-tint",
+      "isFullwidth": true,
+      "link": [
+        {
+          "id": 645,
+          "label": "Discover tips in the library",
+          "href": "/tips",
+          "isDisplay": true,
+          "isButton": true,
+          "newTab": false,
+          "buttonType": "Primary"
+        }
+      ],
+      "image": {
+        "id": 26,
+        "documentId": "lpi64r4bz6uin7l8g8f836ah",
+        "url": "/uploads/6a75c669d797bf8ded9c00a5f911560c1aa98631_8c09406ce6.png",
+        "ext": ".png",
+        "alternativeText": "fresh",
+        "height": 1458,
+        "width": 1188,
+        "size": 1161.68
+      },
+      "title": {
+        "id": 164,
+        "copy": "About 1 in 3 groceries you buy never get eaten.",
+        "header": "h2"
+      }
+    }
+  ],
+  "seo": null
+}
