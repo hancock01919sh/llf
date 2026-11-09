@@ -6,7 +6,7 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const Cta = z.object({
   label: nullish(z.string()),
   href: nullish(z.string()),
-  page: nullish(z.lazy(() => PageRef)),
+  page: nullish(z.lazy(()=> PageRef)),
 });
 
 export const CtaRef = z.object({

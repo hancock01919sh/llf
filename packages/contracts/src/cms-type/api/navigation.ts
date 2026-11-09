@@ -22,7 +22,7 @@ export const NavigationDeepRef = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  link: z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef)),
+  link: z.array(z.lazy((): z.ZodType<LinksDeepRef>  => LinksDeepRef)),
   searchPlaceholder: nullish(z.string()),
 });
 
