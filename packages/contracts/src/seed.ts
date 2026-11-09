@@ -1,19 +1,26 @@
 import { z } from 'zod';
 import { Slug, toSlug } from './catalog';
-import {
-  // CAROUSEL_LAYOUTS,
-  CAROUSEL_MODES,
-  CATEGORY_MODES,
-  BACKGROUND_COLOR,
-  // HERO_LAYOUTS,
-  HeadingLevel,
-  INGREDIENT_TYPES,
-  // LINK_LIST_LAYOUTS,
-  // PAGE_TEMPLATES,
-  // type PageTemplate,
-  // TEASER_LAYOUTS,
-  // TIP_LIST_LAYOUTS,
-} from './cms';
+
+const CATEGORY_MODES = ['Ingredients', 'Tips'] as const;
+//  const HERO_LAYOUTS = ['Primary', 'Secondary'] as const;
+//  const TEASER_LAYOUTS = ['Basic', 'Highlight', 'Quote'] as const;
+//  const LINK_LIST_LAYOUTS = ['Basic', 'Two Column'] as const;
+const CAROUSEL_MODES = ['categories'] as const;
+//  const CAROUSEL_LAYOUTS = ['Basic', 'Compact'] as const;
+//  const TIP_LIST_LAYOUTS = ['Basic', 'Single'] as const;
+const BACKGROUND_COLOR = ['terra', 'paper'] as const;
+const INGREDIENT_TYPES = [
+  'Baked Goods',
+  'Dairy',
+  'Dry Foods',
+  'Fresh Herbs',
+  'Leafy Greens',
+  'Produce',
+  'Protein',
+] as const;
+
+const HEADING_LEVELS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const;
+const HeadingLevel = z.enum(HEADING_LEVELS);
 
 /**
  * Seed fixtures for an empty Strapi (TDD §5.5). Hand-edited JSON in `scripts/seed/fixtures/`, so every
