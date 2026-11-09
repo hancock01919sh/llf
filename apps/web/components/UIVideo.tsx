@@ -58,7 +58,7 @@ export function UIVideo(
   }
   return (
     <div
-      className={`relative overflow-hidden ${className}`}
+      className={`relative overflow-hidden bg-ink-terra-15 ${className}`}
       role="button"
       tabIndex={0}
       aria-label={isPlaying ? 'Pause video' : 'Play video'}
