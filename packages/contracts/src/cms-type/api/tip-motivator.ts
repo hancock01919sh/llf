@@ -7,7 +7,7 @@ export const TipMotivator = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  tips: nullish(z.array(z.lazy(() => TipRef))),
+  tips: nullish(z.array(z.lazy(()=> TipRef))),
 });
 
 export const TipMotivatorRef = z.object({
@@ -20,7 +20,7 @@ export const TipMotivatorDeepRef = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  tips: nullish(z.array(z.lazy((): z.ZodType => TipDeepRef))),
+  tips: nullish(z.array(z.lazy((): z.ZodType=> TipDeepRef))),
 });
 
 export type TipMotivatorDeepRef = z.infer<typeof TipMotivatorDeepRef>;

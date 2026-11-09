@@ -8,7 +8,7 @@ export const Group = z.object({
   documentId: z.string(),
   description: nullish(z.string()),
   title: z.string(),
-  categories: nullish(z.array(z.lazy(() => CategoryRef))),
+  categories: nullish(z.array(z.lazy(()=> CategoryRef))),
 });
 
 export const GroupRef = z.object({
@@ -23,7 +23,7 @@ export const GroupDeepRef = z.object({
   documentId: z.string(),
   description: nullish(z.string()),
   title: z.string(),
-  categories: nullish(z.array(z.lazy((): z.ZodType => CategoryDeepRef))),
+  categories: nullish(z.array(z.lazy((): z.ZodType=> CategoryDeepRef))),
 });
 
 export type GroupDeepRef = z.infer<typeof GroupDeepRef>;
