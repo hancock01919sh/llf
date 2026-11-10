@@ -17,7 +17,7 @@ export function CategoryEmoji(props: BlockProps<cmsType.component.CategoryEmoji>
           {emoji.map((item) => (
             <div
               key={item.title}
-              className=" aspect-square border border-brand-forestflex items-center flex! flex-col justify-center rounded-md text-center lg:w-51 lg:h-51 px-2"
+              className=" aspect-square border border-brand-forestflex items-center flex! flex-col justify-center rounded-md text-center  px-2"
             >
               <span className="text-[88px] leading-[1.1]">{item.emoji}</span>
               <Typography variant="label" className="lg:text-subhead-sm">
