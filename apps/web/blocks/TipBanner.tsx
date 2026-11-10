@@ -1,7 +1,6 @@
 import { IconDownload, IconShare } from '@/components/Icon';
 import { TipBadge, type TipBadgeType } from '@/components/TipBadge';
 import { Typography } from '@/components/Typography';
-import Image from 'next/image';
 import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
 import type { Media } from '../../../packages/contracts/src/cms-type';
