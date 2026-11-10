@@ -31,7 +31,10 @@ export default function config(phase: string): NextConfig {
           async rewrites() {
             return [
               { source: '/api/:path*', destination: `${TIPS_URL}/api/:path*` },
-              { source: '/uploads/:path*', destination: `${process.env.CMS_MEDIA_URL ?? process.env.CMS_URL}/uploads/:path*` },
+              {
+                source: '/uploads/:path*',
+                destination: `${process.env.CMS_MEDIA_URL ?? process.env.CMS_URL}/uploads/:path*`,
+              },
             ];
           },
         }),
