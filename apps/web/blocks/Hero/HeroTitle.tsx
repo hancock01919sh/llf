@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import { RichText } from '@/components/RichText';
-import type { cms } from '@llf/contracts';
-export function HeroTitle({ Title }: { Title: cms.BlocksContent | null | undefined }) {
+import type { cmsType } from '@llf/contracts';
+export function HeroTitle({ Title }: { Title: cmsType.BlocksContent | null | undefined }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (ref.current === null) return;

@@ -1,7 +1,7 @@
-import type { Media } from '@llf/contracts/cms';
 import Image from 'next/image';
+import type { cmsType } from '@llf/contracts';
 
-interface ResponsiveImageProps extends Omit<Media, 'src'> {
+interface ResponsiveImageProps extends Omit<cmsType.Media, 'src'> {
   className?: string;
 }
 

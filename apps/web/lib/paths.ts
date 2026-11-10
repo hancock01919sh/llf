@@ -1,6 +1,6 @@
-import type { cms } from '@llf/contracts';
-
 /** Path helpers that are safe to import from client components (no Node APIs). */
+
+import type { cmsType } from '@llf/contracts';
 
 /** Strips slashes so `/about/`, `about`, and `about/` are the same path. Home is `''`. */
 export function normalizePath(value: string): string {
@@ -14,7 +14,7 @@ export function pageHref(path: string): string {
 }
 
 /** A CTA links to a CMS page when one is set, otherwise to its `href`. */
-export function ctaHref(cta: cms.Cta): string | null {
+export function ctaHref(cta: cmsType.shared.Cta): string | null {
   if (cta.page) return pageHref(cta.page.path);
   return cta.href?.trim() || null;
 }

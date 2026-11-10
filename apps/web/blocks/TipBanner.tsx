@@ -4,7 +4,7 @@ import { Typography } from '@/components/Typography';
 import Image from 'next/image';
 import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
-import type { Media } from '@llf/contracts/cms';
+import type { Media } from '../../../packages/contracts/src/cms-type';
 export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeepRef>) {
   const { tip, label, cta } = props.block;
   return (

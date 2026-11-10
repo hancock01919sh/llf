@@ -1,6 +1,6 @@
 'use client';
 
-import type { cms } from '@llf/contracts';
+import type { cmsType } from '@llf/contracts';
 import { BlocksRenderer, type BlocksContent } from '@strapi/blocks-react-renderer';
 import Link from 'next/link';
 
@@ -12,7 +12,7 @@ export function RichText({
   content,
   className,
 }: {
-  content: cms.BlocksContent | null | undefined;
+  content: cmsType.BlocksContent | null | undefined;
   className?: string;
 }) {
   if (!content || content.length === 0) return null;

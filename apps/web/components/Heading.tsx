@@ -1,8 +1,8 @@
+import type { cmsType } from '@llf/contracts';
 import { cn } from '@llf/ui';
-import type { cms } from '@llf/contracts';
 import type { ReactNode } from 'react';
 
-type Level = cms.HeadingLevel;
+type Level = cmsType.shared.Title['header'];
 
 interface HeadingProps {
   /** Heading level chosen in the CMS (TDD §6.6). Visual size is set by `className`, not the level. */
@@ -26,7 +26,7 @@ export function CmsTitle({
   title,
   className,
 }: {
-  title: cms.Title | null | undefined;
+  title: cmsType.shared.Title | null | undefined;
   className?: string;
 }) {
   if (!title?.copy) return null;

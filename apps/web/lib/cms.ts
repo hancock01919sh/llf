@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { cms, cmsType } from '@llf/contracts';
+import { cmsType } from '@llf/contracts';
 import { z } from 'zod';
 import { normalizePath } from './paths';
 
@@ -252,11 +252,11 @@ const POPULATE = {
 // satisfies Record<string, Populate>;
 
 const SCHEMAS = {
-  pages: cms.Page,
-  categories: cms.Category,
-  groups: cms.Group,
-  ingredients: cms.Ingredient,
-  tips: cms.Tip,
+  pages: cmsType.api.Page,
+  categories: cmsType.api.Category,
+  groups: cmsType.api.Group,
+  ingredients: cmsType.api.Ingredient,
+  tips: cmsType.api.Tip,
   footer: cmsType.api.Footer,
   navigation: cmsType.api.Navigation,
   global: cmsType.api.GlobalDeepRef,
@@ -316,7 +316,7 @@ export function validateCollection<K extends CollectionKey>(key: K, raw: unknown
   return items;
 }
 
-const envelope = cms.collectionResponse(z.unknown());
+const envelope = cmsType.collectionResponse(z.unknown());
 const signalSchema = envelope.extend({
   data: z.unknown(),
 });
@@ -366,7 +366,7 @@ async function readFixture(key: CollectionKey): Promise<unknown[]> {
 }
 async function readFixtureSingle(key: CollectionKey): Promise<unknown> {
   const file = path.join(process.cwd(), 'fixtures', 'cms', `${key}.json`);
-  const signalSchema = cms.singleResponse(z.unknown());
+  const signalSchema = cmsType.singleResponse(z.unknown());
   return signalSchema.parse(JSON.parse(await readFile(file, 'utf8'))).data;
 }
 
@@ -399,14 +399,14 @@ export const getGroups = () => loadCollection('groups');
 export const getIngredients = () => loadCollection('ingredients');
 export const getTips = () => loadCollection('tips');
 
-export async function getPageByPath(value: string): Promise<cms.Page | undefined> {
+export async function getPageByPath(value: string): Promise<cmsType.api.Page | undefined> {
   const wanted = normalizePath(value);
   const pages = await getPages();
   return pages.find((page) => normalizePath(page.path) === wanted);
 }
 
 /** Designed routes need their CMS page; a missing one is an editor error, not a 404. */
-export async function requirePage(value: string): Promise<cms.Page> {
+export async function requirePage(value: string): Promise<cmsType.api.Page> {
   const page = await getPageByPath(value);
   if (!page) {
     throw new ContentError(
@@ -416,7 +416,7 @@ export async function requirePage(value: string): Promise<cms.Page> {
   return page;
 }
 
-export async function getCategory(slug: string): Promise<cms.Category | undefined> {
+export async function getCategory(slug: string): Promise<cmsType.api.Category | undefined> {
   return (await getCategories()).find((category) => category.slug === slug);
 }
 export async function getPageProviderData() {
