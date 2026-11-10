@@ -11,6 +11,9 @@
     },
     "emoji": {
       "type": "string"
+    },
+    "href": {
+      "type": "string"
     }
   },
   "config": {}
