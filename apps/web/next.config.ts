@@ -16,6 +16,10 @@ export default function config(phase: string): NextConfig {
   const isExport = phase === PHASE_PRODUCTION_BUILD;
   return {
     ...(isExport ? { output: 'export' as const } : {}),
+    env: {
+      NEXT_PUBLIC_CMS_MEDIA_URL:
+        process.env.NEXT_PUBLIC_CMS_MEDIA_URL ?? process.env.CMS_MEDIA_URL ?? process.env.CMS_URL,
+    },
     trailingSlash: true,
     images: { unoptimized: true },
     reactStrictMode: true,

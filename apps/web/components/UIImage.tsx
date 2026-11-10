@@ -1,4 +1,5 @@
 'use client';
+import { mediaUrl } from '@/lib/media';
 import Image, { type ImageProps } from 'next/image';
 
 interface ResponsiveImageProps extends ImageProps {
@@ -18,7 +19,7 @@ export function UIImage({ className = '', src, ...rest }: ResponsiveImageProps) 
           const target = e.target as HTMLElement;
           target.classList.add('bg-ink-terra-40');
         }}
-        src={`${process.env.NEXT_PUBLIC_MEDIA_URL}${src}`}
+        src={`${mediaUrl(src)}`}
         {...rest}
       />
     </picture>
