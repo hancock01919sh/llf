@@ -2,7 +2,7 @@
 import { carouselConfig } from '@/lib/const';
 import { Typography } from '@/components/Typography';
 import { IconCarouselNavigation } from '@/components/Icon';
-import { EasyImage } from '@/components/UIImage';
+import { UIImage } from '@/components/UIImage';
 import { useRef, useState, useEffect } from 'react';
 import { Pagination, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -64,9 +64,9 @@ export function BlockIngredientCarousel(
               key={item.title + index}
               className="rounded-md overflow-hidden flex flex-col border border-ink-terra "
             >
-              <EasyImage
-                url={item?.image?.url || ''}
-                alt={item.image?.alternativeText || item.title || ''}
+              <UIImage
+                src={item?.image?.url || ''}
+                alt={item.image?.alternativeText || item.image?.name || item.title}
                 className="w-full aspect-298/270 lg:aspect-298/266"
               />
               <Typography

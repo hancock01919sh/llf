@@ -13,7 +13,8 @@ export function BlockTextAndImage55(props: BlockProps<cmsType.component._5050Tex
           <Typography variant="paragraph-lg">{description}</Typography>
         </div>
         <UIImage
-          {...image}
+          src={image?.url || ''}
+          alt={image?.alternativeText || image?.name || title.copy || ''}
           className="w-full rounded-md overflow-hidden aspect-362/244 lg:w-1/2 lg:aspect-650/428 lg:order-1"
         />
       </div>

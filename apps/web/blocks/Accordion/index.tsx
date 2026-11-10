@@ -16,7 +16,7 @@ export function BlockAccordion(props: BlockProps<cmsType.component.Accordion>) {
   );
   return (
     <div className="py-15 lg:w-[60%]! mx-auto lg:py-[6.94%]">
-      <BlockTitle title={title!} moduleIndex={props.index} />
+      <BlockTitle title={title!} moduleIndex={props.index} className="text-center" />
 
       <Typography variant="subhead-lg" richText={true} className=" mt-2.5 lg:text-center lg:mt-5">
         {subTitle}

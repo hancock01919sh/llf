@@ -6,8 +6,8 @@ import { IngredientsTipsPopup } from './IngredientsTipsPopup';
 import { RichText } from '@/components/RichText';
 import type { CategoryDetailWithSearchProps } from '.';
 import type { cmsType } from '@llf/contracts';
-import { EasyImage } from '@/components/UIImage';
 import { BlockTitle } from '@/components/BlockTitle';
+import { UIImage } from '@/components/UIImage';
 export function IngredientsHeader(
   props: CategoryDetailWithSearchProps & {
     bgColor?: string;
@@ -47,9 +47,13 @@ export function IngredientsHeader(
         )}
         <div className="lg:flex-center lg:gap-15">
           {categoryData && (
-            <EasyImage
-              url={categoryData?.image?.url || ''}
-              alt={categoryData?.image?.alternativeText || ''}
+            <UIImage
+              src={categoryData?.image?.url || ''}
+              alt={
+                categoryData?.image?.alternativeText ||
+                categoryData?.image?.name ||
+                categoryData.title
+              }
               className="aspect-362/279 lg:aspect-538/414 w-full lg:w-[40%] rounded-md overflow-hidden mb-10 lg:mb-0"
             />
           )}

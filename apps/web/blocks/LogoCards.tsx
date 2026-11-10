@@ -22,7 +22,11 @@ export function BlockLogoCards(props: BlockProps<cmsType.component.LogoCardsDeep
             key={item.url + item.documentId}
             className="aspect-370/200 w-full bg-surface-sand rounded-md overflow-hidden flex items-center justify-center  lg:hidden"
           >
-            <UIImage className="w-full h-full object-cover " {...item} />
+            <UIImage
+              className="w-full h-full object-cover "
+              src={item.url || ''}
+              alt={item.alternativeText || item.name || ''}
+            />
           </div>
         ))}
         {imageDesktop?.map((item) => (
@@ -30,7 +34,11 @@ export function BlockLogoCards(props: BlockProps<cmsType.component.LogoCardsDeep
             key={item.url + item.documentId}
             className="hidden w-full rounded-md lg:flex-center overflow-hidden justify-center lg:aspect-square lg:w-1/3 lg:max-w-78.25"
           >
-            <UIImage className="w-full h-full object-cover" {...item} />
+            <UIImage
+              src={item.url || ''}
+              alt={item.alternativeText || item.name || ''}
+              className="w-full h-full object-cover"
+            />
           </div>
         ))}
       </div>

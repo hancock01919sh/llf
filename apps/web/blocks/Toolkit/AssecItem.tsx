@@ -6,7 +6,11 @@ import type { cmsType } from '@llf/contracts';
 export function AssecItem(item: cmsType.shared.AssetsCardsDeepRef & { className?: string }) {
   return (
     <div className={` rounded-md overflow-hidden flex flex-col  ${item.className}`}>
-      <UIImage className={item.displayMode} {...item.image} />
+      <UIImage
+        className={item.displayMode}
+        src={item.file?.url || ''}
+        alt={item.file?.name || item.title}
+      />
       <div className="p-8 bg-surface-paper">
         <Typography variant="subhead-md" className=" text-lg-subheadline-md ! font-bold">
           {item.title}

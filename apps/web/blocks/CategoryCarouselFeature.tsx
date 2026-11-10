@@ -1,7 +1,6 @@
 'use client';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Typography } from '@/components//Typography';
-import Image from 'next/image';
 import { EffectCards, Navigation, Pagination } from 'swiper/modules';
 import TransitionLink from '@/components/TransitionLink';
 import { carouselConfig } from '@/lib/const';
@@ -14,6 +13,7 @@ import { Fragment } from 'react';
 import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
 import { BlockTitle } from '@/components/BlockTitle';
+import { UIImage } from '@/components/UIImage';
 export function CategoryCarouselFeature(
   props: BlockProps<cmsType.component.CategoryCarouselFeatureDeepRef>,
 ) {
@@ -21,7 +21,11 @@ export function CategoryCarouselFeature(
   return (
     <div className="py-15 lg:py-25">
       <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-5">
-        <BlockTitle title={title!} moduleIndex={props.index} />
+        <BlockTitle
+          title={title!}
+          moduleIndex={props.index}
+          className="text-center mx-5 lg:mx-0 lg:text-left"
+        />
         <div className="lg:w-1/2 flex flex-col gap-5">
           <Typography
             variant="subhead-lg"
@@ -48,13 +52,13 @@ export function CategoryCarouselFeature(
                 key={index}
                 className="flex flex-col bg-surface-paper overflow-hidden rounded-md aspect-362/420 lg:aspect-auto"
               >
-                <Image
-                  src={item.image?.url || ''}
-                  alt={item.image?.alternativeText || ''}
-                  width={362}
-                  height={296}
-                  className="aspect-362/296 object-cover lg:aspect-535/438 lg:w-full"
-                />
+                {
+                  <UIImage
+                    src={item.image?.url || ''}
+                    alt={item.image?.alternativeText || item.image?.name || item.title}
+                    className="aspect-362/296 object-cover lg:aspect-535/438 lg:w-full"
+                  />
+                }
                 <Typography
                   variant="headline-sm"
                   className="text-center p-9 pt-6.5 text-ink-terra uppercase leading-none"
@@ -95,21 +99,21 @@ export function CategoryCarouselFeature(
             {featureCard.map((item, index) => (
               <SwiperSlide
                 key={index}
-                className="flex flex-col bg-surface-paper overflow-hidden rounded-md lg:aspect-535/583"
+                className="flex flex-col bg-surface-paper overflow-hidden rounded-md lg:aspect-535/579"
               >
-                <Image
+                <UIImage
                   src={item.image?.url || ''}
-                  alt={item.image?.alternativeText || ''}
-                  width={362}
-                  height={296}
+                  alt={item.image?.alternativeText || item.image?.name || item.title}
                   className="aspect-362/296 object-cover lg:aspect-535/438 lg:w-full"
                 />
-                <Typography
-                  variant="headline-sm"
-                  className="text-center p-9 pt-6.5 text-ink-terra uppercase leading-none"
-                >
-                  {item.title}
-                </Typography>
+                <div className="flex-center p-10">
+                  <Typography
+                    variant="headline-sm"
+                    className="text-center text-ink-terra uppercase leading-none"
+                  >
+                    {item.title}
+                  </Typography>
+                </div>
               </SwiperSlide>
             ))}
           </Swiper>
@@ -126,12 +130,13 @@ export function CategoryCarouselFeature(
           },
         ].map((item) => {
           return (
-            <div
+            <button
               key={item.point}
-              className={`${item.className} hidden lg:flex cursor-pointer absolute z-2 top-1/2 -translate-y-1/2 bg-surface-mint-dark w-11 h-11 rounded-full justify-center items-center`}
+              aria-label={item.point === 'left' ? 'prev' : 'next'}
+              className={`${item.className} ${item.point === 'left' ? ' -translate-x-1/2' : ' translate-x-1/2'} disabled:opacity-70 hidden lg:flex cursor-pointer absolute z-2 top-1/2 -translate-y-1/2  bg-surface-mint-dark w-11 h-11 rounded-full justify-center items-center`}
             >
               <IconArrow point={item.point as 'left' | 'right'} />
-            </div>
+            </button>
           );
         })}
       </div>

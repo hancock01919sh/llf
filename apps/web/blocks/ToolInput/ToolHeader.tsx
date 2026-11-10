@@ -14,7 +14,7 @@ export function ToolHeader(props: BlockProps<cmsType.component.ToolInput>) {
             <Typography variant="eyebrow" className=" font-bold">
               {props.block.subTitle}
             </Typography>
-            <BlockTitle title={props.block.title} moduleIndex={props.index} />
+            <BlockTitle title={props.block.title} moduleIndex={props.index} className="mt-10" />
 
             <Typography variant="subhead-lg" className="font-bold mt-5">
               {props.block.description}

@@ -22,7 +22,7 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlightD
   const { subTitle, link, spotlightItem, title } = props.block;
   const [swiperIndex, setSwiperIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const defaultTextColor = 'yellow';
+  const defaultTextColor = '#B4BC9C';
   useGSAP(() => {
     if (!containerRef.current || window.innerWidth < 1024) return;
     const texts = gsap.utils.toArray<HTMLParagraphElement>(
@@ -104,7 +104,7 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlightD
       tl.to(
         texts[i]!,
         {
-          color: '#fbf5ce',
+          color: '#F0F58E',
           duration: 1,
           ease: 'none',
         },

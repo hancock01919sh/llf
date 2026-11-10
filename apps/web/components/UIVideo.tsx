@@ -8,7 +8,7 @@ export function UIVideo(
     className?: string;
   },
 ) {
-  const { className, pause, lazyLoad, ...restProps } = props;
+  const { className, pause, lazyLoad, src, ...restProps } = props;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [loadedData, setLoadedData] = useState(false);
@@ -59,7 +59,7 @@ export function UIVideo(
   }
   return (
     <div
-      className={`relative overflow-hidden bg-ink-terra-15 ${className}`}
+      className={`relative overflow-hidden ${className}`}
       role="button"
       tabIndex={0}
       aria-label={isPlaying ? 'Pause video' : 'Play video'}
@@ -75,11 +75,12 @@ export function UIVideo(
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <video
         ref={videoRef}
-        className={`w-full h-full object-cover`}
+        className={`w-full h-full object-cover bg-ink-terra-15`}
         playsInline
         preload={lazyLoad ? 'metadata' : 'auto'}
         onPlay={handlePlay}
         onPause={handlePause}
+        src={`${process.env.NEXT_PUBLIC_MEDIA_URL}${src}`}
         onLoadedData={() => {
           setLoadedData(true);
         }}
