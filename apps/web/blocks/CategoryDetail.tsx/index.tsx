@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { type BlockProps } from '../types';
 import { IngredientsHeader } from './IngredientsHeader';
 import { IngredientsList } from './IngredientsList';
-import { cms, cmsType } from '@llf/contracts';
+import { cmsType } from '@llf/contracts';
 import type { SearchDocument } from '@/lib/search';
 export const CategoryDetailWithSearchSchema = z.object({
   __component: z.enum(['component.category-detail', 'component.search']),
@@ -18,17 +18,17 @@ export const CategoryDetailWithSearchSchema = z.object({
   popup: cmsType.component.TipsPopupDeepRef.nullish(),
   isFullwidth: z.boolean().nullish().default(false),
   backgroundColor: z.enum(['paper', 'forest']).nullish(),
-  categoryData: cms.Category.nullish(),
+  categoryData: cmsType.api.Category.nullish(),
 });
 
 export type CategoryDetailWithSearchProps = z.infer<typeof CategoryDetailWithSearchSchema>;
 
 export const CategoryDetailComponent = async (props: BlockProps<CategoryDetailWithSearchProps>) => {
   const ingredients =
-    props?.categoryData?.ingredients?.map((item) => {
+    props?.categoryData?.ingredients?.map((item: cmsType.api.Ingredient) => {
       return {
         ...item,
-        tips: item.tips?.map((tip) => ({
+        tips: item.tips?.map((tip: cmsType.api.Tip) => ({
           ...tip,
           type: tip.tip_type?.title || '',
         })),

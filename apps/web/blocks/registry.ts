@@ -1,13 +1,6 @@
-import { cms, cmsType } from '@llf/contracts';
+import { cmsType } from '@llf/contracts';
 import type { ComponentType } from 'react';
 import type { z } from 'zod';
-import { Carousel } from './Carousel';
-import { FindMyTips } from './FindMyTips';
-import { Hero } from './Hero';
-import { LinkList } from './LinkList';
-import { SearchBox } from './SearchBox';
-import { Teaser } from './Teaser';
-import { TipList } from './TipList';
 import { BlockToolInput } from './ToolInput';
 import { BlockAccordion } from './Accordion';
 import type { BlockProps } from './types';
@@ -29,6 +22,7 @@ import { BlockTextAndImageCard } from './TextAndImageCard';
 import { BlockLogoCards } from './LogoCards';
 import { BlockToolkitHeadline } from './ToolkitHeadline';
 import { BlockToolkit } from './Toolkit';
+import { BlockHero } from './Hero';
 
 /**
  * Page `main` dynamic-zone blocks (TDD §6.4). To add one: a Strapi component, a Zod schema in
@@ -47,17 +41,7 @@ const entry = <S extends z.ZodType>(e: BlockEntry<S>) => e;
 
 // TODO(BD3244-8): accordion, asset-list, and jump-nav blocks once their Strapi components exist.
 export const blocks = {
-  'component.hero': entry({ schema: cmsType.component.Hero, Component: Hero, type: 'hero' }),
-  'component.teaser': entry({ schema: cms.TeaserBlock, Component: Teaser, type: 'teaser' }),
-  'component.link-list': entry({
-    schema: cms.LinkListBlock,
-    Component: LinkList,
-    type: 'link-list',
-  }),
-  'component.carousel': entry({ schema: cms.CarouselBlock, Component: Carousel, type: 'carousel' }),
-  'custom.search': entry({ schema: cms.SearchBlock, Component: SearchBox, type: 'search' }),
-  'custom.tip-list': entry({ schema: cms.TipListBlock, Component: TipList, type: 'tip-list' }),
-  'custom.tool': entry({ schema: cms.ToolBlock, Component: FindMyTips, type: 'tool' }),
+  'component.hero': entry({ schema: cmsType.component.Hero, Component: BlockHero, type: 'hero' }),
   'component.tool-input': entry({
     schema: cmsType.component.ToolInputDeepRef,
     Component: BlockToolInput,

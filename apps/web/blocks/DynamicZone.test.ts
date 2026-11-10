@@ -1,15 +1,15 @@
-import type { cms } from '@llf/contracts';
+import type { cmsType } from '@llf/contracts';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ContentError } from '@/lib/cms';
 import { resolveBlocks } from './DynamicZone';
 
 const page = (main: unknown[]) =>
   ({ title: 'Test page', path: 'test', main }) as unknown as Pick<
-    cms.Page,
+    cmsType.api.Page,
     'title' | 'path' | 'main'
   >;
 
-const good = { __component: 'custom.search', id: 1, placeholder: 'Search' };
+const good = { __component: 'component.toolkit-headline', id: 1, description: 'Find tips' };
 const unknown = { __component: 'component.not-a-real-block', id: 2 };
 // Hero mock mirrors the current `cms-type.component.Hero` schema (Strapi has no `layout` field).
 const validHero = {
@@ -28,7 +28,7 @@ describe('resolveBlocks', () => {
   it('resolves registered blocks with their analytics type and layout', () => {
     const [block] = resolveBlocks(page([good, validHero]), true).slice(1);
     expect(resolveBlocks(page([good]), true)).toMatchObject([
-      { key: 'custom.search-1', type: 'search' },
+      { key: 'component.toolkit-headline-1', type: 'toolkit-headline' },
     ]);
     expect(block).toMatchObject({ type: 'hero' });
   });

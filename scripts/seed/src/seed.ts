@@ -1,8 +1,9 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { z } from 'zod';
-import { cms, seed as contract, toSlug } from '@llf/contracts';
+import { seed as contract, toSlug } from '@llf/contracts';
 import type { StrapiClient } from './strapi';
+import { cmsType } from '@llf/contracts';
 
 type Seed = contract.Seed;
 type SeedBlock = contract.SeedBlock;
@@ -349,11 +350,11 @@ export const POPULATE = {
 } satisfies Record<string, Populate>;
 
 const SCHEMAS = {
-  pages: cms.Page,
-  categories: cms.Category,
-  groups: cms.Group,
-  ingredients: cms.Ingredient,
-  tips: cms.Tip,
+  pages: cmsType.api.Page,
+  categories: cmsType.api.Category,
+  groups: cmsType.api.Group,
+  ingredients: cmsType.api.Ingredient,
+  tips: cmsType.api.Tip,
 } satisfies Record<keyof typeof POPULATE, z.ZodType>;
 
 export type VerifyReport = Record<keyof typeof POPULATE, number>;

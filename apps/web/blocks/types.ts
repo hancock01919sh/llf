@@ -1,6 +1,6 @@
 import { SurfaceSchema, type Surface } from '@/components/ModuleBoundary';
 import { z } from 'zod';
-import { cms } from '@llf/contracts';
+import { cmsType } from '@llf/contracts';
 export interface BlockProps<T> {
   block: T;
   /** Position in the dynamic zone. The first block may own the page's h1 (TDD §6.6). */
@@ -11,7 +11,7 @@ export interface BlockProps<T> {
   layout?: string;
   isFullwidth?: boolean;
   backgroundColor?: Surface;
-  categoryData?: cms.Category;
+  categoryData?: cmsType.api.Category;
 }
 
 export const BlockBaseSchema = z.object({
@@ -40,7 +40,7 @@ export const GlobalSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
   publishedAt: z.string(),
-  seo: cms.Seo.nullable(),
+  seo: cmsType.shared.Seo.nullable(),
   load: z.object({
     id: z.number(),
     Title: z.string(),

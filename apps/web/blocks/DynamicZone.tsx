@@ -1,4 +1,4 @@
-import type { cms } from '@llf/contracts';
+import type { cmsType } from '@llf/contracts';
 import type { ComponentType } from 'react';
 import { ContentError } from '@/lib/cms';
 import { blockLayout, blocks, isBlockKey } from './registry';
@@ -22,7 +22,7 @@ export interface ResolvedBlock {
  * in one pass. Otherwise (`next dev`) bad blocks are skipped with a console warning.
  */
 export function resolveBlocks(
-  page: Pick<cms.Page, 'title' | 'path' | 'main'>,
+  page: Pick<cmsType.api.Page, 'title' | 'path' | 'main'>,
   strict: boolean,
 ): ResolvedBlock[] {
   const problems: string[] = [];
@@ -72,8 +72,8 @@ export function DynamicZone({
   categoryData,
   offset = 0,
 }: {
-  page: Pick<cms.Page, 'title' | 'path' | 'main'>;
-  categoryData?: cms.Category;
+  page: Pick<cmsType.api.Page, 'title' | 'path' | 'main'>;
+  categoryData?: cmsType.api.Category;
   offset?: number;
 }) {
   return resolveBlocks(page, isStrict()).map(

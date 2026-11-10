@@ -1,4 +1,4 @@
-import type { cms } from '@llf/contracts';
+import type { cmsType } from '@llf/contracts';
 import { cn } from '@llf/ui';
 import { toImage } from '@/lib/media';
 
@@ -11,7 +11,7 @@ export function CmsImage({
   className,
   priority = false,
 }: {
-  media: cms.Media | null | undefined;
+  media: cmsType.Media | null | undefined;
   className?: string;
   priority?: boolean;
 }) {

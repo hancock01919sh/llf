@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { findFirstVisibleContentWrapper } from '@/lib/utils';
 import type { BlockProps } from '../types';
 import type { cmsType } from '@llf/contracts';
-export function Hero(props: BlockProps<cmsType.component.Hero>) {
+export function BlockHero(props: BlockProps<cmsType.component.Hero>) {
   const { title, images } = props.block;
   const containerRef = useRef(null);
   const [nextVisible, setNextVisible] = useState<number>();
@@ -62,4 +62,3 @@ export function Hero(props: BlockProps<cmsType.component.Hero>) {
     </div>
   );
 }
-export default Hero;
