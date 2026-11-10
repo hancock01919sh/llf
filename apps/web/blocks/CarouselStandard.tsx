@@ -8,7 +8,7 @@ import 'swiper/css/navigation';
 import { carouselConfig } from '@/lib/const';
 import { useEffect, useRef, useState } from 'react';
 import { IconCarouselNavigation } from '@/components/Icon';
-import { EasyImage } from '@/components/UIImage';
+import { UIImage } from '@/components/UIImage';
 import type { BlockProps } from './types';
 import type { cmsType } from '@llf/contracts';
 import { BlockTitle } from '@/components/BlockTitle';
@@ -71,9 +71,9 @@ export function BlockCarouselStandard(
               key={item.title + index}
               className="rounded-md overflow-hidden flex flex-col "
             >
-              <EasyImage
-                url={item?.image?.url || ''}
-                alt={item.image?.alternativeText || ''}
+              <UIImage
+                src={item?.image?.url || ''}
+                alt={item.image?.alternativeText || item.image?.name || item.title}
                 className="w-full aspect-362/304 lg:aspect-535/438"
               />
 

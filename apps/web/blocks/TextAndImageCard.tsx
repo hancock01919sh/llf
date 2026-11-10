@@ -24,7 +24,8 @@ export function BlockTextAndImageCard(
           <UIImage
             className="aspect-370/200 lg:aspect-420/277  w-full rounded-md overflow-hidden"
             key={index}
-            {...image}
+            src={image.url || ''}
+            alt={image.alternativeText || image.name || ''}
           />
         ))}
       </div>

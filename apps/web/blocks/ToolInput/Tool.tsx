@@ -12,11 +12,11 @@ import {
 import type { BlockProps } from '../types';
 import { IconClose, IconUpload } from '@/components/Icon';
 import { ExtractRequest, ExtractResponse, IMAGE_MIME_TYPES } from '@llf/contracts/find-tips';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { resultsHref } from '@/lib/paths';
 import type { cmsType } from '@llf/contracts';
 import { Loading } from './Loading';
+import { UIImage } from '@/components/UIImage';
 export function Tool(props: BlockProps<cmsType.component.ToolInput> & { className?: string }) {
   const { block } = props;
   const findTipsLabel = block.button?.[2]?.label as string;
@@ -247,12 +247,10 @@ export function Tool(props: BlockProps<cmsType.component.ToolInput> & { classNam
 
             {imageActive && uploadInfo && (
               <div className="flex flex-center justify-start flex-1 gap-2.5">
-                <Image
-                  className="rounded-full h-8 aspect-square"
+                <UIImage
+                  className="rounded-full h-8 w-8 aspect-square"
                   src={uploadInfo.imageBase64}
                   alt={uploadInfo.name}
-                  width={32}
-                  height={32}
                 />
                 <span className="text-mob-input ">{uploadInfo?.name}</span>
               </div>

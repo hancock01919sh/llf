@@ -5,10 +5,10 @@ import { IconArrow } from '@/components/Icon';
 import { Typography } from '@/components/Typography';
 import { TipBadge, type TipBadgeType } from '@/components/TipBadge';
 import { AppFooter } from '@/components/AppFooter';
-import { EasyImage } from '@/components/UIImage';
 import { useContext } from 'react';
 import { AppContext } from '@/components/Provider';
 import type { IngredientData } from '@llf/contracts';
+import { UIImage } from '@/components/UIImage';
 
 export function IngredientsPopup({
   open,
@@ -44,7 +44,11 @@ export function IngredientsPopup({
             </Typography>
           </div>
           <div className="relative aspect-402/269 ">
-            <EasyImage {...(ingredient?.image ?? { url: '', alt: '' })} className="w-full h-full" />
+            <UIImage
+              src={ingredient?.image?.url || ''}
+              alt={ingredient?.image?.alt || ingredient?.title || ''}
+              className="w-full h-full"
+            />
             <div className="absolute left-0 top-0 w-full h-full flex-center flex-col justify-center text-surface-sand bg-[rgba(0,0,0,0.2)]">
               <Typography variant="headline-xl" className=" uppercase">
                 {ingredient?.title}

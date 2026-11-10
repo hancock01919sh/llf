@@ -1,10 +1,10 @@
 import { IconDownload, IconShare } from '@/components/Icon';
 import { TipBadge, type TipBadgeType } from '@/components/TipBadge';
 import { Typography } from '@/components/Typography';
-import Image from 'next/image';
 import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
 import type { Media } from '../../../packages/contracts/src/cms-type';
+import { UIImage } from '@/components/UIImage';
 export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeepRef>) {
   const { tip, label, cta } = props.block;
   return (
@@ -40,7 +40,7 @@ export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeep
                 {cta.map((item, index) => (
                   <button
                     key={index}
-                    className={`btn ${index === 0 ? 'black [&_path]:fill-surface-paper' : 'white hover:active:text-ink-terra'} border-2 capitalize px-0 flex-1  lg:w-max lg:flex-0 lg:px-10`}
+                    className={`btn ${index === 0 ? 'black border-ink-terra [&_path]:fill-surface-paper' : 'white hover:active:text-ink-terra'} border-2 capitalize px-0 flex-1  lg:w-max lg:flex-0 lg:px-10`}
                   >
                     {item.label || ''}
                     {index === 0 ? <IconShare /> : <IconDownload />}
@@ -68,14 +68,14 @@ function TipBannerImage({
     <div
       className={` bg-[#FDE9D0] lg:bg-[#FFF0F0] rounded-full w-62.5 lg:w-[36.7%] lg:min-w-87.5 lg:max-w-95 aspect-square flex items-center justify-center -mt-5 ${className}`}
     >
-      <Image
+      <UIImage
         src={image.url}
-        alt={image?.alternativeText || ''}
-        className="w-[96%] max-h-[96%] -translate-y-4 relative aspect-square"
+        alt={image?.alternativeText || image.name || ''}
         loading="eager"
         preload={true}
         width={96}
         height={96}
+        className="w-[96%] max-h-[96%] -translate-y-4 relative aspect-square"
       />
     </div>
   );

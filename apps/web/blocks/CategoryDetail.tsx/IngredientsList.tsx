@@ -4,13 +4,13 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { Typography } from '@/components/Typography';
 import { useDevice } from '@/components/hooks/useDevice';
-import { EasyImage } from '@/components/UIImage';
 import { IconArrow, IconDownload, IconShare, IconUpload, IconWork2 } from '@/components/Icon';
 import TransitionLink from '@/components/TransitionLink';
 import { TipBadge, TipBadgeColorMapping, type TipBadgeType } from '@/components/TipBadge';
 import { IngredientsPopup } from './IngredientsPopup';
 import type { SearchDocument } from '@/lib/search';
 import type { CategoryDetailWithSearchProps } from '.';
+import { UIImage } from '@/components/UIImage';
 
 export function IngredientsList(
   props: CategoryDetailWithSearchProps & {
@@ -100,8 +100,9 @@ export function IngredientsList(
                 >
                   <div className="w-17.5 h-17.5 aspect-square rounded-full bg-ink-terra-40">
                     {item.image?.url && (
-                      <EasyImage
-                        {...item.image}
+                      <UIImage
+                        src={item.image?.url || ''}
+                        alt={item.image.alt || item.title}
                         className="w-17.5 h-17.5 aspect-square rounded-full"
                       />
                     )}

@@ -13,7 +13,8 @@ export function BlockContentSpotlight(
       <div className={`flex items-center flex-col gap-15 py-15 lg:py-25 lg:flex-row `}>
         <UIImage
           className={`w-full  aspect-320/272 lg:aspect-538/673 lg:w-[40%] lg:order-1 rounded-md overflow-hidden`}
-          {...image}
+          src={image?.url || ''}
+          alt={image?.alternativeText || image?.name || title.copy || ''}
         />
         <div className={`flex flex-1 flex-col text-center gap-5 lg:text-left  `}>
           <BlockTitle title={title} moduleIndex={props.index} />

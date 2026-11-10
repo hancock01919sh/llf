@@ -12,7 +12,11 @@ export function BlockHighlightComponent(props: BlockProps<cmsType.component.High
       <div
         className={`relative w-full h-full lg:rounded-[35px] overflow-hidden aspect-402/725 mx-auto max-w-page  `}
       >
-        <UIImage {...backgroundImage} className="absolute w-full h-full" />
+        <UIImage
+          src={backgroundImage?.url || ''}
+          alt={backgroundImage?.alternativeText || backgroundImage?.name || title.copy || ''}
+          className="absolute w-full h-full"
+        />
         <div
           className={`absolute inset-0 bg-[rgba(0,0,0,0.2)] lg:bg-black/30 flex flex-col items-center text-center justify-center px-5 lg:px-[19%]`}
         >
