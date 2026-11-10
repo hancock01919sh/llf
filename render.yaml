@@ -130,6 +130,10 @@ services:
       # CMS_URL + CMS_TOKEN (read-only token) in the dashboard (docs/runbooks/render-dev.md).
       - key: CMS_FIXTURES
         value: '1'
+      # Where /uploads/* redirects (apps/web/server.mjs). Fixture content references media on
+      # cms-dev, and CMS_URL isn't set while CMS_FIXTURES is on. Not a secret.
+      - key: CMS_MEDIA_URL
+        value: https://llf-cms-dev.onrender.com
       - key: TIPS_URL
         fromService:
           name: llf-tips-dev
