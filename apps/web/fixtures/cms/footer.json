@@ -3,91 +3,74 @@
     "id": 2,
     "documentId": "r5dugfnte7616vj6x066gyz2",
     "title": "longlivefood",
-    "legalCopy": "This project has been funded wholly or in part by the United States Environmental Protection Agency under assistance agreement 84114701 to World Wildlife Fund, Inc. The contents of this document do not necessarily reflect the views and policies of the Environmental Protection Agency, nor does the Environmental Protection Agency endorse trade names or recommend the use of commercial products mentioned in this document, as well as any images, video, text, or other content created by generative artificial intelligence tools, nor does any such content necessarily reflect the views and policies of the Environmental Protection Agency.",
-    "createdAt": "2026-10-23T02:37:47.094Z",
-    "updatedAt": "2026-10-27T09:37:24.347Z",
-    "publishedAt": "2026-10-27T09:37:24.402Z",
     "link": [
       {
-        "id": 6,
         "label": "The Tool",
         "href": "find-my-tips",
         "isDisplay": true,
         "isButton": null,
-        "newTab": false,
-        "buttonType": null
+        "buttonType": null,
+        "newTab": false
       },
       {
-        "id": 7,
         "label": "Tip Library",
         "href": "/explore",
         "isDisplay": true,
         "isButton": null,
-        "newTab": false,
-        "buttonType": null
+        "buttonType": null,
+        "newTab": false
       },
       {
-        "id": 8,
         "label": "Toolkit",
         "href": null,
         "isDisplay": true,
         "isButton": null,
-        "newTab": false,
-        "buttonType": null
+        "buttonType": null,
+        "newTab": false
       },
       {
-        "id": 9,
         "label": "GENERAL TIPS",
         "href": "/general-tips",
         "isDisplay": true,
         "isButton": null,
-        "newTab": false,
-        "buttonType": null
+        "buttonType": null,
+        "newTab": false
       },
       {
-        "id": 10,
         "label": "About",
         "href": "/about",
         "isDisplay": true,
         "isButton": null,
-        "newTab": false,
-        "buttonType": null
+        "buttonType": null,
+        "newTab": false
       }
     ],
     "iconLink": [
       {
-        "id": 4,
         "label": "Instagram",
         "href": "https://www.instagram.com/"
       },
       {
-        "id": 5,
         "label": "Tiktok",
         "href": "https://www.tiktok.com/"
       },
       {
-        "id": 6,
         "label": "Youtube",
         "href": "https://www.youtube.com/"
       }
     ],
+    "legalCopy": "This project has been funded wholly or in part by the United States Environmental Protection Agency under assistance agreement 84114701 to World Wildlife Fund, Inc. The contents of this document do not necessarily reflect the views and policies of the Environmental Protection Agency, nor does the Environmental Protection Agency endorse trade names or recommend the use of commercial products mentioned in this document, as well as any images, video, text, or other content created by generative artificial intelligence tools, nor does any such content necessarily reflect the views and policies of the Environmental Protection Agency.",
     "overlayLink": [
       {
-        "id": 4,
         "label": "Terms of Use",
-        "overlayDescription": null,
         "href": null
       },
       {
-        "id": 5,
         "label": "Privacy Policy",
-        "overlayDescription": null,
         "href": null
       },
       {
-        "id": 6,
         "label": "Manage Preferences",
-        "overlayDescription": null,
         "href": null
       }
     ]

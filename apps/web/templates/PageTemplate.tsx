@@ -12,6 +12,9 @@ const { navigation, footer, global } = await getPageProviderData();
 // }
 export function PageTemplate({ page, categoryData }: TemplateProps) {
   // writeFixture(page.title, page);
+  // writeFixture('navigation', navigation);
+  // writeFixture('footer', footer);
+  // writeFixture('global', global);
   return (
     <>
       <Provider navigation={navigation} footer={footer} global={global}>

@@ -1,7 +1,6 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { IconPause, IconPlay } from './Icon';
-import { mediaUrl } from '@/lib/media';
 export function UIVideo(
   props: React.VideoHTMLAttributes<HTMLVideoElement> & {
     pause?: boolean;
@@ -81,7 +80,7 @@ export function UIVideo(
         preload={lazyLoad ? 'metadata' : 'auto'}
         onPlay={handlePlay}
         onPause={handlePause}
-        src={`${mediaUrl(src as string)}`}
+        src={`${src}`}
         onLoadedData={() => {
           setLoadedData(true);
         }}

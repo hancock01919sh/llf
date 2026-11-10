@@ -7,10 +7,7 @@ import type { cmsType } from '@llf/contracts';
  */
 export function mediaUrl(url: string): string {
   if (/^https?:\/\//.test(url) || url.startsWith('data:')) return url;
-  const base =
-    process.env.NODE_ENV === 'development'
-      ? process.env.NEXT_PUBLIC_CMS_MEDIA_URL
-      : (process.env.CMS_MEDIA_URL ?? process.env.CMS_URL);
+  const base = process.env.CMS_MEDIA_URL ?? process.env.CMS_URL;
   if (!base || !url.startsWith('/')) return url;
   return `${base.replace(/\/$/, '')}${url}`;
 }
