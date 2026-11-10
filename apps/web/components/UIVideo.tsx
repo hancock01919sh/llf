@@ -1,7 +1,6 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { IconPause, IconPlay } from './Icon';
-import { mediaUrl } from '@/lib/media';
 export function UIVideo(
   props: React.VideoHTMLAttributes<HTMLVideoElement> & {
     pause?: boolean;

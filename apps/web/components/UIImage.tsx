@@ -1,5 +1,4 @@
 'use client';
-import { mediaUrl } from '@/lib/media';
 import Image, { type ImageProps } from 'next/image';
 
 interface ResponsiveImageProps extends ImageProps {
