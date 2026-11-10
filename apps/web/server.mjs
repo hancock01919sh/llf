@@ -21,6 +21,8 @@ const NOINDEX = process.env.SITE_ENV !== 'prod';
 const BASIC_AUTH = process.env.BASIC_AUTH ?? '';
 const API_TIMEOUT_MS = 40_000;
 const API_MAX_BODY = 40 * 1024 * 1024;
+// Static export (output: 'export') does not run next.config rewrites, so `/uploads/*` must be redirected here.
+const MEDIA_BASE = (process.env.CMS_MEDIA_URL ?? process.env.CMS_URL ?? '').replace(/\/$/, '');
 
 if (!existsSync(path.join(ROOT, 'index.html'))) {
   console.error('apps/web/out is missing. Run `pnpm --filter @llf/web build` first.');
@@ -98,6 +100,16 @@ async function proxy(req, res) {
   }
 }
 
+function redirectMedia(req, res) {
+  if (!MEDIA_BASE) {
+    console.error('[server] /uploads redirect missing CMS_MEDIA_URL or CMS_URL');
+    sendError(res, 502, 'media_upstream_unconfigured');
+    return;
+  }
+  // 302 (temporary) so browsers re-resolve each request — CMS_URL may differ between dev/staging/prod.
+  res.writeHead(302, { Location: `${MEDIA_BASE}${req.url}` }).end();
+}
+
 const server = http.createServer((req, res) => {
   if (NOINDEX) res.setHeader('X-Robots-Tag', 'noindex, nofollow');
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -113,6 +125,10 @@ const server = http.createServer((req, res) => {
   }
   if (req.url?.startsWith('/api/')) {
     void proxy(req, res);
+    return;
+  }
+  if (req.url?.startsWith('/uploads/')) {
+    redirectMedia(req, res);
     return;
   }
   // serve-handler's own slash redirect drops the query string (and with it `?i=`), so do it here.

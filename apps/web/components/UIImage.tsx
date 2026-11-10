@@ -19,7 +19,7 @@ export function UIImage({ className = '', src, ...rest }: ResponsiveImageProps) 
           const target = e.target as HTMLElement;
           target.classList.add('bg-ink-terra-40');
         }}
-        src={`${mediaUrl(src)}`}
+        src={`${src}`}
         {...rest}
       />
     </picture>

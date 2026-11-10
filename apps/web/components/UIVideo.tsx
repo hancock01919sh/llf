@@ -81,7 +81,7 @@ export function UIVideo(
         preload={lazyLoad ? 'metadata' : 'auto'}
         onPlay={handlePlay}
         onPause={handlePause}
-        src={`${mediaUrl(src as string)}`}
+        src={`${src}`}
         onLoadedData={() => {
           setLoadedData(true);
         }}
