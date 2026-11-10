@@ -16,6 +16,9 @@
         "images",
         "files"
       ]
+    },
+    "href": {
+      "type": "string"
     }
   },
   "config": {}

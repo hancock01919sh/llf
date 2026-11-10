@@ -6,16 +6,19 @@ const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 export const FeatureCard = z.object({
   title: z.string(),
   image: nullish(Media),
+  href: nullish(z.string()),
 });
 
 export const FeatureCardRef = z.object({
   title: z.string(),
   image: nullish(Media),
+  href: nullish(z.string()),
 });
 
 export const FeatureCardDeepRef = z.object({
   title: z.string(),
   image: nullish(Media),
+  href: nullish(z.string()),
 });
 
 export type FeatureCardDeepRef = z.infer<typeof FeatureCardDeepRef>;
