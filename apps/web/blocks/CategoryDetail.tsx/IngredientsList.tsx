@@ -153,7 +153,7 @@ export function IngredientsList(
                         <button
                           className={`absolute left-0 opacity-0 transition-opacity duration-300 group-hover/item:opacity-100 bg-surface-paper rounded-full border border-ink-terra py-4 px-6`}
                           onClick={() => {
-                            console.log('share');
+                            // console.log('share');
                           }}
                           aria-label="save tip"
                         >
