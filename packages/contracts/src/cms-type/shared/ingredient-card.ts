@@ -1,24 +1,16 @@
 import { z } from 'zod';
-import { Media } from '../media';
+import { CategoryRef, CategoryDeepRef } from '../api/category';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const IngredientCard = z.object({
-  title: z.string(),
-  image: nullish(Media),
-  href: nullish(z.string()),
+  category: nullish(z.lazy(() => CategoryRef)),
 });
 
-export const IngredientCardRef = z.object({
-  title: z.string(),
-  image: nullish(Media),
-  href: nullish(z.string()),
-});
+export const IngredientCardRef = z.object({});
 
 export const IngredientCardDeepRef = z.object({
-  title: z.string(),
-  image: nullish(Media),
-  href: nullish(z.string()),
+  category: nullish(z.lazy((): z.ZodType<CategoryDeepRef> => CategoryDeepRef)),
 });
 
 export type IngredientCardDeepRef = z.infer<typeof IngredientCardDeepRef>;
