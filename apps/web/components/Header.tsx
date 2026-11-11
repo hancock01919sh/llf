@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import type { LinkProps } from '@/blocks/types';
 import { AppContext } from '@/components/Provider';
 import { Menu } from './Menu';
+import { searchHref } from '@/lib/search';
 export interface NavigationCmsDataProps {
   searchPlaceholder: string;
   title: string;
@@ -21,7 +22,8 @@ interface NavigationProp {
 export function Header({ className = '', showClose = false, onClose = () => {} }: NavigationProp) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const hiddenSearch = pathname.startsWith('/search') && !showClose;
+  const isSearchPage = pathname.startsWith('/search');
+  const hiddenSearch = isSearchPage && !showClose;
   const { navigation } = useContext(AppContext);
   if (!navigation) {
     console.error('Navigation is not provided');
@@ -66,12 +68,23 @@ export function Header({ className = '', showClose = false, onClose = () => {} }
             </Typography>
           </TransitionLink>
         ))}
-        <div className="rounded-4xl flex gap-2.5 items-center py-sm px-5 border-surface-mint border-2">
+        <div
+          id="header-search-wrapper"
+          className="rounded-pill flex gap-2.5 items-center py-sm px-5 border-surface-mint border-2 w-79"
+        >
           <IconSearch />
           <input
             type="text"
-            className="font-bold placeholder:text-surface-mint w-43"
-            placeholder="Search Ingredients Tips"
+            className={`font-bold w-43 outline-0 ${isSearchPage ? 'placeholder:text-ink-terra' : 'placeholder:text-surface-mint'}`}
+            placeholder="Search specific ingredient tips"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                window.location.href = `/search/${searchHref(
+                  (e.target as HTMLInputElement).value,
+                ).replace(/^[^#]*/, '')}`;
+              }
+            }}
           />
         </div>
       </div>
