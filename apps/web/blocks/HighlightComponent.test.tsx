@@ -43,13 +43,7 @@ const block = {
 } satisfies cmsType.component.HighlightComponent;
 
 const renderBlock = (overrides: Partial<cmsType.component.HighlightComponent> = {}) =>
-  render(
-    <BlockHighlightComponent
-      block={{ ...block, ...overrides }}
-      index={1}
-      pageTitle="Home"
-    />,
-  );
+  render(<BlockHighlightComponent block={{ ...block, ...overrides }} index={1} pageTitle="Home" />);
 
 describe('BlockHighlightComponent', () => {
   afterEach(cleanup);

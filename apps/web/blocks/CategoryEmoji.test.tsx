@@ -56,8 +56,7 @@ const block = {
   ],
 } satisfies cmsType.component.CategoryEmojiDeepRef;
 
-const renderBlock = () =>
-  render(<CategoryEmoji block={block} index={1} pageTitle="Home" />);
+const renderBlock = () => render(<CategoryEmoji block={block} index={1} pageTitle="Home" />);
 
 describe('CategoryEmoji', () => {
   afterEach(cleanup);

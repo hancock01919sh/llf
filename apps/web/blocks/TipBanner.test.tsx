@@ -62,9 +62,7 @@ const block = {
 } satisfies cmsType.component.TipBannerDeepRef;
 
 const renderBlock = (overrides: Partial<typeof block> = {}) =>
-  render(
-    <BlockTipBanner block={{ ...block, ...overrides }} index={1} pageTitle="Home" />,
-  );
+  render(<BlockTipBanner block={{ ...block, ...overrides }} index={1} pageTitle="Home" />);
 
 describe('BlockTipBanner', () => {
   afterEach(cleanup);

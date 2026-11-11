@@ -128,9 +128,7 @@ describe('BlockToolkit', () => {
     for (const category of block.toolkitCategory) {
       for (const sub of category.subCategory) {
         const level = sub.title.header === 'h3' ? 3 : 2;
-        expect(
-          screen.getByRole('heading', { level, name: sub.title.copy ?? '' }),
-        ).toBeDefined();
+        expect(screen.getByRole('heading', { level, name: sub.title.copy ?? '' })).toBeDefined();
       }
     }
   });

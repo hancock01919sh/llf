@@ -58,9 +58,7 @@ const block = {
 } satisfies cmsType.component.CarouselSmallDeepRef;
 
 const renderBlock = (overrides: Partial<typeof block> = {}) =>
-  render(
-    <BlockCarouselSmall block={{ ...block, ...overrides }} index={1} pageTitle="Tips" />,
-  );
+  render(<BlockCarouselSmall block={{ ...block, ...overrides }} index={1} pageTitle="Tips" />);
 
 describe('BlockCarouselSmall', () => {
   afterEach(cleanup);
@@ -75,12 +73,12 @@ describe('BlockCarouselSmall', () => {
 
   it('links each card to its category tips page', () => {
     renderBlock();
-    expect(
-      screen.getByRole('link', { name: /Sheet Pan Dinners/ }).getAttribute('href'),
-    ).toBe('/tips/sheet-pan-dinners/');
-    expect(
-      screen.getByRole('link', { name: /chicken & Rice bowls/ }).getAttribute('href'),
-    ).toBe('/tips/chicken-and-rice-bowls/');
+    expect(screen.getByRole('link', { name: /Sheet Pan Dinners/ }).getAttribute('href')).toBe(
+      '/tips/sheet-pan-dinners/',
+    );
+    expect(screen.getByRole('link', { name: /chicken & Rice bowls/ }).getAttribute('href')).toBe(
+      '/tips/chicken-and-rice-bowls/',
+    );
   });
 
   it('skips cards whose category is missing', () => {

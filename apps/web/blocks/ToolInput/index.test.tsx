@@ -89,7 +89,8 @@ const extractResponse = {
 
 const fetchMock = vi.fn(async () => ({ ok: true, json: async () => extractResponse }));
 
-const renderBlock = () => render(<BlockToolInput block={block} index={0} pageTitle="Find My Tips" />);
+const renderBlock = () =>
+  render(<BlockToolInput block={block} index={0} pageTitle="Find My Tips" />);
 
 const urlTab = () => screen.getByRole('tab', { name: /Paste Link/ });
 const uploadTab = () => screen.getByRole('tab', { name: /Upload Image/ });

@@ -185,14 +185,14 @@ export const strings: SiteStrings = SiteStrings.parse({
     home: 'Go to the home page',
   },
   home: { featuredTitle: 'Browse by category' },
-  global:{
+  global: {
     download: 'Download',
   },
-  toolkit:{
+  toolkit: {
     download: 'Download',
     filetype: 'File type',
     filename: 'File name',
-  }
+  },
 });
 
 /** Fills `{name}` placeholders. Unknown placeholders are left as-is so missing values show up in review. */

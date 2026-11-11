@@ -80,8 +80,7 @@ const searchIndex = [
     tips: [
       {
         title: 'Store with a paper towel',
-        description:
-          'A dry paper towel in the container soaks up moisture so leaves last longer.',
+        description: 'A dry paper towel in the container soaks up moisture so leaves last longer.',
         type: 'Storage',
         tip_behavior: '',
         tip_motivator: '',

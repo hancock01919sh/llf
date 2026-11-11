@@ -57,8 +57,7 @@ const chickenBowls = {
 const block = {
   __component: 'component.carousel-standard',
   id: 93,
-  description:
-    'Every kitchen has a few repeat offenders. See which ones keep showing up in yours.',
+  description: 'Every kitchen has a few repeat offenders. See which ones keep showing up in yours.',
   backgroundColor: 'sand',
   cardBackgroundColor: null,
   isFullwidth: true,
@@ -67,9 +66,7 @@ const block = {
 } satisfies cmsType.component.CarouselStandardDeepRef;
 
 const renderBlock = (overrides: Partial<cmsType.component.CarouselStandardDeepRef> = {}) =>
-  render(
-    <BlockCarouselStandard block={{ ...block, ...overrides }} index={4} pageTitle="Home" />,
-  );
+  render(<BlockCarouselStandard block={{ ...block, ...overrides }} index={4} pageTitle="Home" />);
 
 describe('BlockCarouselStandard', () => {
   afterEach(cleanup);
@@ -85,9 +82,7 @@ describe('BlockCarouselStandard', () => {
     for (const card of block.standardCard) {
       const title = card.category.title;
       expect(screen.getAllByText(title)).toHaveLength(1);
-      expect(container.querySelectorAll(`a[href="/tips/${card.category.slug}/"]`)).toHaveLength(
-        1,
-      );
+      expect(container.querySelectorAll(`a[href="/tips/${card.category.slug}/"]`)).toHaveLength(1);
     }
   });
 

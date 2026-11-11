@@ -73,9 +73,7 @@ const block = {
   ],
 } satisfies cmsType.component.ToolSpotlightDeepRef;
 
-const renderBlock = (
-  overrides: Partial<cmsType.component.ToolSpotlightDeepRef> = {},
-) =>
+const renderBlock = (overrides: Partial<cmsType.component.ToolSpotlightDeepRef> = {}) =>
   render(
     <section>
       <ToolSpotlight block={{ ...block, ...overrides }} index={2} pageTitle="Home" />

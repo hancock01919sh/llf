@@ -39,13 +39,7 @@ const block = {
 } satisfies cmsType.component.TextAndImageCardDeepRef;
 
 const renderBlock = (overrides: Partial<typeof block> = {}) =>
-  render(
-    <BlockTextAndImageCard
-      block={{ ...block, ...overrides }}
-      index={1}
-      pageTitle="About"
-    />,
-  );
+  render(<BlockTextAndImageCard block={{ ...block, ...overrides }} index={1} pageTitle="About" />);
 
 describe('BlockTextAndImageCard', () => {
   afterEach(cleanup);

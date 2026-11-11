@@ -61,8 +61,7 @@ const chickenBowls = {
 const block = {
   __component: 'component.category-carousel-feature',
   id: 25,
-  description:
-    'Every kitchen has a few repeat offenders. See which ones keep showing up in yours.',
+  description: 'Every kitchen has a few repeat offenders. See which ones keep showing up in yours.',
   isFullwidth: true,
   backgroundColor: 'terra',
   title: { copy: 'The Usual Suspects of every kitchen', header: 'h2' },
@@ -87,16 +86,8 @@ const block = {
   featureCard: [{ category: sheetPan }, { category: chickenBowls }],
 } satisfies cmsType.component.CategoryCarouselFeatureDeepRef;
 
-const renderBlock = (
-  overrides: Partial<cmsType.component.CategoryCarouselFeatureDeepRef> = {},
-) =>
-  render(
-    <CategoryCarouselFeature
-      block={{ ...block, ...overrides }}
-      index={1}
-      pageTitle="Home"
-    />,
-  );
+const renderBlock = (overrides: Partial<cmsType.component.CategoryCarouselFeatureDeepRef> = {}) =>
+  render(<CategoryCarouselFeature block={{ ...block, ...overrides }} index={1} pageTitle="Home" />);
 
 describe('CategoryCarouselFeature', () => {
   afterEach(cleanup);

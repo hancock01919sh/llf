@@ -32,11 +32,7 @@ const block = {
 
 const renderBlock = (index = 1, overrides: Partial<typeof block> = {}) =>
   render(
-    <BlockToolkitHeadline
-      block={{ ...block, ...overrides }}
-      index={index}
-      pageTitle="Toolkit"
-    />,
+    <BlockToolkitHeadline block={{ ...block, ...overrides }} index={index} pageTitle="Toolkit" />,
   );
 
 describe('BlockToolkitHeadline', () => {

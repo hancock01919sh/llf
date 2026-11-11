@@ -57,8 +57,7 @@ const chickenBowls = {
 const block = {
   __component: 'component.ingredient-carousel',
   id: 24,
-  description:
-    'Find tips for the cuisine you cook most, and the ingredients that come with it.',
+  description: 'Find tips for the cuisine you cook most, and the ingredients that come with it.',
   backgroundColor: 'paper',
   isFullwidth: true,
   title: { copy: 'Ingredients by popular cuisine', header: 'h2' },
@@ -66,9 +65,7 @@ const block = {
 } satisfies cmsType.component.IngredientCarouselDeepRef;
 
 const renderBlock = (overrides: Partial<cmsType.component.IngredientCarouselDeepRef> = {}) =>
-  render(
-    <BlockIngredientCarousel block={{ ...block, ...overrides }} index={5} pageTitle="Home" />,
-  );
+  render(<BlockIngredientCarousel block={{ ...block, ...overrides }} index={5} pageTitle="Home" />);
 
 describe('BlockIngredientCarousel', () => {
   afterEach(cleanup);
@@ -83,9 +80,7 @@ describe('BlockIngredientCarousel', () => {
     const { container } = renderBlock();
     for (const card of block.ingredientCard) {
       expect(screen.getAllByText(card.category.title)).toHaveLength(1);
-      expect(
-        container.querySelectorAll(`a[href="/tips/${card.category.slug}/"]`),
-      ).toHaveLength(1);
+      expect(container.querySelectorAll(`a[href="/tips/${card.category.slug}/"]`)).toHaveLength(1);
     }
   });
 

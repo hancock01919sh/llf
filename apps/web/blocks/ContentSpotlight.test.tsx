@@ -26,9 +26,7 @@ const block = {
 } satisfies cmsType.component.ContentSpotlightDeepRef;
 
 const renderBlock = (overrides: Partial<cmsType.component.ContentSpotlightDeepRef> = {}) =>
-  render(
-    <BlockContentSpotlight block={{ ...block, ...overrides }} index={2} pageTitle="Home" />,
-  );
+  render(<BlockContentSpotlight block={{ ...block, ...overrides }} index={2} pageTitle="Home" />);
 
 describe('BlockContentSpotlight', () => {
   afterEach(cleanup);
