@@ -7,7 +7,7 @@
 | **Delivery** | dotdotdash (ddd) |
 | **Owner / author** | Art Longbottom (tech lead) |
 | **Reviewers** | James Calhoun (tech lead), James Steele (AWS/DevOps), Adam Paikowsky (analytics), Danish Aziz (PM), China dev team (Eva Fan, Alessandro Grena, Maggie Ding) |
-| **Status** | **DRAFT v0.3.28.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
+| **Status** | **DRAFT v0.3.29.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
 | **Last updated** | 2026-11-06 |
 | **Go-live** | **Friday, January 8, 2027** (go/no-go Thursday, January 7). There's **no contingency** after final QA |
 
@@ -264,14 +264,15 @@ flowchart LR
 ```mermaid
 flowchart LR
   user([Visitor]) -->|HTTPS longlivefood.org| cfs[CloudFront + WAF · site]
-  cfs -->|pages + /api/*| albapp[ALB · app]
-  albapp --> web[Next.js server<br/>pages + /api/* route handlers<br/>ECS Fargate]
+  cfs -->|pages + /api/*| alb[ALB · shared<br/>host rules]
+  alb -->|site host| web[Next.js server<br/>pages + /api/* route handlers<br/>ECS Fargate]
   web -->|content, read-only token| strapi
   web -->|safeFetch| www((Recipe sites))
   web -->|extract| ai[[AI provider]]
 
   editor([Editors on allow-listed IPs]) -->|HTTPS cms domain| cfc[CloudFront + WAF IP set · CMS]
-  cfc --> albcms[ALB · CMS] --> strapi[Strapi 5<br/>ECS Fargate]
+  cfc --> alb
+  alb -->|cms host + CMS secret| strapi[Strapi 5<br/>ECS Fargate]
   strapi --> rds[(RDS Postgres)]
   strapi --> s3m[(S3 media)] --> cfm[CloudFront · media]
   strapi -->|publish webhook| web
@@ -284,9 +285,9 @@ The same code runs in both phases. Only the hosting and the environment configur
 
 | Concern | Phase A (Render) | Phase B (AWS) |
 |---|---|---|
-| Site | Next.js server (`next start`, standalone build) on a Render web service, with basic auth in middleware | The same image on **ECS Fargate** behind the app ALB, with CloudFront + WAF in front |
+| Site | Next.js server (`next start`, standalone build) on a Render web service, with basic auth in middleware | The same image on **ECS Fargate** behind the shared ALB (site host rule), with CloudFront + WAF in front |
 | Tool API | Next.js route handlers (`app/api/find-tips/*`) in the web service | The same, in the same Fargate service |
-| CMS | Strapi Docker image on a Render web service | The same image on **ECS Fargate** behind the CMS ALB |
+| CMS | Strapi Docker image on a Render web service | The same image on **ECS Fargate** behind the shared ALB (CMS host rule) |
 | Database | Render Postgres (paid instance, because free instances expire after 30 days [VERIFIED]) | RDS Postgres |
 | Media | Render persistent disk (`UPLOAD_PROVIDER=local`) | S3 + CloudFront (`UPLOAD_PROVIDER=aws-s3`) |
 | Publish → live | Pages refresh on their own within about a minute (ISR) | The same, plus a CloudFront invalidation from the publish route (§5.3) |
@@ -337,8 +338,7 @@ flowchart TB
     s3m[(S3 media<br/>OAC only)]
     subgraph vpc[VPC · 2 AZs · no NAT gateway]
       subgraph pub[Public subnets]
-        albapp[ALB · app<br/>CloudFront prefix list only]
-        albcms[ALB · CMS<br/>CloudFront prefix list only]
+        alb[ALB · shared, host rules<br/>CloudFront prefix list only]
         web[Next.js tasks<br/>pages + /api/*<br/>sg-web]
         strapi[Strapi task<br/>sg-strapi]
       end
@@ -347,9 +347,10 @@ flowchart TB
       end
     end
   end
-  v --> site --> albapp
-  albapp --> web
-  ed --> cmsd --> albcms --> strapi --> rds
+  v --> site --> alb
+  alb -->|site host| web
+  ed --> cmsd --> alb
+  alb -->|cms host| strapi --> rds
   other -.->|403| cmsd
   web -->|1337, Service Connect| strapi
   strapi -->|3000, publish webhook| web
@@ -362,7 +363,7 @@ flowchart TB
 | Public site (`longlivefood.org`, `www`, the `finishthefridge` redirect domains) | Public | CloudFront + WAF (managed rules, Bot Control, rate rules). Security headers set by a response-headers policy. HTML is cached briefly at the edge, `/_next/static/*` for a year (hashed) |
 | Tool API (`/api/*` on the site domain) | Public, same origin | WAF rate rules and Challenge, in-app rate limit, daily quota, and kill switch (§7.6). Not cached |
 | **CMS domain** (admin, auth, and APIs) | **IP allow-list only** [TL DECISION] | WAF IP set on **every path**: Ad Council editors, ddd US, China team (OPEN-17). The site reads content **inside the VPC** (Service Connect), so nothing outside needs `/api/*` on this domain. Strapi auth is still required on top of that |
-| Fargate tasks (web, Strapi) | Reachable only through their ALB, or from each other on named ports | Security groups: each ALB accepts only CloudFront's origin-facing prefix list plus a secret origin header. `sg-web` accepts 3000 from the app ALB and `sg-strapi` (publish webhook); `sg-strapi` accepts 1337 from the CMS ALB and `sg-web`. **No NAT gateway**: tasks run in **public subnets with a public IP used only for outbound** traffic (AI provider, recipe sites, ECR, logs, Secrets Manager) |
+| Fargate tasks (web, Strapi) | Reachable only through their ALB, or from each other on named ports | **One ALB per environment** with host-based listener rules (James S, Nov 10). It accepts only CloudFront's origin-facing prefix list, and **each CloudFront distribution sends its own secret origin header**: the site rule needs the site host and the site secret, the CMS rule needs the CMS host and the CMS secret, and anything else gets a fixed 403. That way a request through the site distribution with a forged `Host: cms…` can't reach Strapi and skip the CMS WAF IP set. `sg-web` accepts 3000 from the ALB and `sg-strapi` (publish webhook); `sg-strapi` accepts 1337 from the ALB and `sg-web`. **No NAT gateway**: tasks run in **public subnets with a public IP used only for outbound** traffic (AI provider, recipe sites, ECR, logs, Secrets Manager) |
 | Database | Private subnets only | `sg-rds` accepts 5432 only from `sg-strapi`. Admin access through **ECS Exec** / SSM Session Manager, never a public endpoint |
 | Media | Public read-only CDN | S3 private behind OAC. Uploads go only through Strapi |
 
@@ -583,8 +584,8 @@ There is **no rebuild on publish**. The site is server-rendered, so a page reads
 - Backups: Render's managed Postgres backups, plus a nightly `strapi export` to the ddd backup location while real content lives on Render.
 
 **Phase B: Ad Council AWS** [TL DECISION, D36; sizes with James Steele]
-- **Compute:** the same Strapi Docker image on **ECS Fargate** behind its own ALB (one task; Strapi's admin isn't built for several writers on local state). No Elastic Beanstalk.
-- **RDS Postgres 18** (Nov 6 review: `db.t4g.micro` for staging, `db.r8g.large` for prod), with automated backups, **point-in-time recovery**, and deletion protection. **Note:** `r8g.large` is about $175/month and well above what a CMS with cached reads needs. We suggest `db.t4g.small` or `medium` for prod unless James has a reason to size up (§9.5).
+- **Compute:** the same Strapi Docker image on **ECS Fargate** behind the shared ALB on its own host rule (one task; Strapi's admin isn't built for several writers on local state). No Elastic Beanstalk.
+- **RDS Postgres 18:** `db.t4g.micro` for staging; for prod, a **non-bursting** class (James S, Nov 10: burstable `t4g` is for dev, staging and preview, not production). We use the smallest Graviton general-purpose class, **`db.m8g.large`** (or `m7g` if `m8g` isn't available), rather than the `r8g.large` in the Nov 6 diagram, since reads are cached. Automated backups, **point-in-time recovery**, and deletion protection (§9.5).
 - **S3 media bucket** (private) behind a CloudFront media domain. Uploads go only through Strapi.
 - Secrets (`APP_KEYS`, `API_TOKEN_SALT`, `ADMIN_JWT_SECRET`, `JWT_SECRET`, `TRANSFER_TOKEN_SALT`, `DATABASE_*`) go in **Secrets Manager** and are injected into the task definition by the CDK.
 - **CMS domain** (e.g. `cms.longlivefood.org`, or a separate Ad Council domain; OPEN-20): CloudFront plus a WAF **IP set** on every path (§4.3) [TL DECISION].
@@ -988,7 +989,7 @@ match(term, catalog):
 | **Who can reach it** | Only people with the **basic-auth** credentials (the team, TBWA, Ad Council testers) | Public |
 | **Rate limiting** | In-app per-IP token bucket (in memory) | WAF rate-based rules per IP: **image and text 10 per 5 min**, **URL 30 per 5 min** (to tune), plus the same in-app limit per task |
 | **Bot defense** | Not needed behind basic auth | **WAF Bot Control** (common) plus a **WAF Challenge** on `POST /api/find-tips/*`, and **CAPTCHA** for repeat offenders. The site loads the **WAF JS integration** and calls the API through **`AwsWafIntegration.fetch`**, which gets and refreshes the **`aws-waf-token` cookie**. The client handles **202 (challenge)** and **405 (CAPTCHA)** responses by running the challenge or showing the CAPTCHA, then retrying once. AWS-native, but **WAF Bot Control and CAPTCHA are paid add-ons**, so they're in §9.5 |
-| **Origin protection** | Basic auth | CloudFront adds a secret `x-origin-verify` header. The **app ALB's listener rule** forwards only requests that carry it (anything else gets a fixed 403), and the route handler checks it again **before** any quota, cache, or model work. During rotation both accept the **current and previous** secrets, so there's no outage. The ALB security group accepts only CloudFront's origin-facing prefix list, and a smoke test checks that a **direct call without the header fails** |
+| **Origin protection** | Basic auth | CloudFront adds a secret `x-origin-verify` header. The **ALB's site listener rule** forwards only requests that carry the site's secret (anything else gets a fixed 403), and the route handler checks it again **before** any quota, cache, or model work. During rotation both accept the **current and previous** secrets, so there's no outage. The ALB security group accepts only CloudFront's origin-facing prefix list, and a smoke test checks that a **direct call without the header fails** |
 | **Kill switch** (backend) | `FIND_TIPS_MODE` env var | SSM parameter `FIND_TIPS_MODE` = `live` / `jsonld-only` / `off`, read by the API **on every request** (cached for 30 s). `off` returns 503. The UI reads `/api/find-tips/status` and shows the Unavailable state |
 | **Daily quota** (backend) | In-memory counter | An in-memory counter **per input type per UTC day** in each web task (for example, 3,000 model calls in total, split across the task count). The web service runs a **fixed task count** (no auto-scaling) so the total stays predictable. When a task's share runs out it **switches to `jsonld-only`** for the rest of the day, and an alert fires. A restart resets that task's counter, which the spend alerts backstop |
 | **Size and type limits** | Same | Client: reject non-images and files over 25 MB before decoding, then resize to ≤ 1600 px JPEG at q≈0.8. Server: body ≤ **4 MB** (checked in the route handler; base64 adds about 33%), decoded image ≤ 3 MB. Check magic bytes. Text ≤ 5,000 chars. URL ≤ 2,048 chars |
@@ -1173,7 +1174,7 @@ Ad Council wants a report of the items people submit that we have no tips for, s
 
 **Phase B, Ad Council AWS** [PROPOSED with James Steele]
 - Everything is in **Ad Council's AWS org**. Ideally there are separate **non-prod** and **prod** accounts, or at least separate stacks with tags (`project=llf`, `env=…`) and IAM boundaries (OPEN-3).
-- **Region `us-east-1`.** CloudFront's ACM certificates and CloudFront-scope WAF have to be there anyway, and it keeps **stored** data in the US. CloudFront and WAF still run at global edge locations (§2.4). If legal decides US-only must hold **end to end** (OPEN-31), the tool API is served from the **app ALB directly** with a **regional WAF** in `us-east-1`, on its own subdomain (with CORS) instead of through CloudFront. Pages stay on CloudFront, because they carry no user data.
+- **Region `us-east-1`.** CloudFront's ACM certificates and CloudFront-scope WAF have to be there anyway, and it keeps **stored** data in the US. CloudFront and WAF still run at global edge locations (§2.4). If legal decides US-only must hold **end to end** (OPEN-31), the tool API is served from the **ALB directly** with a **regional WAF** in `us-east-1`, on its own subdomain (with CORS) instead of through CloudFront. Pages stay on CloudFront, because they carry no user data.
 - **The current access problem** [CONFIRMED (kickoff)]: James Calhoun's account is a **real IAM user** (username and password, not SSO). It can create a CodeBuild project but **can't list users or pipelines**, so we can't see what exists or invite anyone. James Steele is checking whether his account (from Cat) has admin. **Danish's account is on hold** until this is fixed. We prefer **scoped roles** to one superuser. **What we've asked for**, relayed by Danish to Cat:
   1. **IAM Identity Center** (SSO) permission sets for each ddd engineer: **ReadOnlyAccess** across the project accounts, plus a **project admin** set limited by tag (`project=llf`) or by account.
   2. **CodePipeline / CodeBuild service roles** and a **CodeConnections** link to the GitHub org (D36). No long-lived keys.
@@ -1190,13 +1191,13 @@ Same topology for **staging** and **prod**, each with its own CMS and database. 
 |---|---|
 | `Edge` | ACM certificates, CloudFront distributions (site, media, CMS), WAF web ACLs (site: managed rules, rate rules, Bot Control, Challenge/CAPTCHA; CMS: IP set), the host-redirect CloudFront Function, response-headers policies |
 | `Network` | VPC across **2 AZs**, public and private subnets, **no NAT gateway** (§4.3), security groups `sg-app-alb`, `sg-cms-alb`, `sg-web`, `sg-strapi`, `sg-rds`, the ECS cluster and a **Service Connect** namespace |
-| `Cms` | Strapi on **ECS Fargate** (1 task, 1 vCPU / 2 GB) behind the CMS ALB. RDS Postgres 18 in private subnets. S3 media bucket. Backup plan |
-| `App` | **Next.js** service (Fargate, fixed 2 tasks in prod, 1 vCPU / 2 GB for image handling) behind the app ALB, serving pages and `/api/*`. SSM parameters (kill switch, quota, model) |
+| `Cms` | Strapi on **ECS Fargate** (1 task, 1 vCPU / 2 GB) behind the shared ALB (CMS host rule). RDS Postgres 18 in private subnets. S3 media bucket. Backup plan |
+| `App` | **Next.js** service (Fargate, fixed 2 tasks in prod, 1 vCPU / 2 GB for image handling) behind the shared ALB (site host rule), serving pages and `/api/*`. SSM parameters (kill switch, quota, model) |
 | `Pipeline` | One **CodePipeline** per environment (§9.3): CodeConnections source → CodeBuild (tests + two images) → ECR → CDK deploy → ECS rolling deploys |
 | `Observability` | CloudWatch dashboards, alarms, and log groups (30-day retention, KMS-encrypted), SNS → email/Slack, AWS Budgets, and an account-level **CloudTrail** trail if Ad Council doesn't already run one |
 
 - **Database access:** no public endpoint and no bastion. Admins use **ECS Exec** (SSM Session Manager) on the Strapi task for the rare times they need `psql`.
-- **Both ALBs** accept traffic only from the **CloudFront managed prefix list** and require the secret origin header. Their DNS names aren't published.
+- **The ALB** accepts traffic only from the **CloudFront managed prefix list**, and each host rule requires its own distribution's secret origin header. Their DNS names aren't published.
 - **Deploys** are ECS rolling updates with the deployment circuit breaker on, so a task that fails its health check rolls back on its own.
 - **Security headers** (CloudFront response headers policy):
   - `HSTS`, `X-Content-Type-Options`, and `Referrer-Policy: strict-origin-when-cross-origin`
@@ -1284,18 +1285,18 @@ Logs are structured JSON with a `requestId`. **No request bodies, user URLs, ima
 | Item | Monthly estimate |
 |---|---|
 | ECS Fargate: web (2 tasks) + Strapi (1) in prod; 1 each in staging | ~$90–120 |
-| ALBs (app + CMS) × 2 environments | ~$70–90 |
-| RDS Postgres (staging `t4g.micro` + prod) | ~$40–70 with a `t4g.small/medium` prod; **~$190** with the `r8g.large` in the Nov 6 diagram |
+| ALB (one, shared) × 2 environments | ~$35–45 |
+| RDS Postgres (staging `t4g.micro` + prod `m8g.large`, single-AZ) | ~$135–150 (James to confirm; ~$190 with `r8g.large`) |
 | CloudFront, S3, WAF (+ Bot Control, CAPTCHA per request) | ~$20–80 |
 | CodePipeline + CodeBuild + ECR | ~$5–20 |
-| **Infra total (excluding AI)** | **~$230–380** (more with `r8g.large`) |
+| **Infra total (excluding AI)** | **~$290–420** |
 | AI | **To be modeled after the eval:** cost per request × expected PSA-driven traffic × (1 − JSON-LD/cache hit rate). The daily quota sets the ceiling. Spike P8: a URL with JSON-LD costs about $0 (no model call), and about 40% of URLs fail at fetch and also cost nothing, so AI cost comes from photo and typed-text input. The model arena (§7.9, D24) forecasts $/month per model at **25K and 50K uses/month** against the client's **~$500/month** AI budget. A guardrail pre-call doubles the calls per use |
 
-Containers cost more than the static design (which had no servers on the request path), mainly the always-on Fargate tasks and two ALBs per environment.
+Containers cost more than the static design (which had no servers on the request path), mainly the always-on Fargate tasks, an ALB per environment, and a non-bursting prod database.
 
 These figures assume **no NAT gateway** (§4.3). If IT requires private subnets with VPC endpoints instead, add roughly **$60–70 / month per environment** (one AZ).
 
-To save money we can consider: **one ALB per environment** with host-based rules for the site and CMS (about $18/month less each), **Fargate Spot** for staging, running staging at one task per service, skipping Bot Control until there's real traffic, and **turning dev off** after handoff (OPEN-24).
+To save money we can consider: **Fargate Spot** for staging, running staging at one task per service, skipping Bot Control until there's real traffic, and **turning dev off** after handoff (OPEN-24).
 
 ### 9.6 Operations and handoff (input to the O&M manual)
 
@@ -1612,7 +1613,7 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | D33 | **Local dev may use a real AI dev key; CI stays on mock** (Nov 2, BD3244-72). Mock remains the default. A developer may set `AI_PROVIDER` and ddd's capped dev key (Gemini or Anthropic) in their git-ignored `.env`. CI keeps `AI_PROVIDER=mock` with no secrets. Unit and component tests run on mock regardless. Keys are shared by Art through a secure share and are revocable. Replaces the "local dev runs on mock" half of the AGENTS.md rule | TL DECISION | The team needs to see real model behaviour while building the tool UI (loading time, partial matches, unreadable input) without waiting on Render dev. CI stays deterministic and secret-free. Accepted risks: more spend, mitigated by the key's cap and the service's daily quota; key exposure on more machines, mitigated by revocable dev-only keys that are rotated if a developer leaves; and no change to the vendor position, since Gemini stays dev-only pending IT (OPEN-2) |
 | D34 | **The China team merges its own PRs into `dev`; Art reviews after merge** (Nov 2, BD3244-72). Feihu (`omc-panghu`) and Davis (`DavisWang-Omc`) are code owners for every path, Chad (`chadwang0919`) also for `apps/cms/`, and any one of them can approve and merge into `dev`. Art is a co-owner everywhere but **never a gate on `dev`**: he reviews merged work and raises problems as follow-up Jira tickets or PRs, and a "changes requested" review from him is a checklist, not a block. The other §9.3 rules stand: PR only, green CI, Jira key in the title, 1 approving review from a teammate, resolved threads. `staging` and `prod` promotions still need a tech lead | TL DECISION | Waiting on Art's review was holding up the build team, which owns delivery to Alpha (Nov 11) and feature-complete (Nov 18). CI, the TDD, and AGENTS.md carry the rules, and fixes after merge are cheap on `dev`. The gate stays where mistakes are costly: promotion to `staging` and `prod`. Accepted risk: issues found after merge land on `dev` first and reach the dev review link before they're fixed |
 | D35 | **Catalog gaps from a second, text-only classification step in the same stateless request** (Nov 4, Ad Council request). Unmatched extractor terms go to `classifyGapTerms()` (temperature 0), which returns a generic item name and a class (`edible` / `inedible` / `compostable` / `exclude`). Pure-function filters drop anything personal. The only output is a `tips_tool_gap` GA4 event per kept term, keyed by `requestId`. **No data retention on our side**: no store, cache, queue, counter, or CMS collection. Behind `GAP_LOG`, off until legal answers OPEN-5 | PROPOSED (OPEN-5) | Ad Council needs to know which items lack tips in order to write new ones. Keeping it stateless and idempotent means there's nothing of ours to secure, retain, or delete, and retries can't double-count. Accepted: one small extra call per tool use with unmatched items, and a narrow exception to "nothing the model extracted goes to analytics" (generic, filtered names only). Accepted risk: a model miss could pass a personal term; mitigated by the code filters, GA4 thresholds, and a 100% eval bar on planted personal data |
-| D36 | **Containers on ECS Fargate; no Lambda, API Gateway, or Elastic Beanstalk** (Nov 6 architecture review, Art). The **site** is a server-rendered Next.js app (`output: 'standalone'`, ISR with 60 s revalidation) in a Fargate service, with **no OpenNext**. The **tool API** is Next.js **route handlers** in the same service, calling the `services/find-my-tips` handler, with cache and quota in memory (no DynamoDB). **No Express**: it would only be added if Next.js couldn't run self-hosted, and it can. The **CMS** is the Strapi image on Fargate. CloudFront + WAF front two ALBs (app, CMS). Publishing needs no rebuild: ISR picks up changes, and Strapi's webhook to `POST /api/hooks/publish` invalidates CloudFront. AWS CI/CD is **CodePipeline** per environment (CodeConnections → CodeBuild → ECR → CDK/ECS). Supersedes D2, D3, and D5; closes OPEN-4 | TL DECISION | Ad Council's DevOps partner runs Fargate, so one runtime (containers) and one deploy path is easier to own than Lambda, EB, and S3 releases together. SSR removes the release-pointer machinery and makes publishes live in about a minute. One Next.js service is one codebase, one image, and one runtime for the China team. Accepted: higher fixed cost than static (always-on tasks and ALBs, §9.5); Strapi now serves runtime reads (cached, inside the VPC); a bad publish can reach a page (mitigated by Zod + last-good ISR + alarms); and the tool shares tasks with the pages, so the SSRF boundary is `safeFetch`, not the network (a second service from the same image is the fallback, §4.3) |
+| D36 | **Containers on ECS Fargate; no Lambda, API Gateway, or Elastic Beanstalk** (Nov 6 architecture review, Art). The **site** is a server-rendered Next.js app (`output: 'standalone'`, ISR with 60 s revalidation) in a Fargate service, with **no OpenNext**. The **tool API** is Next.js **route handlers** in the same service, calling the `services/find-my-tips` handler, with cache and quota in memory (no DynamoDB). **No Express**: it would only be added if Next.js couldn't run self-hosted, and it can. The **CMS** is the Strapi image on Fargate. CloudFront + WAF front **one ALB per environment** with host rules for the site and CMS, each rule tied to its distribution's secret origin header (Nov 10, James S). **Prod RDS is non-bursting** (`db.m8g.large`). Publishing needs no rebuild: ISR picks up changes, and Strapi's webhook to `POST /api/hooks/publish` invalidates CloudFront. AWS CI/CD is **CodePipeline** per environment (CodeConnections → CodeBuild → ECR → CDK/ECS). Supersedes D2, D3, and D5; closes OPEN-4 | TL DECISION | Ad Council's DevOps partner runs Fargate, so one runtime (containers) and one deploy path is easier to own than Lambda, EB, and S3 releases together. SSR removes the release-pointer machinery and makes publishes live in about a minute. One Next.js service is one codebase, one image, and one runtime for the China team. Accepted: higher fixed cost than static (always-on tasks and ALBs, §9.5); Strapi now serves runtime reads (cached, inside the VPC); a bad publish can reach a page (mitigated by Zod + last-good ISR + alarms); and the tool shares tasks with the pages, so the SSRF boundary is `safeFetch`, not the network (a second service from the same image is the fallback, §4.3) |
 | D37 | **Google (Gemini) is an authorized AI vendor, on its own Vertex AI setup** (Nov 6, Art). Production Gemini runs on **Vertex AI in Ad Council's own Google Cloud project** (`us` multi-region), not on ddd's key or the Gemini API. Staging and prod each get their own service identity, reached through **Workload Identity Federation** from that environment's ECS task role, so there are no Google keys to store. Billing alerts sit on Ad Council's billing account; the abuse-monitoring logging exemption is Ad Council's request to Google (BD3244-86). The `gemini` adapter gains a Vertex mode; the provider stays swappable by env config | TL DECISION | Ad Council owns the account, billing, and data terms, and Vertex keeps processing in the US with no training on customer data. Federation avoids long-lived keys crossing from AWS to Google. Anthropic stays authorized, so OPEN-1 (which model ships) is still Ad Council's choice. **Set up Nov 6** [VERIFIED]: see [§9.1 Google Cloud](#91-accounts-access-and-regions) and [`vertex-gemini`](./runbooks/vertex-gemini.md) |
 
 Bigger decisions get a short ADR in `docs/adr/NNNN-title.md` once they're approved.
@@ -1655,7 +1656,7 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | OPEN-28 | Images: ≈ 20 lifestyle (Ad Council iStock), ≈ 50 tip-library categories (stock first, AI backup), and ingredient images (AI approved). Final counts and delivery date | Colleen Miller / Ad Council | Nov 30 |
 | OPEN-29 | Feedback format for Ad Council and the coalition (Jira access or a spreadsheet) | Danish / Ad Council | Nov 20 |
 | OPEN-30 | **Seed content source**: Dan's export, earlier Ad Council campaign content, coalition spreadsheets, or a mix? Who approves the scraped content? | Ad Council content + ddd | Oct 16 |
-| OPEN-31 | **What "US-only" covers.** Our reading: AI-provider processing and retention, plus everything we store (all in `us-east-1`); CloudFront and WAF edges are global. If it must hold end to end, the tool API is served from the app ALB with a regional WAF on its own subdomain (§2.4, §9.1) | Ad Council legal (via Danish) | Nov 13 |
+| OPEN-31 | **What "US-only" covers.** Our reading: AI-provider processing and retention, plus everything we store (all in `us-east-1`); CloudFront and WAF edges are global. If it must hold end to end, the tool API is served from the ALB with a regional WAF on its own subdomain (§2.4, §9.1) | Ad Council legal (via Danish) | Nov 13 |
 | OPEN-32 | Is the **Copilot coding agent** (and its Jira integration) available in Ad Council's GitHub org and Jira? Who files copy changes after handoff, and can client editors file GitHub issues or Jira tickets? (§5.2) | Ad Council IT + ddd | Oct 16 |
 | OPEN-33 | **Figma file location.** ~~Transfer out of the MullenLowe org~~ (no file admins; Amber is the org admin; Colleen's ticket is open). **Workaround (Oct 6):** Art's first copy ([`IgstWize…`](https://www.figma.com/design/IgstWizeCgx5EsDVEJAhnM/)) had no edit access; the second copy, [`JZTCmehamc5QkAYw1lw5jW`](https://www.figma.com/design/JZTCmehamc5QkAYw1lw5jW/) in TBWA Worldwide (Full seat), works with MCP and is the **working copy** (§6.1). **Still open:** rename it from "Untitled" (and delete the unused first copy), and Colleen and Sam confirm all design edits move to it and the MullenLowe original is frozen | Colleen Miller / Sam + Art | Oct 16 |
 | OPEN-34 | **Missing tool-state designs.** Figma covers idle, input errors, loading, and success. It doesn't cover the 10-second "still working" message and Cancel, partial match, likely-ingredient chips (dish photo), no match, unreadable, rate-limited, unavailable (kill switch), or blocked recipe site (Spike P8, R20), or the dish-photo flow in general (§7.10, R19) | Colleen Miller | Oct 23 |
@@ -1734,3 +1735,4 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.3.26 | 2026-11-04 | Art Longbottom (with Claude) | **D35: catalog gaps** (Ad Council request). A second, text-only `classifyGapTerms()` step sorts unmatched items into edible, inedible, and compostable, with personal data, people, and pets filtered out by the model and by code. **One stateless, idempotent request, with no data retention on our side.** The only output is a `tips_tool_gap` GA4 event. Behind `GAP_LOG`, off until legal answers OPEN-5. Updated FR-8, §5.2, §7.8, §8, OPEN-5 |
 | 0.3.27 | 2026-11-06 | Art Longbottom (with Claude) | **D36: containers on ECS Fargate** (Nov 6 architecture review): server-rendered Next.js (ISR, no OpenNext), tool API as route handlers in the same service, Strapi on Fargate, two ALBs behind CloudFront + WAF, CodePipeline per environment. No Lambda, API Gateway, Elastic Beanstalk, Express, DynamoDB, S3 site releases, or publish relay. New Phase B diagram (`docs/architecture/phase-b.svg`). Rewrote §4.1–4.4, §5.3–5.4, §6.2, §7.2, §7.6, §9.1–9.5; D2, D3, D5 superseded; OPEN-4 closed **D37:** Google (Gemini) authorized on Ad Council's own Vertex AI project (§3, §7.7, OPEN-1, OPEN-2 closed). |
 | 0.3.28 | 2026-11-06 | Art Longbottom (with Claude) | **D37 set up:** Ad Council's Google Cloud project `iconic-indexer-513915-t1` has Vertex AI on the US multi-region endpoint, one Gemini-only service account per environment, a bound API key for dev, and a WIF pool for staging and prod (§9.1, `vertex-gemini` runbook). The `gemini` adapter's Vertex mode is built (#22) |
+| 0.3.29 | 2026-11-11 | Art Longbottom (with Claude) | **D36 update (James S, Nov 10):** one shared ALB per environment with host rules, each tied to its CloudFront distribution's own secret origin header so the CMS IP set can't be bypassed; prod RDS non-bursting (`db.m8g.large`). Updated §4.1–4.3, §5.4, §7.6, §9.1, §9.5 |
