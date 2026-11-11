@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 /** The 404 page is a site string, not CMS content (TDD D21). == */
 export default function PageNotFound() {
   return (
-    <Provider navigation={navigation} footer={footer} global={global}>
+    <Provider path="/not-found" navigation={navigation} footer={footer} global={global}>
       <div data-surface="forest">
         <BlockNotFound
           {...{

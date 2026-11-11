@@ -8,7 +8,9 @@ export function BlockTextAndImage55(props: BlockProps<cmsType.component._5050Tex
   return (
     <div className="py-15 lg:py-25">
       <div className="flex flex5 lg:flex-row5 lg:flex-row lg:gap-18.25 items-center ">
-        <div className={`flex flex-col gap-5 lg:w-1/2 ${makeImageLeft ? 'order-2' : 'order-1'} text-center lg:text-left`}>
+        <div
+          className={`flex flex-col gap-5 lg:w-1/2 ${makeImageLeft ? 'order-2' : 'order-1'} text-center lg:text-left`}
+        >
           <BlockTitle title={title} moduleIndex={props.index} />
           <Typography variant="paragraph-lg">{description}</Typography>
         </div>

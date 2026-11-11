@@ -3,7 +3,7 @@ import { IconClose, IconMenu, IconSearch } from './Icon';
 import TransitionLink from './TransitionLink';
 import { Typography } from './Typography';
 import { useContext, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import type { LinkProps } from '@/blocks/types';
 import { AppContext } from '@/components/Provider';
 import { Menu } from './Menu';
@@ -20,6 +20,7 @@ interface NavigationProp {
   inPopup?: boolean;
 }
 export function Header({ className = '', showClose = false, onClose = () => {} }: NavigationProp) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const isSearchPage = pathname.startsWith('/search');
@@ -69,8 +70,7 @@ export function Header({ className = '', showClose = false, onClose = () => {} }
           </TransitionLink>
         ))}
         <div
-          id="header-search-wrapper"
-          className="rounded-pill flex gap-2.5 items-center py-sm px-5 border-surface-mint border-2 w-79"
+          className={`rounded-pill flex gap-2.5 items-center py-sm px-5  border-2 w-79 ${isSearchPage ? 'border-ink-terra' : 'border-surface-mint'}`}
         >
           <IconSearch />
           <input
@@ -80,9 +80,12 @@ export function Header({ className = '', showClose = false, onClose = () => {} }
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault();
-                window.location.href = `/search/${searchHref(
-                  (e.target as HTMLInputElement).value,
-                ).replace(/^[^#]*/, '')}`;
+                const query = (e.target as HTMLInputElement).value;
+                if (isSearchPage) {
+                  window.location.hash = searchHref(query).replace(/^[^#]*/, '');
+                  return;
+                }
+                router.push(`/search/${searchHref(query).replace(/^[^#]*/, '')}`);
               }
             }}
           />

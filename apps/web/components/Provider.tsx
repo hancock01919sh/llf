@@ -7,7 +7,10 @@ export const AppContext = createContext<{
   footer?: cmsType.api.Footer;
   navigation?: cmsType.api.Navigation;
   global?: cmsType.api.GlobalDeepRef;
-}>({});
+  path: string;
+}>({
+  path: '/',
+});
 export function Provider({
   children,
   footer,
@@ -21,8 +24,8 @@ export function Provider({
   global: cmsType.api.GlobalDeepRef;
   path: string;
 }) {
-  function getHeaderClassByPath(path:string){
-    switch(path){
+  function getHeaderClassByPath(path: string) {
+    switch (path) {
       case '/':
       case '/about':
         return 'bg-ink-terra!';
@@ -33,7 +36,7 @@ export function Provider({
     }
   }
   return (
-    <AppContext.Provider value={{ footer, navigation, global }}>
+    <AppContext.Provider value={{ footer, navigation, global, path }}>
       <Header className={getHeaderClassByPath(path)} />
       <main>{children}</main>
       <AppFooter />
