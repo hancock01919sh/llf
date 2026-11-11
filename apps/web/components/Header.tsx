@@ -3,10 +3,11 @@ import { IconClose, IconMenu, IconSearch } from './Icon';
 import TransitionLink from './TransitionLink';
 import { Typography } from './Typography';
 import { useContext, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import type { LinkProps } from '@/blocks/types';
 import { AppContext } from '@/components/Provider';
 import { Menu } from './Menu';
+import { searchHref } from '@/lib/search';
 export interface NavigationCmsDataProps {
   searchPlaceholder: string;
   title: string;
@@ -19,9 +20,11 @@ interface NavigationProp {
   inPopup?: boolean;
 }
 export function Header({ className = '', showClose = false, onClose = () => {} }: NavigationProp) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const hiddenSearch = pathname === '/search' && !showClose;
+  const isSearchPage = pathname.startsWith('/search');
+  const hiddenSearch = isSearchPage && !showClose;
   const { navigation } = useContext(AppContext);
   if (!navigation) {
     console.error('Navigation is not provided');
@@ -29,7 +32,7 @@ export function Header({ className = '', showClose = false, onClose = () => {} }
   }
   return (
     <nav
-      className={`flex justify-between items-center px-5 pt-16.5 pb-5 border-b lg:border-b-[1.5px] border-ink-terra-15 lg:pt-12.5 lg:pb-6.5 lg:px-15 bg-ink-terra text-surface-mint ${className}`}
+      className={`flex justify-between items-center px-5 pt-16.5 pb-5 border-b lg:border-b-[1.5px] border-ink-terra-15 lg:pt-12.5 lg:pb-6.5 lg:px-15 bg-brand-forest text-surface-mint ${className}`}
     >
       <div className="text-[35px] h-8.75">
         <TransitionLink href="/">{navigation.title}</TransitionLink>
@@ -66,12 +69,25 @@ export function Header({ className = '', showClose = false, onClose = () => {} }
             </Typography>
           </TransitionLink>
         ))}
-        <div className="rounded-4xl flex gap-2.5 items-center py-sm px-5 border-surface-mint border-2">
+        <div
+          className={`rounded-pill flex gap-2.5 items-center py-sm px-5  border-2 w-79 ${isSearchPage ? 'border-ink-terra' : 'border-surface-mint'}`}
+        >
           <IconSearch />
           <input
             type="text"
-            className="font-bold placeholder:text-surface-mint w-43"
-            placeholder="Search Ingredients Tips"
+            className={`font-bold w-43 outline-0 ${isSearchPage ? 'placeholder:text-ink-terra' : 'placeholder:text-surface-mint'}`}
+            placeholder="Search specific ingredient tips"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                const query = (e.target as HTMLInputElement).value;
+                if (isSearchPage) {
+                  window.location.hash = searchHref(query).replace(/^[^#]*/, '');
+                  return;
+                }
+                router.push(`/search/${searchHref(query).replace(/^[^#]*/, '')}`);
+              }
+            }}
           />
         </div>
       </div>
