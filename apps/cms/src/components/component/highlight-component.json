@@ -9,7 +9,7 @@
       "type": "text",
       "required": true
     },
-    "image": {
+    "desktopImage": {
       "type": "media",
       "multiple": false,
       "required": true,
@@ -44,6 +44,16 @@
       "component": "shared.title",
       "repeatable": false,
       "required": true
+    },
+    "mobileImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     }
   },
   "config": {}
