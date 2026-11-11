@@ -1,6 +1,7 @@
 import { IconDownload } from '@/components/Icon';
 import { Typography } from '@/components/Typography';
 import { UIImage } from '@/components/UIImage';
+import { strings } from '@/content/strings';
 import type { cmsType } from '@llf/contracts';
 
 export function AssecItem(item: cmsType.shared.AssetsCardsDeepRef & { className?: string }) {
@@ -19,13 +20,13 @@ export function AssecItem(item: cmsType.shared.AssetsCardsDeepRef & { className?
           {item.description}
         </Typography>
         <Typography variant="caption" className="mt-5">
-          File Name:{item.file?.name || ''}
+          {strings.toolkit.filename}:{item.file?.name || ''}
         </Typography>
         <Typography variant="caption" className="mt-2">
-          File Type:{item.file?.mime || ''}
+          {strings.toolkit.filetype}:{item.file?.mime || ''}
         </Typography>
         <a href={item.file?.url} download={item.file?.name} className="btn black mt-5 inline-flex">
-          Download
+          {strings.toolkit.download}
           <IconDownload className="w-4 h-4 [&_path]:fill-surface-paper" />
         </a>
       </div>

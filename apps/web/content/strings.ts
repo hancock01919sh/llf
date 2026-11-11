@@ -89,6 +89,14 @@ const SiteStrings = z.object({
   }),
   notFound: z.object({ title: text, body: text, home: text }),
   home: z.object({ featuredTitle: text }),
+  global: z.object({
+    download: text,
+  }),
+  toolkit: z.object({
+    download: text,
+    filetype: text,
+    filename: text,
+  }),
 });
 export type SiteStrings = z.infer<typeof SiteStrings>;
 
@@ -177,6 +185,14 @@ export const strings: SiteStrings = SiteStrings.parse({
     home: 'Go to the home page',
   },
   home: { featuredTitle: 'Browse by category' },
+  global:{
+    download: 'Download',
+  },
+  toolkit:{
+    download: 'Download',
+    filetype: 'File type',
+    filename: 'File name',
+  }
 });
 
 /** Fills `{name}` placeholders. Unknown placeholders are left as-is so missing values show up in review. */

@@ -8,7 +8,8 @@ import type { cmsType } from '@llf/contracts';
 import { BlockTitle } from '@/components/BlockTitle';
 
 export function BlockHeader(props: BlockProps<cmsType.component.Header>) {
-  const hasImage = props.block.image !== null;
+  // `image` is a legacy field name that holds a video; the contract allows nullish, so check the URL.
+  const hasImage = !!props.block.image?.url;
   const {
     title,
     subTitle,
@@ -40,11 +41,11 @@ export function BlockHeader(props: BlockProps<cmsType.component.Header>) {
           <Typography className="font-bold text-lg-subhead-sm" variant="eyebrow">
             {subTitle}
           </Typography>
-          <BlockTitle
-            title={title!}
+          {title && <BlockTitle
+            title={title}
             moduleIndex={props.index}
             className={`mt-10 lg:mt-6.25  ${hasImage ? 'lg:mt-10!' : ''}`}
-          />
+          />}
           <Typography
             className={`mt-5 lg:mt-6.25 ${hasImage ? 'lg:mt-5!' : ''}`}
             variant="subhead-lg"
