@@ -1,7 +1,7 @@
 const dotColorMaps = {
   yellow: {
     active: '#F0F58E',
-    inactive: '#2E5C42',
+    inactive: '#5E5145',
   },
   black: {
     active: '#231711',
