@@ -9,7 +9,6 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-cards';
 import { IconArrow } from '@/components/Icon';
-import { Fragment } from 'react';
 import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
 import { BlockTitle } from '@/components/BlockTitle';
@@ -20,17 +19,14 @@ export function CategoryCarouselFeature(
   const { title, description, link, featureCard } = props.block;
   return (
     <div className="py-15 lg:py-25">
-      <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-5">
+      <div className="grid gap-5 lg:grid-cols-2 lg:gap-15">
         <BlockTitle
           title={title!}
           moduleIndex={props.index}
-          className="text-center mx-5 lg:mx-0 lg:text-left"
+          className="text-center mx-5 lg:mx-0 lg:text-left lg:1/2"
         />
-        <div className="lg:w-1/2 flex flex-col gap-5">
-          <Typography
-            variant="subhead-lg"
-            className="text-center mx-5 mt-5 lg:text-left lg:mx-0 lg:mt-0"
-          >
+        <div className="flex flex-col gap-5">
+          <Typography variant="subhead-lg" className="text-center mx-5  lg:text-left lg:mx-0">
             {description}
           </Typography>
           <LinkWrapper className="hidden lg:flex gap-5" Link={link} />
@@ -153,33 +149,15 @@ function LinkWrapper({
 }) {
   return (
     <div className={className}>
-      {Link.map((item) => {
-        if (item.buttonType === 'Primary') {
-          return (
-            <TransitionLink
-              key={item.label}
-              className={`btn mx-5 lg:mx-0`}
-              href={item.href || '/find'}
-            >
-              {item.label}
-            </TransitionLink>
-          );
-        }
+      {Link.filter((item) => item.buttonType === 'Primary').map((item) => {
         return (
-          <Fragment key={item.label}>
-            <TransitionLink
-              className="link mx-auto block mt-5 lg:mx-0 lg:hidden"
-              href={item.href || '/search'}
-            >
-              {item.label}
-            </TransitionLink>
-            <TransitionLink
-              className="btn black hidden mx-auto lg:inline-flex lg:mx-0 lg:px-lg "
-              href={'/search'}
-            >
-              {item.label}
-            </TransitionLink>
-          </Fragment>
+          <TransitionLink
+            key={item.label}
+            className={`btn mx-5 lg:mx-0`}
+            href={item.href || '/find'}
+          >
+            {item.label}
+          </TransitionLink>
         );
       })}
     </div>
