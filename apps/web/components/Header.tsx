@@ -70,7 +70,7 @@ export function Header({ className = '', showClose = false, onClose = () => {} }
           <IconSearch />
           <input
             type="text"
-            className="font-bold placeholder:text-surface-mint w-43"
+            className="font-bold placeholder:text-surface-mint w-43 flex-1"
             placeholder="Search Ingredients Tips"
           />
         </div>
