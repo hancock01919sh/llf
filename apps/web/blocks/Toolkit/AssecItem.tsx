@@ -8,8 +8,8 @@ export function AssecItem(item: cmsType.shared.AssetsCardsDeepRef & { className?
     <div className={` rounded-md overflow-hidden flex flex-col  ${item.className}`}>
       <UIImage
         className={item.displayMode}
-        src={item.file?.url || ''}
-        alt={item.file?.name || item.title}
+        src={item.image?.url || ''}
+        alt={item.image?.name || item.title}
       />
       <div className="p-8 bg-surface-paper">
         <Typography variant="subhead-md" className=" text-lg-subheadline-md ! font-bold">

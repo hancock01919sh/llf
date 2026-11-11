@@ -71,7 +71,7 @@ export function BlockCarouselStandard(
             .filter((item) => !!item.category)
             .map((item, index) => (
               <SwiperSlide
-                key={item.category?.title || '' + index}
+                key={item.category?.id + '' + item.category?.documentId + '' + index}
                 className="rounded-md overflow-hidden flex flex-col "
               >
                 <TransitionLink href={`/tips/${item.category?.slug}`}>

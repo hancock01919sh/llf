@@ -64,7 +64,7 @@ export function BlockIngredientCarousel(
             .filter((item) => !!item.category)
             .map((item, index) => (
               <SwiperSlide
-                key={item.category?.title || '' + index}
+                key={item.category?.id + '' + item.category?.documentId + '' + index}
                 className="rounded-md overflow-hidden flex flex-col border border-ink-terra "
               >
                 <TransitionLink href={`/tips/${item.category?.slug}`}>

@@ -60,11 +60,11 @@ export function BlockCarouselSmall(props: BlockProps<cmsType.component.CarouselS
           {smallCard
             .filter((item) => !!item.category)
             .map((item, index) => (
-              <TransitionLink href={`/tips/${item.category?.slug}`}>
-                <SwiperSlide
-                  key={item.category?.title || '' + index}
-                  className="rounded-md overflow-hidden flex flex-col "
-                >
+              <SwiperSlide
+                key={item.category?.id + '' + item.category?.documentId + '' + index}
+                className="rounded-md overflow-hidden flex flex-col "
+              >
+                <TransitionLink href={`/tips/${item.category?.slug}`}>
                   <UIImage
                     src={item.category?.image?.url || ''}
                     alt={
@@ -81,8 +81,8 @@ export function BlockCarouselSmall(props: BlockProps<cmsType.component.CarouselS
                   >
                     {item.category?.title || ''}
                   </Typography>
-                </SwiperSlide>
-              </TransitionLink>
+                </TransitionLink>
+              </SwiperSlide>
             ))}
         </Swiper>
       )}

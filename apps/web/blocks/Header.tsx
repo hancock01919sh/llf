@@ -40,13 +40,6 @@ export function BlockHeader(props: BlockProps<cmsType.component.Header>) {
           <Typography className="font-bold text-lg-subhead-sm" variant="eyebrow">
             {subTitle}
           </Typography>
-          {/* <Typography
-            as="h1"
-            className={`mt-10 lg:mt-6.25  ${hasImage ? 'lg:mt-10!' : ''}`}
-            variant="headline-lg"
-          >
-            {title}
-          </Typography> */}
           <BlockTitle
             title={title!}
             moduleIndex={props.index}
