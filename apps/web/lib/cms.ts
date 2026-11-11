@@ -128,9 +128,14 @@ const POPULATE = {
         },
         'component.category-emoji': {
           populate: {
+            title: true,
             emoji: {
               populate: {
-                category: true,
+                category: {
+                  populate: {
+                    image: true,
+                  },
+                },
               },
             },
           },
@@ -140,7 +145,11 @@ const POPULATE = {
             title: true,
             featureCard: {
               populate: {
-                category: true,
+                category: {
+                  populate: {
+                    image: true,
+                  },
+                },
               },
             },
             link: true,
@@ -157,7 +166,11 @@ const POPULATE = {
             title: true,
             standardCard: {
               populate: {
-                category: true,
+                category: {
+                  populate: {
+                    image: true,
+                  },
+                },
               },
             },
           },
@@ -167,7 +180,11 @@ const POPULATE = {
             title: true,
             ingredientCard: {
               populate: {
-                category: true,
+                category: {
+                  populate: {
+                    image: true,
+                  },
+                },
               },
             },
           },
@@ -177,7 +194,11 @@ const POPULATE = {
             title: true,
             smallCard: {
               populate: {
-                category: true,
+                category: {
+                  populate: {
+                    image: true,
+                  },
+                },
               },
             },
           },
@@ -342,6 +363,7 @@ async function fetchFromStrapi(key: CollectionKey): Promise<unknown[] | unknown>
     }).join('&');
     const url = `${base.replace(/\/$/, '')}/api/${key}?${query}`;
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+
     if (!res.ok) {
       throw new ContentError(`Strapi returned ${res.status} for /api/${key} (page ${page}).`);
     }
