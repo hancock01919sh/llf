@@ -42,11 +42,10 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlightD
     gsap.set(texts, {
       color: defaultTextColor,
     });
-
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
-        start: 'bottom bottom',
+        start: () => `top top`,
         end: () => `+=${window.innerHeight}`,
         pin: true,
         scrub: true,

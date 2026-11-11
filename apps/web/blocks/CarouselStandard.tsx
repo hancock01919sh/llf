@@ -12,6 +12,7 @@ import { UIImage } from '@/components/UIImage';
 import type { BlockProps } from './types';
 import type { cmsType } from '@llf/contracts';
 import { BlockTitle } from '@/components/BlockTitle';
+import TransitionLink from '@/components/TransitionLink';
 const cardColoMapping = {
   paper: 'bg-surface-sand',
   sand: 'bg-surface-paper',
@@ -66,25 +67,34 @@ export function BlockCarouselStandard(
             },
           }}
         >
-          {standardCard.map((item, index) => (
-            <SwiperSlide
-              key={item.title + index}
-              className="rounded-md overflow-hidden flex flex-col "
-            >
-              <UIImage
-                src={item?.image?.url || ''}
-                alt={item.image?.alternativeText || item.image?.name || item.title}
-                className="w-full aspect-362/304 lg:aspect-535/438"
-              />
-
-              <Typography
-                variant="headline-sm"
-                className={`uppercase ${cardColoMapping[cardBackgroundColor ?? backgroundColor]} text-ink-terra p-8 text-center lg:py-10`}
+          {standardCard
+            .filter((item) => !!item.category)
+            .map((item, index) => (
+              <SwiperSlide
+                key={item.category?.title || '' + index}
+                className="rounded-md overflow-hidden flex flex-col "
               >
-                {item.title}
-              </Typography>
-            </SwiperSlide>
-          ))}
+                <TransitionLink href={`/tips/${item.category?.slug}`}>
+                  <UIImage
+                    src={item.category?.image?.url || ''}
+                    alt={
+                      item.category?.image?.alternativeText ||
+                      item.category?.image?.name ||
+                      item.category?.title ||
+                      ''
+                    }
+                    className="w-full aspect-362/304 lg:aspect-535/438"
+                  />
+
+                  <Typography
+                    variant="headline-sm"
+                    className={`uppercase ${cardColoMapping[cardBackgroundColor ?? backgroundColor]} text-ink-terra p-8 text-center lg:py-10`}
+                  >
+                    {item.category?.title || ''}
+                  </Typography>
+                </TransitionLink>
+              </SwiperSlide>
+            ))}
         </Swiper>
       )}
 

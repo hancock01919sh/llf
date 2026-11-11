@@ -9,6 +9,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
 import { BlockTitle } from '@/components/BlockTitle';
+import TransitionLink from '@/components/TransitionLink';
 
 export function BlockIngredientCarousel(
   props: BlockProps<cmsType.component.IngredientCarouselDeepRef>,
@@ -59,24 +60,33 @@ export function BlockIngredientCarousel(
             },
           }}
         >
-          {ingredientCard.map((item, index) => (
-            <SwiperSlide
-              key={item.title + index}
-              className="rounded-md overflow-hidden flex flex-col border border-ink-terra "
-            >
-              <UIImage
-                src={item?.image?.url || ''}
-                alt={item.image?.alternativeText || item.image?.name || item.title}
-                className="w-full aspect-298/270 lg:aspect-298/266"
-              />
-              <Typography
-                variant="headline-sm"
-                className={`uppercase text-ink-terra p-8 text-center`}
+          {ingredientCard
+            .filter((item) => !!item.category)
+            .map((item, index) => (
+              <SwiperSlide
+                key={item.category?.title || '' + index}
+                className="rounded-md overflow-hidden flex flex-col border border-ink-terra "
               >
-                {item.title}
-              </Typography>
-            </SwiperSlide>
-          ))}
+                <TransitionLink href={`/tips/${item.category?.slug}`}>
+                  <UIImage
+                    src={item.category?.image?.url || ''}
+                    alt={
+                      item.category?.image?.alternativeText ||
+                      item.category?.image?.name ||
+                      item.category?.title ||
+                      ''
+                    }
+                    className="w-full aspect-298/270 lg:aspect-298/266"
+                  />
+                  <Typography
+                    variant="headline-sm"
+                    className={`uppercase text-ink-terra p-8 text-center`}
+                  >
+                    {item.category?.title || ''}
+                  </Typography>
+                </TransitionLink>
+              </SwiperSlide>
+            ))}
         </Swiper>
       )}
 
