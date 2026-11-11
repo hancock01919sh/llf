@@ -13,14 +13,16 @@ export const metadata: Metadata = {
 export default function PageNotFound() {
   return (
     <Provider navigation={navigation} footer={footer} global={global}>
-      <BlockNotFound
-        {...{
-          title: strings.notFound.title,
-          description: strings.notFound.body,
-          backgroundColor: 'forest',
-          cta: strings.notFound.home,
-        }}
-      />
+      <div data-surface="forest">
+        <BlockNotFound
+          {...{
+            title: strings.notFound.title,
+            description: strings.notFound.body,
+            backgroundColor: 'forest',
+            cta: strings.notFound.home,
+          }}
+        />
+      </div>
     </Provider>
   );
 }

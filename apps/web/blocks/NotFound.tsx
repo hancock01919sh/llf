@@ -8,8 +8,7 @@ export function BlockNotFound(props: {
 }) {
   return (
     <section
-      data-surface="forest"
-      className="aspect-402/762 lg:aspect-1440/951 px-5 lg:px-15 lg:max-w-page flex-center flex-col justify-center gap-6.25"
+      className="aspect-402/762 lg:aspect-1440/951 px-5 lg:px-0 mx-auto lg:max-w-page flex-center flex-col justify-center gap-6.25"
     >
       <Typography variant="subhead-lg">{props.description}</Typography>
       <Typography as="h1" variant="headline-lg" className="text-center">
