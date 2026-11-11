@@ -1,12 +1,12 @@
 {
   "data": {
-    "id": 2,
+    "id": 6,
     "documentId": "r5dugfnte7616vj6x066gyz2",
     "title": "longlivefood",
     "link": [
       {
         "label": "The Tool",
-        "href": "find-my-tips",
+        "href": "/find-my-tips",
         "isDisplay": true,
         "isButton": null,
         "buttonType": null,
@@ -14,7 +14,7 @@
       },
       {
         "label": "Tip Library",
-        "href": "/explore",
+        "href": "/tips",
         "isDisplay": true,
         "isButton": null,
         "buttonType": null,
@@ -22,14 +22,14 @@
       },
       {
         "label": "Toolkit",
-        "href": null,
+        "href": "/toolkit",
         "isDisplay": true,
         "isButton": null,
         "buttonType": null,
         "newTab": false
       },
       {
-        "label": "GENERAL TIPS",
+        "label": "General Tips",
         "href": "/general-tips",
         "isDisplay": true,
         "isButton": null,

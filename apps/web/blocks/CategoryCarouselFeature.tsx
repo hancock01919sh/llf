@@ -43,26 +43,33 @@ export function CategoryCarouselFeature(
             }}
             {...carouselConfig[320]}
           >
-            {featureCard.map((item, index) => (
-              <SwiperSlide
-                key={index}
-                className="flex flex-col bg-surface-paper overflow-hidden rounded-md aspect-362/420 lg:aspect-auto"
-              >
-                {
-                  <UIImage
-                    src={item.image?.url || ''}
-                    alt={item.image?.alternativeText || item.image?.name || item.title}
-                    className="aspect-362/296 object-cover lg:aspect-535/438 lg:w-full"
-                  />
-                }
-                <Typography
-                  variant="headline-sm"
-                  className="text-center p-9 pt-6.5 text-ink-terra uppercase leading-none"
+            {featureCard
+              .filter((item) => !!item.category)
+              .map((item, index) => (
+                <SwiperSlide
+                  key={index}
+                  className="flex flex-col bg-surface-paper overflow-hidden rounded-md "
                 >
-                  {item.title}
-                </Typography>
-              </SwiperSlide>
-            ))}
+                  <TransitionLink href={`/tips/${item.category?.slug}`}>
+                    <UIImage
+                      src={item.category?.image?.url || ''}
+                      alt={
+                        item.category?.image?.alternativeText ||
+                        item.category?.image?.name ||
+                        item.category?.title ||
+                        ''
+                      }
+                      className="aspect-362/296 object-cover lg:aspect-535/438 lg:w-full"
+                    />
+                    <Typography
+                      variant="headline-sm"
+                      className="text-center p-9 pt-6.5 text-ink-terra uppercase leading-none"
+                    >
+                      {item.category?.title || ''}
+                    </Typography>
+                  </TransitionLink>
+                </SwiperSlide>
+              ))}
           </Swiper>
         </div>
 
@@ -92,26 +99,35 @@ export function CategoryCarouselFeature(
             }}
             keyboard={true}
           >
-            {featureCard.map((item, index) => (
-              <SwiperSlide
-                key={index}
-                className="flex flex-col bg-surface-paper overflow-hidden rounded-md lg:aspect-535/579"
-              >
-                <UIImage
-                  src={item.image?.url || ''}
-                  alt={item.image?.alternativeText || item.image?.name || item.title}
-                  className="aspect-362/296 object-cover lg:aspect-535/438 lg:w-full"
-                />
-                <div className="flex-center p-10">
-                  <Typography
-                    variant="headline-sm"
-                    className="text-center text-ink-terra uppercase leading-none"
-                  >
-                    {item.title}
-                  </Typography>
-                </div>
-              </SwiperSlide>
-            ))}
+            {featureCard
+              .filter((item) => !!item.category)
+              .map((item, index) => (
+                <SwiperSlide
+                  key={index}
+                  className="flex flex-col bg-surface-paper overflow-hidden rounded-md lg:aspect-535/579"
+                >
+                  <TransitionLink href={`/tips/${item.category?.slug}`}>
+                    <UIImage
+                      src={item.category?.image?.url || ''}
+                      alt={
+                        item.category?.image?.alternativeText ||
+                        item.category?.image?.name ||
+                        item.category?.title ||
+                        ''
+                      }
+                      className="aspect-362/296 object-cover lg:aspect-535/438 lg:w-full"
+                    />
+                    <div className="flex-center p-10">
+                      <Typography
+                        variant="headline-sm"
+                        className="text-center text-ink-terra uppercase leading-none"
+                      >
+                        {item.category?.title || ''}
+                      </Typography>
+                    </div>
+                  </TransitionLink>
+                </SwiperSlide>
+              ))}
           </Swiper>
         </div>
 

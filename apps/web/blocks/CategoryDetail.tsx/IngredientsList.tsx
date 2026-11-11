@@ -138,10 +138,30 @@ export function IngredientsList(
               {finalIngredients[activeIndex]?.tips?.map((item) => (
                 <div
                   key={item.title}
-                  className={`border group/item ${isSearch ? 'border-ink-terra-15 text-ink-terra' : 'border-semantic-leaf text-surface-sand'} p-10 rounded-[40px] transition-all duration-500 bg-transparent   hover:text-ink-terra hover:bg-surface-forest-tint hover:border-surface-forest-tint`}
+                  className={`border group/item ${isSearch ? 'border-ink-terra-15 text-ink-terra' : 'border-semantic-leaf text-surface-sand'} p-10 rounded-[40px] transition-all duration-300 bg-transparent hover:text-ink-terra hover:bg-surface-forest-tint hover:border-surface-forest-tint`}
                 >
                   <div className="flex flex-col gap-8">
-                    <TipBadge type={item.type?.toLowerCase() as TipBadgeType} />
+                    <div className="flex-center justify-between">
+                      <TipBadge type={item.type?.toLowerCase() as TipBadgeType} />
+                      <div className="relative w-16 h-13">
+                        <div className=" absolute left-0 group-hover/item:opacity-0 py-4 px-6 transition-opacity duration-300">
+                          <IconShare
+                            className={` ${!isSearch ? '[&_path]:fill-surface-paper group-hover/item:[&_path]:fill-ink-terra' : ''}`}
+                          />
+                        </div>
+
+                        <button
+                          className={`absolute left-0 opacity-0 transition-opacity duration-300 group-hover/item:opacity-100 bg-surface-paper rounded-full border border-ink-terra py-4 px-6`}
+                          onClick={() => {
+                            // console.log('share');
+                          }}
+                          aria-label="save tip"
+                        >
+                          <IconDownload />
+                        </button>
+                      </div>
+                    </div>
+
                     <div className="flex-col flex  gap-4">
                       <Typography variant="title-card" className=" font-anton">
                         {item.title}
@@ -151,7 +171,7 @@ export function IngredientsList(
                       </Typography>
                     </div>
                   </div>
-                  <div className="mt-0 opacity-0 overflow-hidden transition-all duration-500 grid grid-rows-[0fr] group-hover/item:grid-rows-[1fr] group-hover/item:opacity-100 group-hover/item:mt-10">
+                  {/* <div className="mt-0 opacity-0 overflow-hidden transition-all duration-500 grid grid-rows-[0fr] group-hover/item:grid-rows-[1fr] group-hover/item:opacity-100 group-hover/item:mt-10">
                     <div className="flex gap-3 min-h-0 ">
                       <button className="btn">
                         Share
@@ -162,7 +182,7 @@ export function IngredientsList(
                         <IconDownload className="w-4 h-4" />
                       </button>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               ))}
               {activeIndex === -1 && (

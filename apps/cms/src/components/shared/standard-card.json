@@ -5,19 +5,10 @@
   },
   "options": {},
   "attributes": {
-    "title": {
-      "type": "text",
-      "required": true
-    },
-    "image": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+    "category": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::category.category"
     }
   },
   "config": {}

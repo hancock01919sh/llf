@@ -75,7 +75,7 @@ export function Header({ className = '', showClose = false, onClose = () => {} }
           <IconSearch />
           <input
             type="text"
-            className={`font-bold w-43 outline-0 ${isSearchPage ? 'placeholder:text-ink-terra' : 'placeholder:text-surface-mint'}`}
+            className={`font-bold w-43 flex-1 outline-0 ${isSearchPage ? 'placeholder:text-ink-terra' : 'placeholder:text-surface-mint'}`}
             placeholder="Search specific ingredient tips"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
