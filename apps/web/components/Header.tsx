@@ -21,7 +21,7 @@ interface NavigationProp {
 export function Header({ className = '', showClose = false, onClose = () => {} }: NavigationProp) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const hiddenSearch = pathname === '/search' && !showClose;
+  const hiddenSearch = pathname.startsWith('/search') && !showClose;
   const { navigation } = useContext(AppContext);
   if (!navigation) {
     console.error('Navigation is not provided');
@@ -29,7 +29,7 @@ export function Header({ className = '', showClose = false, onClose = () => {} }
   }
   return (
     <nav
-      className={`flex justify-between items-center px-5 pt-16.5 pb-5 border-b lg:border-b-[1.5px] border-ink-terra-15 lg:pt-12.5 lg:pb-6.5 lg:px-15 bg-ink-terra text-surface-mint ${className}`}
+      className={`flex justify-between items-center px-5 pt-16.5 pb-5 border-b lg:border-b-[1.5px] border-ink-terra-15 lg:pt-12.5 lg:pb-6.5 lg:px-15 bg-brand-forest text-surface-mint ${className}`}
     >
       <div className="text-[35px] h-8.75">
         <TransitionLink href="/">{navigation.title}</TransitionLink>

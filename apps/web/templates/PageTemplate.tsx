@@ -17,7 +17,7 @@ export function PageTemplate({ page, categoryData }: TemplateProps) {
   // writeFixture('global', global);
   return (
     <>
-      <Provider navigation={navigation} footer={footer} global={global}>
+      <Provider navigation={navigation} footer={footer} global={global} path={page.path}>
         <DynamicZone page={page} categoryData={categoryData} />
       </Provider>
     </>
