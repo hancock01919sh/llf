@@ -21,7 +21,7 @@ export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeep
         <div className="flex items-center flex-col px-8 pb-14.5 -mt-4 lg:flex-row lg:px-15 lg:justify-end">
           <TipBannerImage className="hidden lg:block" image={tip?.ingredient?.image} />
           <div className="flex items-center flex-col lg:items-start lg:ml-33 lg:gap-sm lg:w-[58%]">
-            <TipBadge type={tip?.tip_type?.title as TipBadgeType} />
+            <TipBadge type={tip?.tip_type?.title.toLowerCase() as TipBadgeType} />
             <Typography variant="headline-lg" className="mt-2.5 z-1 lg:mt-0">
               {tip?.ingredient?.title || ''}
             </Typography>

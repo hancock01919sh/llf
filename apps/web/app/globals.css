@@ -19,6 +19,7 @@
   --font-inter: var(--font-inter);
 
   --breakpoint-4k: 1921px;
+  --breakpoint-xlg: 1440px;
 
   --radius-small: 20px;
   --radius-medium: 40px;
@@ -88,6 +89,12 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    @variant lg {
+      font-size: 1.11111111vw;
+    }
+    @variant xlg {
+      font-size: 16px;
+    }
     @variant 4k {
       font-size: 1vw;
     }
