@@ -5,15 +5,14 @@
   },
   "options": {},
   "attributes": {
-    "title": {
+    "emoji": {
       "type": "string",
       "required": true
     },
-    "emoji": {
-      "type": "string"
-    },
-    "href": {
-      "type": "string"
+    "category": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::category.category"
     }
   },
   "config": {}
