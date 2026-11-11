@@ -103,7 +103,7 @@ export function CategoryCarouselFeature(
               .filter((item) => !!item.category)
               .map((item, index) => (
                 <SwiperSlide
-                  key={index}
+                  key={item.category?.id + '' + item.category?.documentId + '' + index}
                   className="flex flex-col bg-surface-paper overflow-hidden rounded-md lg:aspect-535/579"
                 >
                   <TransitionLink href={`/tips/${item.category?.slug}`}>

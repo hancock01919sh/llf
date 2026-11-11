@@ -8,7 +8,7 @@ export function BlockToolkitHeadline(props: BlockProps<cmsType.component.Toolkit
   const { title, description, cta } = props.block;
   return (
     <div className="py-15 lg:py-25 text-center">
-      <BlockTitle title={title!} moduleIndex={props.index} />
+      {title && <BlockTitle title={title} moduleIndex={props.index} />}
       <Typography variant="subhead-lg" className="mt-5 font-bold">
         {description}
       </Typography>

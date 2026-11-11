@@ -19,7 +19,7 @@ export function CategoryEmoji(props: BlockProps<cmsType.component.CategoryEmojiD
             .filter((item) => !!item.category)
             .map((item) => (
               <div
-                key={item.category?.title || ''}
+                key={item.category?.id + '' + item.category?.documentId}
                 className=" aspect-square border border-brand-forestflex items-center flex! flex-col justify-center rounded-md text-center  px-2"
               >
                 <TransitionLink href={`/tips/${item.category?.slug}`}>
