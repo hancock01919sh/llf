@@ -74,6 +74,7 @@ test('typed ingredients go to the results page', async ({ page }) => {
           { slug: 'milk', title: 'Milk', inferred: false },
         ],
         unmatchedCount: 1,
+        gaps: [{ name: 'unknown_item', class: 'edible' }],
         source: 'model',
         catalogVersion: CATALOG_VERSION,
       },
