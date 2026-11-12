@@ -24,7 +24,7 @@ export function CategoryEmoji(props: BlockProps<cmsType.component.CategoryEmojiD
               >
                 <TransitionLink href={`/tips/${item.category?.slug}`}>
                   <span className="text-[88px] leading-[1.1]">{item.emoji}</span>
-                  <Typography variant="label" className="lg:text-subhead-sm">
+                  <Typography variant="label" className="lg:text-subhead-sm line-clamp-2">
                     {item.category?.title}
                   </Typography>
                 </TransitionLink>

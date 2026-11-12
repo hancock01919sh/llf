@@ -65,9 +65,9 @@ export function BlockIngredientCarousel(
             .map((item, index) => (
               <SwiperSlide
                 key={item.category?.id + '' + item.category?.documentId + '' + index}
-                className="rounded-md overflow-hidden flex flex-col border border-ink-terra "
+                className="rounded-md overflow-hidden h-auto! border border-ink-terra "
               >
-                <TransitionLink href={`/tips/${item.category?.slug}`}>
+                <TransitionLink className="flex flex-col h-full" href={`/tips/${item.category?.slug}`}>
                   <UIImage
                     src={item.category?.image?.url || ''}
                     alt={
@@ -80,7 +80,7 @@ export function BlockIngredientCarousel(
                   />
                   <Typography
                     variant="headline-sm"
-                    className={`uppercase text-ink-terra p-8 text-center`}
+                    className={`uppercase flex-1 line-clamp-2 text-ink-terra m-8 text-center`}
                   >
                     {item.category?.title || ''}
                   </Typography>
