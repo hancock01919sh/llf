@@ -8,6 +8,8 @@ import type { CategoryDetailWithSearchProps } from '.';
 import type { cmsType } from '@llf/contracts';
 import { BlockTitle } from '@/components/BlockTitle';
 import { UIImage } from '@/components/UIImage';
+import TransitionLink from '@/components/TransitionLink';
+import { strings } from '@/content/strings';
 export function IngredientsHeader(
   props: CategoryDetailWithSearchProps & {
     bgColor?: string;
@@ -40,10 +42,14 @@ export function IngredientsHeader(
         className={`${isSearch ? ' bg-surface-paper' : 'bg-brand-forest'} px-gutter  lg:px-0 py-15 lg:text-center mx-auto ${categoryData ? 'pt-8 lg:pt-10 lg:pb-25' : 'lg:py-25'} ${props.className || ''}`}
       >
         {categoryData && (
-          <Typography variant="link" className="flex-center mb-8 lg:mb-10">
-            <IconArrow point="left" className="[&_path]:stroke-surface-mint" />
-            <span className="ml-1 font-bold text-surface-mint"> Back to Explore the Library</span>
-          </Typography>
+          <TransitionLink href={'/tips'}>
+            <Typography variant="link" className="flex-center mb-8 lg:mb-10">
+              <IconArrow point="left" className="[&_path]:stroke-surface-mint" />
+              <span className="ml-1 font-bold text-surface-mint">
+                {strings.categoryDetail.backToTips}
+              </span>
+            </Typography>
+          </TransitionLink>
         )}
         <div className="lg:flex-center lg:gap-15">
           {categoryData && (
