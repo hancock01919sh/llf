@@ -99,6 +99,7 @@ const SiteStrings = z.object({
   }),
   categoryDetail: z.object({
     backToTips: text,
+    backToIngredients: text,
   }),
   tipBanner: z.object({
     save: text,
@@ -202,6 +203,7 @@ export const strings: SiteStrings = SiteStrings.parse({
   },
   categoryDetail: {
     backToTips: 'Back to Explore the Library',
+    backToIngredients: 'Back to Ingredient List',
   },
   tipBanner: {
     save: 'Save to Photos',

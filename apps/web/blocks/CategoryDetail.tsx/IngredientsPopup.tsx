@@ -1,7 +1,7 @@
 'use client';
 import { Popup } from '@/components/Popup';
 import { Header } from '@/components/Header';
-import { IconArrow } from '@/components/Icon';
+import { IconArrow, IconShare } from '@/components/Icon';
 import { Typography } from '@/components/Typography';
 import { TipBadge, type TipBadgeType } from '@/components/TipBadge';
 import { AppFooter } from '@/components/AppFooter';
@@ -9,15 +9,19 @@ import { useContext } from 'react';
 import { AppContext } from '@/components/Provider';
 import type { IngredientData } from '@llf/contracts';
 import { UIImage } from '@/components/UIImage';
+import { strings } from '@/content/strings';
+import type { downloadTipProps } from '@/components/DownloadTemplate';
 
 export function IngredientsPopup({
   open,
   onClose,
   ingredient,
+  downloadTip,
 }: {
   open: boolean;
   onClose: () => void;
   ingredient: IngredientData;
+  downloadTip: (tip: downloadTipProps) => void;
 }) {
   const { footer, navigation } = useContext(AppContext);
   if (!footer || !navigation || !ingredient) return null;
@@ -40,7 +44,7 @@ export function IngredientsPopup({
           >
             <IconArrow point="left" className="[&_path]:stroke-surface-mint" />
             <Typography variant="link" className="font-bold text-surface-mint">
-              Back to Ingredient List
+              {strings.categoryDetail.backToIngredients}
             </Typography>
           </div>
           <div className="relative aspect-402/269 ">
@@ -62,7 +66,23 @@ export function IngredientsPopup({
             {ingredient?.tips?.map((tip) => {
               return (
                 <div key={tip.title} className="py-10 px-4 border-b border-b-semantic-leaf">
-                  <TipBadge type={tip.type?.toLowerCase() as TipBadgeType} />
+                  <div className="flex-center justify-between">
+                    <TipBadge type={tip.type?.toLowerCase() as TipBadgeType} />
+                    <button
+                      className="w-10"
+                      aria-label={'download tips'}
+                      onClick={() => {
+                        downloadTip({
+                          title: tip.title,
+                          description: tip.description || '',
+                          type: tip.type || '',
+                        });
+                      }}
+                    >
+                      <IconShare className="[&_path]:fill-surface-mint-dark" />
+                    </button>
+                  </div>
+
                   <Typography variant="title-card" className="mt-8 font-anton">
                     {tip.title}
                   </Typography>

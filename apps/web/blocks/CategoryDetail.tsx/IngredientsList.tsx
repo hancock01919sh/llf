@@ -1,7 +1,7 @@
 'use client';
 import { IngredientData, parseResultSlugs } from '@llf/contracts';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Typography } from '@/components/Typography';
 import { useDevice } from '@/components/hooks/useDevice';
 import { IconArrow, IconDownload, IconShare, IconUpload, IconWork2 } from '@/components/Icon';
@@ -11,6 +11,13 @@ import { IngredientsPopup } from './IngredientsPopup';
 import type { SearchDocument } from '@/lib/search';
 import type { CategoryDetailWithSearchProps } from '.';
 import { UIImage } from '@/components/UIImage';
+import {
+  DownloadTemplate,
+  type DownloadTemplateProps,
+  type downloadTipProps,
+} from '@/components/DownloadTemplate';
+import { strings } from '@/content/strings';
+import dynamic from 'next/dynamic';
 
 export function IngredientsList(
   props: CategoryDetailWithSearchProps & {
@@ -31,6 +38,8 @@ export function IngredientsList(
     ingredients: [],
   });
   const [activeIndex, setActiveIndex] = useState(-1);
+
+  const downloadRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useDevice();
 
   useEffect(() => {
@@ -67,6 +76,51 @@ export function IngredientsList(
       classText += ' border-b';
     }
     return classText;
+  }
+  const [downloadIng, setDownloadIng] = useState<boolean>(false);
+  const [downloadTemplateData, setDownloadTemplateData] = useState<DownloadTemplateProps | null>(
+    null,
+  );
+  useEffect(() => {
+    if (!downloadRef.current || !downloadTemplateData) return;
+    setDownloadIng(true);
+    import('html-to-image')
+      .then((mod) => mod.toJpeg)
+      .then((html2img) => {
+        if (!downloadRef.current) return;
+        html2img(downloadRef.current, {
+          quality: 0.8,
+        })
+          .then((res: string) => {
+            const link = document.createElement('a');
+            const filename = downloadTemplateData.ingredient.title;
+            const littleTipName = downloadTemplateData.tip.title.split(' ').slice(0, 2);
+            link.download = `${filename}-${littleTipName.join(' ')}.jpeg`;
+            link.href = res;
+            link.click();
+            setDownloadIng(false);
+            setTimeout(() => {
+              setDownloadTemplateData(null);
+            }, 1000);
+            // 清理引用
+            link.remove();
+          })
+          .catch(() => {
+            setDownloadIng(false);
+          });
+      });
+  }, [downloadTemplateData, downloadRef]);
+  function downloadTip(tip: downloadTipProps) {
+    setDownloadTemplateData({
+      tip,
+      ingredient: {
+        image: {
+          url: finalIngredients[activeIndex]?.image?.url || '',
+          alt: finalIngredients[activeIndex]?.image?.alt || '',
+        },
+        title: finalIngredients[activeIndex]?.title || '',
+      },
+    });
   }
   return (
     <>
@@ -151,11 +205,16 @@ export function IngredientsList(
                         </div>
 
                         <button
-                          className={`absolute left-0 opacity-0 transition-opacity duration-300 group-hover/item:opacity-100 bg-surface-paper rounded-full border border-ink-terra py-4 px-6`}
+                          disabled={downloadIng}
+                          className={`absolute left-0 opacity-0 transition-opacity duration-300 group-hover/item:opacity-100 bg-surface-paper rounded-full border border-ink-terra py-4 px-6 disabled:bg-ink-terra-40 disabled:border-ink-terra-40 disabled:[&_path]:fill-surface-paper `}
                           onClick={() => {
-                            // console.log('share');
+                            downloadTip({
+                              title: item.title || '',
+                              description: item.description || '',
+                              type: item.type || '',
+                            });
                           }}
-                          aria-label="save tip"
+                          aria-label={strings.global.download}
                         >
                           <IconDownload />
                         </button>
@@ -171,18 +230,6 @@ export function IngredientsList(
                       </Typography>
                     </div>
                   </div>
-                  {/* <div className="mt-0 opacity-0 overflow-hidden transition-all duration-500 grid grid-rows-[0fr] group-hover/item:grid-rows-[1fr] group-hover/item:opacity-100 group-hover/item:mt-10">
-                    <div className="flex gap-3 min-h-0 ">
-                      <button className="btn">
-                        Share
-                        <IconShare className="w-4 h-4" />
-                      </button>
-                      <button className="btn">
-                        Save
-                        <IconDownload className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div> */}
                 </div>
               ))}
               {activeIndex === -1 && (
@@ -209,7 +256,9 @@ export function IngredientsList(
         open={activeIndex !== -1 && isMobile}
         onClose={() => setActiveIndex(-1)}
         ingredient={finalIngredients[activeIndex] as IngredientData}
+        downloadTip={downloadTip}
       />
+      {downloadTemplateData && <DownloadTemplate ref={downloadRef} {...downloadTemplateData} />}
     </>
   );
 }
