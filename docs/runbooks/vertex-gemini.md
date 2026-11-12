@@ -35,23 +35,10 @@ done
 gcloud iam workload-identity-pools create llf-aws --location=global $C
 ```
 
-## 2. Dev key (Render dev and local)
-Google blocks binding API keys to service accounts by default. Lift that guard **for this project only**, then create a key bound to `llf-gemini-dev` and restricted to Vertex AI:
-```sh
-cat > /tmp/pol.yaml <<EOF
-name: projects/$P/policies/iam.managed.disableServiceAccountApiKeyCreation
-spec:
-  rules:
-  - enforce: false
-EOF
-gcloud org-policies set-policy /tmp/pol.yaml $C && rm /tmp/pol.yaml
-gcloud beta services api-keys create $C --display-name="llf-gemini-dev" \
-  --service-account=llf-gemini-dev@$P.iam.gserviceaccount.com \
-  --api-target=service=aiplatform.googleapis.com
-```
-- Lifting the guard needs **Organization Policy Administrator**. Project Owner doesn't include it; if it's refused, Cat (or Ad Council's org admin) runs that step.
-- Never print the key into a ticket, PR, or chat. Put it straight into Render (`GEMINI_API_KEY` on `llf-tips-dev`) and your `.env`, and share it with developers through the secure share.
-- Rotate: create a new key, swap it in Render and the share, then `gcloud services api-keys delete <key-id> $C`.
+## 2. Dev and local: no Vertex key (Nov 12)
+Dev (Render) and local keep **ddd's capped Gemini API key** (TDD D25, D33), not Vertex. A Vertex key bound to `llf-gemini-dev` isn't possible: Ad Council's org policy `iam.managed.disableServiceAccountApiKeyCreation` allows service-account keys only for `generativelanguage.googleapis.com`, and changing it needs their org admin. We tried on Nov 12 (`FLOW_APIKEY_SERVICE_ACCOUNT_BINDING_FAILED_PRECONDITION`) and decided it isn't needed: dev only processes test inputs.
+
+`llf-gemini-dev` stays in place, unused, in case we ever test Vertex from dev (with a short-lived token from a developer's own `gcloud` sign-in, not a key).
 
 ## 3. Staging and prod: Workload Identity Federation (waits on BD3244-77)
 No keys. Each environment's ECS task role signs in to Google with its AWS identity. Needs the AWS account IDs and the web task-role names from James Steele.
@@ -87,5 +74,5 @@ curl -s -o /dev/null -w '%{http_code}\n' -X POST \
 `200` means it works. A new project or newly enabled API can return 404 for a few minutes.
 
 ## Still with Ad Council (BD3244-86)
-- Billing alerts on the billing account.
+- Billing alerts: set up by Cat (Nov 9). They notify; they don't cap spend.
 - The abuse-monitoring logging exemption request to Google, so prompts aren't kept for abuse review.
