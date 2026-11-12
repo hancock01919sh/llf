@@ -56,7 +56,7 @@ export function slugIngredients(ingredients: cmsType.api.IngredientDeepRef[]): S
   return [...bySlug].map(([slug, ingredient]) => ({ slug, ingredient }));
 }
 
-export function buildCatalog(ingredients: cmsType.api.Ingredient[]): Catalog {
+export function buildCatalog(ingredients: cmsType.api.IngredientDeepRef[]): Catalog {
   const items: CatalogIngredient[] = slugIngredients(ingredients)
     .map(({ slug, ingredient }) => ({
       slug,
