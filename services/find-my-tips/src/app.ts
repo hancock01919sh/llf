@@ -72,7 +72,7 @@ export function createApp(deps: AppDeps) {
   };
 
   async function status(requestId: string, started: number): Promise<Response> {
-    const { catalogVersion } = await deps.catalog.get();
+    const catalogVersion = await deps.catalog.version();
     const body: StatusResponse = { mode: config.mode, catalogVersion };
     logger({ requestId, event: 'status', status: 200, latencyMs: now() - started, catalogVersion });
     return json(body, 200, { 'x-request-id': requestId });
@@ -188,7 +188,8 @@ export function createApp(deps: AppDeps) {
       await guard(request.inputType, ip);
 
       const outcome = await withTimeout((signal) => run(request, signal));
-      const { catalogVersion, matcher } = await deps.catalog.get();
+      const catalogVersion = await deps.catalog.version();
+      const matcher = await deps.catalog.matcher(outcome.items.map((item) => item.term));
       const { matches, unmatchedCount } = matchItems(outcome.items, matcher);
       let gaps: ExtractResponse['gaps'] = [];
       if (config.gapLog) {

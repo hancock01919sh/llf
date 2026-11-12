@@ -100,7 +100,8 @@ describe('status endpoint', () => {
   it('turns an unexpected failure into a 500 without leaking details', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const broken: CatalogSource = {
-      get: () => Promise.reject(new Error('db password in message')),
+      version: () => Promise.reject(new Error('db password in message')),
+      matcher: async () => ({ match: () => null }),
     };
     const { app } = makeApp({}, { catalog: broken });
     const res = await app.handle(new Request(base + FIND_TIPS_API.status));

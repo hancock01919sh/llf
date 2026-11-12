@@ -32,6 +32,7 @@ const EnvSchema = z.object({
   // on dev). 0 = use the socket address, as in local dev. Decides the rate-limit key (§7.6).
   TRUSTED_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(0),
   CATALOG_URL: z.url().optional(),
+  CATALOG_TOKEN: z.string().trim().min(1).optional(),
   CATALOG_FILE: z.string().trim().min(1).optional(),
   CATALOG_REFRESH_MS: intFromEnv(60_000),
   QUOTA_DAILY_MODEL_CALLS: intFromEnv(3000),
@@ -56,6 +57,7 @@ export type Config = {
   port: number;
   trustedProxyHops: number;
   catalogUrl: string | undefined;
+  catalogToken: string | undefined;
   catalogFile: string | undefined;
   catalogRefreshMs: number;
   quotaDailyModelCalls: number;
@@ -89,6 +91,7 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     port: e.TOOL_PORT ?? e.PORT,
     trustedProxyHops: e.TRUSTED_PROXY_HOPS,
     catalogUrl: e.CATALOG_URL,
+    catalogToken: e.CATALOG_TOKEN,
     catalogFile: e.CATALOG_FILE,
     catalogRefreshMs: e.CATALOG_REFRESH_MS,
     quotaDailyModelCalls: e.QUOTA_DAILY_MODEL_CALLS,
