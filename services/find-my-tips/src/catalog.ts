@@ -61,9 +61,7 @@ type CmsPage = z.infer<typeof CmsPage>;
 
 const CmsFingerprint = z.object({
   data: z.array(z.object({ updatedAt: z.string().min(1) })),
-  meta: z
-    .object({ pagination: z.object({ total: z.number().int().nonnegative() }) })
-    .optional(),
+  meta: z.object({ pagination: z.object({ total: z.number().int().nonnegative() }) }).optional(),
 });
 
 function snapshot(catalog: Catalog): CatalogSnapshot {
@@ -130,7 +128,6 @@ export function createCatalogSource(options: CatalogSourceOptions): CatalogSourc
   const inflight = new Map<string, Promise<Map<string, Match | null>>>();
   const pages = new Map<number, Promise<CmsPage>>();
   let announced = false;
-
 
   let version: { value: string; at: number } | undefined;
   const endpointVersion = digest(endpoint);

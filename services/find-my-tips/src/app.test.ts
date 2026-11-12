@@ -213,7 +213,7 @@ describe('extract: happy paths', () => {
         throw new Error('private term should not be logged');
       },
     };
-    const { app, logs } = makeApp({  GAP_LOG: 'on' }, { provider });
+    const { app, logs } = makeApp({ GAP_LOG: 'on' }, { provider });
     const res = await app.handle(post({ inputType: 'text', text: 'milk, secret-term' }));
     const body = ExtractResponse.parse(await res.json());
     expect(res.status).toBe(200);

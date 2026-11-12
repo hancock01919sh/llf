@@ -131,10 +131,7 @@ describe('createCatalogSource: URL mode', () => {
 
   it('keeps the last match when a refresh fails', async () => {
     let time = 0;
-    const fetch = fakeFetch([
-      { status: 200, body: page(['Onions'], 0, 100, 1) },
-      { status: 500 },
-    ]);
+    const fetch = fakeFetch([{ status: 200, body: page(['Onions'], 0, 100, 1) }, { status: 500 }]);
     const source = createCatalogSource({
       catalogUrl: CATALOG_URL,
       refreshMs: 1_000,
