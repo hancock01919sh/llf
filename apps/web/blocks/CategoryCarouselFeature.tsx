@@ -106,7 +106,10 @@ export function CategoryCarouselFeature(
                   key={item.category?.id + '' + item.category?.documentId + '' + index}
                   className="h-auto! bg-surface-paper overflow-hidden rounded-md lg:aspect-535/579"
                 >
-                  <TransitionLink className='flex flex-col h-full' href={`/tips/${item.category?.slug}`}>
+                  <TransitionLink
+                    className="flex flex-col h-full"
+                    href={`/tips/${item.category?.slug}`}
+                  >
                     <UIImage
                       src={item.category?.image?.url || ''}
                       alt={

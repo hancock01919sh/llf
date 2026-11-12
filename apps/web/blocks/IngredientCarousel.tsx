@@ -67,7 +67,10 @@ export function BlockIngredientCarousel(
                 key={item.category?.id + '' + item.category?.documentId + '' + index}
                 className="rounded-md overflow-hidden h-auto! border border-ink-terra "
               >
-                <TransitionLink className="flex flex-col h-full" href={`/tips/${item.category?.slug}`}>
+                <TransitionLink
+                  className="flex flex-col h-full"
+                  href={`/tips/${item.category?.slug}`}
+                >
                   <UIImage
                     src={item.category?.image?.url || ''}
                     alt={
