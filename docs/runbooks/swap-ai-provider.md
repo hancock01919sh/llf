@@ -25,7 +25,7 @@ A tech lead. Choosing the **production** provider is Ad Council's decision (OPEN
 | `mock` | Local and CI (default) | none |
 | `anthropic` | Dev, on ddd's key | `ANTHROPIC_API_KEY` |
 | `openai` | Arena and eval only (not an authorized vendor) | `OPENAI_API_KEY` |
-| `gemini` | Vertex AI in Ad Council's project (D37): dev on a bound key; staging and prod by Workload Identity Federation, no key | `GEMINI_VERTEX=1`, `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION` (`us`); `GEMINI_API_KEY` on dev only |
+| `gemini` | Dev and local: ddd's Gemini API key (D33). Staging and prod: Vertex AI in Ad Council's project (D37) by Workload Identity Federation, no key | Dev: `GEMINI_API_KEY`. Staging/prod: `GEMINI_VERTEX=1`, `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION` (`us`) |
 | `bedrock` | Stub until OPEN-1 | TODO(OPEN-1) |
 
 Optional settings: `AI_REASONING_EFFORT` (`none`, `minimal`, `low`, `medium`, `high`) and `PROMPT_VERSION` (default `p1`). Never edit a prompt version that an eval already scored: add a new one in `services/find-my-tips/src/extract/prompt.ts`.

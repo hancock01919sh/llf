@@ -12,7 +12,7 @@ Every developer, including the China team.
 - **Node 22** (`nvm use` reads `.nvmrc`) and **pnpm 9** (`corepack enable`).
 - **Docker**, only for the CMS (Postgres 16).
 - Git access to the repo.
-- Mainland China: GitHub, npm, and Docker Hub can be slow. Registry mirrors and VPN are being agreed (TDD §11.4, BD3244-19). Don't try live AI keys from China: use the mock adapter.
+- Mainland China: GitHub, npm, and Docker Hub can be slow. Registry mirrors and VPN are being agreed (TDD §11.4, BD3244-19). The live AI API works only through the VPN; everything else runs on the mock.
 
 ## Steps
 1. Install:
@@ -42,13 +42,14 @@ To use a real model locally (TDD D33), add these to your git-ignored `.env`. Art
 ```sh
 AI_PROVIDER=gemini
 AI_MODEL=gemini-3.8-flash
-GEMINI_VERTEX=1
-GOOGLE_CLOUD_PROJECT=iconic-indexer-513915-t1
-GOOGLE_CLOUD_LOCATION=us
-GEMINI_API_KEY=<the Vertex dev key, from the secure share>
+PROMPT_VERSION=p3
+GEMINI_API_KEY=<ddd's dev key, from the secure share>
 ```
-This calls Gemini on Vertex AI in Ad Council's Google Cloud project, on the US multi-region endpoint (TDD D37).
-Restart `pnpm dev`. From mainland China, the live API needs a VPN. Tests and CI always use mock.
+This calls ddd's capped dev key on the Gemini API, the same setup as Render dev. Use **test inputs only**: no real receipts, names, or personal photos. Staging and prod use Gemini on Vertex AI in Ad Council's project without any key (TDD D37); you don't need that locally.
+
+Restart `pnpm dev`. From mainland China, turn on the VPN first: without it Google rejects the call and the tool returns `upstream_error`. Tests and CI always use mock, so never point a test at the live key.
+
+The dev key has a small daily budget shared by the whole team. Switch back to `AI_PROVIDER=mock` when you aren't working on the model path.
 
 To try the tool:
 ```sh
