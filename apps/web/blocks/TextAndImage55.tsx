@@ -24,8 +24,8 @@ export function BlockTextAndImage55(props: BlockProps<cmsType.component._5050Tex
   const [prevSectionBgColor, setPrevSectionBgColor] = useState(currentBgColor);
   useEffect(() => {
     if (!addBackgroundColor) return;
-    if (adjacent.next && positionOfAddingBgColor === 'Up ') {
-      setPrevSectionBgColor(getComputedStyle(adjacent.prev as HTMLElement).backgroundColor);
+    if (adjacent.prev && positionOfAddingBgColor === 'Up ') {
+      setPrevSectionBgColor(getComputedStyle(adjacent.prev).backgroundColor);
     }
   }, [adjacent, addBackgroundColor, positionOfAddingBgColor]);
   const { isMobile } = useDevice();
