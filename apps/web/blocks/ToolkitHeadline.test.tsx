@@ -42,7 +42,14 @@ describe('BlockToolkitHeadline', () => {
     renderBlock();
     expect(screen.getByRole('heading', { level: 2 }).textContent).toBe('Toolkit headline');
     expect(screen.getByText('This is the toolkit overview.')).toBeDefined();
-    expect(screen.getByRole('button').textContent).toContain('download campaign overview');
+    expect(screen.getByRole('link').textContent).toContain('download campaign overview');
+  });
+
+  it('downloads the CMS file through the CTA', () => {
+    renderBlock();
+    const link = screen.getByRole('link');
+    expect(link.getAttribute('href')).toBe('/uploads/PDPE_Cert_b124ac2c60.pdf');
+    expect(link.getAttribute('download')).toBe('PDPECert.pdf');
   });
 
   it('keeps the h1 on the first block and downgrades it later', () => {
@@ -54,10 +61,16 @@ describe('BlockToolkitHeadline', () => {
     expect(screen.getByRole('heading', { level: 2 }).textContent).toBe('Toolkit headline');
   });
 
-  it('renders without the optional CTA', () => {
+  it('renders no link without the optional CTA', () => {
     renderBlock(1, { cta: undefined });
     expect(screen.getByRole('heading', { level: 2 }).textContent).toBe('Toolkit headline');
     expect(screen.getByText('This is the toolkit overview.')).toBeDefined();
-    expect(screen.getByRole('button').textContent?.trim()).toBe('');
+    expect(screen.queryByRole('link')).toBeNull();
+  });
+
+  it('renders no link when the CMS has no file to download', () => {
+    renderBlock(1, { file: undefined });
+    expect(screen.getByRole('heading', { level: 2 }).textContent).toBe('Toolkit headline');
+    expect(screen.queryByRole('link')).toBeNull();
   });
 });

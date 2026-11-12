@@ -78,7 +78,7 @@ export function IngredientsHeader(
             </Typography>
             {props?.placeholder && (
               <input
-                className="mt-10 w-full bg-[#FFFEFB] border border-ink-terra-15 rounded-pill p-5 text-paragraph-sm font-bold [&_placeholder]:text-ink-terra outline-ink-terra lg:w-[46%] "
+                className="mt-10 w-full bg-[#FFFEFB] border border-ink-terra-15 rounded-pill p-5 text-paragraph-sm font-bold placeholder:text-ink-terra outline-ink-terra lg:w-[46%] "
                 type="text"
                 placeholder={props.placeholder}
                 aria-label={props.placeholder}

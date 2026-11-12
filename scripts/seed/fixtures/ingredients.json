@@ -17,6 +17,22 @@
       "synonyms": ["chicken breast", "chicken thighs"],
       "wasted": 3
     },
-    { "title": "Rice", "type": "Dry Foods", "synonyms": ["white rice", "brown rice"], "wasted": 2 }
+    { "title": "Rice", "type": "Dry Foods", "synonyms": ["white rice", "brown rice"], "wasted": 2 },
+    { "title": "Onions" },
+    { "title": "Zucchini" },
+    { "title": "Pork" },
+    { "title": "Avocado" },
+    { "title": "Tomatoes" },
+    { "title": "Beef" },
+    { "title": "White fish" },
+    { "title": "Sweet potatoes" },
+    { "title": "Bell peppers" },
+    { "title": "Sausage" },
+    { "title": "Chicken thighs" },
+    { "title": "Chicken wings" },
+    { "title": "Sour Cream" },
+    { "title": "Green Onions" },
+    { "title": "Broccoli" },
+    { "title": "Chicken breast" }
   ]
 }

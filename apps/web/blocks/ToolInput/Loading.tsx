@@ -18,7 +18,9 @@ export function Loading({ open }: { open: boolean }) {
           <Typography variant="subhead-md" className="text-surface-mint">
             {global?.load?.statement}
           </Typography>
-          {global?.load?.title && <BlockTitle title={global?.load?.title} moduleIndex={0} />}
+          {global?.load?.title && (
+            <BlockTitle className="text-surface-sand" title={global?.load?.title} moduleIndex={0} />
+          )}
         </div>
       </div>
       <AppFooter />

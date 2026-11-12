@@ -30,6 +30,7 @@ export function Provider({
       case '/about':
         return 'bg-ink-terra!';
       case '/search':
+      case '/toolkit':
         return 'bg-surface-paper! text-ink-terra! [&_svg_path]:stroke-ink-terra [&_svg_rect]:fill-ink-terra';
       default:
         return 'bg-brand-forest';
