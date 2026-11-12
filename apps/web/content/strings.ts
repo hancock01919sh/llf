@@ -91,15 +91,17 @@ const SiteStrings = z.object({
   home: z.object({ featuredTitle: text }),
   global: z.object({
     download: text,
+    ingredients: text,
+    tips: text,
   }),
   toolkit: z.object({
-    download: text,
     filetype: text,
     filename: text,
   }),
   categoryDetail: z.object({
     backToTips: text,
     backToIngredients: text,
+    tipsAvailable: text,
   }),
   tipBanner: z.object({
     save: text,
@@ -195,15 +197,17 @@ export const strings: SiteStrings = SiteStrings.parse({
   home: { featuredTitle: 'Browse by category' },
   global: {
     download: 'Download',
+    ingredients: 'ingredients',
+    tips: 'tips',
   },
   toolkit: {
-    download: 'Download',
     filetype: 'File type',
     filename: 'File name',
   },
   categoryDetail: {
     backToTips: 'Back to Explore the Library',
     backToIngredients: 'Back to Ingredient List',
+    tipsAvailable: 'tips available',
   },
   tipBanner: {
     save: 'Save to Photos',
