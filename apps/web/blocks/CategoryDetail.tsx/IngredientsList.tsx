@@ -102,8 +102,9 @@ export function IngredientsList(
       {state.status === 'ready' && finalIngredients.length > 0 && (
         <div className={`pb-gutter-lg`}>
           <Typography variant="paragraph-regular" className="px-5">
-            {finalIngredients?.length} ingredients |{' '}
-            {finalIngredients?.reduce((acc, cur) => acc + (cur.tips?.length || 0), 0)} tips
+            {finalIngredients?.length} {strings.global.ingredients} |{' '}
+            {finalIngredients?.reduce((acc, cur) => acc + (cur.tips?.length || 0), 0)}{' '}
+            {strings.global.tips}
           </Typography>
           <div
             className={`flex items-start mt-lg lg:mt-12.5 gap-6 ${state.ingredients[activeIndex]?.tips.length === 0 ? ' items-stretch' : ''}`}
@@ -231,9 +232,16 @@ export function IngredientsList(
         onClose={() => setActiveIndex(-1)}
         ingredient={finalIngredients[activeIndex] as IngredientData}
         downloadTip={downloadTip}
+        downloadIng={downloadIng}
       />
       {downloadTemplateData && (
-        <DownloadTemplate onComplete={() => setDownloadIng(false)} {...downloadTemplateData} />
+        <DownloadTemplate
+          onComplete={() => {
+            setDownloadIng(false);
+            setDownloadTemplateData(null);
+          }}
+          {...downloadTemplateData}
+        />
       )}
     </>
   );

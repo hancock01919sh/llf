@@ -17,14 +17,17 @@ export function IngredientsPopup({
   onClose,
   ingredient,
   downloadTip,
+  downloadIng,
 }: {
   open: boolean;
   onClose: () => void;
   ingredient: IngredientData;
   downloadTip: (tip: downloadDataTipProps) => void;
+  downloadIng: boolean;
 }) {
   const { footer, navigation } = useContext(AppContext);
   if (!footer || !navigation || !ingredient) return null;
+
   return (
     <>
       <Popup open={open} onClose={onClose}>
@@ -58,7 +61,7 @@ export function IngredientsPopup({
                 {ingredient?.title}
               </Typography>
               <Typography variant="subhead-lg" className="mt-4">
-                {`${ingredient?.tips?.length ?? 0} tips available`}
+                {`${ingredient?.tips?.length ?? 0} ${strings.categoryDetail.tipsAvailable}`}
               </Typography>
             </div>
           </div>
@@ -69,6 +72,7 @@ export function IngredientsPopup({
                   <div className="flex-center justify-between">
                     <TipBadge type={tip.type?.toLowerCase() as TipBadgeType} />
                     <button
+                      disabled={downloadIng}
                       className="w-10"
                       aria-label={'download tips'}
                       onClick={() => {
@@ -79,7 +83,9 @@ export function IngredientsPopup({
                         });
                       }}
                     >
-                      <IconShare className="[&_path]:fill-surface-mint-dark" />
+                      <IconShare
+                        className={`${downloadIng ? '[&_path]:fill-ink-terra-40' : '[&_path]:fill-surface-mint-dark'}`}
+                      />
                     </button>
                   </div>
 

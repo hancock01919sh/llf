@@ -80,7 +80,13 @@ export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeep
           </div>
         </div>
       </div>
-      <DownloadTemplate {...downloadTemplateData} onComplete={() => setIsDownloading(false)} />
+      <DownloadTemplate
+        {...downloadTemplateData}
+        onComplete={() => {
+          setIsDownloading(false);
+          setDownloadTemplateData(null);
+        }}
+      />
     </div>
   );
 }
