@@ -121,6 +121,7 @@ export const blocks = {
     schema: cmsType.component._5050TextAndImageDeepRef,
     Component: BlockTextAndImage55,
     type: 'text-and-image-55',
+    isFullWidth: true,
   }),
   'component.content-spotlight': entry({
     schema: cmsType.component.ContentSpotlightDeepRef,
