@@ -458,7 +458,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     group: Schema.Attribute.Relation<"manyToOne", "api::group.group">;
     image: Schema.Attribute.Media<"images" | "files">;
     ingredients: Schema.Attribute.Relation<
-      "manyToMany",
+      "oneToMany",
       "api::ingredient.ingredient"
     >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -473,7 +473,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<"shared.seo", false>;
     slug: Schema.Attribute.String & Schema.Attribute.Required;
-    tips: Schema.Attribute.Relation<"manyToMany", "api::tip.tip">;
+    tips: Schema.Attribute.Relation<"oneToMany", "api::tip.tip">;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
@@ -495,18 +495,21 @@ export interface ApiFooterFooter extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private;
-    iconLink: Schema.Attribute.Component<"shared.iconlink", true>;
-    legalCopy: Schema.Attribute.Text;
-    link: Schema.Attribute.Component<"shared.links", true>;
+    iconLink: Schema.Attribute.Component<"shared.iconlink", true> &
+      Schema.Attribute.Required;
+    legalCopy: Schema.Attribute.Text & Schema.Attribute.Required;
+    link: Schema.Attribute.Component<"shared.links", true> &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       "oneToMany",
       "api::footer.footer"
     > &
       Schema.Attribute.Private;
-    overlayLink: Schema.Attribute.Component<"shared.overlay-link", true>;
+    overlayLink: Schema.Attribute.Component<"shared.overlay-link", true> &
+      Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    title: Schema.Attribute.String;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private;
@@ -527,7 +530,8 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private;
-    load: Schema.Attribute.Component<"component.loading", false>;
+    load: Schema.Attribute.Component<"component.loading", false> &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       "oneToMany",
@@ -536,7 +540,7 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<"shared.seo", false>;
-    title: Schema.Attribute.String;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private;
@@ -613,10 +617,7 @@ export interface ApiIngredientIngredient extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    categories: Schema.Attribute.Relation<
-      "manyToMany",
-      "api::category.category"
-    >;
+    category: Schema.Attribute.Relation<"manyToOne", "api::category.category">;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private;
@@ -672,7 +673,8 @@ export interface ApiNavigationNavigation extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private;
-    link: Schema.Attribute.Component<"shared.links", true>;
+    link: Schema.Attribute.Component<"shared.links", true> &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       "oneToMany",
@@ -681,7 +683,7 @@ export interface ApiNavigationNavigation extends Struct.SingleTypeSchema {
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
     searchPlaceholder: Schema.Attribute.String;
-    title: Schema.Attribute.String;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private;
@@ -732,6 +734,8 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
         "component.toolkit-headline",
         "shared.assets-cards",
         "component.guide",
+        "component.toolkit-parent-category",
+        "component.toolkit",
       ]
     >;
     path: Schema.Attribute.String &
@@ -845,10 +849,7 @@ export interface ApiTipTip extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    categories: Schema.Attribute.Relation<
-      "manyToMany",
-      "api::category.category"
-    >;
+    category: Schema.Attribute.Relation<"manyToOne", "api::category.category">;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private;
@@ -871,37 +872,6 @@ export interface ApiTipTip extends Struct.CollectionTypeSchema {
     >;
     tip_type: Schema.Attribute.Relation<"manyToOne", "api::tip-type.tip-type">;
     title: Schema.Attribute.String & Schema.Attribute.Required;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiToolkitCategoryToolkitCategory
-  extends Struct.CollectionTypeSchema {
-  collectionName: "toolkit_categories";
-  info: {
-    displayName: "Toolkit Category";
-    pluralName: "toolkit-categories";
-    singularName: "toolkit-category";
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
-      Schema.Attribute.Private;
-    label: Schema.Attribute.String;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      "oneToMany",
-      "api::toolkit-category.toolkit-category"
-    > &
-      Schema.Attribute.Private;
-    parentCategory: Schema.Attribute.Enumeration<["PSA Assets", "Guideline"]>;
-    publishedAt: Schema.Attribute.DateTime;
-    SubCategory_Description: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<"oneToOne", "admin::user"> &
       Schema.Attribute.Private;
@@ -1431,7 +1401,6 @@ declare module "@strapi/strapi" {
       "api::tip-motivator.tip-motivator": ApiTipMotivatorTipMotivator;
       "api::tip-type.tip-type": ApiTipTypeTipType;
       "api::tip.tip": ApiTipTip;
-      "api::toolkit-category.toolkit-category": ApiToolkitCategoryToolkitCategory;
       "plugin::content-releases.release": PluginContentReleasesRelease;
       "plugin::content-releases.release-action": PluginContentReleasesReleaseAction;
       "plugin::i18n.locale": PluginI18NLocale;
