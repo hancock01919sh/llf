@@ -1,9 +1,9 @@
+'use client';
 import { IconDownload, IconShare } from '@/components/Icon';
 import { TipBadge, type TipBadgeType } from '@/components/TipBadge';
 import { Typography } from '@/components/Typography';
 import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
-import type { Media } from '../../../packages/contracts/src/cms-type';
 import { UIImage } from '@/components/UIImage';
 import { strings } from '@/content/strings';
 export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeepRef>) {
@@ -37,7 +37,10 @@ export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeep
               {tip?.description || ''}
             </Typography>
             <div className="flex flex-col lg:flex-row items-stretch justify-between gap-2.5 mt-10 w-full lg:mt-0 lg:justify-start">
-              <button className="btn black border-ink-terra [&_path]:fill-surface-paper capitalize px-0  lg:w-max lg:flex-0 lg:px-10">
+              <button
+                className="btn black border-ink-terra [&_path]:fill-surface-paper capitalize px-0  lg:w-max lg:flex-0 lg:px-10"
+                onClick={() => void shareTip(tip?.ingredient?.title)}
+              >
                 {strings.tipBanner.share} <IconShare />
               </button>
               <button className="btn white hover:active:text-ink-terra border capitalize px-0  lg:w-max lg:flex-0 lg:px-10">
@@ -51,12 +54,36 @@ export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeep
     </div>
   );
 }
+/**
+ * Web Share API, falling back to the clipboard (TDD §6.6, D22). Cancelling the native sheet is not
+ * a failure, so it must not copy. The search term rides in the fragment: query strings end up in
+ * CDN and WAF logs (TDD §6.1, §7.6).
+ */
+async function shareTip(ingredientTitle: string | undefined) {
+  const url = ingredientTitle
+    ? `${window.location.origin}/search/#q=${encodeURIComponent(ingredientTitle)}`
+    : window.location.href;
+  try {
+    if (navigator.share) {
+      await navigator.share({ url });
+      return;
+    }
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') return;
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+  } catch {
+    // No clipboard (insecure context or denied permission); nothing else to fall back to.
+  }
+}
+
 function TipBannerImage({
   className = '',
   image,
 }: {
   className?: string;
-  image: Media | undefined | null;
+  image: cmsType.Media | undefined | null;
 }) {
   if (!image) {
     return null;
