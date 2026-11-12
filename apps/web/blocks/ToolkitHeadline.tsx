@@ -12,7 +12,7 @@ export function BlockToolkitHeadline(props: BlockProps<cmsType.component.Toolkit
       <Typography variant="subhead-lg" className="mt-5 font-bold">
         {description}
       </Typography>
-      {file?.url && (
+      {file?.url && cta?.label && (
         <a
           href={file.url}
           download={file.name}
