@@ -97,6 +97,13 @@ const SiteStrings = z.object({
     filetype: text,
     filename: text,
   }),
+  categoryDetail: z.object({
+    backToTips: text,
+  }),
+  tipBanner: z.object({
+    save: text,
+    share: text,
+  }),
 });
 export type SiteStrings = z.infer<typeof SiteStrings>;
 
@@ -192,6 +199,13 @@ export const strings: SiteStrings = SiteStrings.parse({
     download: 'Download',
     filetype: 'File type',
     filename: 'File name',
+  },
+  categoryDetail: {
+    backToTips: 'Back to Explore the Library',
+  },
+  tipBanner: {
+    save: 'Save to Photos',
+    share: 'Share Tip',
   },
 });
 
