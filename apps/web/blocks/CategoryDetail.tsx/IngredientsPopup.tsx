@@ -10,7 +10,7 @@ import { AppContext } from '@/components/Provider';
 import type { IngredientData } from '@llf/contracts';
 import { UIImage } from '@/components/UIImage';
 import { strings } from '@/content/strings';
-import type { downloadTipProps } from '@/components/DownloadTemplate';
+import type { downloadDataTipProps } from '@/components/DownloadTemplate';
 
 export function IngredientsPopup({
   open,
@@ -21,7 +21,7 @@ export function IngredientsPopup({
   open: boolean;
   onClose: () => void;
   ingredient: IngredientData;
-  downloadTip: (tip: downloadTipProps) => void;
+  downloadTip: (tip: downloadDataTipProps) => void;
 }) {
   const { footer, navigation } = useContext(AppContext);
   if (!footer || !navigation || !ingredient) return null;

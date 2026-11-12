@@ -13,11 +13,10 @@ import type { CategoryDetailWithSearchProps } from '.';
 import { UIImage } from '@/components/UIImage';
 import {
   DownloadTemplate,
-  type DownloadTemplateProps,
-  type downloadTipProps,
+  type downloadDataTipProps,
+  type downloadTemplateDataProps,
 } from '@/components/DownloadTemplate';
 import { strings } from '@/content/strings';
-import dynamic from 'next/dynamic';
 
 export function IngredientsList(
   props: CategoryDetailWithSearchProps & {
@@ -78,39 +77,13 @@ export function IngredientsList(
     return classText;
   }
   const [downloadIng, setDownloadIng] = useState<boolean>(false);
-  const [downloadTemplateData, setDownloadTemplateData] = useState<DownloadTemplateProps | null>(
-    null,
-  );
+  const [downloadTemplateData, setDownloadTemplateData] =
+    useState<downloadTemplateDataProps | null>(null);
   useEffect(() => {
     if (!downloadRef.current || !downloadTemplateData) return;
     setDownloadIng(true);
-    import('html-to-image')
-      .then((mod) => mod.toJpeg)
-      .then((html2img) => {
-        if (!downloadRef.current) return;
-        html2img(downloadRef.current, {
-          quality: 0.8,
-        })
-          .then((res: string) => {
-            const link = document.createElement('a');
-            const filename = downloadTemplateData.ingredient.title;
-            const littleTipName = downloadTemplateData.tip.title.split(' ').slice(0, 2);
-            link.download = `${filename}-${littleTipName.join(' ')}.jpeg`;
-            link.href = res;
-            link.click();
-            setDownloadIng(false);
-            setTimeout(() => {
-              setDownloadTemplateData(null);
-            }, 1000);
-            // 清理引用
-            link.remove();
-          })
-          .catch(() => {
-            setDownloadIng(false);
-          });
-      });
   }, [downloadTemplateData, downloadRef]);
-  function downloadTip(tip: downloadTipProps) {
+  function downloadTip(tip: downloadDataTipProps) {
     setDownloadTemplateData({
       tip,
       ingredient: {
@@ -121,6 +94,7 @@ export function IngredientsList(
         title: finalIngredients[activeIndex]?.title || '',
       },
     });
+    setDownloadIng(true);
   }
   return (
     <>
@@ -258,7 +232,9 @@ export function IngredientsList(
         ingredient={finalIngredients[activeIndex] as IngredientData}
         downloadTip={downloadTip}
       />
-      {downloadTemplateData && <DownloadTemplate ref={downloadRef} {...downloadTemplateData} />}
+      {downloadTemplateData && (
+        <DownloadTemplate onComplete={() => setDownloadIng(false)} {...downloadTemplateData} />
+      )}
     </>
   );
 }

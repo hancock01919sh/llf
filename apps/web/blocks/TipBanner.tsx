@@ -6,8 +6,14 @@ import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
 import { UIImage } from '@/components/UIImage';
 import { strings } from '@/content/strings';
+import { DownloadTemplate, type downloadTemplateDataProps } from '@/components/DownloadTemplate';
+import { useState } from 'react';
+
 export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeepRef>) {
   const { tip, label } = props.block;
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadTemplateData, setDownloadTemplateData] =
+    useState<downloadTemplateDataProps | null>(null);
   return (
     <div className="py-15 lg:py-25">
       <div className="w-full rounded-md  text-ink-terra bg-surface-forest-tint ">
@@ -43,14 +49,38 @@ export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeep
               >
                 {strings.tipBanner.share} <IconShare />
               </button>
-              <button className="btn white hover:active:text-ink-terra border capitalize px-0  lg:w-max lg:flex-0 lg:px-10">
+              <button
+                disabled={isDownloading}
+                className="btn white hover:active:text-ink-terra border capitalize px-0  lg:w-max lg:flex-0 lg:px-10"
+                onClick={() => {
+                  setIsDownloading(true);
+                  setDownloadTemplateData({
+                    tip: {
+                      title: tip?.title || '',
+                      description: tip?.description || '',
+                      type: tip?.tip_type?.title?.toLowerCase() || '',
+                    },
+                    ingredient: {
+                      image: {
+                        url: tip?.ingredient?.image?.url || '',
+                        alt:
+                          tip?.ingredient?.image?.alternativeText ||
+                          tip?.ingredient?.image?.name ||
+                          '',
+                      },
+                      title: tip?.ingredient?.title || '',
+                    },
+                  });
+                }}
+              >
                 {strings.tipBanner.save}
-                <IconDownload />
+                <IconDownload className={`${isDownloading ? '[&_path]:fill-ink-terra-40' : ''}`} />
               </button>
             </div>
           </div>
         </div>
       </div>
+      <DownloadTemplate {...downloadTemplateData} onComplete={() => setIsDownloading(false)} />
     </div>
   );
 }
