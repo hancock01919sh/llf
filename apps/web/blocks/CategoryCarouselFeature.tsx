@@ -104,7 +104,7 @@ export function CategoryCarouselFeature(
               .map((item, index) => (
                 <SwiperSlide
                   key={item.category?.id + '' + item.category?.documentId + '' + index}
-                  className="h-auto! bg-surface-paper overflow-hidden rounded-md lg:aspect-535/579"
+                  className="h-auto! bg-surface-paper overflow-hidden rounded-md "
                 >
                   <TransitionLink
                     className="flex flex-col h-full"
@@ -120,14 +120,12 @@ export function CategoryCarouselFeature(
                       }
                       className="aspect-362/296 object-cover lg:aspect-535/438 lg:w-full"
                     />
-                    <div className="flex-center p-10 flex-1">
-                      <Typography
-                        variant="headline-sm"
-                        className="text-center text-ink-terra uppercase leading-none"
-                      >
-                        {item.category?.title || ''}
-                      </Typography>
-                    </div>
+                    <Typography
+                      variant="headline-sm"
+                      className=" p-10 flex-1 text-center text-ink-terra uppercase leading-none"
+                    >
+                      {item.category?.title || ''}
+                    </Typography>
                   </TransitionLink>
                 </SwiperSlide>
               ))}
