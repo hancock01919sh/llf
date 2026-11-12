@@ -5,8 +5,11 @@ import { Typography } from '@/components/Typography';
 import { useState } from 'react';
 import { IconArrow } from '@/components/Icon';
 import { DropdownMenu } from 'radix-ui';
-export function ToolkitNav(props: { navList: cmsType.component.ToolkitParentCategoryDeepRef[] }) {
-  const { navList } = props;
+export function ToolkitNav(props: {
+  navList: cmsType.component.ToolkitParentCategoryDeepRef[];
+  onChange: (id: number) => void;
+}) {
+  const { navList, onChange } = props;
   const [selected, setSelected] = useState(navList[0]?.title.copy || '');
   const [open, setOpen] = useState(false);
   return (
@@ -34,10 +37,8 @@ export function ToolkitNav(props: { navList: cmsType.component.ToolkitParentCate
                       key={nav.id}
                       className="w-full"
                       onClick={() => {
+                        onChange(nav.id);
                         setSelected(nav.title.copy || '');
-                        document
-                          .getElementById(nav.title.copy || '')
-                          ?.scrollIntoView({ behavior: 'smooth' });
                       }}
                     >
                       <Typography
@@ -52,10 +53,13 @@ export function ToolkitNav(props: { navList: cmsType.component.ToolkitParentCate
                         <DropdownMenu.Item
                           key={sub.id}
                           onClick={() => {
+                            onChange(nav.id);
                             setSelected(sub.title.copy || '');
-                            document
-                              .getElementById(sub.title.copy || '')
-                              ?.scrollIntoView({ behavior: 'smooth' });
+                            setTimeout(() => {
+                              document
+                                .getElementById(sub.title.copy || '')
+                                ?.scrollIntoView({ behavior: 'smooth' });
+                            }, 200);
                           }}
                         >
                           <Typography
@@ -85,10 +89,11 @@ export function ToolkitNav(props: { navList: cmsType.component.ToolkitParentCate
               <div key={nav.id} className="w-full">
                 <Typography
                   onClick={() => {
+                    onChange(nav.id);
                     setSelected(nav.title.copy || '');
-                    document
-                      .getElementById(nav.subCategoryModes[0]?.title.copy || '')
-                      ?.scrollIntoView({ behavior: 'smooth' });
+                    // document
+                    //   .getElementById(nav.subCategoryModes[0]?.title.copy || '')
+                    //   ?.scrollIntoView({ behavior: 'smooth' });
                   }}
                   variant="subhead-md"
                   className={`p-5 font-bold capitalize text-nowrap cursor-pointer w-full ${selected === nav.title.copy ? 'text-ink-terra' : ''}`}
@@ -100,10 +105,13 @@ export function ToolkitNav(props: { navList: cmsType.component.ToolkitParentCate
                     <Typography
                       key={sub.id}
                       onClick={() => {
+                        onChange(nav.id);
                         setSelected(sub.title.copy || '');
-                        document
-                          .getElementById(sub.title.copy || '')
-                          ?.scrollIntoView({ behavior: 'smooth' });
+                        setTimeout(() => {
+                          document
+                            .getElementById(sub.title.copy || '')
+                            ?.scrollIntoView({ behavior: 'smooth' });
+                        }, 200);
                       }}
                       variant="subhead-md"
                       className={`p-5 pl-10 capitalize font-bold cursor-pointer  text-nowrap ${selected === sub.title.copy ? 'text-ink-terra' : ''}`}
