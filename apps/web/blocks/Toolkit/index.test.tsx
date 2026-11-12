@@ -1,5 +1,5 @@
 import type { cmsType } from '@llf/contracts';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { BlockToolkit } from './index';
 
@@ -116,50 +116,54 @@ const renderBlock = (overrides: Partial<cmsType.component.ToolkitDeepRef> = {}) 
 describe('BlockToolkit', () => {
   afterEach(cleanup);
 
-  it('renders the nav categories and every sub-category heading', () => {
+  it('lists every category in the nav and renders only the active one', () => {
     renderBlock();
-    const [guidelines, psaAssets] = block.toolkitCategory;
-    if (!guidelines?.title.copy || !psaAssets?.title.copy) {
-      throw new Error('fixture needs both category titles');
-    }
-    expect(screen.getAllByText(guidelines.title.copy).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(psaAssets.title.copy).length).toBeGreaterThan(0);
+    const [, psaAssets] = block.toolkitCategory;
+    expect(screen.getAllByText('Guidelines').length).toBeGreaterThan(0);
+    expect(screen.getAllByText(psaAssets?.title.copy ?? '').length).toBeGreaterThan(0);
 
-    for (const category of block.toolkitCategory) {
-      for (const sub of category.subCategory) {
-        const level = sub.title.header === 'h3' ? 3 : 2;
-        expect(screen.getByRole('heading', { level, name: sub.title.copy ?? '' })).toBeDefined();
-      }
-    }
+    expect(screen.getByRole('heading', { level: 2, name: 'brand guidelines' })).toBeDefined();
+    expect(screen.getByRole('heading', { level: 2, name: 'radio' })).toBeDefined();
+    // The second category's sections only render once it becomes active.
+    expect(screen.queryByRole('heading', { level: 3, name: 'televison' })).toBeNull();
   });
 
-  it('renders every asset title and description', () => {
+  it('switches the content when another category is chosen', () => {
     renderBlock();
-    for (const category of block.toolkitCategory) {
-      for (const sub of category.subCategory) {
-        expect(screen.getAllByText(sub.description).length).toBeGreaterThan(0);
-        for (const asset of sub.assets) {
-          expect(screen.getByText(asset.title)).toBeDefined();
-          expect(screen.getByText(asset.description)).toBeDefined();
-        }
-      }
-    }
+    fireEvent.click(screen.getAllByText('PSA Assets')[0] as HTMLElement);
+    expect(screen.getByRole('heading', { level: 3, name: 'televison' })).toBeDefined();
+    expect(screen.queryByText('This is the radio description.')).toBeNull();
   });
 
-  it('groups assets under their label', () => {
+  it('renders every asset title and description of the active category', () => {
     renderBlock();
-    // Two sub-categories each render a 16x9 group; the two 4x5 assets share one group.
-    expect(screen.getAllByText('16x9 :30 second')).toHaveLength(2);
+    const active = block.toolkitCategory[0];
+    if (!active) throw new Error('fixture needs a first category');
+    for (const sub of active.subCategory) {
+      expect(screen.getAllByText(sub.description).length).toBeGreaterThan(0);
+      for (const asset of sub.assets) {
+        expect(screen.getByText(asset.title)).toBeDefined();
+        expect(screen.getByText(asset.description)).toBeDefined();
+      }
+    }
+    // assetE belongs to the other category.
+    expect(screen.queryByText('Brand Guidelines')).toBeNull();
+  });
+
+  it('groups assets under their label, one group per label', () => {
+    renderBlock();
+    // assets B and C share the 4x5 label, so each label renders exactly once.
+    expect(screen.getAllByText('16x9 :30 second')).toHaveLength(1);
     expect(screen.getAllByText('4x5 :15 second')).toHaveLength(1);
-    expect(screen.getByText('1x1 :15 second')).toBeDefined();
+    expect(screen.getAllByText('1x1 :15 second')).toHaveLength(1);
   });
 
   it('renders the CMS image for every asset and a download link only when a file exists', () => {
     const { container } = renderBlock();
     const assets: cmsType.shared.AssetsCardsDeepRef[] = [];
-    for (const category of block.toolkitCategory) {
-      for (const sub of category.subCategory) assets.push(...sub.assets);
-    }
+    const active = block.toolkitCategory[0];
+    if (!active) throw new Error('fixture needs a first category');
+    for (const sub of active.subCategory) assets.push(...sub.assets);
 
     const images = [...container.querySelectorAll('img')];
     expect(images.map((img) => img.getAttribute('alt'))).toEqual(assets.map((a) => a.title));
@@ -169,7 +173,7 @@ describe('BlockToolkit', () => {
 
     const anchors = [...container.querySelectorAll('a')];
     expect(anchors).toHaveLength(assets.length);
-    expect(anchors.filter((anchor) => anchor.getAttribute('href') === pdf.url)).toHaveLength(3);
+    expect(anchors.filter((anchor) => anchor.getAttribute('href') === pdf.url)).toHaveLength(2);
     expect(anchors.filter((anchor) => anchor.getAttribute('href') === null)).toHaveLength(2);
   });
 

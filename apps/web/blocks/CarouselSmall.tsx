@@ -62,9 +62,12 @@ export function BlockCarouselSmall(props: BlockProps<cmsType.component.CarouselS
             .map((item, index) => (
               <SwiperSlide
                 key={item.category?.id + '' + item.category?.documentId + '' + index}
-                className="rounded-md overflow-hidden flex flex-col "
+                className="rounded-md overflow-hidden h-auto! bg-surface-mint"
               >
-                <TransitionLink href={`/tips/${item.category?.slug}`}>
+                <TransitionLink
+                  className="flex flex-col h-full"
+                  href={`/tips/${item.category?.slug}`}
+                >
                   <UIImage
                     src={item.category?.image?.url || ''}
                     alt={
@@ -77,7 +80,7 @@ export function BlockCarouselSmall(props: BlockProps<cmsType.component.CarouselS
                   />
                   <Typography
                     variant="headline-sm"
-                    className={`uppercase text-ink-terra p-8 text-center bg-surface-mint`}
+                    className={`uppercase flex-1 line-clamp-2 text-ink-terra m-8 text-center `}
                   >
                     {item.category?.title || ''}
                   </Typography>

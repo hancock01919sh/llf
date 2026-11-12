@@ -1,158 +1,467 @@
 {
   "data": [
     {
-      "id": 1,
-      "documentId": "fxin0001",
-      "title": "Banana",
-      "type": "Produce",
-      "synonyms": "bananas",
-      "wasted": 4,
-      "image": null,
+      "id": 83,
+      "documentId": "k8v7fjqmkk0pkrt2wwjonxyp",
+      "title": "Onions",
+      "type": null,
+      "synonyms": null,
+      "tips": [],
+      "wasted": 3,
+      "image": null
+    },
+    {
+      "id": 85,
+      "documentId": "mlrz9k2wktrx3enshfn385ns",
+      "title": "Zucchini",
+      "type": null,
+      "synonyms": null,
+      "tips": [],
+      "wasted": 3,
+      "image": null
+    },
+    {
+      "id": 87,
+      "documentId": "b44wmv61zo4191m5h7m8l43c",
+      "title": "Pork",
+      "type": null,
+      "synonyms": null,
       "tips": [
         {
-          "id": 1,
-          "documentId": "fxtp0001",
-          "title": "Freeze ripe bananas",
-          "description": "Peel, slice, and freeze them for smoothies and baking.",
+          "id": 72,
+          "documentId": "l0ogv6utari179mlldr5avdr",
+          "title": "Pork shoulder and butt are forgiving cuts you can buy",
+          "description": "Designed for low, slow cooking with a wide margin for error. Unlike loin or chops, they're hard to overcook and hold up longer in the fridge before cooking.",
           "tip_type": {
-            "id": 1,
-            "documentId": "fxtt0001",
-            "title": "Storage"
+            "id": 22,
+            "documentId": "jx1ssjev8r4nb2kyc3fn9hde",
+            "title": "Buy it"
           }
         },
         {
-          "id": 2,
-          "documentId": "fxtp0002",
-          "title": "Bake with brown bananas",
-          "description": "Spotty bananas make the sweetest banana bread.",
+          "id": 90,
+          "documentId": "bdima3bi9n1iyvhuibvvjhbq",
+          "title": "Pork on its last day belongs in a covered pan with liquid",
+          "description": "Stock, wine, or even water with aromatics — low heat, covered, for an hour. The same process that makes tough cuts tender rescues ones that have been sitting too long.",
           "tip_type": {
-            "id": 3,
-            "documentId": "fxtt0003",
-            "title": "Reuse"
-          }
-        }
-      ]
-    },
-    {
-      "id": 2,
-      "documentId": "fxin0002",
-      "title": "Spinach",
-      "type": "Leafy Greens",
-      "synonyms": "baby spinach",
-      "wasted": 5,
-      "image": null,
-      "tips": [
-        {
-          "id": 3,
-          "documentId": "fxtp0003",
-          "title": "Store with a paper towel",
-          "description": "A dry paper towel in the container soaks up moisture so leaves last longer.",
-          "tip_type": {
-            "id": 1,
-            "documentId": "fxtt0001",
-            "title": "Storage"
-          }
-        }
-      ]
-    },
-    {
-      "id": 3,
-      "documentId": "fxin0003",
-      "title": "Bread",
-      "type": "Baked Goods",
-      "synonyms": "loaf, sourdough, baguette",
-      "wasted": 4,
-      "image": null,
-      "tips": [
-        {
-          "id": 4,
-          "documentId": "fxtp0004",
-          "title": "Freeze sliced bread",
-          "description": "Toast slices straight from the freezer.",
-          "tip_type": {
-            "id": 1,
-            "documentId": "fxtt0001",
-            "title": "Storage"
+            "id": 24,
+            "documentId": "wy46qcysn8mub06x91za7imk",
+            "title": "Rescue it"
           }
         },
         {
-          "id": 5,
-          "documentId": "fxtp0005",
-          "title": "Make croutons",
-          "description": "Cube stale bread, toss with oil, and bake until crisp.",
+          "id": 92,
+          "documentId": "xz9mytyp7csyw4cbxm64vmn2",
+          "title": "Pork is one of the more versatile leftovers",
+          "description": "It works cold or warm, in almost any cuisine — tacos, fried rice, grain bowls, noodle soups. Most leftovers narrow your options. Leftover pork opens them up.",
           "tip_type": {
-            "id": 3,
-            "documentId": "fxtt0003",
-            "title": "Reuse"
+            "id": 18,
+            "documentId": "twofxttr1y6aldue8k79owbb",
+            "title": "Use it"
           }
         }
-      ]
+      ],
+      "wasted": 3,
+      "image": null
     },
     {
-      "id": 4,
-      "documentId": "fxin0004",
+      "id": 89,
+      "documentId": "lmu8brjeuj01mtakozq43n7a",
+      "title": "Avocado",
+      "type": null,
+      "synonyms": null,
+      "tips": [
+        {
+          "id": 74,
+          "documentId": "aso8i0z2t6ij0eleuv5vwk9n",
+          "title": "Gone brown? It's not gone bad.",
+          "description": "Brown flesh means oxidation, not rot. Scrape the top layer and everything underneath is still good.",
+          "tip_type": {
+            "id": 24,
+            "documentId": "wy46qcysn8mub06x91za7imk",
+            "title": "Rescue it"
+          }
+        }
+      ],
+      "wasted": 3,
+      "image": {
+        "id": 236,
+        "documentId": "w8vld5ywd5uzb46altzj5e20",
+        "url": "/uploads/53de8cb6b261d020c4208ef47da774c1990a6a2a_1_b85fe57f51.png",
+        "alternativeText": "avocado",
+        "caption": null,
+        "width": 1000,
+        "height": 1000,
+        "mime": "image/png",
+        "name": "53de8cb6b261d020c4208ef47da774c1990a6a2a (1).png"
+      }
+    },
+    {
+      "id": 91,
+      "documentId": "g9glql1w0t6moy9j5fyc8nc9",
+      "title": "Tomatoes",
+      "type": null,
+      "synonyms": null,
+      "tips": [],
+      "wasted": 3,
+      "image": null
+    },
+    {
+      "id": 93,
+      "documentId": "jfvgfba84ctrcy5feal7qdzg",
+      "title": "Beef",
+      "type": null,
+      "synonyms": "Steak, Sirloin, Ribeye, Brisket, Stew meat, Chuck roast",
+      "tips": [
+        {
+          "id": 78,
+          "documentId": "zjlse35oaxqohnc5k2mhjj4q",
+          "title": "The cheaper the cut, the more forgiving it is to cook",
+          "description": "Chuck, brisket, and stew meat are built for low, slow cooking with a wide margin for error.",
+          "tip_type": {
+            "id": 22,
+            "documentId": "jx1ssjev8r4nb2kyc3fn9hde",
+            "title": "Buy it"
+          }
+        },
+        {
+          "id": 70,
+          "documentId": "x9bzple5pdfp6fpda68w5m8k",
+          "title": "Leftover cooked steak dries out from reheating uncovered",
+          "description": "Slice thin and reheat in a covered pan with a splash of stock or sauce. Reheating dry is why leftover steak has a bad reputation.",
+          "tip_type": {
+            "id": 18,
+            "documentId": "twofxttr1y6aldue8k79owbb",
+            "title": "Use it"
+          }
+        }
+      ],
+      "wasted": 2,
+      "image": null
+    },
+    {
+      "id": 95,
+      "documentId": "py6icl5638ofmd0g2qtts2o8",
       "title": "Milk",
+      "type": null,
+      "synonyms": null,
+      "tips": [
+        {
+          "id": 80,
+          "documentId": "djsjubgenqdipoja5z0u8ta0",
+          "title": "Check your household weekly consumption before sizing up to a gallon",
+          "description": "A smaller carton finished on time beats a larger one that ends up down the drain. Buy to match how much you actually go through, not what feels like the better deal per ounce.",
+          "tip_type": {
+            "id": 22,
+            "documentId": "jx1ssjev8r4nb2kyc3fn9hde",
+            "title": "Buy it"
+          }
+        },
+        {
+          "id": 82,
+          "documentId": "fv627i1ovkku18903ckgfann",
+          "title": "Milk doesn't belong in the fridge door",
+          "description": "The door is the warmest spot and fluctuates with every open and close. Keep it on a middle or bottom shelf toward the back where the temperature stays consistently cold.",
+          "tip_type": {
+            "id": 20,
+            "documentId": "l5j2f7d2oviv5uybla6f46if",
+            "title": "Store it"
+          }
+        },
+        {
+          "id": 84,
+          "documentId": "ode6rxr8z58obg8w1wl272g9",
+          "title": "Milk that's just past its label date but still smells fine works perfectly in cooking",
+          "description": "Pancakes, muffins, and sauces are all good uses — heat and other ingredients do the rest. Save the freshest milk for drinking straight and use the older carton for cooking first.",
+          "tip_type": {
+            "id": 18,
+            "documentId": "twofxttr1y6aldue8k79owbb",
+            "title": "Use it"
+          }
+        }
+      ],
+      "wasted": 3,
+      "image": null
+    },
+    {
+      "id": 97,
+      "documentId": "h5wje3h6y3pcot0rf2qlq19j",
+      "title": "White fish",
+      "type": null,
+      "synonyms": null,
+      "tips": [],
+      "wasted": 3,
+      "image": null
+    },
+    {
+      "id": 99,
+      "documentId": "rqgt7r8pa9xm2skuvpkpao9x",
+      "title": "Sweet potatoes",
+      "type": null,
+      "synonyms": null,
+      "tips": [],
+      "wasted": 3,
+      "image": null
+    },
+    {
+      "id": 101,
+      "documentId": "kb3l9tlqcphnvpjtqpp8smpk",
+      "title": "Banana",
+      "type": null,
+      "synonyms": null,
+      "tips": [],
+      "wasted": 3,
+      "image": null
+    },
+    {
+      "id": 103,
+      "documentId": "u3iqqiav165b685wizzijkn6",
+      "title": "Spinach",
+      "type": null,
+      "synonyms": null,
+      "tips": [],
+      "wasted": 3,
+      "image": null
+    },
+    {
+      "id": 105,
+      "documentId": "ze0vrm7u62kue30a9cftvcxi",
+      "title": "Bell peppers",
+      "type": null,
+      "synonyms": "Red pepper, Green pepper, Yellow pepper, Orange pepper, Sweet peppers",
+      "tips": [
+        {
+          "id": 94,
+          "documentId": "wm2jxb5usb6rmppg71oqh7rn",
+          "title": "Bulk pepper packs are cheaper — but only if you have a plan for all of them",
+          "description": "If you're buying a multicolor pack, separate them out when you get home and store them loose in the crisper rather than packed together. One soft pepper speeds up the rest.",
+          "tip_type": {
+            "id": 22,
+            "documentId": "jx1ssjev8r4nb2kyc3fn9hde",
+            "title": "Buy it"
+          }
+        },
+        {
+          "id": 96,
+          "documentId": "jkdih7avq1zmfak3l8q03qll",
+          "title": "Peppers go mushy and slimy from moisture, not age",
+          "description": "Keep them dry and unwashed in the crisper drawer until you're ready to use them. Sealed airtight, condensation builds up against the skin and speeds up deterioration.",
+          "tip_type": {
+            "id": 20,
+            "documentId": "l5j2f7d2oviv5uybla6f46if",
+            "title": "Store it"
+          }
+        },
+        {
+          "id": 98,
+          "documentId": "qotbstqchqya7h7hxpkm0h38",
+          "title": "Roast peppers that are starting to soften before they go any further",
+          "description": "Soft peppers caramelize better than firm ones at high heat. Slice, toss with oil, and roast at 425°F until charred at the edges — they become a completely different ingredient.",
+          "tip_type": {
+            "id": 18,
+            "documentId": "twofxttr1y6aldue8k79owbb",
+            "title": "Use it"
+          }
+        },
+        {
+          "id": 100,
+          "documentId": "bgpd4a322y8xbhb0x2qyblw6",
+          "title": "Raw strips with dip get eaten when cooked peppers don't",
+          "description": "Sweet bell pepper strips — especially red and yellow — work as a vehicle for hummus, ranch, or peanut butter. The raw sweetness and crunch is more appealing to most kids than the cooked version.",
+          "tip_type": {
+            "id": 18,
+            "documentId": "twofxttr1y6aldue8k79owbb",
+            "title": "Use it"
+          }
+        },
+        {
+          "id": 102,
+          "documentId": "jxs2fwhwyg4m3uacjwdrszox",
+          "title": "Peppers that have lost their crunch are still great for cooking",
+          "description": "Freeze them flat on a tray and they go straight from freezer to hot pan whenever you need them. No thawing required — pull out what you need and drop them in.",
+          "tip_type": {
+            "id": 24,
+            "documentId": "wy46qcysn8mub06x91za7imk",
+            "title": "Rescue it"
+          }
+        }
+      ],
+      "wasted": 3,
+      "image": null
+    },
+    {
+      "id": 107,
+      "documentId": "la5pfixx9dsodk0poik52gha",
+      "title": "Sausage",
+      "type": null,
+      "synonyms": "Bratwurst, Chorizo, Kielbasa, Italian sausage, Breakfast sausage",
+      "tips": [],
+      "wasted": 2,
+      "image": null
+    },
+    {
+      "id": 109,
+      "documentId": "rw5u5md39f3w7j7ua9he983o",
+      "title": "Chicken thighs",
+      "type": null,
+      "synonyms": "Dark meat chicken",
+      "tips": [],
+      "wasted": 2,
+      "image": null
+    },
+    {
+      "id": 111,
+      "documentId": "qfs917us41x2w3q4z5cyeohp",
+      "title": "Chicken wings",
+      "type": null,
+      "synonyms": "Drumsticks",
+      "tips": [],
+      "wasted": 2,
+      "image": {
+        "id": 248,
+        "documentId": "ubcvm20erhcmzkxu8wa3wtfk",
+        "url": "/uploads/chicken_d773d3913f.jpg",
+        "alternativeText": "chicken",
+        "caption": null,
+        "width": 3648,
+        "height": 2736,
+        "mime": "image/jpeg",
+        "name": "chicken.jpg"
+      }
+    },
+    {
+      "id": 113,
+      "documentId": "uv9y7lgf4qdge97miskfiukq",
+      "title": "Sour Cream",
       "type": "Dairy",
-      "synonyms": "whole milk",
+      "synonyms": null,
+      "tips": [],
       "wasted": 3,
-      "image": null,
-      "tips": [
-        {
-          "id": 6,
-          "documentId": "fxtp0006",
-          "title": "Keep it in the back",
-          "description": "The fridge door is the warmest spot. Store milk on a back shelf.",
-          "tip_type": {
-            "id": 1,
-            "documentId": "fxtt0001",
-            "title": "Storage"
-          }
-        }
-      ]
+      "image": {
+        "id": 172,
+        "documentId": "k2j7b4gsxvskoms14lq4o7a2",
+        "url": "/uploads/sour_cream_ae915b4bfa.png",
+        "alternativeText": "sour cream",
+        "caption": null,
+        "width": 1068,
+        "height": 1326,
+        "mime": "image/png",
+        "name": "sour cream.png"
+      }
     },
     {
-      "id": 5,
-      "documentId": "fxin0005",
-      "title": "Basil",
-      "type": "Fresh Herbs",
-      "synonyms": "sweet basil",
-      "wasted": 4,
-      "image": null,
-      "tips": [
-        {
-          "id": 7,
-          "documentId": "fxtp0007",
-          "title": "Treat it like flowers",
-          "description": "Trim the stems and stand basil in a glass of water on the counter.",
-          "tip_type": {
-            "id": 1,
-            "documentId": "fxtt0001",
-            "title": "Storage"
-          }
-        }
-      ]
+      "id": 115,
+      "documentId": "okp55o9if3a4xa68bu6bf6gl",
+      "title": "Rice",
+      "type": null,
+      "synonyms": null,
+      "tips": [],
+      "wasted": 3,
+      "image": {
+        "id": 169,
+        "documentId": "ukeskbf8jkg14ee7evdput8u",
+        "url": "/uploads/rice_533be69f65.jpg",
+        "alternativeText": "rice",
+        "caption": null,
+        "width": 3888,
+        "height": 2592,
+        "mime": "image/jpeg",
+        "name": "rice.jpg"
+      }
     },
     {
-      "id": 6,
-      "documentId": "fxin0006",
-      "title": "Chicken",
-      "type": "Protein",
-      "synonyms": "chicken breast, chicken thighs",
+      "id": 117,
+      "documentId": "xihs97mulruynaebsmvymxud",
+      "title": "Green Onions",
+      "type": null,
+      "synonyms": null,
+      "tips": [],
       "wasted": 3,
-      "image": null,
+      "image": {
+        "id": 175,
+        "documentId": "swtjbg9ot3xbqvgui5zxpjpl",
+        "url": "/uploads/green_onions_d4a325eafb.png",
+        "alternativeText": "green onions",
+        "caption": null,
+        "width": 856,
+        "height": 1438,
+        "mime": "image/png",
+        "name": "green onions.png"
+      }
+    },
+    {
+      "id": 119,
+      "documentId": "k4azair489vp5ib31zqlzmnj",
+      "title": "Broccoli",
+      "type": null,
+      "synonyms": "Broccoli rabe",
+      "tips": [],
+      "wasted": 3,
+      "image": {
+        "id": 171,
+        "documentId": "unxqvrvjss1fm7f32k59o4jn",
+        "url": "/uploads/broccoli_9a8e8e2fce.png",
+        "alternativeText": "broccoli",
+        "caption": null,
+        "width": 926,
+        "height": 1418,
+        "mime": "image/png",
+        "name": "broccoli.png"
+      }
+    },
+    {
+      "id": 121,
+      "documentId": "ib63xmij3f4v5d8qeb4enrpy",
+      "title": "Chicken breast",
+      "type": null,
+      "synonyms": "Chicken tenders, Chicken fillets",
       "tips": [
         {
-          "id": 8,
-          "documentId": "fxtp0008",
-          "title": "Plan a leftovers night",
-          "description": "Shred leftover chicken for tacos, soups, or salads.",
+          "id": 76,
+          "documentId": "fwh360l3hc2b9xcr5eg0c0j9",
+          "title": "Bone-in thighs do more for less money",
+          "description": "They generally cost less per pound, stay juicy past the point where breast dries out, and the bones make stock. Worth reconsidering as your default cut.",
           "tip_type": {
-            "id": 2,
-            "documentId": "fxtt0002",
-            "title": "Prep"
+            "id": 22,
+            "documentId": "jx1ssjev8r4nb2kyc3fn9hde",
+            "title": "Buy it"
+          }
+        },
+        {
+          "id": 86,
+          "documentId": "led2f0kqh4wros81w969ik53",
+          "title": "Portion chicken when you get home, then freeze what you won't cook in two days",
+          "description": "Raw chicken has a short fridge window. Portioning immediately, then freezing keeps them at peak quality and means you're only thawing what you actually need",
+          "tip_type": {
+            "id": 20,
+            "documentId": "l5j2f7d2oviv5uybla6f46if",
+            "title": "Store it"
+          }
+        },
+        {
+          "id": 88,
+          "documentId": "bmp06ytkd2iss1w88w39e4y7",
+          "title": "The brown bits left in the pan are the start of a sauce",
+          "description": "Deglaze with a splash of water, wine, or stock while the pan is still hot. Throw in a tablespoon of flour to make gravy. What looks like a mess is concentrated flavor.",
+          "tip_type": {
+            "id": 18,
+            "documentId": "twofxttr1y6aldue8k79owbb",
+            "title": "Use it"
           }
         }
-      ]
+      ],
+      "wasted": 2,
+      "image": {
+        "id": 173,
+        "documentId": "rr6j7p7m6k7uteq2a6zqrtxe",
+        "url": "/uploads/chicken_breast_10144f6032.jpg",
+        "alternativeText": "chicken breast",
+        "caption": null,
+        "width": 4096,
+        "height": 2731,
+        "mime": "image/jpeg",
+        "name": "chicken breast.jpg"
+      }
     }
   ],
   "meta": {

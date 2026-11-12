@@ -24,6 +24,7 @@ export function Header({ className = '', showClose = false, onClose = () => {} }
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const isSearchPage = pathname.startsWith('/search');
+  const whiteBg = pathname.startsWith('/toolkit') || isSearchPage;
   const hiddenSearch = isSearchPage && !showClose;
   const { navigation } = useContext(AppContext);
   if (!navigation) {
@@ -70,12 +71,12 @@ export function Header({ className = '', showClose = false, onClose = () => {} }
           </TransitionLink>
         ))}
         <div
-          className={`rounded-pill flex gap-2.5 items-center py-sm px-5  border-2 w-79 ${isSearchPage ? 'border-ink-terra' : 'border-surface-mint'}`}
+          className={`rounded-pill flex gap-2.5 items-center py-sm px-5  border-2 w-79 ${whiteBg ? 'border-ink-terra' : 'border-surface-mint'}`}
         >
           <IconSearch />
           <input
             type="text"
-            className={`font-bold w-43 flex-1 outline-0 ${isSearchPage ? 'placeholder:text-ink-terra' : 'placeholder:text-surface-mint'}`}
+            className={`font-bold w-43 flex-1 outline-0 ${whiteBg ? 'placeholder:text-ink-terra' : 'placeholder:text-surface-mint'}`}
             placeholder="Search specific ingredient tips"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {

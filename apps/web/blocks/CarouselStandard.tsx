@@ -72,9 +72,12 @@ export function BlockCarouselStandard(
             .map((item, index) => (
               <SwiperSlide
                 key={item.category?.id + '' + item.category?.documentId + '' + index}
-                className="rounded-md overflow-hidden flex flex-col "
+                className={`rounded-md overflow-hidden h-auto! ${cardColoMapping[cardBackgroundColor ?? backgroundColor]}`}
               >
-                <TransitionLink href={`/tips/${item.category?.slug}`}>
+                <TransitionLink
+                  className="flex flex-col h-full"
+                  href={`/tips/${item.category?.slug}`}
+                >
                   <UIImage
                     src={item.category?.image?.url || ''}
                     alt={
@@ -88,7 +91,7 @@ export function BlockCarouselStandard(
 
                   <Typography
                     variant="headline-sm"
-                    className={`uppercase ${cardColoMapping[cardBackgroundColor ?? backgroundColor]} text-ink-terra p-8 text-center lg:py-10`}
+                    className={`uppercase flex-1 line-clamp-2 text-ink-terra m-8 text-center lg:my-10`}
                   >
                     {item.category?.title || ''}
                   </Typography>

@@ -60,12 +60,26 @@ describe('fixture release data', () => {
     // const tips = await getTips();
     const catalog = buildCatalog(ingredients);
     expect(catalog.ingredients.map((i) => i.slug)).toEqual([
+      'avocado',
       'banana',
-      'basil',
-      'bread',
-      'chicken',
+      'beef',
+      'bell-peppers',
+      'broccoli',
+      'chicken-breast',
+      'chicken-thighs',
+      'chicken-wings',
+      'green-onions',
       'milk',
+      'onions',
+      'pork',
+      'rice',
+      'sausage',
+      'sour-cream',
       'spinach',
+      'sweet-potatoes',
+      'tomatoes',
+      'white-fish',
+      'zucchini',
     ]);
     expect(catalog.catalogVersion).toMatch(/^[0-9a-f]{12}$/);
 
