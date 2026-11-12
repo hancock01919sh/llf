@@ -11,6 +11,7 @@ const intFromEnv = (fallback: number) => z.coerce.number().int().positive().defa
 const EnvSchema = z.object({
   // Phase A kill switch (TDD §7.7). Phase B reads an SSM parameter instead.
   FIND_TIPS_MODE: ToolMode.default('live'),
+  GAP_LOG: z.enum(['on', 'off']).default('off'),
   AI_PROVIDER: z.enum(PROVIDERS).default('mock'),
   AI_MODEL: z.string().trim().min(1).default('mock-1'),
   PROMPT_VERSION: z.string().trim().min(1).default('p1'),
@@ -46,6 +47,7 @@ export type Config = {
   mode: ToolMode;
   provider: ProviderName;
   model: string;
+  gapLog: boolean;
   promptVersion: string;
   anthropicApiKey: string | undefined;
   openaiApiKey: string | undefined;
@@ -78,6 +80,7 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     mode: e.FIND_TIPS_MODE,
     provider: e.AI_PROVIDER,
     model: e.AI_MODEL,
+    gapLog: e.GAP_LOG === 'on',
     promptVersion: e.PROMPT_VERSION,
     anthropicApiKey: e.ANTHROPIC_API_KEY,
     openaiApiKey: e.OPENAI_API_KEY,

@@ -1,11 +1,12 @@
-import { REPORT_INGREDIENTS_TOOL } from '@llf/contracts/find-tips';
+import { CLASSIFY_GAPS_TOOL, REPORT_INGREDIENTS_TOOL } from '@llf/contracts/find-tips';
 
-import { systemPrompt } from './prompt';
+import { gapSystemPrompt, systemPrompt } from './prompt';
 import {
   ProviderNotConfiguredError,
   type ExtractionContext,
   type ExtractionInput,
   type ExtractionProvider,
+  type GapClassificationContext,
   type ProviderOutput,
   type ReasoningEffort,
 } from './types';
@@ -77,6 +78,13 @@ export const GEMINI_RESPONSE_SCHEMA = {
   properties: { ...REPORT_INGREDIENTS_TOOL.inputSchema.properties, items: geminiItems },
 };
 
+const { maxItems: _maxGapItems, ...geminiGapItems } =
+  CLASSIFY_GAPS_TOOL.inputSchema.properties.items;
+export const GEMINI_GAP_RESPONSE_SCHEMA = {
+  ...CLASSIFY_GAPS_TOOL.inputSchema,
+  properties: { ...CLASSIFY_GAPS_TOOL.inputSchema.properties, items: geminiGapItems },
+};
+
 export function buildGeminiRequest(input: ExtractionInput, ctx: Omit<ExtractionContext, 'signal'>) {
   return {
     systemInstruction: { parts: [{ text: systemPrompt(ctx.promptVersion) }] },
@@ -92,6 +100,24 @@ export function buildGeminiRequest(input: ExtractionInput, ctx: Omit<ExtractionC
       ...(ctx.reasoningEffort
         ? { thinkingConfig: { thinkingBudget: GEMINI_THINKING_BUDGETS[ctx.reasoningEffort] } }
         : {}),
+    },
+  };
+}
+
+export function buildGeminiGapRequest(
+  terms: readonly string[],
+  ctx: Omit<GapClassificationContext, 'signal'>,
+) {
+  return {
+    systemInstruction: { parts: [{ text: gapSystemPrompt(ctx.promptVersion) }] },
+    contents: [
+      { role: 'user', parts: [{ text: `Classify these terms: ${JSON.stringify(terms)}` }] },
+    ],
+    generationConfig: {
+      temperature: 0,
+      responseMimeType: 'application/json',
+      responseJsonSchema: GEMINI_GAP_RESPONSE_SCHEMA,
+      maxOutputTokens: 1200,
     },
   };
 }
@@ -159,6 +185,50 @@ export function createGeminiProvider(options: GeminiProviderOptions = {}): Extra
                 ...(thoughtTokens > 0 ? { reasoningTokens: thoughtTokens } : {}),
               },
             }
+          : {}),
+      };
+    },
+    async classifyGaps(terms, ctx): Promise<ProviderOutput> {
+      if (!options.apiKey) throw new ProviderNotConfiguredError('gemini');
+      const res = await doFetch(
+        `${baseUrl}/v1beta/models/${encodeURIComponent(ctx.model)}:generateContent`,
+        {
+          method: 'POST',
+          headers: {
+            'x-goog-api-key': options.apiKey,
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify(buildGeminiGapRequest(terms, ctx)),
+          signal: ctx.signal,
+        },
+      );
+      if (!res.ok) {
+        await res.body?.cancel();
+        throw new Error(`gemini: HTTP ${res.status}`);
+      }
+      const body = (await res.json()) as GenerateContentResponse;
+      if (body.promptFeedback?.blockReason) throw new Error('gemini: gap output blocked');
+      const candidate = body.candidates?.[0];
+      if (candidate?.finishReason && candidate.finishReason !== 'STOP') {
+        throw new Error('gemini: gap output unavailable');
+      }
+      const text = (candidate?.content?.parts ?? [])
+        .filter((part) => !part.thought && typeof part.text === 'string')
+        .map((part) => part.text)
+        .join('');
+      if (!text) throw new Error('gemini: no gap output');
+      let result: unknown;
+      try {
+        result = JSON.parse(text);
+      } catch {
+        throw new Error('gemini: gap output is not JSON');
+      }
+      const inputTokens = body.usageMetadata?.promptTokenCount;
+      const outputTokens = body.usageMetadata?.candidatesTokenCount;
+      return {
+        result,
+        ...(typeof inputTokens === 'number' && typeof outputTokens === 'number'
+          ? { usage: { inputTokens, outputTokens } }
           : {}),
       };
     },

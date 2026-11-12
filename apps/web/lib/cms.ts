@@ -64,8 +64,7 @@ const POPULATE = {
         'component.highlight-component': {
           populate: {
             link: true,
-            mobileImage: ImagePopulate,
-            desktopImage: ImagePopulate,
+            image: ImagePopulate,
             title: true,
           },
         },
@@ -128,16 +127,8 @@ const POPULATE = {
         },
         'component.category-emoji': {
           populate: {
+            emoji: true,
             title: true,
-            emoji: {
-              populate: {
-                category: {
-                  populate: {
-                    image: true,
-                  },
-                },
-              },
-            },
           },
         },
         'component.category-carousel-feature': {
@@ -145,11 +136,7 @@ const POPULATE = {
             title: true,
             featureCard: {
               populate: {
-                category: {
-                  populate: {
-                    image: true,
-                  },
-                },
+                image: ImagePopulate,
               },
             },
             link: true,
@@ -166,11 +153,7 @@ const POPULATE = {
             title: true,
             standardCard: {
               populate: {
-                category: {
-                  populate: {
-                    image: true,
-                  },
-                },
+                image: ImagePopulate,
               },
             },
           },
@@ -180,11 +163,7 @@ const POPULATE = {
             title: true,
             ingredientCard: {
               populate: {
-                category: {
-                  populate: {
-                    image: true,
-                  },
-                },
+                image: ImagePopulate,
               },
             },
           },
@@ -194,11 +173,7 @@ const POPULATE = {
             title: true,
             smallCard: {
               populate: {
-                category: {
-                  populate: {
-                    image: true,
-                  },
-                },
+                image: ImagePopulate,
               },
             },
           },
@@ -280,7 +255,7 @@ const SCHEMAS = {
   pages: cmsType.api.Page,
   categories: cmsType.api.Category,
   groups: cmsType.api.Group,
-  ingredients: cmsType.api.IngredientDeepRef,
+  ingredients: cmsType.api.Ingredient,
   tips: cmsType.api.Tip,
   footer: cmsType.api.Footer,
   navigation: cmsType.api.Navigation,
@@ -363,7 +338,6 @@ async function fetchFromStrapi(key: CollectionKey): Promise<unknown[] | unknown>
     }).join('&');
     const url = `${base.replace(/\/$/, '')}/api/${key}?${query}`;
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-
     if (!res.ok) {
       throw new ContentError(`Strapi returned ${res.status} for /api/${key} (page ${page}).`);
     }

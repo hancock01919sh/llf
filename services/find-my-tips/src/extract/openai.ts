@@ -1,11 +1,12 @@
-import { REPORT_INGREDIENTS_TOOL } from '@llf/contracts/find-tips';
+import { CLASSIFY_GAPS_TOOL, REPORT_INGREDIENTS_TOOL } from '@llf/contracts/find-tips';
 
-import { systemPrompt } from './prompt';
+import { gapSystemPrompt, systemPrompt } from './prompt';
 import {
   ProviderNotConfiguredError,
   type ExtractionContext,
   type ExtractionInput,
   type ExtractionProvider,
+  type GapClassificationContext,
   type ProviderOutput,
 } from './types';
 
@@ -80,6 +81,29 @@ export function buildOpenAIRequest(input: ExtractionInput, ctx: Omit<ExtractionC
   };
 }
 
+export function buildOpenAIGapRequest(
+  terms: readonly string[],
+  ctx: Omit<GapClassificationContext, 'signal'>,
+) {
+  return {
+    model: ctx.model,
+    temperature: 0,
+    messages: [
+      { role: 'system', content: gapSystemPrompt(ctx.promptVersion) },
+      { role: 'user', content: `Classify these terms: ${JSON.stringify(terms)}` },
+    ],
+    response_format: {
+      type: 'json_schema',
+      json_schema: {
+        name: CLASSIFY_GAPS_TOOL.name,
+        description: CLASSIFY_GAPS_TOOL.description,
+        strict: true,
+        schema: CLASSIFY_GAPS_TOOL.inputSchema,
+      },
+    },
+  };
+}
+
 export function createOpenAIProvider(options: OpenAIProviderOptions = {}): ExtractionProvider {
   const baseUrl = (options.baseUrl ?? 'https://api.openai.com').replace(/\/+$/, '');
   const doFetch = options.fetch ?? fetch;
@@ -130,6 +154,43 @@ export function createOpenAIProvider(options: OpenAIProviderOptions = {}): Extra
                 ...(typeof reasoningTokens === 'number' ? { reasoningTokens } : {}),
               },
             }
+          : {}),
+      };
+    },
+    async classifyGaps(terms, ctx): Promise<ProviderOutput> {
+      if (!options.apiKey) throw new ProviderNotConfiguredError('openai');
+      const res = await doFetch(`${baseUrl}/v1/chat/completions`, {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${options.apiKey}`,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify(buildOpenAIGapRequest(terms, ctx)),
+        signal: ctx.signal,
+      });
+      if (!res.ok) {
+        await res.body?.cancel();
+        throw new Error(`openai: HTTP ${res.status}`);
+      }
+      const body = (await res.json()) as ChatCompletionResponse;
+      const choice = body.choices?.[0];
+      if (choice?.message?.refusal || choice?.finish_reason === 'length') {
+        throw new Error('openai: gap output unavailable');
+      }
+      const content = choice?.message?.content;
+      if (typeof content !== 'string') throw new Error('openai: no gap output');
+      let result: unknown;
+      try {
+        result = JSON.parse(content);
+      } catch {
+        throw new Error('openai: gap output is not JSON');
+      }
+      const inputTokens = body.usage?.prompt_tokens;
+      const outputTokens = body.usage?.completion_tokens;
+      return {
+        result,
+        ...(typeof inputTokens === 'number' && typeof outputTokens === 'number'
+          ? { usage: { inputTokens, outputTokens } }
           : {}),
       };
     },

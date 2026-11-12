@@ -15,6 +15,7 @@ export type LogFields = {
   itemCount?: number;
   matchCount?: number;
   unmatchedCount?: number;
+  gapTermsKept?: number;
   latencyMs?: number;
   provider?: string;
   model?: string;

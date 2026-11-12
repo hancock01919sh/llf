@@ -1,4 +1,4 @@
-import type { ExtractSource, InputType, ToolMode } from './find-tips';
+import type { ExtractSource, GapTerm, InputType, ToolMode } from './find-tips';
 
 /**
  * GA4 event map (TDD §8). Only slugs, enums, and counts: never search terms, ingredient text,
@@ -68,6 +68,12 @@ export interface AnalyticsEvents {
     catalog_version: string;
   };
   tips_tool_no_match: { input_type: InputType; readable: boolean };
+  tips_tool_gap: {
+    gap_name: GapTerm['name'];
+    gap_class: GapTerm['class'];
+    input_type: InputType;
+    request_id: string;
+  };
   tips_tool_unavailable: { mode: Exclude<ToolMode, 'live'> };
   tips_tool_error: { input_type: InputType; reason: ToolErrorReason };
   tip_view: { tip_slug: string; ingredient_slug?: string };

@@ -6,6 +6,7 @@ describe('loadConfig', () => {
   it('defaults to the mock provider in live mode', () => {
     expect(loadConfig({})).toEqual({
       mode: 'live',
+      gapLog: false,
       provider: 'mock',
       model: 'mock-1',
       promptVersion: 'p1',
@@ -52,6 +53,11 @@ describe('loadConfig', () => {
       catalogUrl: 'https://cms.example.test/api/catalog',
       rateLimit: { windowMs: 300_000, url: 5, model: 1 },
     });
+  });
+
+  it('allows gap logging only in dev and keeps it off by default', () => {
+    expect(loadConfig({}).gapLog).toBe(false);
+    expect(loadConfig({ GAP_LOG: 'on' }).gapLog).toBe(true);
   });
 
   it('reads the Anthropic key without echoing it on errors', () => {

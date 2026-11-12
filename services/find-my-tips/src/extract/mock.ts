@@ -37,5 +37,34 @@ export function createMockProvider(): ExtractionProvider {
       const result = input.kind === 'text' ? fromText(input.text) : MOCK_IMAGE_RESULT;
       return { result, usage: { inputTokens: 0, outputTokens: 0 } };
     },
+    async classifyGaps(terms, ctx): Promise<ProviderOutput> {
+      if (ctx.signal.aborted) throw ctx.signal.reason;
+      const edible = new Set([
+        'dragonfruit',
+        'jackfruit',
+        'quinoa',
+        'tahini',
+        'milk',
+        'leftover pad thai',
+      ]);
+      const compostable = new Set(['eggshell', 'eggshells', 'coffee grounds', 'orange peel']);
+      const inedible = new Set(['foil', 'plastic wrap', 'glass jar', 'paper bag']);
+      return {
+        result: {
+          items: terms.map((term) => {
+            const name = term.trim().toLowerCase();
+            const itemClass = edible.has(name)
+              ? 'edible'
+              : compostable.has(name)
+                ? 'compostable'
+                : inedible.has(name)
+                  ? 'inedible'
+                  : 'exclude';
+            return { name, class: itemClass };
+          }),
+        },
+        usage: { inputTokens: 0, outputTokens: 0 },
+      };
+    },
   };
 }

@@ -21,6 +21,7 @@ import { createQuota } from './quota';
 import { createRateLimiter } from './rate-limit';
 import { runUrlPipeline } from './url/pipeline';
 import type { Resolver, Transport } from './url/safe-fetch';
+import { classifyGapTerms, filterGapTerms, GAP_PROMPT_VERSION } from './gaps';
 
 export type AppDeps = {
   config: Config;
@@ -189,12 +190,38 @@ export function createApp(deps: AppDeps) {
       const outcome = await withTimeout((signal) => run(request, signal));
       const { catalogVersion, matcher } = await deps.catalog.get();
       const { matches, unmatchedCount } = matchItems(outcome.items, matcher);
+      let gaps: ExtractResponse['gaps'] = [];
+      if (config.gapLog) {
+        const terms = outcome.items
+          .filter((item) => !matcher.match(item.term))
+          .map((item) => item.term)
+          .slice(0, 60);
+        if (terms.length > 0) {
+          try {
+            if (await quota.exhausted(request.inputType)) throw new ToolError('unavailable');
+            await quota.consume(request.inputType);
+            const result = await classifyGapTerms(terms, {
+              provider: deps.provider,
+              model: config.model,
+              promptVersion: GAP_PROMPT_VERSION,
+            });
+            gaps = filterGapTerms(
+              result,
+              (name) => Boolean(matcher.match(name)),
+              terms.slice(0, 60),
+            );
+          } catch {
+            gaps = [];
+          }
+        }
+      }
       const body: ExtractResponse = {
         requestId,
         detectedType: outcome.detectedType,
         readable: outcome.readable,
         matches,
         unmatchedCount,
+        gaps,
         source: outcome.source,
         catalogVersion,
       };
