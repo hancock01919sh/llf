@@ -20,6 +20,9 @@ const EnvSchema = z.object({
   OPENAI_API_KEY: z.string().trim().min(1).optional(),
   // ddd's own Gemini key (dev and the eval arena only, TDD D25). Never logged or echoed.
   GEMINI_API_KEY: z.string().trim().min(1).optional(),
+  // Dev only: send Gemini calls through ddd's relay instead of Google (TDD D38, for developers
+  // who can't reach Google from mainland China). GEMINI_API_KEY is then the relay token.
+  GEMINI_BASE_URL: z.url().optional(),
   // Only sent to providers that support it (OpenAI reasoning models, Gemini thinking
   // budgets). Unset = provider default.
   AI_REASONING_EFFORT: z.enum(REASONING_EFFORTS).optional(),
@@ -50,6 +53,7 @@ export type Config = {
   anthropicApiKey: string | undefined;
   openaiApiKey: string | undefined;
   geminiApiKey: string | undefined;
+  geminiBaseUrl: string | undefined;
   reasoningEffort: ReasoningEffort | undefined;
   port: number;
   trustedProxyHops: number;
@@ -82,6 +86,7 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     anthropicApiKey: e.ANTHROPIC_API_KEY,
     openaiApiKey: e.OPENAI_API_KEY,
     geminiApiKey: e.GEMINI_API_KEY,
+    geminiBaseUrl: e.GEMINI_BASE_URL,
     reasoningEffort: e.AI_REASONING_EFFORT,
     port: e.TOOL_PORT ?? e.PORT,
     trustedProxyHops: e.TRUSTED_PROXY_HOPS,

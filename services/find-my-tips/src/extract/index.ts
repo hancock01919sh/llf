@@ -25,6 +25,7 @@ export type ProviderOptions = {
   anthropicApiKey?: string | undefined;
   openaiApiKey?: string | undefined;
   geminiApiKey?: string | undefined;
+  geminiBaseUrl?: string | undefined;
   fetch?: typeof fetch;
 };
 
@@ -48,6 +49,7 @@ export function createProvider(
     case 'gemini':
       return createGeminiProvider({
         apiKey: options.geminiApiKey,
+        ...(options.geminiBaseUrl ? { baseUrl: options.geminiBaseUrl } : {}),
         ...(options.fetch ? { fetch: options.fetch } : {}),
       });
     case 'bedrock':
