@@ -1,336 +1,336 @@
 {
-    "data": [
+  "data": [
+    {
+      "id": 3,
+      "documentId": "v2093m0bniczb32051hhlqeu",
+      "title": "Meat & Poultry",
+      "createdAt": "2026-11-13T01:47:31.018Z",
+      "updatedAt": "2026-11-13T02:01:40.577Z",
+      "publishedAt": "2026-11-13T02:01:40.608Z",
+      "slug": "meat-poultry",
+      "emoji": "🥩",
+      "seo": null,
+      "ingredients": [
         {
-            "id": 3,
-            "documentId": "v2093m0bniczb32051hhlqeu",
-            "title": "Meat & Poultry",
-            "createdAt": "2026-11-13T01:47:31.018Z",
-            "updatedAt": "2026-11-13T02:01:40.577Z",
-            "publishedAt": "2026-11-13T02:01:40.608Z",
-            "slug": "meat-poultry",
-            "emoji": "🥩",
-            "seo": null,
-            "ingredients": [
-                {
-                    "id": 46,
-                    "documentId": "qfs917us41x2w3q4z5cyeohp",
-                    "title": "Chicken wings",
-                    "synonyms": "Drumsticks",
-                    "wasted": 2,
-                    "createdAt": "2026-10-19T02:50:03.646Z",
-                    "updatedAt": "2026-11-02T07:00:01.724Z",
-                    "publishedAt": "2026-11-02T07:00:01.742Z",
-                    "image": {
-                        "id": 70,
-                        "documentId": "ubcvm20erhcmzkxu8wa3wtfk",
-                        "name": "chicken.jpg",
-                        "alternativeText": "chicken",
-                        "caption": null,
-                        "focalPoint": null,
-                        "width": 3648,
-                        "height": 2736,
-                        "formats": {
-                            "large": {
-                                "ext": ".jpg",
-                                "url": "/uploads/large_chicken_d773d3913f.jpg",
-                                "hash": "large_chicken_d773d3913f",
-                                "mime": "image/jpeg",
-                                "name": "large_chicken.jpg",
-                                "path": null,
-                                "size": 150.93,
-                                "width": 1000,
-                                "height": 750,
-                                "sizeInBytes": 150926
-                            },
-                            "small": {
-                                "ext": ".jpg",
-                                "url": "/uploads/small_chicken_d773d3913f.jpg",
-                                "hash": "small_chicken_d773d3913f",
-                                "mime": "image/jpeg",
-                                "name": "small_chicken.jpg",
-                                "path": null,
-                                "size": 43.73,
-                                "width": 500,
-                                "height": 375,
-                                "sizeInBytes": 43734
-                            },
-                            "medium": {
-                                "ext": ".jpg",
-                                "url": "/uploads/medium_chicken_d773d3913f.jpg",
-                                "hash": "medium_chicken_d773d3913f",
-                                "mime": "image/jpeg",
-                                "name": "medium_chicken.jpg",
-                                "path": null,
-                                "size": 90.77,
-                                "width": 750,
-                                "height": 563,
-                                "sizeInBytes": 90769
-                            },
-                            "thumbnail": {
-                                "ext": ".jpg",
-                                "url": "/uploads/thumbnail_chicken_d773d3913f.jpg",
-                                "hash": "thumbnail_chicken_d773d3913f",
-                                "mime": "image/jpeg",
-                                "name": "thumbnail_chicken.jpg",
-                                "path": null,
-                                "size": 9.89,
-                                "width": 208,
-                                "height": 156,
-                                "sizeInBytes": 9888
-                            }
-                        },
-                        "hash": "chicken_d773d3913f",
-                        "ext": ".jpg",
-                        "mime": "image/jpeg",
-                        "size": 2107.48,
-                        "url": "/uploads/chicken_d773d3913f.jpg",
-                        "previewUrl": null,
-                        "provider": "local",
-                        "provider_metadata": null,
-                        "createdAt": "2026-10-19T02:49:56.881Z",
-                        "updatedAt": "2026-11-03T08:20:06.573Z",
-                        "publishedAt": "2026-10-19T02:49:56.882Z"
-                    },
-                    "tips": []
-                },
-                {
-                    "id": 51,
-                    "documentId": "ib63xmij3f4v5d8qeb4enrpy",
-                    "title": "Chicken breast",
-                    "synonyms": "Chicken tenders, Chicken fillets",
-                    "wasted": 2,
-                    "createdAt": "2026-10-26T07:34:34.553Z",
-                    "updatedAt": "2026-11-03T03:33:53.956Z",
-                    "publishedAt": "2026-11-03T03:33:53.976Z",
-                    "image": {
-                        "id": 78,
-                        "documentId": "rr6j7p7m6k7uteq2a6zqrtxe",
-                        "name": "chicken breast.jpg",
-                        "alternativeText": "chicken breast",
-                        "caption": null,
-                        "focalPoint": null,
-                        "width": 4096,
-                        "height": 2731,
-                        "formats": {
-                            "large": {
-                                "ext": ".jpg",
-                                "url": "/uploads/large_chicken_breast_10144f6032.jpg",
-                                "hash": "large_chicken_breast_10144f6032",
-                                "mime": "image/jpeg",
-                                "name": "large_chicken breast.jpg",
-                                "path": null,
-                                "size": 113.07,
-                                "width": 1000,
-                                "height": 667,
-                                "sizeInBytes": 113066
-                            },
-                            "small": {
-                                "ext": ".jpg",
-                                "url": "/uploads/small_chicken_breast_10144f6032.jpg",
-                                "hash": "small_chicken_breast_10144f6032",
-                                "mime": "image/jpeg",
-                                "name": "small_chicken breast.jpg",
-                                "path": null,
-                                "size": 30.9,
-                                "width": 500,
-                                "height": 333,
-                                "sizeInBytes": 30903
-                            },
-                            "medium": {
-                                "ext": ".jpg",
-                                "url": "/uploads/medium_chicken_breast_10144f6032.jpg",
-                                "hash": "medium_chicken_breast_10144f6032",
-                                "mime": "image/jpeg",
-                                "name": "medium_chicken breast.jpg",
-                                "path": null,
-                                "size": 63.87,
-                                "width": 750,
-                                "height": 500,
-                                "sizeInBytes": 63874
-                            },
-                            "thumbnail": {
-                                "ext": ".jpg",
-                                "url": "/uploads/thumbnail_chicken_breast_10144f6032.jpg",
-                                "hash": "thumbnail_chicken_breast_10144f6032",
-                                "mime": "image/jpeg",
-                                "name": "thumbnail_chicken breast.jpg",
-                                "path": null,
-                                "size": 8.59,
-                                "width": 234,
-                                "height": 156,
-                                "sizeInBytes": 8592
-                            }
-                        },
-                        "hash": "chicken_breast_10144f6032",
-                        "ext": ".jpg",
-                        "mime": "image/jpeg",
-                        "size": 3714.37,
-                        "url": "/uploads/chicken_breast_10144f6032.jpg",
-                        "previewUrl": null,
-                        "provider": "local",
-                        "provider_metadata": null,
-                        "createdAt": "2026-11-03T03:33:50.325Z",
-                        "updatedAt": "2026-11-03T08:16:55.815Z",
-                        "publishedAt": "2026-11-03T03:33:50.325Z"
-                    },
-                    "tips": [
-                        {
-                            "id": 8,
-                            "documentId": "fwh360l3hc2b9xcr5eg0c0j9",
-                            "title": "Bone-in thighs do more for less money",
-                            "description": "They generally cost less per pound, stay juicy past the point where breast dries out, and the bones make stock. Worth reconsidering as your default cut.",
-                            "createdAt": "2026-10-26T07:38:48.929Z",
-                            "updatedAt": "2026-10-26T07:38:48.929Z",
-                            "publishedAt": "2026-10-26T07:38:49.354Z",
-                            "tip_type": {
-                                "id": 8,
-                                "documentId": "jx1ssjev8r4nb2kyc3fn9hde",
-                                "title": "Buy it",
-                                "createdAt": "2026-10-16T09:40:52.919Z",
-                                "updatedAt": "2026-10-16T09:40:53.630Z",
-                                "publishedAt": "2026-10-16T09:40:53.646Z"
-                            }
-                        },
-                        {
-                            "id": 18,
-                            "documentId": "led2f0kqh4wros81w969ik53",
-                            "title": "Portion chicken when you get home, then freeze what you won't cook in two days",
-                            "description": "Raw chicken has a short fridge window. Portioning immediately, then freezing keeps them at peak quality and means you're only thawing what you actually need",
-                            "createdAt": "2026-10-30T08:35:44.832Z",
-                            "updatedAt": "2026-10-30T08:35:44.832Z",
-                            "publishedAt": "2026-10-30T08:35:44.874Z",
-                            "tip_type": {
-                                "id": 6,
-                                "documentId": "l5j2f7d2oviv5uybla6f46if",
-                                "title": "Store it",
-                                "createdAt": "2026-10-16T09:40:25.625Z",
-                                "updatedAt": "2026-10-16T09:40:26.364Z",
-                                "publishedAt": "2026-10-16T09:40:26.374Z"
-                            }
-                        },
-                        {
-                            "id": 20,
-                            "documentId": "bmp06ytkd2iss1w88w39e4y7",
-                            "title": "The brown bits left in the pan are the start of a sauce",
-                            "description": "Deglaze with a splash of water, wine, or stock while the pan is still hot. Throw in a tablespoon of flour to make gravy. What looks like a mess is concentrated flavor.",
-                            "createdAt": "2026-10-30T08:37:49.758Z",
-                            "updatedAt": "2026-10-30T08:37:49.758Z",
-                            "publishedAt": "2026-10-30T08:37:49.799Z",
-                            "tip_type": {
-                                "id": 4,
-                                "documentId": "twofxttr1y6aldue8k79owbb",
-                                "title": "Use it",
-                                "createdAt": "2026-10-16T09:40:15.156Z",
-                                "updatedAt": "2026-10-16T09:40:16.078Z",
-                                "publishedAt": "2026-10-16T09:40:16.092Z"
-                            }
-                        }
-                    ]
-                }
-            ]
+          "id": 46,
+          "documentId": "qfs917us41x2w3q4z5cyeohp",
+          "title": "Chicken wings",
+          "synonyms": "Drumsticks",
+          "wasted": 2,
+          "createdAt": "2026-10-19T02:50:03.646Z",
+          "updatedAt": "2026-11-02T07:00:01.724Z",
+          "publishedAt": "2026-11-02T07:00:01.742Z",
+          "image": {
+            "id": 70,
+            "documentId": "ubcvm20erhcmzkxu8wa3wtfk",
+            "name": "chicken.jpg",
+            "alternativeText": "chicken",
+            "caption": null,
+            "focalPoint": null,
+            "width": 3648,
+            "height": 2736,
+            "formats": {
+              "large": {
+                "ext": ".jpg",
+                "url": "/uploads/large_chicken_d773d3913f.jpg",
+                "hash": "large_chicken_d773d3913f",
+                "mime": "image/jpeg",
+                "name": "large_chicken.jpg",
+                "path": null,
+                "size": 150.93,
+                "width": 1000,
+                "height": 750,
+                "sizeInBytes": 150926
+              },
+              "small": {
+                "ext": ".jpg",
+                "url": "/uploads/small_chicken_d773d3913f.jpg",
+                "hash": "small_chicken_d773d3913f",
+                "mime": "image/jpeg",
+                "name": "small_chicken.jpg",
+                "path": null,
+                "size": 43.73,
+                "width": 500,
+                "height": 375,
+                "sizeInBytes": 43734
+              },
+              "medium": {
+                "ext": ".jpg",
+                "url": "/uploads/medium_chicken_d773d3913f.jpg",
+                "hash": "medium_chicken_d773d3913f",
+                "mime": "image/jpeg",
+                "name": "medium_chicken.jpg",
+                "path": null,
+                "size": 90.77,
+                "width": 750,
+                "height": 563,
+                "sizeInBytes": 90769
+              },
+              "thumbnail": {
+                "ext": ".jpg",
+                "url": "/uploads/thumbnail_chicken_d773d3913f.jpg",
+                "hash": "thumbnail_chicken_d773d3913f",
+                "mime": "image/jpeg",
+                "name": "thumbnail_chicken.jpg",
+                "path": null,
+                "size": 9.89,
+                "width": 208,
+                "height": 156,
+                "sizeInBytes": 9888
+              }
+            },
+            "hash": "chicken_d773d3913f",
+            "ext": ".jpg",
+            "mime": "image/jpeg",
+            "size": 2107.48,
+            "url": "/uploads/chicken_d773d3913f.jpg",
+            "previewUrl": null,
+            "provider": "local",
+            "provider_metadata": null,
+            "createdAt": "2026-10-19T02:49:56.881Z",
+            "updatedAt": "2026-11-03T08:20:06.573Z",
+            "publishedAt": "2026-10-19T02:49:56.882Z"
+          },
+          "tips": []
         },
         {
-            "id": 5,
-            "documentId": "jr302r9gxdrou5n8hl2v0z99",
-            "title": "Vegetables",
-            "createdAt": "2026-11-13T02:04:41.722Z",
-            "updatedAt": "2026-11-13T02:04:41.722Z",
-            "publishedAt": "2026-11-13T02:04:41.742Z",
-            "slug": "vegetables",
-            "emoji": "🥕",
-            "seo": null,
-            "ingredients": [
-                {
-                    "id": 49,
-                    "documentId": "xihs97mulruynaebsmvymxud",
-                    "title": "Green Onions",
-                    "synonyms": null,
-                    "wasted": 3,
-                    "createdAt": "2026-10-19T02:50:39.489Z",
-                    "updatedAt": "2026-11-03T03:31:23.189Z",
-                    "publishedAt": "2026-11-03T03:31:23.208Z",
-                    "image": {
-                        "id": 76,
-                        "documentId": "swtjbg9ot3xbqvgui5zxpjpl",
-                        "name": "green onions.png",
-                        "alternativeText": "green onions",
-                        "caption": null,
-                        "focalPoint": null,
-                        "width": 856,
-                        "height": 1438,
-                        "formats": {
-                            "large": {
-                                "ext": ".png",
-                                "url": "/uploads/large_green_onions_d4a325eafb.png",
-                                "hash": "large_green_onions_d4a325eafb",
-                                "mime": "image/png",
-                                "name": "large_green onions.png",
-                                "path": null,
-                                "size": 1264.27,
-                                "width": 595,
-                                "height": 1000,
-                                "sizeInBytes": 1264273
-                            },
-                            "small": {
-                                "ext": ".png",
-                                "url": "/uploads/small_green_onions_d4a325eafb.png",
-                                "hash": "small_green_onions_d4a325eafb",
-                                "mime": "image/png",
-                                "name": "small_green onions.png",
-                                "path": null,
-                                "size": 359.11,
-                                "width": 298,
-                                "height": 500,
-                                "sizeInBytes": 359112
-                            },
-                            "medium": {
-                                "ext": ".png",
-                                "url": "/uploads/medium_green_onions_d4a325eafb.png",
-                                "hash": "medium_green_onions_d4a325eafb",
-                                "mime": "image/png",
-                                "name": "medium_green onions.png",
-                                "path": null,
-                                "size": 757.8,
-                                "width": 446,
-                                "height": 750,
-                                "sizeInBytes": 757796
-                            },
-                            "thumbnail": {
-                                "ext": ".png",
-                                "url": "/uploads/thumbnail_green_onions_d4a325eafb.png",
-                                "hash": "thumbnail_green_onions_d4a325eafb",
-                                "mime": "image/png",
-                                "name": "thumbnail_green onions.png",
-                                "path": null,
-                                "size": 41,
-                                "width": 93,
-                                "height": 156,
-                                "sizeInBytes": 41001
-                            }
-                        },
-                        "hash": "green_onions_d4a325eafb",
-                        "ext": ".png",
-                        "mime": "image/png",
-                        "size": 477.54,
-                        "url": "/uploads/green_onions_d4a325eafb.png",
-                        "previewUrl": null,
-                        "provider": "local",
-                        "provider_metadata": null,
-                        "createdAt": "2026-11-03T03:30:37.777Z",
-                        "updatedAt": "2026-11-03T08:19:37.648Z",
-                        "publishedAt": "2026-11-03T03:30:37.777Z"
-                    },
-                    "tips": []
-                }
-            ]
+          "id": 51,
+          "documentId": "ib63xmij3f4v5d8qeb4enrpy",
+          "title": "Chicken breast",
+          "synonyms": "Chicken tenders, Chicken fillets",
+          "wasted": 2,
+          "createdAt": "2026-10-26T07:34:34.553Z",
+          "updatedAt": "2026-11-03T03:33:53.956Z",
+          "publishedAt": "2026-11-03T03:33:53.976Z",
+          "image": {
+            "id": 78,
+            "documentId": "rr6j7p7m6k7uteq2a6zqrtxe",
+            "name": "chicken breast.jpg",
+            "alternativeText": "chicken breast",
+            "caption": null,
+            "focalPoint": null,
+            "width": 4096,
+            "height": 2731,
+            "formats": {
+              "large": {
+                "ext": ".jpg",
+                "url": "/uploads/large_chicken_breast_10144f6032.jpg",
+                "hash": "large_chicken_breast_10144f6032",
+                "mime": "image/jpeg",
+                "name": "large_chicken breast.jpg",
+                "path": null,
+                "size": 113.07,
+                "width": 1000,
+                "height": 667,
+                "sizeInBytes": 113066
+              },
+              "small": {
+                "ext": ".jpg",
+                "url": "/uploads/small_chicken_breast_10144f6032.jpg",
+                "hash": "small_chicken_breast_10144f6032",
+                "mime": "image/jpeg",
+                "name": "small_chicken breast.jpg",
+                "path": null,
+                "size": 30.9,
+                "width": 500,
+                "height": 333,
+                "sizeInBytes": 30903
+              },
+              "medium": {
+                "ext": ".jpg",
+                "url": "/uploads/medium_chicken_breast_10144f6032.jpg",
+                "hash": "medium_chicken_breast_10144f6032",
+                "mime": "image/jpeg",
+                "name": "medium_chicken breast.jpg",
+                "path": null,
+                "size": 63.87,
+                "width": 750,
+                "height": 500,
+                "sizeInBytes": 63874
+              },
+              "thumbnail": {
+                "ext": ".jpg",
+                "url": "/uploads/thumbnail_chicken_breast_10144f6032.jpg",
+                "hash": "thumbnail_chicken_breast_10144f6032",
+                "mime": "image/jpeg",
+                "name": "thumbnail_chicken breast.jpg",
+                "path": null,
+                "size": 8.59,
+                "width": 234,
+                "height": 156,
+                "sizeInBytes": 8592
+              }
+            },
+            "hash": "chicken_breast_10144f6032",
+            "ext": ".jpg",
+            "mime": "image/jpeg",
+            "size": 3714.37,
+            "url": "/uploads/chicken_breast_10144f6032.jpg",
+            "previewUrl": null,
+            "provider": "local",
+            "provider_metadata": null,
+            "createdAt": "2026-11-03T03:33:50.325Z",
+            "updatedAt": "2026-11-03T08:16:55.815Z",
+            "publishedAt": "2026-11-03T03:33:50.325Z"
+          },
+          "tips": [
+            {
+              "id": 8,
+              "documentId": "fwh360l3hc2b9xcr5eg0c0j9",
+              "title": "Bone-in thighs do more for less money",
+              "description": "They generally cost less per pound, stay juicy past the point where breast dries out, and the bones make stock. Worth reconsidering as your default cut.",
+              "createdAt": "2026-10-26T07:38:48.929Z",
+              "updatedAt": "2026-10-26T07:38:48.929Z",
+              "publishedAt": "2026-10-26T07:38:49.354Z",
+              "tip_type": {
+                "id": 8,
+                "documentId": "jx1ssjev8r4nb2kyc3fn9hde",
+                "title": "Buy it",
+                "createdAt": "2026-10-16T09:40:52.919Z",
+                "updatedAt": "2026-10-16T09:40:53.630Z",
+                "publishedAt": "2026-10-16T09:40:53.646Z"
+              }
+            },
+            {
+              "id": 18,
+              "documentId": "led2f0kqh4wros81w969ik53",
+              "title": "Portion chicken when you get home, then freeze what you won't cook in two days",
+              "description": "Raw chicken has a short fridge window. Portioning immediately, then freezing keeps them at peak quality and means you're only thawing what you actually need",
+              "createdAt": "2026-10-30T08:35:44.832Z",
+              "updatedAt": "2026-10-30T08:35:44.832Z",
+              "publishedAt": "2026-10-30T08:35:44.874Z",
+              "tip_type": {
+                "id": 6,
+                "documentId": "l5j2f7d2oviv5uybla6f46if",
+                "title": "Store it",
+                "createdAt": "2026-10-16T09:40:25.625Z",
+                "updatedAt": "2026-10-16T09:40:26.364Z",
+                "publishedAt": "2026-10-16T09:40:26.374Z"
+              }
+            },
+            {
+              "id": 20,
+              "documentId": "bmp06ytkd2iss1w88w39e4y7",
+              "title": "The brown bits left in the pan are the start of a sauce",
+              "description": "Deglaze with a splash of water, wine, or stock while the pan is still hot. Throw in a tablespoon of flour to make gravy. What looks like a mess is concentrated flavor.",
+              "createdAt": "2026-10-30T08:37:49.758Z",
+              "updatedAt": "2026-10-30T08:37:49.758Z",
+              "publishedAt": "2026-10-30T08:37:49.799Z",
+              "tip_type": {
+                "id": 4,
+                "documentId": "twofxttr1y6aldue8k79owbb",
+                "title": "Use it",
+                "createdAt": "2026-10-16T09:40:15.156Z",
+                "updatedAt": "2026-10-16T09:40:16.078Z",
+                "publishedAt": "2026-10-16T09:40:16.092Z"
+              }
+            }
+          ]
         }
-    ],
-    "meta": {
-        "pagination": {
-            "page": 1,
-            "pageSize": 100,
-            "pageCount": 1,
-            "total": 2
+      ]
+    },
+    {
+      "id": 5,
+      "documentId": "jr302r9gxdrou5n8hl2v0z99",
+      "title": "Vegetables",
+      "createdAt": "2026-11-13T02:04:41.722Z",
+      "updatedAt": "2026-11-13T02:04:41.722Z",
+      "publishedAt": "2026-11-13T02:04:41.742Z",
+      "slug": "vegetables",
+      "emoji": "🥕",
+      "seo": null,
+      "ingredients": [
+        {
+          "id": 49,
+          "documentId": "xihs97mulruynaebsmvymxud",
+          "title": "Green Onions",
+          "synonyms": null,
+          "wasted": 3,
+          "createdAt": "2026-10-19T02:50:39.489Z",
+          "updatedAt": "2026-11-03T03:31:23.189Z",
+          "publishedAt": "2026-11-03T03:31:23.208Z",
+          "image": {
+            "id": 76,
+            "documentId": "swtjbg9ot3xbqvgui5zxpjpl",
+            "name": "green onions.png",
+            "alternativeText": "green onions",
+            "caption": null,
+            "focalPoint": null,
+            "width": 856,
+            "height": 1438,
+            "formats": {
+              "large": {
+                "ext": ".png",
+                "url": "/uploads/large_green_onions_d4a325eafb.png",
+                "hash": "large_green_onions_d4a325eafb",
+                "mime": "image/png",
+                "name": "large_green onions.png",
+                "path": null,
+                "size": 1264.27,
+                "width": 595,
+                "height": 1000,
+                "sizeInBytes": 1264273
+              },
+              "small": {
+                "ext": ".png",
+                "url": "/uploads/small_green_onions_d4a325eafb.png",
+                "hash": "small_green_onions_d4a325eafb",
+                "mime": "image/png",
+                "name": "small_green onions.png",
+                "path": null,
+                "size": 359.11,
+                "width": 298,
+                "height": 500,
+                "sizeInBytes": 359112
+              },
+              "medium": {
+                "ext": ".png",
+                "url": "/uploads/medium_green_onions_d4a325eafb.png",
+                "hash": "medium_green_onions_d4a325eafb",
+                "mime": "image/png",
+                "name": "medium_green onions.png",
+                "path": null,
+                "size": 757.8,
+                "width": 446,
+                "height": 750,
+                "sizeInBytes": 757796
+              },
+              "thumbnail": {
+                "ext": ".png",
+                "url": "/uploads/thumbnail_green_onions_d4a325eafb.png",
+                "hash": "thumbnail_green_onions_d4a325eafb",
+                "mime": "image/png",
+                "name": "thumbnail_green onions.png",
+                "path": null,
+                "size": 41,
+                "width": 93,
+                "height": 156,
+                "sizeInBytes": 41001
+              }
+            },
+            "hash": "green_onions_d4a325eafb",
+            "ext": ".png",
+            "mime": "image/png",
+            "size": 477.54,
+            "url": "/uploads/green_onions_d4a325eafb.png",
+            "previewUrl": null,
+            "provider": "local",
+            "provider_metadata": null,
+            "createdAt": "2026-11-03T03:30:37.777Z",
+            "updatedAt": "2026-11-03T08:19:37.648Z",
+            "publishedAt": "2026-11-03T03:30:37.777Z"
+          },
+          "tips": []
         }
+      ]
     }
+  ],
+  "meta": {
+    "pagination": {
+      "page": 1,
+      "pageSize": 100,
+      "pageCount": 1,
+      "total": 2
+    }
+  }
 }

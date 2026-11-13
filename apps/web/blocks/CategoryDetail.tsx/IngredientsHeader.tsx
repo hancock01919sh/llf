@@ -82,20 +82,16 @@ export function IngredientsHeader(
               moduleIndex={0}
               className="flex-1"
             />
-            {
-              categoryData && categoryData.DataType === 'category' && (
-                <Typography variant="subhead-lg" className="mt-5">
-                  {categoryData?.description}
-                </Typography>
-              )
-            }
-            {
-              !categoryData && (
-                <Typography variant="subhead-lg" className="mt-5">
-                  {props.description}
-                </Typography>
-              )
-            }
+            {categoryData && categoryData.DataType === 'category' && (
+              <Typography variant="subhead-lg" className="mt-5">
+                {categoryData?.description}
+              </Typography>
+            )}
+            {!categoryData && (
+              <Typography variant="subhead-lg" className="mt-5">
+                {props.description}
+              </Typography>
+            )}
             {props?.placeholder && (
               <input
                 className="mt-10 w-full bg-[#FFFEFB] border border-ink-terra-15 rounded-pill p-5 text-paragraph-sm font-bold placeholder:text-ink-terra outline-ink-terra lg:w-[46%] "
