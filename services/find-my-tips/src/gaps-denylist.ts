@@ -1,4 +1,3 @@
-
 export const DENYLIST_WORDS: readonly string[] = [
   // First names.
   'aaliyah',
