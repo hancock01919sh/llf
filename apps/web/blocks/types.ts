@@ -1,6 +1,7 @@
 import { SurfaceSchema, type Surface } from '@/components/ModuleBoundary';
 import { z } from 'zod';
 import { cmsType } from '@llf/contracts';
+import type { CategoryDataType } from '@/blocks/CategoryDetail.tsx';
 export interface BlockProps<T> {
   block: T;
   /** Position in the dynamic zone. The first block may own the page's h1 (TDD §6.6). */
@@ -11,7 +12,7 @@ export interface BlockProps<T> {
   layout?: string;
   isFullwidth?: boolean;
   backgroundColor?: Surface;
-  categoryData?: cmsType.api.Category;
+  categoryData?: CategoryDataType;
 }
 
 export const BlockBaseSchema = z.object({

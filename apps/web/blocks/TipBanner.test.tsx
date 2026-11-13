@@ -44,7 +44,6 @@ const block = {
       id: 8,
       documentId: 'lmu8brjeuj01mtakozq43n7a',
       title: 'Avocado',
-      type: null,
       synonyms: null,
       wasted: 3,
       image: {
