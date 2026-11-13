@@ -3,6 +3,7 @@ import type { ComponentType } from 'react';
 import { ContentError } from '@/lib/cms';
 import { blockLayout, blocks, isBlockKey } from './registry';
 import type { BlockProps } from './types';
+import type { CategoryDataType } from './CategoryDetail.tsx';
 import { ModuleBoundary, type Surface } from '@/components/ModuleBoundary';
 
 export interface ResolvedBlock {
@@ -73,7 +74,7 @@ export function DynamicZone({
   offset = 0,
 }: {
   page: Pick<cmsType.api.Page, 'title' | 'path' | 'main'>;
-  categoryData?: cmsType.api.Category;
+  categoryData?: CategoryDataType;
   offset?: number;
 }) {
   return resolveBlocks(page, isStrict()).map(
