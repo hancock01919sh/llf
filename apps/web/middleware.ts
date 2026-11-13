@@ -53,7 +53,10 @@ export function middleware(request: NextRequest): Response {
         { status: 502 },
       );
     }
-    return new Response(null, { status: 302, headers: { Location: `${MEDIA_BASE}${pathname}${search}` } });
+    return new Response(null, {
+      status: 302,
+      headers: { Location: `${MEDIA_BASE}${pathname}${search}` },
+    });
   }
 
   // The tool API is POSTed to; a slash redirect there would break the request (and save nothing).
