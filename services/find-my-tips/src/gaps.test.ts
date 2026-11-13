@@ -64,6 +64,33 @@ describe('filterGapTerms', () => {
     const items = names.map((name) => ({ name, class: 'edible' as const }));
     expect(filterGapTerms({ items }, () => false, sources)).toEqual([]);
   });
+
+  it('sees through possessives and apostrophes', () => {
+    const items = [
+      { name: 'lasagna', class: 'edible' as const },
+      { name: 'shopping list', class: 'inedible' as const },
+    ];
+    expect(filterGapTerms({ items }, () => false, ["Mom's lasagna", "Trader Joe's"])).toEqual([]);
+  });
+
+  it('rejects a proper noun the denylist has never seen', () => {
+    const items = [{ name: 'cake', class: 'edible' as const }];
+    expect(filterGapTerms({ items }, () => false, ['Priya'])).toEqual([]);
+    expect(filterGapTerms(items, () => false, ['cake'])).toEqual([
+      { name: 'cake', class: 'edible' },
+    ]);
+  });
+
+  it('keeps food words that share a denylisted name', () => {
+    const items = [
+      { name: 'fish', class: 'edible' as const },
+      { name: 'pepper jack', class: 'edible' as const },
+    ];
+    expect(filterGapTerms({ items }, () => false, ['fish', 'pepper jack'])).toEqual([
+      { name: 'fish', class: 'edible' },
+      { name: 'pepper jack', class: 'edible' },
+    ]);
+  });
 });
 
 describe('classifyGapTerms', () => {

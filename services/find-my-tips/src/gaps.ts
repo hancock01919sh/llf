@@ -2,162 +2,12 @@ import { GapResult, type GapClassification, type GapTerm } from '@llf/contracts/
 
 import { ToolError } from './http';
 import type { ExtractionProvider, GapClassificationContext } from './extract/types';
+import { DENYLIST_PHRASES, DENYLIST_WORDS } from './gaps-denylist';
 
 export const GAP_PROMPT_VERSION = 'gap-v1';
 export const GAP_CLASSIFICATION_TIMEOUT_MS = 3_000;
 
-const DENYLIST = new Set([
-  'aaliyah',
-  'aaron',
-  'alice',
-  'amelia',
-  'andrew',
-  'anna',
-  'anthony',
-  'ava',
-  'barbara',
-  'ben',
-  'benjamin',
-  'bob',
-  'brenda',
-  'brian',
-  'charlie',
-  'chris',
-  'christopher',
-  'daniel',
-  'david',
-  'donald',
-  'elizabeth',
-  'emily',
-  'emma',
-  'ethan',
-  'evelyn',
-  'frank',
-  'george',
-  'grace',
-  'hannah',
-  'henry',
-  'isabella',
-  'jack',
-  'james',
-  'jennifer',
-  'jessica',
-  'john',
-  'joseph',
-  'judy',
-  'karen',
-  'katherine',
-  'kevin',
-  'kim',
-  'laura',
-  'linda',
-  'lisa',
-  'maria',
-  'mary',
-  'matthew',
-  'max',
-  'michael',
-  'michelle',
-  'nancy',
-  'nicholas',
-  'olivia',
-  'patricia',
-  'paul',
-  'richard',
-  'robert',
-  'sarah',
-  'susan',
-  'thomas',
-  'william',
-  'aunt',
-  'brother',
-  'dad',
-  'daddy',
-  'daughter',
-  'family',
-  'father',
-  'grandma',
-  'grandmother',
-  'grandpa',
-  'grandfather',
-  'husband',
-  'mom',
-  'mommy',
-  'mother',
-  'mum',
-  'sister',
-  'son',
-  'wife',
-  'person',
-  'people',
-  'address',
-  'email',
-  'phone',
-  'number',
-  'cat',
-  'dog',
-  'bird',
-  'bunny',
-  'hamster',
-  'pet',
-  'puppy',
-  'kitten',
-  'rabbit',
-  'parrot',
-  'animal',
-  'horse',
-  'fish',
-  'turtle',
-  'medicine',
-  'medication',
-  'prescription',
-  'pharmacy',
-  'pill',
-  'pills',
-  'tablet',
-  'capsule',
-  'insulin',
-  'antibiotic',
-  'tylenol',
-  'advil',
-  'ibuprofen',
-  'aspirin',
-  'acetaminophen',
-  'costco',
-  'walmart',
-  'target',
-  'kroger',
-  'kirkland',
-  'amazon',
-  'aldi',
-  'brand',
-  'kraft',
-  'oreo',
-  'pepsi',
-  'coke',
-  'coca',
-  'cola',
-  'nestle',
-  'kelloggs',
-  'tyson',
-  'ignore',
-  'previous',
-  'instruction',
-  'instructions',
-  'prompt',
-  'system',
-  'assistant',
-]);
-
-const DENYLIST_PHRASES = [
-  'credit card',
-  'debit card',
-  'phone number',
-  'social security',
-  'account number',
-  'whole foods',
-  'trader joes',
-];
+const DENYLIST = new Set(DENYLIST_WORDS);
 
 export type GapClassifier = Pick<ExtractionProvider, 'classifyGaps'>;
 
@@ -196,12 +46,24 @@ export async function classifyGapTerms(
   }
 }
 
+/** Possessives and apostrophes must not hide a denylisted word ("mom's", "trader joe's"). */
+function denylistForms(name: string): { words: string[]; text: string } {
+  const lower = name.toLowerCase();
+  return {
+    words: lower
+      .replace(/['’]s\b/g, '')
+      .split(/[^a-z]+/)
+      .filter(Boolean),
+    text: lower.replace(/['’]/g, ''),
+  };
+}
+
 function hitsDenylist(name: string): boolean {
-  const normalized = name.toLowerCase();
-  const words = normalized.split(/[ -]+/);
+  const { words, text } = denylistForms(name);
   return (
     words.some((word) => DENYLIST.has(word)) ||
-    DENYLIST_PHRASES.some((phrase) => normalized.includes(phrase))
+    text.split(/[^a-z]+/).some((word) => DENYLIST.has(word)) ||
+    DENYLIST_PHRASES.some((phrase) => text.includes(phrase))
   );
 }
 
@@ -239,14 +101,22 @@ export function filterGapTerms(
   return kept;
 }
 
+/**
+ * A capitalized, mixed-case word in the extractor's term is a name, brand, or
+ * store ("Priya", "Kirkland milk"). Deliberately conservative: a missed gap only
+ * costs one analytics row, a leaked name cannot be undone.
+ */
+const PROPER_NOUN = /\p{Lu}\p{Ll}/u;
+
 function hasSensitiveSource(term: string): boolean {
   const normalized = term.toLowerCase();
   const digits = normalized.replace(/\D/g, '');
   return (
     digits.length >= 7 ||
+    PROPER_NOUN.test(term) ||
     /\b(?:my name is|address|email|phone|card|account|social security|prescription|medicine|medication)\b/.test(
       normalized,
     ) ||
-    hitsDenylist(normalized)
+    hitsDenylist(term)
   );
 }
