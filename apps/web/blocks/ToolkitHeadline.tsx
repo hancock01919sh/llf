@@ -22,7 +22,7 @@ export function BlockToolkitHeadline(props: BlockProps<cmsType.component.Toolkit
         </a>
       )}
       {cta?.label && !file?.url && (
-        <a href={cta.href || '#'} className="btn mt-10 w-auto mx-auto lg:w-max lg:mx-auto">
+        <a href={cta.href || '#'} className="btn mt-10 mx-auto w-max lg:mx-auto">
           {cta?.label}
         </a>
       )}
