@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { CategoryRef, CategoryDeepRef } from '../api/category';
+import { IngredientTypeRef, IngredientTypeDeepRef } from '../api/ingredient-type';
 import { Media } from '../media';
 import { TipRef, TipDeepRef } from '../api/tip';
 
@@ -9,39 +10,18 @@ export const Ingredient = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  type: nullish(
-    z.enum([
-      'Baked Goods',
-      'Dairy',
-      'Dry Foods',
-      'Fresh Herbs',
-      'Leafy Greens',
-      'Produce',
-      'Protein',
-    ]),
-  ),
   synonyms: nullish(z.string()),
   tips: nullish(z.array(z.lazy(() => TipRef))),
   wasted: z.number().int().default(3),
   image: nullish(Media),
   category: nullish(z.lazy(() => CategoryRef)),
+  ingredient_type: nullish(z.lazy(() => IngredientTypeRef)),
 });
 
 export const IngredientRef = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  type: nullish(
-    z.enum([
-      'Baked Goods',
-      'Dairy',
-      'Dry Foods',
-      'Fresh Herbs',
-      'Leafy Greens',
-      'Produce',
-      'Protein',
-    ]),
-  ),
   synonyms: nullish(z.string()),
   wasted: z.number().int().default(3),
   image: nullish(Media),
@@ -51,22 +31,12 @@ export const IngredientDeepRef = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
-  type: nullish(
-    z.enum([
-      'Baked Goods',
-      'Dairy',
-      'Dry Foods',
-      'Fresh Herbs',
-      'Leafy Greens',
-      'Produce',
-      'Protein',
-    ]),
-  ),
   synonyms: nullish(z.string()),
   tips: nullish(z.array(z.lazy((): z.ZodType<TipDeepRef> => TipDeepRef))),
   wasted: z.number().int().default(3),
   image: nullish(Media),
   category: nullish(z.lazy((): z.ZodType => CategoryDeepRef)),
+  ingredient_type: nullish(z.lazy((): z.ZodType<IngredientTypeDeepRef> => IngredientTypeDeepRef)),
 });
 
 export type IngredientDeepRef = z.infer<typeof IngredientDeepRef>;
