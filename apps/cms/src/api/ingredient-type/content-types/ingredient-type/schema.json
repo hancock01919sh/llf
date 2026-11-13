@@ -14,6 +14,20 @@
     "title": {
       "type": "string",
       "required": true
+    },
+    "slug": {
+      "type": "string",
+      "required": true
+    },
+    "ingredients": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::ingredient.ingredient",
+      "mappedBy": "ingredient_type"
+    },
+    "emoji": {
+      "type": "string",
+      "required": true
     }
   }
 }
