@@ -2,15 +2,17 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 
 import { Catalog, toSlug } from '@llf/contracts/catalog';
-import type { Match, Matcher } from '@llf/matching';
-import { createMatcher, TIER_RANK } from '@llf/matching';
+import type { Matcher } from '@llf/matching';
+import { createMatcher } from '@llf/matching';
 import { z } from 'zod';
 
 export type CatalogSnapshot = { catalogVersion: string; matcher: Matcher };
 
 export interface CatalogSource {
+  /** The version reported by `/status` and in extraction responses. */
   version(): Promise<string>;
-  matcher(terms: readonly string[]): Promise<Matcher>;
+  /** The whole catalog, matched in memory. */
+  matcher(): Promise<Matcher>;
 }
 
 type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
@@ -19,6 +21,7 @@ export type CatalogSourceOptions = {
   catalogUrl?: string | undefined;
   catalogToken?: string | undefined;
   catalogFile?: string | undefined;
+  /** How long a loaded catalog is trusted before the CMS is checked again. */
   refreshMs: number;
   fetch?: FetchLike;
   now?: () => number;
@@ -26,8 +29,7 @@ export type CatalogSourceOptions = {
 };
 
 const FIXTURE = new URL('./fixtures/catalog.json', import.meta.url);
-const PAGE_LIMIT = 100;
-const CACHE_MAX = 5_000;
+const PAGE_LIMIT = 999;
 
 function digest(value: string): string {
   return createHash('sha256').update(value).digest('hex').slice(0, 12);
@@ -64,12 +66,12 @@ const CmsFingerprint = z.object({
   meta: z.object({ pagination: z.object({ total: z.number().int().nonnegative() }) }).optional(),
 });
 
-function snapshot(catalog: Catalog): CatalogSnapshot {
+function toSnapshot(catalog: Catalog): CatalogSnapshot {
   return { catalogVersion: catalog.catalogVersion, matcher: createMatcher(catalog.ingredients) };
 }
 
 export function catalogFromData(data: unknown): CatalogSnapshot {
-  return snapshot(Catalog.parse(data));
+  return toSnapshot(Catalog.parse(data));
 }
 
 /** A fixed catalog, for tests and local runs without a CMS. */
@@ -92,11 +94,11 @@ function toIngredient(row: CmsIngredient) {
 }
 
 /**
- * Resolves terms against the CMS catalog on demand (TDD §7.4). Nothing is
- * preloaded: each request passes the names it needs, pages are read lazily
- * until every term has a strong match or the list ends, and each term's result
- * (including a miss) is cached for `refreshMs`. Without a URL, `CATALOG_FILE`
- * or the bundled fixture is read once.
+ * Loads the whole catalog into memory once per `refreshMs` and matches terms
+ * there (TDD §7.4). Reloads start with the cheap `updatedAt` fingerprint, so an
+ * unchanged catalog costs one request instead of N pages. Nothing derived from a
+ * user's input is kept: no term cache, no per-request state (D20/D35). Without
+ * a URL, `CATALOG_FILE` or the bundled fixture is read once.
  */
 export function createCatalogSource(options: CatalogSourceOptions): CatalogSource {
   const now = options.now ?? Date.now;
@@ -108,7 +110,7 @@ export function createCatalogSource(options: CatalogSourceOptions): CatalogSourc
     const load = () => {
       loaded ??= (async () => {
         const path = options.catalogFile ?? FIXTURE;
-        return snapshot(Catalog.parse(JSON.parse(await readFile(path, 'utf8'))));
+        return toSnapshot(Catalog.parse(JSON.parse(await readFile(path, 'utf8'))));
       })().catch((error: unknown) => {
         loaded = undefined;
         throw error;
@@ -124,38 +126,18 @@ export function createCatalogSource(options: CatalogSourceOptions): CatalogSourc
   const endpoint = url;
   const headers = new Headers();
   if (options.catalogToken) headers.set('authorization', `Bearer ${options.catalogToken}`);
-  const cache = new Map<string, { match: Match | null; at: number }>();
-  const inflight = new Map<string, Promise<Map<string, Match | null>>>();
-  const pages = new Map<number, Promise<CmsPage>>();
-  let announced = false;
-
-  let version: { value: string; at: number } | undefined;
   const endpointVersion = digest(endpoint);
 
-  async function fetchVersion(): Promise<string> {
+  let snapshot: CatalogSnapshot | undefined;
+  let checkedAt = 0;
+  let inflight: Promise<CatalogSnapshot> | undefined;
+
+  function fingerprintUrl(): string {
     const target = new URL(endpoint);
     target.searchParams.set('fields[0]', 'updatedAt');
     target.searchParams.set('sort', 'updatedAt:desc');
     target.searchParams.set('pagination[limit]', '1');
-    const res = await doFetch(target.toString(), {
-      headers,
-      signal: AbortSignal.timeout(5_000),
-    });
-    if (!res.ok) throw fetchError(res.status);
-    const latest = CmsFingerprint.parse(await res.json());
-    const total = latest.meta?.pagination.total ?? latest.data.length;
-    return digest(`${latest.data[0]?.updatedAt ?? ''}|${total}`);
-  }
-
-  async function currentVersion(): Promise<string> {
-    if (version && now() - version.at < options.refreshMs) return version.value;
-    const at = now();
-    try {
-      version = { value: await fetchVersion(), at };
-    } catch {
-      version = { value: version?.value ?? endpointVersion, at };
-    }
-    return version.value;
+    return target.toString();
   }
 
   function pageUrl(start: number): string {
@@ -167,110 +149,73 @@ export function createCatalogSource(options: CatalogSourceOptions): CatalogSourc
     return target.toString();
   }
 
-  async function loadPage(start: number): Promise<CmsPage> {
-    const res = await doFetch(pageUrl(start), {
-      headers,
-      signal: AbortSignal.timeout(5_000),
-    });
+  async function get(target: string): Promise<Response> {
+    const res = await doFetch(target, { headers, signal: AbortSignal.timeout(5_000) });
     if (!res.ok) throw fetchError(res.status);
-    return CmsPage.parse(await res.json());
+    return res;
   }
 
-  function fetchPage(start: number): Promise<CmsPage> {
-    const existing = pages.get(start);
-    if (existing) return existing;
-    const page = loadPage(start);
-    pages.set(start, page);
-    const settle = () => {
-      if (pages.get(start) === page) pages.delete(start);
-    };
-    page.then(settle, settle);
-    return page;
+  async function fetchFingerprint(): Promise<string> {
+    const latest = CmsFingerprint.parse(await (await get(fingerprintUrl())).json());
+    return digest(`${latest.data[0]?.updatedAt ?? ''}|${latest.meta?.pagination.total ?? 0}`);
   }
 
-  function evictOldest(): void {
-    while (cache.size > CACHE_MAX) {
-      const oldest = cache.keys().next().value;
-      if (oldest === undefined) break;
-      cache.delete(oldest);
+  async function fetchPage(start: number): Promise<CmsPage> {
+    return CmsPage.parse(await (await get(pageUrl(start))).json());
+  }
+
+  async function loadAll(catalogVersion: string): Promise<CatalogSnapshot> {
+    const ingredients: ReturnType<typeof toIngredient>[] = [];
+    let start = 0;
+    for (;;) {
+      const page = await fetchPage(start);
+      ingredients.push(...page.data.map(toIngredient));
+      const pagination = page.meta?.pagination;
+      if (page.data.length === 0 || !pagination) break;
+      start += pagination.limit;
+      if (start >= pagination.total) break;
     }
+    snapshot = { catalogVersion, matcher: createMatcher(ingredients) };
+    options.onLoad?.(catalogVersion);
+    return snapshot;
   }
 
-  function resolve(terms: readonly string[]): Promise<Map<string, Match | null>> {
-    const key = [...new Set(terms)].sort().join('\u0000');
-    const existing = inflight.get(key);
-    if (existing) return existing;
-    const run = resolveOnce(terms);
-    inflight.set(key, run);
-    const settle = () => {
-      if (inflight.get(key) === run) inflight.delete(key);
-    };
-    run.then(settle, settle);
-    return run;
+  async function reload(): Promise<CatalogSnapshot> {
+    checkedAt = now();
+    const catalogVersion = await fetchFingerprint();
+    if (snapshot && snapshot.catalogVersion === catalogVersion) return snapshot;
+    return loadAll(catalogVersion);
   }
 
-  async function resolveOnce(terms: readonly string[]): Promise<Map<string, Match | null>> {
-    const at = now();
-    const resolved = new Map<string, Match | null>();
-    const stale = new Map<string, Match | null>();
-    const pending = new Set<string>();
-
-    for (const term of terms) {
-      const hit = cache.get(term);
-      if (hit && at - hit.at < options.refreshMs) resolved.set(term, hit.match);
-      else {
-        if (hit) stale.set(term, hit.match);
-        pending.add(term);
-      }
-    }
-    if (pending.size === 0) return resolved;
-
-    const best = new Map<string, Match>();
-    try {
-      let start = 0;
-      while (pending.size > 0) {
-        const page = await fetchPage(start);
-        const pageMatcher = createMatcher(page.data.map(toIngredient));
-        for (const term of [...pending]) {
-          const found = pageMatcher.match(term);
-          if (!found) continue;
-          const previous = best.get(term);
-          if (!previous || TIER_RANK[found.tier] < TIER_RANK[previous.tier]) {
-            best.set(term, found);
-          }
-          if (found.tier === 'strong') {
-            resolved.set(term, found);
-            pending.delete(term);
-          }
+  function current(): Promise<CatalogSnapshot> {
+    if (snapshot && now() - checkedAt < options.refreshMs) return Promise.resolve(snapshot);
+    let pending = inflight;
+    if (!pending) {
+      pending = (async () => {
+        try {
+          return await reload();
+        } catch (error) {
+          if (snapshot) return snapshot;
+          throw error;
         }
-        if (pending.size === 0) break;
-        const pagination = page.meta?.pagination;
-        if (page.data.length === 0 || !pagination) break;
-        start += pagination.limit;
-        if (start >= pagination.total) break;
-      }
-      for (const term of pending) resolved.set(term, best.get(term) ?? null);
-    } catch (error) {
-      for (const term of pending) {
-        if (!stale.has(term)) throw error;
-        resolved.set(term, stale.get(term) ?? null);
-      }
+      })().finally(() => {
+        inflight = undefined;
+      });
+      inflight = pending;
     }
-
-    for (const [term, match] of resolved) cache.set(term, { match, at });
-    evictOldest();
-    return resolved;
+    return pending;
   }
 
   return {
-    version: currentVersion,
-    async matcher(terms) {
-      const resolved = await resolve(terms);
-      if (!announced) {
-        announced = true;
-        options.onLoad?.(version?.value ?? endpointVersion);
+    async version() {
+      try {
+        return (await current()).catalogVersion;
+      } catch {
+        return snapshot?.catalogVersion ?? endpointVersion;
       }
-      return { match: (term: string) => resolved.get(term) ?? null };
+    },
+    async matcher() {
+      return (await current()).matcher;
     },
   };
 }

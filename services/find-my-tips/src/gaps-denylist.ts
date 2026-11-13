@@ -101,7 +101,6 @@ export const DENYLIST_WORDS: readonly string[] = [
   'parrot',
   'animal',
   'horse',
-  'turtle',
   // Medicines and pharmacy.
   'medicine',
   'medication',

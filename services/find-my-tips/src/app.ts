@@ -189,7 +189,7 @@ export function createApp(deps: AppDeps) {
 
       const outcome = await withTimeout((signal) => run(request, signal));
       const catalogVersion = await deps.catalog.version();
-      const matcher = await deps.catalog.matcher(outcome.items.map((item) => item.term));
+      const matcher = await deps.catalog.matcher();
       const { matches, unmatchedCount } = matchItems(outcome.items, matcher);
       let gaps: ExtractResponse['gaps'] = [];
       if (config.gapLog) {
