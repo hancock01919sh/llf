@@ -9,7 +9,10 @@ interface Params {
   params: Promise<{ category: string }>;
 }
 
-export const dynamicParams = false;
+export const revalidate = 60;
+
+// A category created after the build renders on first request instead of 404-ing (TDD D36).
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   return (await getCategories()).map((category) => ({ category: category.slug }));

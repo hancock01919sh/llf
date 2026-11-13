@@ -6,6 +6,9 @@ import { pageMetadata } from '@/lib/seo';
 import { requirePage } from '@/lib/cms';
 import { PageTemplate } from '@/templates/PageTemplate';
 import { Suspense } from 'react';
+
+export const revalidate = 60;
+
 const page = await requirePage('/find-my-tips/results/');
 /** Results are per-visitor, so the page is never indexed (TDD §6.7). */
 export const metadata: Metadata = pageMetadata({

@@ -3,6 +3,9 @@ import { requirePage } from '@/lib/cms';
 import { pageMetadata } from '@/lib/seo';
 // import { templates } from '@/templates/registry';
 import { PageTemplate } from '@/templates/PageTemplate';
+
+export const revalidate = 60;
+
 const page = await requirePage('tips');
 export async function generateMetadata(): Promise<Metadata> {
   // const page = await requirePage('tips');

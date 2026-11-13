@@ -5,6 +5,9 @@ import { pageMetadata } from '@/lib/seo';
 import { requirePage } from '@/lib/cms';
 import { PageTemplate } from '@/templates/PageTemplate';
 import { Suspense } from 'react';
+
+export const revalidate = 60;
+
 const page = await requirePage('search');
 /** Results depend on the fragment, so the page itself has nothing to index (TDD §6.5, §6.7). */
 export const metadata: Metadata = pageMetadata({

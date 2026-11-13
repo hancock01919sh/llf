@@ -2,12 +2,13 @@
   "name": "@llf/web",
   "version": "0.1.0",
   "private": true,
-  "description": "Long Live Food site: Next.js static export with templates, CMS blocks, and the Find My Tips UI (TDD §6)",
+  "description": "Long Live Food site: Next.js standalone server with ISR and CMS blocks (TDD §6, D36)",
   "type": "module",
   "scripts": {
     "dev": "next dev --port 3000",
     "build": "next build",
-    "start": "node --env-file-if-exists=../../.env server.mjs",
+    "postbuild": "node scripts/standalone-assets.mjs",
+    "start": "node .next/standalone/apps/web/server.js",
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
     "e2e": "playwright test"
