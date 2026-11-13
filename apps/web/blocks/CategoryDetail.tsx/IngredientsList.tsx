@@ -127,7 +127,7 @@ export function IngredientsList(
                     }
                   }}
                 >
-                  <div className="w-17.5 h-17.5 aspect-square rounded-full bg-ink-terra-40">
+                  <div className="w-17.5 h-17.5 aspect-square rounded-full bg-ink-terra-40 shrink-0">
                     {item.image?.url && (
                       <UIImage
                         src={item.image?.url || ''}
@@ -138,10 +138,14 @@ export function IngredientsList(
                   </div>
 
                   <div className="flex-1 flex flex-col lg:flex-row gap-2.5 lg:flex-center lg:justify-between">
-                    <Typography as="h2" variant="subhead-md" className="font-bold font-fustat!">
+                    <Typography
+                      as="h2"
+                      variant="subhead-md"
+                      className="font-bold font-fustat! line-clamp-1 flex-1"
+                    >
                       {item.title}
                     </Typography>
-                    <Typography variant="paragraph-sm" className="lg:text-paragraph-sm">
+                    <Typography variant="paragraph-sm" className="lg:text-paragraph-sm shrink-0">
                       {item?.tips?.length || 0} tips available
                     </Typography>
                   </div>
