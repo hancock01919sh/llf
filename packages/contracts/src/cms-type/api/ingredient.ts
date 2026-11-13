@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { CategoryRef, CategoryDeepRef } from '../api/category';
-import { IngredientTypeRef, IngredientTypeDeepRef } from '../api/ingredient-type';
+import { IngredientTypeRef } from '../api/ingredient-type';
 import { Media } from '../media';
 import { TipRef, TipDeepRef } from '../api/tip';
 
@@ -36,7 +36,7 @@ export const IngredientDeepRef = z.object({
   wasted: z.number().int().default(3),
   image: nullish(Media),
   category: nullish(z.lazy((): z.ZodType => CategoryDeepRef)),
-  ingredient_type: nullish(z.lazy((): z.ZodType<IngredientTypeDeepRef> => IngredientTypeDeepRef)),
+  ingredient_type: nullish(z.lazy((): z.ZodType<IngredientTypeRef> => IngredientTypeRef)),
 });
 
 export type IngredientDeepRef = z.infer<typeof IngredientDeepRef>;
