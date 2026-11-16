@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 const PORT = Number(process.env.E2E_PORT ?? 3100);
 
-/* Runs against the static export served by server.mjs, the same way Render dev serves it. */
+/* Runs against the built standalone app (`pnpm build` first), the same way Render dev serves it. */
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
@@ -18,8 +18,8 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
   ],
   webServer: {
-    command: 'node server.mjs',
-    url: `http://localhost:${PORT}/`,
+    command: 'node .next/standalone/apps/web/server.js',
+    url: `http://localhost:${PORT}/healthz`,
     env: { PORT: String(PORT) },
     reuseExistingServer: !process.env.CI,
   },

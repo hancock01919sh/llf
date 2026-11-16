@@ -11,13 +11,15 @@ import { PageTemplate } from '@/templates/PageTemplate';
 import { Suspense } from 'react';
 import type { cmsType } from '@llf/contracts';
 import { notFound } from 'next/navigation';
-const page = await requirePage('tips/category');
 interface Params {
   params: Promise<{ category: string }>;
   searchParams: Promise<{ type?: 'category' | 'ingredientType' }>;
 }
 
-export const dynamicParams = false;
+export const revalidate = 60;
+
+// A category created after the build renders on first request instead of 404-ing (TDD D36).
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const [categories, ingredientTypes] = await Promise.all([getCategories(), getIngredientTypes()]);
@@ -52,7 +54,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
  */
 export default async function CategoryPage(props: Params) {
   // test url /tips/chicken-and-rice-bowls
-  const category = await load(props);
+  const [category, page] = await Promise.all([load(props), requirePage('tips/category')]);
   return (
     <Suspense fallback={<div>loading</div>}>
       <PageTemplate page={page} categoryData={category} />
