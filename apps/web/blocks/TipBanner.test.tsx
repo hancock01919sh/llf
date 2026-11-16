@@ -11,6 +11,7 @@ const block = {
   label: 'Tip Of The Week',
   backgroundColor: 'terra',
   isFullwidth: false,
+  interiorBackgroundColor: 'forest-tint',
   cta: [
     {
       label: 'Share',
@@ -61,7 +62,7 @@ const block = {
   },
 } satisfies cmsType.component.TipBannerDeepRef;
 
-const renderBlock = (overrides: Partial<typeof block> = {}) =>
+const renderBlock = (overrides: Partial<cmsType.component.TipBannerDeepRef> = {}) =>
   render(<BlockTipBanner block={{ ...block, ...overrides }} index={1} pageTitle="Home" />);
 
 describe('BlockTipBanner', () => {
@@ -76,6 +77,13 @@ describe('BlockTipBanner', () => {
     expect(screen.getByText('Avocado')).toBeDefined();
     expect(screen.getByText("Gone brown? It's not gone bad.")).toBeDefined();
     expect(screen.getByText(block.tip.description)).toBeDefined();
+  });
+
+  it('applies the CMS interior background to the banner and the label', () => {
+    const { container } = renderBlock({ interiorBackgroundColor: 'sand' });
+    // Both the banner and the floating label opt into the CMS surface (packages/ui tokens).
+    expect(container.querySelectorAll('[data-surface="sand"]')).toHaveLength(2);
+    expect(container.querySelectorAll('[data-surface="forest-tint"]')).toHaveLength(0);
   });
 
   it('renders the tip type badge and both CTAs', () => {

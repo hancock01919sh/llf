@@ -604,6 +604,7 @@
           "label": "Tip Of The Week",
           "backgroundColor": "terra",
           "isFullwidth": false,
+          "interiorBackgroundColor": "forest-tint",
           "cta": [
             {
               "id": 585,
@@ -1719,6 +1720,7 @@
           "label": "Tip Of The Week",
           "backgroundColor": "forest",
           "isFullwidth": false,
+          "interiorBackgroundColor": "forest-tint",
           "cta": [
             {
               "id": 589,
@@ -3031,6 +3033,7 @@
           "id": 59,
           "label": "Tip Of The Week",
           "backgroundColor": "terra",
+          "interiorBackgroundColor": "forest-tint",
           "isFullwidth": false,
           "cta": [
             {
