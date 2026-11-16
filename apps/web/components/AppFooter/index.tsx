@@ -14,8 +14,9 @@ interface FooterProp {
 export function AppFooter({ inPopup = false, inMenu = false, className = '' }: FooterProp) {
   const { footer } = useContext(AppContext);
   if (!footer) return null;
+  const Tag = inMenu ? 'div' : 'footer';
   return (
-    <footer className={`footer-container text-ink-terra ${className}`}>
+    <Tag className={`footer-container text-ink-terra ${className}`}>
       {!inMenu && (
         <div
           className={`bg-ink-terra text-surface-mint text-[35px] py-16.5 px-5 lg:px-15 lg:py-25 lg:text-lg-headline-lg`}
@@ -49,6 +50,6 @@ export function AppFooter({ inPopup = false, inMenu = false, className = '' }: F
           <div className="mt-lg px-gutter text-caption">{footer.legalCopy}</div>
         </div>
       </div>
-    </footer>
+    </Tag>
   );
 }

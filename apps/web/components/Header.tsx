@@ -19,20 +19,26 @@ interface NavigationProp {
   onClose?: () => void;
   inPopup?: boolean;
 }
-export function Header({ className = '', showClose = false, onClose = () => {} }: NavigationProp) {
+export function Header({
+  className = '',
+  showClose = false,
+  onClose = () => {},
+  inPopup = false,
+}: NavigationProp) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const isSearchPage = pathname.startsWith('/search');
   const whiteBg = pathname.startsWith('/toolkit') || isSearchPage;
-  const hiddenSearch = isSearchPage && !showClose;
+  const hiddenSearch = isSearchPage && (!showClose || inPopup);
   const { navigation } = useContext(AppContext);
   if (!navigation) {
     console.error('Navigation is not provided');
     return null;
   }
+  const Tag = inPopup ? 'div' : 'header';
   return (
-    <nav
+    <Tag
       className={`flex justify-between items-center px-5 pt-16.5 pb-5 border-b lg:border-b-[1.5px] border-ink-terra-15 lg:pt-12.5 lg:pb-6.5 lg:px-15 bg-brand-forest text-surface-mint ${className}`}
     >
       <div className="text-[35px] h-8.75">
@@ -98,6 +104,6 @@ export function Header({ className = '', showClose = false, onClose = () => {} }
           setIsOpen(false);
         }}
       />
-    </nav>
+    </Tag>
   );
 }
