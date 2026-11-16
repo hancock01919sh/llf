@@ -134,7 +134,7 @@
       @apply border-solid border-[3px] border-brand-forest bg-surface-mint outline-0;
     }
     @variant disabled {
-      @apply bg-ink-terra-15 text-ink-terra-40;
+      @apply bg-ink-terra-15! text-ink-terra-40!;
     }
 
     @variant hover {

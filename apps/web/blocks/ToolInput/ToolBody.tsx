@@ -7,7 +7,7 @@ const IconComponent = [IconWork1, IconWork2, IconWork3];
 export function ToolBody(props: BlockProps<cmsType.component.ToolInputDeepRef>) {
   return (
     <div className="px-gutter lg:px-gutter-lg max-w-page mx-auto pt-12 pb-15 lg:pb-25">
-      <div className="lg:w-2/3 mx-auto lg:text-center">
+      <div className="lg:w-2/3 mx-auto text-center">
         <Typography variant="headline-lg">{props.block.cardTitle}</Typography>
         <Typography variant="subhead-lg" className="mt-5">
           {props.block.cardDescription}

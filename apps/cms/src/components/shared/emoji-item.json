@@ -5,14 +5,10 @@
   },
   "options": {},
   "attributes": {
-    "emoji": {
-      "type": "string",
-      "required": true
-    },
-    "category": {
+    "ingredient_type": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "api::category.category"
+      "target": "api::ingredient-type.ingredient-type"
     }
   },
   "config": {}
