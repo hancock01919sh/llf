@@ -1,7 +1,7 @@
 # Code owners are requested for review automatically. Last matching pattern wins.
 # The China team leads approve and merge into dev. Art reviews after merge and
 # raises issues as follow-up tickets; he is never a gate on dev (TDD D34).
-# staging and prod promotions still need a tech lead (TDD §9.3).
+# stage and prod promotions still need a tech lead (TDD §9.3).
 
 # Default
 *                         @omc-panghu @DavisWang-Omc @artokun
