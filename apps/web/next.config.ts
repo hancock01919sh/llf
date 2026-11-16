@@ -5,7 +5,13 @@ import type { NextConfig } from 'next';
 // One `.env` at the repo root serves every app (README quickstart).
 loadEnvConfig(path.resolve(import.meta.dirname, '../..'));
 
-const TIPS_URL = process.env.TIPS_URL ?? `http://localhost:${process.env.TOOL_PORT ?? '8787'}`;
+// Render passes the private tool service as `host:port` (Blueprint `hostport`), with no scheme.
+// Next.js rejects a rewrite destination without one, so add `http://` when it's missing.
+const TIPS_TARGET = process.env.TIPS_URL || `localhost:${process.env.TOOL_PORT ?? '8787'}`;
+const TIPS_URL = (/^https?:\/\//.test(TIPS_TARGET) ? TIPS_TARGET : `http://${TIPS_TARGET}`).replace(
+  /\/+$/,
+  '',
+);
 
 /*
  * Next.js standalone server (TDD D36, §5.3, §6.2). Pages use ISR (`revalidate: 60`) and are
