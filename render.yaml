@@ -127,6 +127,9 @@ services:
     envVars:
       - key: SITE_ENV
         value: dev
+      # The standalone server binds to $HOSTNAME; make it listen on every interface.
+      - key: HOSTNAME
+        value: 0.0.0.0
       # Builds from fixture content until cms-dev is seeded. Then delete CMS_FIXTURES and set
       # CMS_URL + CMS_TOKEN (read-only token) in the dashboard (docs/runbooks/render-dev.md).
       - key: CMS_FIXTURES
