@@ -19,6 +19,7 @@
   --font-inter: var(--font-inter);
 
   --breakpoint-4k: 1921px;
+  --breakpoint-xlg: 1440px;
 
   --radius-small: 20px;
   --radius-medium: 40px;
@@ -88,6 +89,12 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    @variant lg {
+      font-size: 1.11111111vw;
+    }
+    @variant xlg {
+      font-size: 16px;
+    }
     @variant 4k {
       font-size: 1vw;
     }
@@ -101,7 +108,9 @@
       @apply overflow-hidden;
     }
   }
-
+  button {
+    @apply cursor-pointer;
+  }
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -118,13 +127,14 @@
 }
 @layer components {
   .btn {
-    @apply cursor-pointer flex items-center justify-center gap-2.5 text-ink-terra bg-surface-mint rounded-pill py-6 leading-none px-6 border-0 transition-colors duration-300 box-border active:bg-surface-mint-dark font-semibold text-cta text-nowrap;
+    @apply cursor-pointer flex items-center justify-center gap-2.5 text-ink-terra bg-surface-mint rounded-pill leading-none px-6 border-0 transition-colors duration-300 box-border active:bg-surface-mint-dark font-semibold text-cta text-nowrap;
+    height: 52px;
 
     @variant focus-visible {
       @apply border-solid border-[3px] border-brand-forest bg-surface-mint outline-0;
     }
     @variant disabled {
-      @apply bg-ink-terra-15 text-ink-terra-40;
+      @apply bg-ink-terra-15! text-ink-terra-40!;
     }
 
     @variant hover {

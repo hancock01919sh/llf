@@ -1,0 +1,652 @@
+{
+  "data": [
+    {
+      "id": 23,
+      "documentId": "iri3ulf7pxkmwye1t6v6iugd",
+      "title": "Breads & Grains",
+      "createdAt": "2026-11-12T08:07:02.079Z",
+      "updatedAt": "2026-11-13T07:23:10.886Z",
+      "publishedAt": "2026-11-13T07:23:10.912Z",
+      "slug": "breads-grains",
+      "emoji": "🌾",
+      "seo": null,
+      "ingredients": []
+    },
+    {
+      "id": 24,
+      "documentId": "er4jmgjc9qncp0frjmx87hg6",
+      "title": "Fruits",
+      "createdAt": "2026-11-12T08:06:19.343Z",
+      "updatedAt": "2026-11-13T07:23:50.326Z",
+      "publishedAt": "2026-11-13T07:23:50.360Z",
+      "slug": "fruits",
+      "emoji": "🍎",
+      "seo": null,
+      "ingredients": [
+        {
+          "id": 89,
+          "documentId": "lmu8brjeuj01mtakozq43n7a",
+          "title": "Avocado",
+          "synonyms": null,
+          "wasted": 3,
+          "createdAt": "2026-10-16T03:41:24.077Z",
+          "updatedAt": "2026-10-16T03:41:25.066Z",
+          "publishedAt": "2026-10-16T03:41:25.085Z",
+          "image": {
+            "id": 236,
+            "documentId": "w8vld5ywd5uzb46altzj5e20",
+            "name": "53de8cb6b261d020c4208ef47da774c1990a6a2a (1).png",
+            "alternativeText": "avocado",
+            "caption": null,
+            "focalPoint": null,
+            "width": 1024,
+            "height": 768,
+            "formats": {
+              "large": {
+                "ext": ".png",
+                "url": "/uploads/large_53de8cb6b261d020c4208ef47da774c1990a6a2a_1_b85fe57f51.png",
+                "hash": "large_53de8cb6b261d020c4208ef47da774c1990a6a2a_1_b85fe57f51",
+                "mime": "image/png",
+                "name": "large_53de8cb6b261d020c4208ef47da774c1990a6a2a (1).png",
+                "path": null,
+                "size": 1609.65,
+                "width": 1000,
+                "height": 750,
+                "sizeInBytes": 1609651
+              },
+              "small": {
+                "ext": ".png",
+                "url": "/uploads/small_53de8cb6b261d020c4208ef47da774c1990a6a2a_1_b85fe57f51.png",
+                "hash": "small_53de8cb6b261d020c4208ef47da774c1990a6a2a_1_b85fe57f51",
+                "mime": "image/png",
+                "name": "small_53de8cb6b261d020c4208ef47da774c1990a6a2a (1).png",
+                "path": null,
+                "size": 415.55,
+                "width": 500,
+                "height": 375,
+                "sizeInBytes": 415553
+              },
+              "medium": {
+                "ext": ".png",
+                "url": "/uploads/medium_53de8cb6b261d020c4208ef47da774c1990a6a2a_1_b85fe57f51.png",
+                "hash": "medium_53de8cb6b261d020c4208ef47da774c1990a6a2a_1_b85fe57f51",
+                "mime": "image/png",
+                "name": "medium_53de8cb6b261d020c4208ef47da774c1990a6a2a (1).png",
+                "path": null,
+                "size": 928.03,
+                "width": 750,
+                "height": 563,
+                "sizeInBytes": 928030
+              },
+              "thumbnail": {
+                "ext": ".png",
+                "url": "/uploads/thumbnail_53de8cb6b261d020c4208ef47da774c1990a6a2a_1_b85fe57f51.png",
+                "hash": "thumbnail_53de8cb6b261d020c4208ef47da774c1990a6a2a_1_b85fe57f51",
+                "mime": "image/png",
+                "name": "thumbnail_53de8cb6b261d020c4208ef47da774c1990a6a2a (1).png",
+                "path": null,
+                "size": 73.83,
+                "width": 208,
+                "height": 156,
+                "sizeInBytes": 73826
+              }
+            },
+            "hash": "53de8cb6b261d020c4208ef47da774c1990a6a2a_1_b85fe57f51",
+            "ext": ".png",
+            "mime": "image/png",
+            "size": 457.62,
+            "url": "/uploads/53de8cb6b261d020c4208ef47da774c1990a6a2a_1_b85fe57f51.png",
+            "previewUrl": null,
+            "provider": "local",
+            "provider_metadata": null,
+            "createdAt": "2026-10-16T03:40:12.905Z",
+            "updatedAt": "2026-11-12T03:14:02.906Z",
+            "publishedAt": "2026-10-16T03:40:12.906Z"
+          },
+          "tips": [
+            {
+              "id": 74,
+              "documentId": "aso8i0z2t6ij0eleuv5vwk9n",
+              "title": "Gone brown? It's not gone bad.",
+              "description": "Brown flesh means oxidation, not rot. Scrape the top layer and everything underneath is still good.",
+              "createdAt": "2026-10-16T03:39:10.232Z",
+              "updatedAt": "2026-10-26T07:06:43.182Z",
+              "publishedAt": "2026-10-26T07:06:43.219Z",
+              "tip_type": {
+                "id": 24,
+                "documentId": "wy46qcysn8mub06x91za7imk",
+                "title": "Rescue it",
+                "createdAt": "2026-10-16T03:44:08.725Z",
+                "updatedAt": "2026-11-03T03:26:37.905Z",
+                "publishedAt": "2026-11-03T03:26:37.920Z"
+              }
+            }
+          ]
+        },
+        {
+          "id": 101,
+          "documentId": "kb3l9tlqcphnvpjtqpp8smpk",
+          "title": "Banana",
+          "synonyms": null,
+          "wasted": 3,
+          "createdAt": "2026-11-02T05:54:24.281Z",
+          "updatedAt": "2026-11-02T05:55:56.157Z",
+          "publishedAt": "2026-11-02T05:55:56.177Z",
+          "image": null,
+          "tips": []
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "documentId": "w61ea66ug1g23898bqwup9la",
+      "title": "Leafy Greens",
+      "createdAt": "2026-11-12T08:06:35.765Z",
+      "updatedAt": "2026-11-13T07:24:30.995Z",
+      "publishedAt": "2026-11-13T07:24:31.029Z",
+      "slug": "leafy-greens",
+      "emoji": "🥬",
+      "seo": null,
+      "ingredients": [
+        {
+          "id": 85,
+          "documentId": "mlrz9k2wktrx3enshfn385ns",
+          "title": "Zucchini",
+          "synonyms": null,
+          "wasted": 3,
+          "createdAt": "2026-10-27T06:35:57.914Z",
+          "updatedAt": "2026-10-27T06:35:57.914Z",
+          "publishedAt": "2026-10-27T06:35:57.941Z",
+          "image": null,
+          "tips": []
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "documentId": "hiinoocf0zlbn134ad7p267w",
+      "title": "Meat & Poultry",
+      "createdAt": "2026-11-12T08:06:02.731Z",
+      "updatedAt": "2026-11-13T07:25:08.467Z",
+      "publishedAt": "2026-11-13T07:25:08.535Z",
+      "slug": "meat-poultry",
+      "emoji": "🥩",
+      "seo": null,
+      "ingredients": [
+        {
+          "id": 93,
+          "documentId": "jfvgfba84ctrcy5feal7qdzg",
+          "title": "Beef",
+          "synonyms": "Steak, Sirloin, Ribeye, Brisket, Stew meat, Chuck roast",
+          "wasted": 2,
+          "createdAt": "2026-10-26T07:41:40.746Z",
+          "updatedAt": "2026-10-26T07:41:40.746Z",
+          "publishedAt": "2026-10-26T07:41:40.956Z",
+          "image": null,
+          "tips": [
+            {
+              "id": 78,
+              "documentId": "zjlse35oaxqohnc5k2mhjj4q",
+              "title": "The cheaper the cut, the more forgiving it is to cook",
+              "description": "Chuck, brisket, and stew meat are built for low, slow cooking with a wide margin for error.",
+              "createdAt": "2026-10-26T07:43:11.623Z",
+              "updatedAt": "2026-10-26T07:43:11.623Z",
+              "publishedAt": "2026-10-26T07:43:12.840Z",
+              "tip_type": {
+                "id": 22,
+                "documentId": "jx1ssjev8r4nb2kyc3fn9hde",
+                "title": "Buy it",
+                "createdAt": "2026-10-16T09:40:52.919Z",
+                "updatedAt": "2026-10-16T09:40:53.630Z",
+                "publishedAt": "2026-10-16T09:40:53.646Z"
+              }
+            },
+            {
+              "id": 70,
+              "documentId": "x9bzple5pdfp6fpda68w5m8k",
+              "title": "Leftover cooked steak dries out from reheating uncovered",
+              "description": "Slice thin and reheat in a covered pan with a splash of stock or sauce. Reheating dry is why leftover steak has a bad reputation.",
+              "createdAt": "2026-10-30T08:40:59.576Z",
+              "updatedAt": "2026-10-30T08:40:59.576Z",
+              "publishedAt": "2026-10-30T08:40:59.633Z",
+              "tip_type": {
+                "id": 18,
+                "documentId": "twofxttr1y6aldue8k79owbb",
+                "title": "Use it",
+                "createdAt": "2026-10-16T09:40:15.156Z",
+                "updatedAt": "2026-10-16T09:40:16.078Z",
+                "publishedAt": "2026-10-16T09:40:16.092Z"
+              }
+            }
+          ]
+        },
+        {
+          "id": 109,
+          "documentId": "rw5u5md39f3w7j7ua9he983o",
+          "title": "Chicken thighs",
+          "synonyms": "Dark meat chicken",
+          "wasted": 2,
+          "createdAt": "2026-10-27T06:32:21.024Z",
+          "updatedAt": "2026-11-02T06:57:32.541Z",
+          "publishedAt": "2026-11-02T06:57:32.556Z",
+          "image": null,
+          "tips": []
+        },
+        {
+          "id": 87,
+          "documentId": "b44wmv61zo4191m5h7m8l43c",
+          "title": "Pork",
+          "synonyms": null,
+          "wasted": 3,
+          "createdAt": "2026-10-30T08:43:29.821Z",
+          "updatedAt": "2026-10-30T08:43:29.821Z",
+          "publishedAt": "2026-10-30T08:43:29.849Z",
+          "image": null,
+          "tips": [
+            {
+              "id": 72,
+              "documentId": "l0ogv6utari179mlldr5avdr",
+              "title": "Pork shoulder and butt are forgiving cuts you can buy",
+              "description": "Designed for low, slow cooking with a wide margin for error. Unlike loin or chops, they're hard to overcook and hold up longer in the fridge before cooking.",
+              "createdAt": "2026-10-30T08:44:33.981Z",
+              "updatedAt": "2026-10-30T08:44:33.981Z",
+              "publishedAt": "2026-10-30T08:44:34.031Z",
+              "tip_type": {
+                "id": 22,
+                "documentId": "jx1ssjev8r4nb2kyc3fn9hde",
+                "title": "Buy it",
+                "createdAt": "2026-10-16T09:40:52.919Z",
+                "updatedAt": "2026-10-16T09:40:53.630Z",
+                "publishedAt": "2026-10-16T09:40:53.646Z"
+              }
+            },
+            {
+              "id": 90,
+              "documentId": "bdima3bi9n1iyvhuibvvjhbq",
+              "title": "Pork on its last day belongs in a covered pan with liquid",
+              "description": "Stock, wine, or even water with aromatics — low heat, covered, for an hour. The same process that makes tough cuts tender rescues ones that have been sitting too long.",
+              "createdAt": "2026-10-30T08:46:12.907Z",
+              "updatedAt": "2026-10-30T08:46:12.907Z",
+              "publishedAt": "2026-10-30T08:46:12.974Z",
+              "tip_type": {
+                "id": 24,
+                "documentId": "wy46qcysn8mub06x91za7imk",
+                "title": "Rescue it",
+                "createdAt": "2026-10-16T03:44:08.725Z",
+                "updatedAt": "2026-11-03T03:26:37.905Z",
+                "publishedAt": "2026-11-03T03:26:37.920Z"
+              }
+            },
+            {
+              "id": 92,
+              "documentId": "xz9mytyp7csyw4cbxm64vmn2",
+              "title": "Pork is one of the more versatile leftovers",
+              "description": "It works cold or warm, in almost any cuisine — tacos, fried rice, grain bowls, noodle soups. Most leftovers narrow your options. Leftover pork opens them up.",
+              "createdAt": "2026-10-30T08:45:10.940Z",
+              "updatedAt": "2026-10-30T08:47:00.288Z",
+              "publishedAt": "2026-10-30T08:47:00.376Z",
+              "tip_type": {
+                "id": 18,
+                "documentId": "twofxttr1y6aldue8k79owbb",
+                "title": "Use it",
+                "createdAt": "2026-10-16T09:40:15.156Z",
+                "updatedAt": "2026-10-16T09:40:16.078Z",
+                "publishedAt": "2026-10-16T09:40:16.092Z"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "documentId": "imn58c6ml0x7u87q7eskd1n0",
+      "title": "Eggs & Dairy",
+      "createdAt": "2026-11-12T08:06:52.317Z",
+      "updatedAt": "2026-11-13T07:25:52.120Z",
+      "publishedAt": "2026-11-13T07:25:52.334Z",
+      "slug": "eggs-dairy",
+      "emoji": "🧈",
+      "seo": null,
+      "ingredients": [
+        {
+          "id": 95,
+          "documentId": "py6icl5638ofmd0g2qtts2o8",
+          "title": "Milk",
+          "synonyms": null,
+          "wasted": 3,
+          "createdAt": "2026-10-26T07:47:45.873Z",
+          "updatedAt": "2026-10-26T07:47:45.873Z",
+          "publishedAt": "2026-10-26T07:47:46.045Z",
+          "image": null,
+          "tips": [
+            {
+              "id": 80,
+              "documentId": "djsjubgenqdipoja5z0u8ta0",
+              "title": "Check your household weekly consumption before sizing up to a gallon",
+              "description": "A smaller carton finished on time beats a larger one that ends up down the drain. Buy to match how much you actually go through, not what feels like the better deal per ounce.",
+              "createdAt": "2026-10-26T07:50:25.858Z",
+              "updatedAt": "2026-10-26T07:50:25.858Z",
+              "publishedAt": "2026-10-26T07:50:25.916Z",
+              "tip_type": {
+                "id": 22,
+                "documentId": "jx1ssjev8r4nb2kyc3fn9hde",
+                "title": "Buy it",
+                "createdAt": "2026-10-16T09:40:52.919Z",
+                "updatedAt": "2026-10-16T09:40:53.630Z",
+                "publishedAt": "2026-10-16T09:40:53.646Z"
+              }
+            },
+            {
+              "id": 82,
+              "documentId": "fv627i1ovkku18903ckgfann",
+              "title": "Milk doesn't belong in the fridge door",
+              "description": "The door is the warmest spot and fluctuates with every open and close. Keep it on a middle or bottom shelf toward the back where the temperature stays consistently cold.",
+              "createdAt": "2026-10-26T07:51:19.663Z",
+              "updatedAt": "2026-10-26T07:51:37.555Z",
+              "publishedAt": "2026-10-26T07:51:37.757Z",
+              "tip_type": {
+                "id": 20,
+                "documentId": "l5j2f7d2oviv5uybla6f46if",
+                "title": "Store it",
+                "createdAt": "2026-10-16T09:40:25.625Z",
+                "updatedAt": "2026-10-16T09:40:26.364Z",
+                "publishedAt": "2026-10-16T09:40:26.374Z"
+              }
+            },
+            {
+              "id": 84,
+              "documentId": "ode6rxr8z58obg8w1wl272g9",
+              "title": "Milk that's just past its label date but still smells fine works perfectly in cooking",
+              "description": "Pancakes, muffins, and sauces are all good uses — heat and other ingredients do the rest. Save the freshest milk for drinking straight and use the older carton for cooking first.",
+              "createdAt": "2026-10-30T08:33:49.750Z",
+              "updatedAt": "2026-10-30T08:33:49.750Z",
+              "publishedAt": "2026-10-30T08:33:49.793Z",
+              "tip_type": {
+                "id": 18,
+                "documentId": "twofxttr1y6aldue8k79owbb",
+                "title": "Use it",
+                "createdAt": "2026-10-16T09:40:15.156Z",
+                "updatedAt": "2026-10-16T09:40:16.078Z",
+                "publishedAt": "2026-10-16T09:40:16.092Z"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "documentId": "fegccar8blbgk8o30k62vy09",
+      "title": "Vegetables",
+      "createdAt": "2026-11-13T07:26:44.472Z",
+      "updatedAt": "2026-11-13T07:26:44.472Z",
+      "publishedAt": "2026-11-13T07:26:44.494Z",
+      "slug": "vegetables",
+      "emoji": "🥕",
+      "seo": null,
+      "ingredients": [
+        {
+          "id": 117,
+          "documentId": "xihs97mulruynaebsmvymxud",
+          "title": "Green Onions",
+          "synonyms": null,
+          "wasted": 3,
+          "createdAt": "2026-10-19T02:50:39.489Z",
+          "updatedAt": "2026-11-03T03:31:23.189Z",
+          "publishedAt": "2026-11-03T03:31:23.208Z",
+          "image": {
+            "id": 175,
+            "documentId": "swtjbg9ot3xbqvgui5zxpjpl",
+            "name": "green onions.png",
+            "alternativeText": "green onions",
+            "caption": null,
+            "focalPoint": null,
+            "width": 856,
+            "height": 1438,
+            "formats": {
+              "large": {
+                "ext": ".png",
+                "url": "/uploads/large_green_onions_d4a325eafb.png",
+                "hash": "large_green_onions_d4a325eafb",
+                "mime": "image/png",
+                "name": "large_green onions.png",
+                "path": null,
+                "size": 1264.54,
+                "width": 595,
+                "height": 1000,
+                "sizeInBytes": 1264540
+              },
+              "small": {
+                "ext": ".png",
+                "url": "/uploads/small_green_onions_d4a325eafb.png",
+                "hash": "small_green_onions_d4a325eafb",
+                "mime": "image/png",
+                "name": "small_green onions.png",
+                "path": null,
+                "size": 359.1,
+                "width": 298,
+                "height": 500,
+                "sizeInBytes": 359104
+              },
+              "medium": {
+                "ext": ".png",
+                "url": "/uploads/medium_green_onions_d4a325eafb.png",
+                "hash": "medium_green_onions_d4a325eafb",
+                "mime": "image/png",
+                "name": "medium_green onions.png",
+                "path": null,
+                "size": 757.91,
+                "width": 446,
+                "height": 750,
+                "sizeInBytes": 757910
+              },
+              "thumbnail": {
+                "ext": ".png",
+                "url": "/uploads/thumbnail_green_onions_d4a325eafb.png",
+                "hash": "thumbnail_green_onions_d4a325eafb",
+                "mime": "image/png",
+                "name": "thumbnail_green onions.png",
+                "path": null,
+                "size": 41.01,
+                "width": 93,
+                "height": 156,
+                "sizeInBytes": 41005
+              }
+            },
+            "hash": "green_onions_d4a325eafb",
+            "ext": ".png",
+            "mime": "image/png",
+            "size": 477.52,
+            "url": "/uploads/green_onions_d4a325eafb.png",
+            "previewUrl": null,
+            "provider": "local",
+            "provider_metadata": null,
+            "createdAt": "2026-11-03T03:30:37.777Z",
+            "updatedAt": "2026-11-10T03:02:01.288Z",
+            "publishedAt": "2026-11-03T03:30:37.777Z"
+          },
+          "tips": []
+        },
+        {
+          "id": 91,
+          "documentId": "g9glql1w0t6moy9j5fyc8nc9",
+          "title": "Tomatoes",
+          "synonyms": null,
+          "wasted": 3,
+          "createdAt": "2026-10-19T02:51:03.020Z",
+          "updatedAt": "2026-10-19T02:51:03.861Z",
+          "publishedAt": "2026-10-19T02:51:03.883Z",
+          "image": null,
+          "tips": []
+        },
+        {
+          "id": 122,
+          "documentId": "ze0vrm7u62kue30a9cftvcxi",
+          "title": "Bell peppers",
+          "synonyms": "Red pepper, Green pepper, Yellow pepper, Orange pepper, Sweet peppers",
+          "wasted": 3,
+          "createdAt": "2026-10-27T06:33:23.208Z",
+          "updatedAt": "2026-11-13T07:34:41.004Z",
+          "publishedAt": "2026-11-13T07:34:41.044Z",
+          "image": null,
+          "tips": [
+            {
+              "id": 94,
+              "documentId": "wm2jxb5usb6rmppg71oqh7rn",
+              "title": "Bulk pepper packs are cheaper — but only if you have a plan for all of them",
+              "description": "If you're buying a multicolor pack, separate them out when you get home and store them loose in the crisper rather than packed together. One soft pepper speeds up the rest.",
+              "createdAt": "2026-10-30T08:51:32.339Z",
+              "updatedAt": "2026-10-30T08:51:32.339Z",
+              "publishedAt": "2026-10-30T08:51:32.388Z",
+              "tip_type": {
+                "id": 22,
+                "documentId": "jx1ssjev8r4nb2kyc3fn9hde",
+                "title": "Buy it",
+                "createdAt": "2026-10-16T09:40:52.919Z",
+                "updatedAt": "2026-10-16T09:40:53.630Z",
+                "publishedAt": "2026-10-16T09:40:53.646Z"
+              }
+            },
+            {
+              "id": 96,
+              "documentId": "jkdih7avq1zmfak3l8q03qll",
+              "title": "Peppers go mushy and slimy from moisture, not age",
+              "description": "Keep them dry and unwashed in the crisper drawer until you're ready to use them. Sealed airtight, condensation builds up against the skin and speeds up deterioration.",
+              "createdAt": "2026-10-30T08:52:24.240Z",
+              "updatedAt": "2026-10-30T08:52:40.046Z",
+              "publishedAt": "2026-10-30T08:52:40.104Z",
+              "tip_type": {
+                "id": 20,
+                "documentId": "l5j2f7d2oviv5uybla6f46if",
+                "title": "Store it",
+                "createdAt": "2026-10-16T09:40:25.625Z",
+                "updatedAt": "2026-10-16T09:40:26.364Z",
+                "publishedAt": "2026-10-16T09:40:26.374Z"
+              }
+            },
+            {
+              "id": 98,
+              "documentId": "qotbstqchqya7h7hxpkm0h38",
+              "title": "Roast peppers that are starting to soften before they go any further",
+              "description": "Soft peppers caramelize better than firm ones at high heat. Slice, toss with oil, and roast at 425°F until charred at the edges — they become a completely different ingredient.",
+              "createdAt": "2026-10-30T08:53:19.975Z",
+              "updatedAt": "2026-10-30T08:53:19.975Z",
+              "publishedAt": "2026-10-30T08:53:20.038Z",
+              "tip_type": {
+                "id": 18,
+                "documentId": "twofxttr1y6aldue8k79owbb",
+                "title": "Use it",
+                "createdAt": "2026-10-16T09:40:15.156Z",
+                "updatedAt": "2026-10-16T09:40:16.078Z",
+                "publishedAt": "2026-10-16T09:40:16.092Z"
+              }
+            },
+            {
+              "id": 100,
+              "documentId": "bgpd4a322y8xbhb0x2qyblw6",
+              "title": "Raw strips with dip get eaten when cooked peppers don't",
+              "description": "Sweet bell pepper strips — especially red and yellow — work as a vehicle for hummus, ranch, or peanut butter. The raw sweetness and crunch is more appealing to most kids than the cooked version.",
+              "createdAt": "2026-10-30T08:54:01.346Z",
+              "updatedAt": "2026-10-30T08:54:01.346Z",
+              "publishedAt": "2026-10-30T08:54:01.409Z",
+              "tip_type": {
+                "id": 18,
+                "documentId": "twofxttr1y6aldue8k79owbb",
+                "title": "Use it",
+                "createdAt": "2026-10-16T09:40:15.156Z",
+                "updatedAt": "2026-10-16T09:40:16.078Z",
+                "publishedAt": "2026-10-16T09:40:16.092Z"
+              }
+            },
+            {
+              "id": 102,
+              "documentId": "jxs2fwhwyg4m3uacjwdrszox",
+              "title": "Peppers that have lost their crunch are still great for cooking",
+              "description": "Freeze them flat on a tray and they go straight from freezer to hot pan whenever you need them. No thawing required — pull out what you need and drop them in.",
+              "createdAt": "2026-10-30T08:54:36.677Z",
+              "updatedAt": "2026-10-30T08:54:36.677Z",
+              "publishedAt": "2026-10-30T08:54:36.727Z",
+              "tip_type": {
+                "id": 24,
+                "documentId": "wy46qcysn8mub06x91za7imk",
+                "title": "Rescue it",
+                "createdAt": "2026-10-16T03:44:08.725Z",
+                "updatedAt": "2026-11-03T03:26:37.905Z",
+                "publishedAt": "2026-11-03T03:26:37.920Z"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "documentId": "jiph6pcvazy5k1gsrdtjt9bu",
+      "title": "Condiments, Sauces, & Preserves",
+      "createdAt": "2026-11-12T08:09:24.051Z",
+      "updatedAt": "2026-11-13T07:49:01.244Z",
+      "publishedAt": "2026-11-13T07:49:01.273Z",
+      "slug": "condiments-sauces-and-preserves",
+      "emoji": "🥩",
+      "seo": null,
+      "ingredients": []
+    },
+    {
+      "id": 31,
+      "documentId": "s25jqj7zlrmw020yrpndqk1t",
+      "title": "Fresh Herbs",
+      "createdAt": "2026-11-12T08:06:43.827Z",
+      "updatedAt": "2026-11-13T07:49:27.700Z",
+      "publishedAt": "2026-11-13T07:49:27.740Z",
+      "slug": "fresh-herbs",
+      "emoji": "🥕",
+      "seo": null,
+      "ingredients": []
+    },
+    {
+      "id": 32,
+      "documentId": "dal7xiudsuc6722sqy7pidgw",
+      "title": "Pantry Staples & Dry Goods",
+      "createdAt": "2026-11-12T08:07:09.357Z",
+      "updatedAt": "2026-11-13T07:49:52.941Z",
+      "publishedAt": "2026-11-13T07:49:52.961Z",
+      "slug": "pantry-staples-and-dry-goods",
+      "emoji": "🌾",
+      "seo": null,
+      "ingredients": []
+    },
+    {
+      "id": 33,
+      "documentId": "s2un2yqnmit92bvpfk5nseu8",
+      "title": "Plant-Based Alternatives",
+      "createdAt": "2026-11-12T08:09:30.304Z",
+      "updatedAt": "2026-11-13T07:50:16.654Z",
+      "publishedAt": "2026-11-13T07:50:16.675Z",
+      "slug": "plant-based-alternatives",
+      "emoji": "🍎",
+      "seo": null,
+      "ingredients": []
+    },
+    {
+      "id": 34,
+      "documentId": "io154j6j2i6syexbrl98xdn6",
+      "title": "Seafood",
+      "createdAt": "2026-11-12T08:06:11.245Z",
+      "updatedAt": "2026-11-13T07:50:35.605Z",
+      "publishedAt": "2026-11-13T07:50:35.626Z",
+      "slug": "seafood",
+      "emoji": "🧈",
+      "seo": null,
+      "ingredients": []
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "page": 1,
+      "pageSize": 100,
+      "pageCount": 1,
+      "total": 11
+    }
+  }
+}

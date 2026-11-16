@@ -8,9 +8,10 @@ export function UIVideo(
     className?: string;
   },
 ) {
-  const { className, pause, lazyLoad, ...restProps } = props;
+  const { className, pause, lazyLoad, src, ...restProps } = props;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [loadedData, setLoadedData] = useState(false);
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -74,15 +75,23 @@ export function UIVideo(
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <video
         ref={videoRef}
-        className={`w-full h-full object-cover`}
+        className={`w-full h-full object-cover bg-ink-terra-15`}
         playsInline
         preload={lazyLoad ? 'metadata' : 'auto'}
         onPlay={handlePlay}
         onPause={handlePause}
+        src={`${src}`}
+        onLoadedData={() => {
+          setLoadedData(true);
+        }}
         {...restProps}
       />
-      <IconPlay aria-label="Play" className={getTransitionClass(isPlaying, 'play')} />
-      <IconPause aria-label="Pause" className={getTransitionClass(isPlaying, 'pause')} />
+      {loadedData && (
+        <>
+          <IconPlay aria-label="Play" className={getTransitionClass(isPlaying, 'play')} />
+          <IconPause aria-label="Pause" className={getTransitionClass(isPlaying, 'pause')} />
+        </>
+      )}
     </div>
   );
 }

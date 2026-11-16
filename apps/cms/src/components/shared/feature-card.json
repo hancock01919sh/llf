@@ -5,17 +5,10 @@
   },
   "options": {},
   "attributes": {
-    "title": {
-      "type": "string",
-      "required": true
-    },
-    "image": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images",
-        "files"
-      ]
+    "category": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::category.category"
     }
   },
   "config": {}

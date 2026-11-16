@@ -13,8 +13,9 @@ import {
 // Google Gemini adapter (TDD §7.4, §7.7). Two backends, chosen by env:
 // - Vertex AI in Ad Council's Google Cloud project (TDD D37): `vertex` set. Location
 //   `us` is the US multi-region endpoint, the default; `global` gives no data residency.
-//   Render dev and local use an API key bound to the llf-gemini-dev service account.
-// - The Gemini API on ddd's own key (eval arena only, TDD D25): no `vertex`.
+//   Staging and prod only.
+// - The Gemini API on ddd's capped dev key (Render dev, local and the eval arena, TDD D25,
+//   D33): no `vertex`. `baseUrl` can point it at the dev-only relay (TDD D38).
 // Staging and prod sign in with Workload Identity Federation from the ECS task role
 // (TDD D37), passed in as `getAccessToken`. Uses JSON mode with the report_ingredients
 // schema, sends only the input and the system prompt, and never logs the input,

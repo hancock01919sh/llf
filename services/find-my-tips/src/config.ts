@@ -31,6 +31,9 @@ const EnvSchema = z.object({
     .trim()
     .regex(/^[a-z0-9-]+$/)
     .default('us'),
+  // Dev only: send Gemini calls through ddd's relay instead of Google (TDD D38, for developers
+  // who can't reach Google from mainland China). GEMINI_API_KEY is then the relay token.
+  GEMINI_BASE_URL: z.url().optional(),
   // Only sent to providers that support it (OpenAI reasoning models, Gemini thinking
   // budgets). Unset = provider default.
   AI_REASONING_EFFORT: z.enum(REASONING_EFFORTS).optional(),
@@ -64,6 +67,7 @@ export type Config = {
   openaiApiKey: string | undefined;
   geminiApiKey: string | undefined;
   geminiVertex: GeminiVertex | undefined;
+  geminiBaseUrl: string | undefined;
   reasoningEffort: ReasoningEffort | undefined;
   port: number;
   trustedProxyHops: number;
@@ -104,6 +108,7 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
       vertex && e.GOOGLE_CLOUD_PROJECT
         ? { project: e.GOOGLE_CLOUD_PROJECT, location: e.GOOGLE_CLOUD_LOCATION }
         : undefined,
+    geminiBaseUrl: e.GEMINI_BASE_URL,
     reasoningEffort: e.AI_REASONING_EFFORT,
     port: e.TOOL_PORT ?? e.PORT,
     trustedProxyHops: e.TRUSTED_PROXY_HOPS,

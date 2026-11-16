@@ -26,6 +26,7 @@ export type ProviderOptions = {
   openaiApiKey?: string | undefined;
   geminiApiKey?: string | undefined;
   geminiVertex?: GeminiVertex | undefined;
+  geminiBaseUrl?: string | undefined;
   fetch?: typeof fetch;
 };
 
@@ -50,6 +51,7 @@ export function createProvider(
       return createGeminiProvider({
         apiKey: options.geminiApiKey,
         ...(options.geminiVertex ? { vertex: options.geminiVertex } : {}),
+        ...(options.geminiBaseUrl ? { baseUrl: options.geminiBaseUrl } : {}),
         ...(options.fetch ? { fetch: options.fetch } : {}),
       });
     case 'bedrock':

@@ -8,9 +8,11 @@ import 'swiper/css/navigation';
 import { carouselConfig } from '@/lib/const';
 import { useEffect, useRef, useState } from 'react';
 import { IconCarouselNavigation } from '@/components/Icon';
-import { EasyImage } from '@/components/UIImage';
+import { UIImage } from '@/components/UIImage';
 import type { BlockProps } from './types';
 import type { cmsType } from '@llf/contracts';
+import { BlockTitle } from '@/components/BlockTitle';
+import TransitionLink from '@/components/TransitionLink';
 const cardColoMapping = {
   paper: 'bg-surface-sand',
   sand: 'bg-surface-paper',
@@ -33,7 +35,7 @@ export function BlockCarouselStandard(
   return (
     <div className="py-15 lg:py-25">
       <div className="px-gutter text-center">
-        <Typography variant="headline-lg">{title}</Typography>
+        <BlockTitle title={title} moduleIndex={props.index} />
         <Typography variant="subhead-lg" className="mt-5">
           {description}
         </Typography>
@@ -65,25 +67,37 @@ export function BlockCarouselStandard(
             },
           }}
         >
-          {standardCard.map((item, index) => (
-            <SwiperSlide
-              key={item.title + index}
-              className="rounded-md overflow-hidden flex flex-col "
-            >
-              <EasyImage
-                url={item?.image?.url || ''}
-                alt={item.image?.alternativeText || ''}
-                className="w-full aspect-362/304 lg:aspect-535/438"
-              />
-
-              <Typography
-                variant="headline-sm"
-                className={`uppercase ${cardColoMapping[cardBackgroundColor ?? backgroundColor]} text-ink-terra p-8 text-center lg:py-10`}
+          {standardCard
+            .filter((item) => !!item.category)
+            .map((item, index) => (
+              <SwiperSlide
+                key={item.category?.id + '' + item.category?.documentId + '' + index}
+                className={`rounded-md overflow-hidden h-auto! ${cardColoMapping[cardBackgroundColor ?? backgroundColor]}`}
               >
-                {item.title}
-              </Typography>
-            </SwiperSlide>
-          ))}
+                <TransitionLink
+                  className="flex flex-col h-full"
+                  href={`/tips/${item.category?.slug}`}
+                >
+                  <UIImage
+                    src={item.category?.image?.url || ''}
+                    alt={
+                      item.category?.image?.alternativeText ||
+                      item.category?.image?.name ||
+                      item.category?.title ||
+                      ''
+                    }
+                    className="w-full aspect-362/304 lg:aspect-535/438"
+                  />
+
+                  <Typography
+                    variant="headline-sm"
+                    className={`uppercase flex-1 line-clamp-2 text-ink-terra m-8 text-center lg:my-10`}
+                  >
+                    {item.category?.title || ''}
+                  </Typography>
+                </TransitionLink>
+              </SwiperSlide>
+            ))}
         </Swiper>
       )}
 

@@ -10,3 +10,4 @@ docs
 **/*.md
 .github/pull_request_template.md
 **/next-env.d.ts
+/apps/web/storybook-static

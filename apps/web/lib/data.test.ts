@@ -1,5 +1,4 @@
 // import MiniSearch from 'minisearch';
-import type { cms } from '@llf/contracts';
 import { describe, expect, it } from 'vitest';
 // import { runSearch } from '@/app/search/SearchResults';
 import { getIngredients } from './cms';
@@ -10,13 +9,14 @@ import {
   slugIngredients,
   toIngredientData,
 } from './data';
+import type { cmsType } from '@llf/contracts';
 // import { SEARCH_OPTIONS, type SearchDocument } from './search';
 
 const ingredient = (
   title: string,
   documentId: string,
-  extra: Partial<cms.Ingredient> = {},
-): cms.Ingredient => ({
+  extra: Partial<cmsType.api.Ingredient> = {},
+): cmsType.api.Ingredient => ({
   id: 1,
   documentId,
   title,
@@ -60,12 +60,26 @@ describe('fixture release data', () => {
     // const tips = await getTips();
     const catalog = buildCatalog(ingredients);
     expect(catalog.ingredients.map((i) => i.slug)).toEqual([
+      'avocado',
       'banana',
-      'basil',
-      'bread',
-      'chicken',
+      'beef',
+      'bell-peppers',
+      'broccoli',
+      'chicken-breast',
+      'chicken-thighs',
+      'chicken-wings',
+      'green-onions',
       'milk',
+      'onions',
+      'pork',
+      'rice',
+      'sausage',
+      'sour-cream',
       'spinach',
+      'sweet-potatoes',
+      'tomatoes',
+      'white-fish',
+      'zucchini',
     ]);
     expect(catalog.catalogVersion).toMatch(/^[0-9a-f]{12}$/);
 

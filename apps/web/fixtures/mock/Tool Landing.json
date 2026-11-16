@@ -1,0 +1,155 @@
+{
+  "id": 133,
+  "documentId": "i6brnovoo2ehb0jegt5lpav1",
+  "title": "Tool Landing",
+  "path": "/find-my-tips",
+  "main": [
+    {
+      "__component": "component.tool-input",
+      "id": 16,
+      "subTitle": "Tip Finder",
+      "description": "Whatever you're buying, cooking, or already have, we'll help you get the most out of it.",
+      "cardTitle": "How it works",
+      "cardDescription": "Three simple steps between your ingredients and the tips that help you use them better.",
+      "placeholder": "Enter a recipe URL or video link",
+      "copy": "Works with any recipe site or video link from YouTube, TikTok, or Instagram.",
+      "backgroundColor": "paper",
+      "isFullwidth": true,
+      "button": [
+        {
+          "id": 612,
+          "label": "🔗 Paste Link",
+          "href": null,
+          "isDisplay": true,
+          "isButton": true,
+          "newTab": false,
+          "buttonType": "Primary"
+        },
+        {
+          "id": 613,
+          "label": "📷 Upload Image",
+          "href": null,
+          "isDisplay": true,
+          "isButton": true,
+          "newTab": false,
+          "buttonType": "Secondary"
+        },
+        {
+          "id": 614,
+          "label": "find tips",
+          "href": "/search",
+          "isDisplay": true,
+          "isButton": null,
+          "newTab": false,
+          "buttonType": null
+        }
+      ],
+      "title": {
+        "id": 142,
+        "copy": "Input ingredients,  get tips, waste less",
+        "header": "h1"
+      },
+      "image": {
+        "id": 6,
+        "documentId": "ihf9pbfub16ofi5w13luqzza",
+        "url": "/uploads/12691884_uhd_2160_3840_60fps_ea8b6d8dc5.mp4",
+        "ext": ".mp4",
+        "alternativeText": "wwf",
+        "height": null,
+        "width": null,
+        "size": 26352.05
+      },
+      "cards": [
+        {
+          "id": 48,
+          "title": "Step 1",
+          "description": "Upload an image or recipe link",
+          "link": {
+            "id": 610,
+            "label": "What can I upload?",
+            "href": null,
+            "isDisplay": true,
+            "isButton": null,
+            "newTab": false,
+            "buttonType": null
+          }
+        },
+        {
+          "id": 46,
+          "title": "Step 2",
+          "description": "You see how to waste less of each ingredient.",
+          "link": null
+        },
+        {
+          "id": 47,
+          "title": "Step 3",
+          "description": "You see how to waste less of each ingredient.",
+          "link": null
+        }
+      ]
+    },
+    {
+      "__component": "component.accordion",
+      "id": 25,
+      "subTitle": "Not sure what to try first? Here’s what works.",
+      "backgroundColor": "forest-tint",
+      "isFullwidth": false,
+      "accordionItem": [
+        {
+          "id": 89,
+          "label": "Photo of your fridge or pantry",
+          "description": "Take the photo in good lighting and make sure ingredients are visible. Works best when items aren't stacked or hidden behind each other."
+        },
+        {
+          "id": 90,
+          "label": "Recipe from a website",
+          "description": "Take the photo in good lighting and make sure ingredients are visible. Works best when items aren't stacked or hidden behind each other."
+        },
+        {
+          "id": 91,
+          "label": "Recipe from a video",
+          "description": "Take the photo in good lighting and make sure ingredients are visible. Works best when items aren't stacked or hidden behind each other."
+        }
+      ],
+      "title": {
+        "id": 140,
+        "copy": "what can you upload?",
+        "header": "h2"
+      }
+    },
+    {
+      "__component": "component.highlight-component",
+      "id": 132,
+      "description": "Explore hundreds of tips for the ingredients you already cook with, including some things you probably didn't know you were wasting.",
+      "backgroundColor": "paper",
+      "isFullwidth": true,
+      "link": [
+        {
+          "id": 611,
+          "label": "find my tips",
+          "href": "/tips",
+          "isDisplay": true,
+          "isButton": true,
+          "newTab": false,
+          "buttonType": "Primary"
+        }
+      ],
+      "image": {
+        "id": 36,
+        "documentId": "y9b29yr28yd7qcw4q0xe17fm",
+        "url": "/uploads/51c2de21b6ac7418ffdb02034e04457fc7018607_da50609882.png",
+        "ext": ".png",
+        "alternativeText": "leaf",
+        "height": 1282,
+        "width": 1014,
+        "size": 344.09
+      },
+      "title": {
+        "id": 141,
+        "copy": "things no one ever told you about your food",
+        "header": "h2"
+      }
+    }
+  ],
+  "seo": null
+}

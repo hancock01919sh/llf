@@ -1,4 +1,5 @@
 import { AppFooter } from '@/components/AppFooter';
+import { BlockTitle } from '@/components/BlockTitle';
 import { Header } from '@/components/Header';
 import { IconWork2 } from '@/components/Icon';
 import { Popup } from '@/components/Popup';
@@ -17,9 +18,9 @@ export function Loading({ open }: { open: boolean }) {
           <Typography variant="subhead-md" className="text-surface-mint">
             {global?.load?.statement}
           </Typography>
-          <Typography variant="headline-lg" className="text-surface-sand">
-            {global?.load?.title}
-          </Typography>
+          {global?.load?.title && (
+            <BlockTitle className="text-surface-sand" title={global?.load?.title} moduleIndex={0} />
+          )}
         </div>
       </div>
       <AppFooter />

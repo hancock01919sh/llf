@@ -12,6 +12,7 @@ describe('loadConfig', () => {
       anthropicApiKey: undefined,
       openaiApiKey: undefined,
       geminiApiKey: undefined,
+      geminiBaseUrl: undefined,
       reasoningEffort: undefined,
       port: 8787,
       trustedProxyHops: 0,
@@ -101,6 +102,14 @@ describe('loadConfig', () => {
         GOOGLE_CLOUD_LOCATION: 'us/../x',
       }),
     ).toThrow(/GOOGLE_CLOUD_LOCATION/);
+  });
+
+  it('reads a Gemini relay base URL for dev (D38)', () => {
+    expect(loadConfig({ GEMINI_BASE_URL: 'https://relay.example.com' }).geminiBaseUrl).toBe(
+      'https://relay.example.com',
+    );
+    expect(loadConfig({ GEMINI_BASE_URL: '' }).geminiBaseUrl).toBeUndefined();
+    expect(() => loadConfig({ GEMINI_BASE_URL: 'not a url' })).toThrow(/GEMINI_BASE_URL/);
   });
 
   it('accepts gemini as AI_PROVIDER', () => {

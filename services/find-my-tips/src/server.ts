@@ -34,6 +34,7 @@ const app = createApp({
     openaiApiKey: config.openaiApiKey,
     geminiApiKey: config.geminiApiKey,
     geminiVertex: config.geminiVertex,
+    geminiBaseUrl: config.geminiBaseUrl,
   }),
   cache: new MemoryCacheStore(),
   counters: new MemoryCounterStore(),

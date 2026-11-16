@@ -1,0 +1,566 @@
+{
+  "id": 136,
+  "documentId": "zou87m943nyr7ulo3i0aszfk",
+  "title": "About",
+  "path": "/about",
+  "main": [
+    {
+      "__component": "component.header",
+      "id": 40,
+      "subTitle": "About",
+      "description": "Most waste happens quietly, in the back of the fridge.  We're here to make it visible.",
+      "backgroundColor": "terra",
+      "addBackgroundColor": null,
+      "positionOfAddingBgColor": null,
+      "isFullwidth": false,
+      "title": {
+        "id": 153,
+        "copy": "the food you already bought is the easiest to save",
+        "header": "h1"
+      },
+      "image": null
+    },
+    {
+      "__component": "component.5050-text-and-image",
+      "id": 64,
+      "description": "About a third of the groceries Americans buy never get eaten. Not because people don't care, but because it happens slowly, out of sight, one forgotten bag at a time.",
+      "makeImageLeft": true,
+      "addBackgroundColor": true,
+      "positionOfAddingBgColor": "Up ",
+      "isFullwidth": false,
+      "backgroundColor": "paper",
+      "title": {
+        "id": 154,
+        "copy": "The invisible problem",
+        "header": "h2"
+      },
+      "image": {
+        "id": 31,
+        "documentId": "zwfpfvewa272mvaowuz3d2y9",
+        "url": "/uploads/630bbcfadcdaa0f0cc65839c96c922ade4560c29_2aa4ae4509.png",
+        "ext": ".png",
+        "alternativeText": "istock",
+        "height": 1316,
+        "width": 1988,
+        "size": 788.94
+      }
+    },
+    {
+      "__component": "component.content-spotlight",
+      "id": 18,
+      "description": "It's rarely one bad decision. It's a bag of greens behind the milk. A jar opened for one recipe. A date label that sounds more final than it is. Most kitchens share the same handful of patterns, and most people have never had a reason to notice them. Once you see the pattern, the fixes are small, and they hold.",
+      "backgroundColor": "sand",
+      "makeImageLeft": null,
+      "isFullwidth": false,
+      "title": {
+        "id": 155,
+        "copy": "why it happens",
+        "header": "h2"
+      },
+      "image": {
+        "id": 56,
+        "documentId": "voyhfjwk31ydqibwqokr082t",
+        "url": "/uploads/250102aeed9b59430c29d2acc675f035251887e2_db9e016e64.jpg",
+        "ext": ".jpg",
+        "alternativeText": "kitchen",
+        "height": 1080,
+        "width": 1080,
+        "size": 173.4
+      }
+    },
+    {
+      "__component": "component.text-and-image-card",
+      "id": 18,
+      "description": "We organize everything around the ingredient, not the recipe. That's how food actually reaches your kitchen, and it's how waste starts. Learn what one ingredient needs and it applies to every meal you make with it, for as long as you cook.",
+      "backgroundColor": "paper",
+      "isFullwidth": false,
+      "title": {
+        "id": 156,
+        "copy": "the ingredient lens",
+        "header": "h2"
+      },
+      "image": [
+        {
+          "id": 33,
+          "documentId": "d23224iaqwukqaujl87uyau0",
+          "url": "/uploads/b8386b50887cf289c23e003fffc68b6324544947_fe579bbf2a.jpg",
+          "ext": ".jpg",
+          "alternativeText": "egg1",
+          "height": 4096,
+          "width": 2305,
+          "size": 694.07
+        },
+        {
+          "id": 55,
+          "documentId": "ngza02doc6yuxf4wknlmtqtz",
+          "url": "/uploads/1f08bbe9b525806c74d081cc9223b65d58a11fd6_53155a218b.jpg",
+          "ext": ".jpg",
+          "alternativeText": "carrot",
+          "height": 2021,
+          "width": 3032,
+          "size": 1749.75
+        },
+        {
+          "id": 38,
+          "documentId": "fu2xudky967owmc3xtrkxfju",
+          "url": "/uploads/4cc23f6b115d854e524a9a3120e50e76bcadc0b7_a1d52fece5.jpg",
+          "ext": ".jpg",
+          "alternativeText": "tomato",
+          "height": 4096,
+          "width": 3072,
+          "size": 1250.54
+        }
+      ]
+    },
+    {
+      "__component": "component.5050-text-and-image",
+      "id": 65,
+      "description": "Store it differently. Freeze it before it turns. Use the part you were about to throw away. None of it takes more time than what you're doing now.",
+      "makeImageLeft": false,
+      "addBackgroundColor": null,
+      "positionOfAddingBgColor": null,
+      "isFullwidth": false,
+      "backgroundColor": "paper",
+      "title": {
+        "id": 157,
+        "copy": "small changes, real impact",
+        "header": "h2"
+      },
+      "image": {
+        "id": 80,
+        "documentId": "u7ntkkqkffa5u7uq5xlpnksf",
+        "url": "/uploads/fe2e2dd11eba6f522641efac80f543d743f2d477_6d98cabe79.png",
+        "ext": ".png",
+        "alternativeText": "oven",
+        "height": 1314,
+        "width": 1982,
+        "size": 789.39
+      }
+    },
+    {
+      "__component": "component.logo-cards",
+      "id": 35,
+      "description": "Every tip is reviewed by a panel of food safety and culinary experts before it publishes. Nothing goes live without it.",
+      "backgroundColor": "paper",
+      "isFullwidth": false,
+      "imageMobile": [
+        {
+          "id": 89,
+          "documentId": "ijej77plriq4oiecc9cmwi7t",
+          "name": "wwfmobile.png",
+          "alternativeText": "wwfm",
+          "caption": null,
+          "focalPoint": null,
+          "width": 370,
+          "height": 200,
+          "formats": {
+            "thumbnail": {
+              "ext": ".png",
+              "url": "/uploads/thumbnail_wwfmobile_02c950029f.png",
+              "hash": "thumbnail_wwfmobile_02c950029f",
+              "mime": "image/png",
+              "name": "thumbnail_wwfmobile.png",
+              "path": null,
+              "size": 10.42,
+              "width": 245,
+              "height": 132,
+              "sizeInBytes": 10418
+            }
+          },
+          "hash": "wwfmobile_02c950029f",
+          "ext": ".png",
+          "mime": "image/png",
+          "size": 2.65,
+          "url": "/uploads/wwfmobile_02c950029f.png",
+          "previewUrl": null,
+          "provider": "local",
+          "provider_metadata": null,
+          "createdAt": "2026-11-06T06:00:04.893Z",
+          "updatedAt": "2026-11-06T06:22:48.531Z",
+          "publishedAt": "2026-11-06T06:00:04.893Z"
+        },
+        {
+          "id": 91,
+          "documentId": "d2zcspdr3o3eummofn7e13js",
+          "name": "refedmobile.png",
+          "alternativeText": "refedm",
+          "caption": null,
+          "focalPoint": null,
+          "width": 370,
+          "height": 200,
+          "formats": {
+            "thumbnail": {
+              "ext": ".png",
+              "url": "/uploads/thumbnail_refedmobile_394e827d01.png",
+              "hash": "thumbnail_refedmobile_394e827d01",
+              "mime": "image/png",
+              "name": "thumbnail_refedmobile.png",
+              "path": null,
+              "size": 8.94,
+              "width": 245,
+              "height": 132,
+              "sizeInBytes": 8936
+            }
+          },
+          "hash": "refedmobile_394e827d01",
+          "ext": ".png",
+          "mime": "image/png",
+          "size": 2.34,
+          "url": "/uploads/refedmobile_394e827d01.png",
+          "previewUrl": null,
+          "provider": "local",
+          "provider_metadata": null,
+          "createdAt": "2026-11-06T06:00:04.969Z",
+          "updatedAt": "2026-11-06T06:23:00.737Z",
+          "publishedAt": "2026-11-06T06:00:04.969Z"
+        },
+        {
+          "id": 90,
+          "documentId": "tieofonzib689jtwwunpg3qe",
+          "name": "wrapmobile.png",
+          "alternativeText": "wrapm",
+          "caption": null,
+          "focalPoint": null,
+          "width": 370,
+          "height": 200,
+          "formats": {
+            "thumbnail": {
+              "ext": ".png",
+              "url": "/uploads/thumbnail_wrapmobile_66aca74cd4.png",
+              "hash": "thumbnail_wrapmobile_66aca74cd4",
+              "mime": "image/png",
+              "name": "thumbnail_wrapmobile.png",
+              "path": null,
+              "size": 14.19,
+              "width": 245,
+              "height": 132,
+              "sizeInBytes": 14185
+            }
+          },
+          "hash": "wrapmobile_66aca74cd4",
+          "ext": ".png",
+          "mime": "image/png",
+          "size": 5.56,
+          "url": "/uploads/wrapmobile_66aca74cd4.png",
+          "previewUrl": null,
+          "provider": "local",
+          "provider_metadata": null,
+          "createdAt": "2026-11-06T06:00:04.954Z",
+          "updatedAt": "2026-11-06T06:22:54.815Z",
+          "publishedAt": "2026-11-06T06:00:04.955Z"
+        }
+      ],
+      "imageDesktop": [
+        {
+          "id": 88,
+          "documentId": "dmyuwjrcbt1jtkdvplmti766",
+          "name": "warpdesktop.png",
+          "alternativeText": "wrap",
+          "caption": null,
+          "focalPoint": null,
+          "width": 313,
+          "height": 313,
+          "formats": {
+            "thumbnail": {
+              "ext": ".png",
+              "url": "/uploads/thumbnail_warpdesktop_c437a1e7d7.png",
+              "hash": "thumbnail_warpdesktop_c437a1e7d7",
+              "mime": "image/png",
+              "name": "thumbnail_warpdesktop.png",
+              "path": null,
+              "size": 13.03,
+              "width": 156,
+              "height": 156,
+              "sizeInBytes": 13028
+            }
+          },
+          "hash": "warpdesktop_c437a1e7d7",
+          "ext": ".png",
+          "mime": "image/png",
+          "size": 6.55,
+          "url": "/uploads/warpdesktop_c437a1e7d7.png",
+          "previewUrl": null,
+          "provider": "local",
+          "provider_metadata": null,
+          "createdAt": "2026-11-06T05:58:24.844Z",
+          "updatedAt": "2026-11-06T06:22:42.947Z",
+          "publishedAt": "2026-11-06T05:58:24.844Z"
+        },
+        {
+          "id": 87,
+          "documentId": "y34a9xjqnpbllo4otnvkxj18",
+          "name": "wwfdesktop.png",
+          "alternativeText": "wwf",
+          "caption": null,
+          "focalPoint": null,
+          "width": 313,
+          "height": 313,
+          "formats": {
+            "thumbnail": {
+              "ext": ".png",
+              "url": "/uploads/thumbnail_wwfdesktop_f675ad6d7d.png",
+              "hash": "thumbnail_wwfdesktop_f675ad6d7d",
+              "mime": "image/png",
+              "name": "thumbnail_wwfdesktop.png",
+              "path": null,
+              "size": 9.28,
+              "width": 156,
+              "height": 156,
+              "sizeInBytes": 9281
+            }
+          },
+          "hash": "wwfdesktop_f675ad6d7d",
+          "ext": ".png",
+          "mime": "image/png",
+          "size": 3.45,
+          "url": "/uploads/wwfdesktop_f675ad6d7d.png",
+          "previewUrl": null,
+          "provider": "local",
+          "provider_metadata": null,
+          "createdAt": "2026-11-06T05:58:24.843Z",
+          "updatedAt": "2026-11-06T06:22:35.306Z",
+          "publishedAt": "2026-11-06T05:58:24.843Z"
+        },
+        {
+          "id": 86,
+          "documentId": "xcei9ixp1q8qjozy3qihtgzu",
+          "name": "refeddesktop.png",
+          "alternativeText": "refed",
+          "caption": null,
+          "focalPoint": null,
+          "width": 313,
+          "height": 313,
+          "formats": {
+            "thumbnail": {
+              "ext": ".png",
+              "url": "/uploads/thumbnail_refeddesktop_eb01530be8.png",
+              "hash": "thumbnail_refeddesktop_eb01530be8",
+              "mime": "image/png",
+              "name": "thumbnail_refeddesktop.png",
+              "path": null,
+              "size": 8.37,
+              "width": 156,
+              "height": 156,
+              "sizeInBytes": 8365
+            }
+          },
+          "hash": "refeddesktop_eb01530be8",
+          "ext": ".png",
+          "mime": "image/png",
+          "size": 3.26,
+          "url": "/uploads/refeddesktop_eb01530be8.png",
+          "previewUrl": null,
+          "provider": "local",
+          "provider_metadata": null,
+          "createdAt": "2026-11-06T05:58:24.838Z",
+          "updatedAt": "2026-11-06T06:22:30.512Z",
+          "publishedAt": "2026-11-06T05:58:24.838Z"
+        }
+      ],
+      "title": {
+        "id": 158,
+        "copy": "reviewed by the people who know this space",
+        "header": "h2"
+      }
+    },
+    {
+      "__component": "component.logo-cards",
+      "id": 36,
+      "description": "Every tip is reviewed by a panel of food safety and culinary experts before it publishes. Nothing goes live without it.",
+      "backgroundColor": "forest",
+      "isFullwidth": false,
+      "imageMobile": [
+        {
+          "id": 94,
+          "documentId": "iu3ckckj86kh46jrnpvk0wen",
+          "name": "Hero background (3).png",
+          "alternativeText": "srmobile",
+          "caption": null,
+          "focalPoint": null,
+          "width": 370,
+          "height": 200,
+          "formats": {
+            "thumbnail": {
+              "ext": ".png",
+              "url": "/uploads/thumbnail_Hero_background_3_67ca75c0ee.png",
+              "hash": "thumbnail_Hero_background_3_67ca75c0ee",
+              "mime": "image/png",
+              "name": "thumbnail_Hero background (3).png",
+              "path": null,
+              "size": 11.77,
+              "width": 245,
+              "height": 132,
+              "sizeInBytes": 11770
+            }
+          },
+          "hash": "Hero_background_3_67ca75c0ee",
+          "ext": ".png",
+          "mime": "image/png",
+          "size": 3.49,
+          "url": "/uploads/Hero_background_3_67ca75c0ee.png",
+          "previewUrl": null,
+          "provider": "local",
+          "provider_metadata": null,
+          "createdAt": "2026-11-06T06:01:20.607Z",
+          "updatedAt": "2026-11-06T06:02:19.855Z",
+          "publishedAt": "2026-11-06T06:01:20.607Z"
+        },
+        {
+          "id": 95,
+          "documentId": "lkdvdfp9xivi7o99vqwog6yd",
+          "name": "Hero background (2).png",
+          "alternativeText": "usmobile",
+          "caption": null,
+          "focalPoint": null,
+          "width": 370,
+          "height": 200,
+          "formats": {
+            "thumbnail": {
+              "ext": ".png",
+              "url": "/uploads/thumbnail_Hero_background_2_03159459e8.png",
+              "hash": "thumbnail_Hero_background_2_03159459e8",
+              "mime": "image/png",
+              "name": "thumbnail_Hero background (2).png",
+              "path": null,
+              "size": 17.22,
+              "width": 245,
+              "height": 132,
+              "sizeInBytes": 17219
+            }
+          },
+          "hash": "Hero_background_2_03159459e8",
+          "ext": ".png",
+          "mime": "image/png",
+          "size": 6.14,
+          "url": "/uploads/Hero_background_2_03159459e8.png",
+          "previewUrl": null,
+          "provider": "local",
+          "provider_metadata": null,
+          "createdAt": "2026-11-06T06:01:20.616Z",
+          "updatedAt": "2026-11-06T06:02:25.157Z",
+          "publishedAt": "2026-11-06T06:01:20.616Z"
+        }
+      ],
+      "imageDesktop": [
+        {
+          "id": 93,
+          "documentId": "kb2o70qn0cjxzqxas8fa2ne3",
+          "name": "Hero background (1).png",
+          "alternativeText": "srdesktop",
+          "caption": null,
+          "focalPoint": null,
+          "width": 313,
+          "height": 313,
+          "formats": {
+            "thumbnail": {
+              "ext": ".png",
+              "url": "/uploads/thumbnail_Hero_background_1_6ee2b2f498.png",
+              "hash": "thumbnail_Hero_background_1_6ee2b2f498",
+              "mime": "image/png",
+              "name": "thumbnail_Hero background (1).png",
+              "path": null,
+              "size": 8.94,
+              "width": 156,
+              "height": 156,
+              "sizeInBytes": 8944
+            }
+          },
+          "hash": "Hero_background_1_6ee2b2f498",
+          "ext": ".png",
+          "mime": "image/png",
+          "size": 4.31,
+          "url": "/uploads/Hero_background_1_6ee2b2f498.png",
+          "previewUrl": null,
+          "provider": "local",
+          "provider_metadata": null,
+          "createdAt": "2026-11-06T06:01:20.606Z",
+          "updatedAt": "2026-11-06T06:02:14.196Z",
+          "publishedAt": "2026-11-06T06:01:20.607Z"
+        },
+        {
+          "id": 92,
+          "documentId": "mm62rv1exwu5vv6zy7t1l7oy",
+          "name": "Hero background.png",
+          "alternativeText": "usdesktop",
+          "caption": null,
+          "focalPoint": null,
+          "width": 313,
+          "height": 313,
+          "formats": {
+            "thumbnail": {
+              "ext": ".png",
+              "url": "/uploads/thumbnail_Hero_background_a93c2f31fa.png",
+              "hash": "thumbnail_Hero_background_a93c2f31fa",
+              "mime": "image/png",
+              "name": "thumbnail_Hero background.png",
+              "path": null,
+              "size": 9.83,
+              "width": 156,
+              "height": 156,
+              "sizeInBytes": 9833
+            }
+          },
+          "hash": "Hero_background_a93c2f31fa",
+          "ext": ".png",
+          "mime": "image/png",
+          "size": 5.06,
+          "url": "/uploads/Hero_background_a93c2f31fa.png",
+          "previewUrl": null,
+          "provider": "local",
+          "provider_metadata": null,
+          "createdAt": "2026-11-06T06:01:20.536Z",
+          "updatedAt": "2026-11-06T06:02:06.598Z",
+          "publishedAt": "2026-11-06T06:01:20.536Z"
+        }
+      ],
+      "title": {
+        "id": 159,
+        "copy": "explore other partner efforts to waste less food",
+        "header": "h2"
+      }
+    },
+    {
+      "__component": "component.highlight-component",
+      "id": 135,
+      "description": "Most of us don't know where we're losing food. ",
+      "backgroundColor": "paper",
+      "isFullwidth": true,
+      "link": [
+        {
+          "id": 639,
+          "label": "Link to Tip Library",
+          "href": "/tips",
+          "isDisplay": true,
+          "isButton": true,
+          "newTab": false,
+          "buttonType": "Primary"
+        },
+        {
+          "id": 640,
+          "label": "Link to Library",
+          "href": "/find-my-tips",
+          "isDisplay": true,
+          "isButton": true,
+          "newTab": false,
+          "buttonType": "Secondary"
+        }
+      ],
+      "image": {
+        "id": 26,
+        "documentId": "lpi64r4bz6uin7l8g8f836ah",
+        "url": "/uploads/6a75c669d797bf8ded9c00a5f911560c1aa98631_8c09406ce6.png",
+        "ext": ".png",
+        "alternativeText": "fresh",
+        "height": 1458,
+        "width": 1188,
+        "size": 1161.68
+      },
+      "title": {
+        "id": 160,
+        "copy": "Explore other partner efforts to waste less food",
+        "header": "h2"
+      }
+    }
+  ],
+  "seo": null
+}

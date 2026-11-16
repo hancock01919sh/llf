@@ -89,6 +89,24 @@ const SiteStrings = z.object({
   }),
   notFound: z.object({ title: text, body: text, home: text }),
   home: z.object({ featuredTitle: text }),
+  global: z.object({
+    download: text,
+    ingredients: text,
+    tips: text,
+  }),
+  toolkit: z.object({
+    filetype: text,
+    filename: text,
+  }),
+  categoryDetail: z.object({
+    backToTips: text,
+    backToIngredients: text,
+    tipsAvailable: text,
+  }),
+  tipBanner: z.object({
+    save: text,
+    share: text,
+  }),
 });
 export type SiteStrings = z.infer<typeof SiteStrings>;
 
@@ -172,11 +190,29 @@ export const strings: SiteStrings = SiteStrings.parse({
     noTips: 'No tips for this ingredient yet.',
   },
   notFound: {
-    title: 'Page not found',
-    body: "We couldn't find that page. It may have moved.",
+    title: 'Oops. We dropped the beet.',
+    body: '404 — Page not found',
     home: 'Go to the home page',
   },
   home: { featuredTitle: 'Browse by category' },
+  global: {
+    download: 'Download',
+    ingredients: 'ingredients',
+    tips: 'tips',
+  },
+  toolkit: {
+    filetype: 'File type',
+    filename: 'File name',
+  },
+  categoryDetail: {
+    backToTips: 'Back to Explore the Library',
+    backToIngredients: 'Back to Ingredient List',
+    tipsAvailable: 'tips available',
+  },
+  tipBanner: {
+    save: 'Save to Photos',
+    share: 'Share Tip',
+  },
 });
 
 /** Fills `{name}` placeholders. Unknown placeholders are left as-is so missing values show up in review. */

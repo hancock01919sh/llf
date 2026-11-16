@@ -1,5 +1,11 @@
 import { createHash } from 'node:crypto';
-import { Catalog, IngredientData, toSlug, type CatalogIngredient, type cms } from '@llf/contracts';
+import {
+  Catalog,
+  IngredientData,
+  toSlug,
+  type CatalogIngredient,
+  type cmsType,
+} from '@llf/contracts';
 import MiniSearch from 'minisearch';
 import { ContentError, getIngredients } from './cms';
 import { mediaUrl } from './media';
@@ -26,12 +32,12 @@ function splitSynonyms(value: string | null | undefined): string[] {
 
 export interface SluggedIngredient {
   slug: string;
-  ingredient: cms.Ingredient;
+  ingredient: cmsType.api.IngredientDeepRef;
 }
 
 /** Slugs come from titles until Ingredient has a slug field (BD3244-11). Collisions fail the build. */
-export function slugIngredients(ingredients: cms.Ingredient[]): SluggedIngredient[] {
-  const bySlug = new Map<string, cms.Ingredient>();
+export function slugIngredients(ingredients: cmsType.api.IngredientDeepRef[]): SluggedIngredient[] {
+  const bySlug = new Map<string, cmsType.api.IngredientDeepRef>();
   for (const ingredient of ingredients) {
     const slug = toSlug(ingredient.title);
     if (!slug) {
@@ -50,7 +56,7 @@ export function slugIngredients(ingredients: cms.Ingredient[]): SluggedIngredien
   return [...bySlug].map(([slug, ingredient]) => ({ slug, ingredient }));
 }
 
-export function buildCatalog(ingredients: cms.Ingredient[]): Catalog {
+export function buildCatalog(ingredients: cmsType.api.IngredientDeepRef[]): Catalog {
   const items: CatalogIngredient[] = slugIngredients(ingredients)
     .map(({ slug, ingredient }) => ({
       slug,
@@ -83,7 +89,7 @@ export function toIngredientData({ slug, ingredient }: SluggedIngredient): Ingre
 }
 
 export function buildSearchDocuments(
-  ingredients: cms.Ingredient[],
+  ingredients: cmsType.api.IngredientDeepRef[],
   // tips: cms.Tip[],
 ): SearchDocument[] {
   const slugs = slugIngredients(ingredients);

@@ -27,3 +27,5 @@ export const UnknownBlock = z.looseObject({
 export type Block = z.infer<typeof Block>;
 export type BlockChild = z.infer<typeof BlockChild>;
 export type UnknownBlock = z.infer<typeof UnknownBlock>;
+export const BlocksContent = z.array(z.looseObject({ type: z.string() }));
+export type BlocksContent = z.infer<typeof BlocksContent>;
