@@ -12,6 +12,7 @@ describe('loadConfig', () => {
       anthropicApiKey: undefined,
       openaiApiKey: undefined,
       geminiApiKey: undefined,
+      geminiBaseUrl: undefined,
       reasoningEffort: undefined,
       port: 8787,
       trustedProxyHops: 0,
@@ -74,6 +75,14 @@ describe('loadConfig', () => {
     expect(loadConfig({ GEMINI_API_KEY: ' g-test ' }).geminiApiKey).toBe('g-test');
     expect(loadConfig({ GEMINI_API_KEY: '' }).geminiApiKey).toBeUndefined();
     expect(() => loadConfig({ GEMINI_API_KEY: 'g-secret', PORT: 'abc' })).not.toThrow(/g-secret/);
+  });
+
+  it('reads a Gemini relay base URL for dev (D38)', () => {
+    expect(loadConfig({ GEMINI_BASE_URL: 'https://relay.example.com' }).geminiBaseUrl).toBe(
+      'https://relay.example.com',
+    );
+    expect(loadConfig({ GEMINI_BASE_URL: '' }).geminiBaseUrl).toBeUndefined();
+    expect(() => loadConfig({ GEMINI_BASE_URL: 'not a url' })).toThrow(/GEMINI_BASE_URL/);
   });
 
   it('accepts gemini as AI_PROVIDER', () => {

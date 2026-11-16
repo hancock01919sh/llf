@@ -109,6 +109,31 @@ services:
       - key: GEMINI_API_KEY
         sync: false
 
+  # Dev-only Gemini relay for developers who can't reach Google from mainland China (TDD D38).
+  # Public, but every call needs a relay token; it swaps in ddd's dev key and forwards
+  # generateContent for allow-listed models only. Never copied to staging or prod.
+  - type: web
+    name: llf-gemini-relay-dev
+    runtime: node
+    plan: 0.5c-512mb
+    branch: dev
+    autoDeployTrigger: off
+    buildCommand: npx --yes pnpm@9.15.2 install --frozen-lockfile --filter @llf/gemini-relay...
+    startCommand: cd services/gemini-relay && node_modules/.bin/tsx src/server.ts
+    healthCheckPath: /healthz
+    envVars:
+      - key: RELAY_MODELS
+        value: gemini-3.8-flash
+      - key: RELAY_DAILY_CALLS
+        value: '300'
+      # ddd's capped Gemini dev key (TDD D33), the same key as llf-tips-dev. Never commit a value.
+      - key: GEMINI_API_KEY
+        sync: false
+      # One random token per developer, comma-separated (openssl rand -hex 24). Share each one
+      # directly, never in Jira, Slack or a PR. Remove a token to revoke it.
+      - key: RELAY_TOKENS
+        sync: false
+
   - type: web
     name: llf-web-dev
     runtime: node

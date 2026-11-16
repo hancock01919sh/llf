@@ -33,6 +33,7 @@ const app = createApp({
     anthropicApiKey: config.anthropicApiKey,
     openaiApiKey: config.openaiApiKey,
     geminiApiKey: config.geminiApiKey,
+    geminiBaseUrl: config.geminiBaseUrl,
   }),
   cache: new MemoryCacheStore(),
   counters: new MemoryCounterStore(),
