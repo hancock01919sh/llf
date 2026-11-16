@@ -8,7 +8,6 @@ import { UIImage } from '@/components/UIImage';
 import { strings } from '@/content/strings';
 import { DownloadTemplate, type downloadTemplateDataProps } from '@/components/DownloadTemplate';
 import { useState } from 'react';
-
 export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeepRef>) {
   const { tip, label } = props.block;
   const [isDownloading, setIsDownloading] = useState(false);
@@ -44,10 +43,33 @@ export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeep
             </Typography>
             <div className="flex flex-col lg:flex-row items-stretch justify-between gap-2.5 mt-10 w-full lg:mt-0 lg:justify-start">
               <button
-                className="btn black border-ink-terra [&_path]:fill-surface-paper capitalize px-0  lg:w-max lg:flex-0 lg:px-10"
-                onClick={() => void shareTip(tip?.ingredient?.title)}
+                disabled={isDownloading}
+                className="btn black border-ink-terra [&_path]:fill-surface-paper capitalize px-0  lg:w-max lg:flex-0 lg:px-10 focus-visible:bg-surface-paper!"
+                onClick={() => {
+                  // void shareTip(tip?.ingredient?.title);
+                  setIsDownloading(true);
+                  setDownloadTemplateData({
+                    type: 'share',
+                    tip: {
+                      title: tip?.title || '',
+                      description: tip?.description || '',
+                      type: tip?.tip_type?.title?.toLowerCase() || '',
+                    },
+                    ingredient: {
+                      image: {
+                        url: tip?.ingredient?.image?.url || '',
+                        alt:
+                          tip?.ingredient?.image?.alternativeText ||
+                          tip?.ingredient?.image?.name ||
+                          '',
+                      },
+                      title: tip?.ingredient?.title || '',
+                    },
+                  });
+                }}
               >
-                {strings.tipBanner.share} <IconShare />
+                {strings.tipBanner.share}{' '}
+                <IconShare className={`${isDownloading ? '[&_path]:fill-ink-terra-40!' : ''}`} />
               </button>
               <button
                 disabled={isDownloading}
@@ -55,6 +77,7 @@ export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeep
                 onClick={() => {
                   setIsDownloading(true);
                   setDownloadTemplateData({
+                    type: 'download',
                     tip: {
                       title: tip?.title || '',
                       description: tip?.description || '',
@@ -89,29 +112,6 @@ export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeep
       />
     </div>
   );
-}
-/**
- * Web Share API, falling back to the clipboard (TDD §6.6, D22). Cancelling the native sheet is not
- * a failure, so it must not copy. The search term rides in the fragment: query strings end up in
- * CDN and WAF logs (TDD §6.1, §7.6).
- */
-async function shareTip(ingredientTitle: string | undefined) {
-  const url = ingredientTitle
-    ? `${window.location.origin}/search/#q=${encodeURIComponent(ingredientTitle)}`
-    : window.location.href;
-  try {
-    if (navigator.share) {
-      await navigator.share({ url });
-      return;
-    }
-  } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') return;
-  }
-  try {
-    await navigator.clipboard.writeText(url);
-  } catch {
-    // No clipboard (insecure context or denied permission); nothing else to fall back to.
-  }
 }
 
 function TipBannerImage({
