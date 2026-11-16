@@ -8,15 +8,18 @@ import { Suspense } from 'react';
 
 export const revalidate = 60;
 
-const page = await requirePage('search');
 /** Results depend on the fragment, so the page itself has nothing to index (TDD §6.5, §6.7). */
-export const metadata: Metadata = pageMetadata({
-  title: page.title,
-  path: '/search/',
-  noindex: true,
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await requirePage('search');
+  return pageMetadata({
+    title: page.title,
+    path: '/search/',
+    noindex: true,
+  });
+}
 
-export default function SearchPage() {
+export default async function SearchPage() {
+  const page = await requirePage('search');
   return (
     <Suspense fallback={<div></div>}>
       <PageTemplate page={page} />

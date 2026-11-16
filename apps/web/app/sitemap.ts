@@ -2,7 +2,8 @@ import type { MetadataRoute } from 'next';
 import { getCategories, getPages, normalizePath } from '@/lib/cms';
 import { absoluteUrl } from '@/lib/seo';
 
-export const dynamic = 'force-static';
+// Generated on first request, not at build, so the image builds without a CMS (TDD D36).
+export const revalidate = 60;
 
 /** Every CMS page and category. Results and search are per-visitor and left out (TDD §6.7). */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

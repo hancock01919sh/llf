@@ -9,7 +9,6 @@ import { Suspense } from 'react';
 
 export const revalidate = 60;
 
-const page = await requirePage('/find-my-tips/results/');
 /** Results are per-visitor, so the page is never indexed (TDD §6.7). */
 export const metadata: Metadata = pageMetadata({
   title: strings.results.pageTitle,
@@ -17,7 +16,8 @@ export const metadata: Metadata = pageMetadata({
   noindex: true,
 });
 
-export default function ResultsPage() {
+export default async function ResultsPage() {
+  const page = await requirePage('/find-my-tips/results/');
   return (
     <Suspense fallback={<div></div>}>
       <PageTemplate page={page} />

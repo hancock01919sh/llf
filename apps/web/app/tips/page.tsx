@@ -6,14 +6,14 @@ import { PageTemplate } from '@/templates/PageTemplate';
 
 export const revalidate = 60;
 
-const page = await requirePage('tips');
 export async function generateMetadata(): Promise<Metadata> {
-  // const page = await requirePage('tips');
+  const page = await requirePage('tips');
   return pageMetadata({ title: page.title, path: '/tips/', seo: page.seo });
 }
 
 export default async function TipsLibraryPage() {
   // const Template = templates.library;
   // return <Template page={await requirePage('tips')} />;
+  const page = await requirePage('tips');
   return <PageTemplate page={page} />;
 }

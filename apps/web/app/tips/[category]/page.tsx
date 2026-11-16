@@ -4,7 +4,6 @@ import { getCategories, getCategory, requirePage } from '@/lib/cms';
 import { pageMetadata } from '@/lib/seo';
 import { PageTemplate } from '@/templates/PageTemplate';
 import { Suspense } from 'react';
-const page = await requirePage('tips/category');
 interface Params {
   params: Promise<{ category: string }>;
 }
@@ -41,7 +40,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
  */
 export default async function CategoryPage(props: Params) {
   // test url /tips/chicken-and-rice-bowls
-  const category = await load(props);
+  const [category, page] = await Promise.all([load(props), requirePage('tips/category')]);
   return (
     <Suspense fallback={<div>loading</div>}>
       <PageTemplate page={page} categoryData={category} />
