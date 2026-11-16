@@ -84,6 +84,7 @@ jobs:
           RENDER_SERVICE_ID_CMS: ${{ vars.RENDER_SERVICE_ID_CMS_DEV }}
           RENDER_SERVICE_ID_TIPS: ${{ vars.RENDER_SERVICE_ID_TIPS_DEV }}
           RENDER_SERVICE_ID_WEB: ${{ vars.RENDER_SERVICE_ID_WEB_DEV }}
+          RENDER_SERVICE_ID_RELAY: ${{ vars.RENDER_SERVICE_ID_RELAY_DEV }}
         run: |
           if [ -z "$RENDER_API_KEY" ]; then
             echo "RENDER_API_KEY is not set on the dev environment yet; skipping (docs/runbooks/render-dev.md)." >> "$GITHUB_STEP_SUMMARY"

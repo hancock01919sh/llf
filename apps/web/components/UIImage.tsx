@@ -1,41 +1,28 @@
-import type { Media } from '@llf/contracts/cms';
-import Image from 'next/image';
+'use client';
+import Image, { type ImageProps } from 'next/image';
 
-interface ResponsiveImageProps extends Omit<Media, 'src'> {
+interface ResponsiveImageProps extends ImageProps {
   className?: string;
-}
-
-export function UIImage({ className = '', ...rest }: ResponsiveImageProps) {
-  return (
-    <picture className={`relative block overflow-hidden ${className}`}>
-      <Image
-        className="w-full h-full object-cover bg-ink-terra-40"
-        style={{ objectFit: 'cover' }}
-        fill
-        src={rest.url}
-        alt={rest.alternativeText || rest.name || ''}
-      />
-    </picture>
-  );
-}
-export function EasyImage({
-  url,
-  alt,
-  className = '',
-}: {
-  url: string;
+  src: string;
   alt: string;
-  className?: string;
-}) {
+}
+
+export function UIImage({ className = '', src, ...rest }: ResponsiveImageProps) {
   return (
     <picture className={`relative block overflow-hidden ${className}`}>
-      <Image
-        className="w-full h-full object-cover bg-ink-terra-40"
-        style={{ objectFit: 'cover' }}
-        fill
-        src={url}
-        alt={alt}
-      />
+      {src && (
+        <Image
+          className="w-full h-full object-cover"
+          style={{ objectFit: 'cover' }}
+          fill={rest.width ? false : true}
+          onError={(e) => {
+            const target = e.target as HTMLElement;
+            target.classList.add('bg-ink-terra-40');
+          }}
+          src={`${src}`}
+          {...rest}
+        />
+      )}
     </picture>
   );
 }

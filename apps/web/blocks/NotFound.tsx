@@ -1,14 +1,20 @@
+import TransitionLink from '@/components/TransitionLink';
 import { Typography } from '@/components/Typography';
-import type { BlockProps } from './types';
-import type { cmsType } from '@llf/contracts';
-
-export function BlockNotFound(props: BlockProps<cmsType.component._404>) {
+export function BlockNotFound(props: {
+  title: string;
+  description: string;
+  backgroundColor: string;
+  cta: string;
+}) {
   return (
-    <div className="aspect-402/762 lg:aspect-1440/951 flex-center flex-col justify-center gap-6.25">
-      <Typography variant="subhead-lg">{props.block.description}</Typography>
-      <Typography variant="headline-lg" as="h1" role="heading" className="text-center">
-        {props.block.title}
+    <section className="aspect-402/762 lg:aspect-1440/951 px-5 lg:px-0 mx-auto lg:max-w-page flex-center flex-col justify-center gap-6.25">
+      <Typography variant="subhead-lg">{props.description}</Typography>
+      <Typography as="h1" variant="headline-lg" className="text-center">
+        {props.title}
       </Typography>
-    </div>
+      <TransitionLink href={'/'} className="btn mt-5">
+        {props.cta}
+      </TransitionLink>
+    </section>
   );
 }

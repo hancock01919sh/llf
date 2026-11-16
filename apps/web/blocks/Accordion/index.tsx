@@ -4,6 +4,7 @@ import { Typography } from '@/components/Typography';
 import type { BlockProps } from '../types';
 import { AccordionItemComponent } from './AccordionItem';
 import type { cmsType } from '@llf/contracts';
+import { BlockTitle } from '@/components/BlockTitle';
 
 export function BlockAccordion(props: BlockProps<cmsType.component.Accordion>) {
   const { accordionItem, subTitle, title } = props.block;
@@ -15,14 +16,12 @@ export function BlockAccordion(props: BlockProps<cmsType.component.Accordion>) {
   );
   return (
     <div className="py-15 lg:w-[60%]! mx-auto lg:py-[6.94%]">
-      <Typography variant="headline-md" className=" uppercase lg:text-center">
-        {title}
-      </Typography>
+      {title && <BlockTitle title={title} moduleIndex={props.index} className="text-center" />}
 
       <Typography variant="subhead-lg" richText={true} className=" mt-2.5 lg:text-center lg:mt-5">
         {subTitle}
       </Typography>
-      <div className="flex flex-col gap-2.5 mt-lg" aria-label={title}>
+      <div className="flex flex-col gap-2.5 mt-lg" aria-label={title?.copy || ''}>
         {data.map((item, _index) => (
           <AccordionItemComponent
             key={item.label}

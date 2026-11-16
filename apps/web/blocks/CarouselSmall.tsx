@@ -2,12 +2,14 @@
 import { carouselConfig } from '@/lib/const';
 import { Typography } from '@/components/Typography';
 import { IconCarouselNavigation } from '@/components/Icon';
-import { EasyImage } from '@/components/UIImage';
+import { UIImage } from '@/components/UIImage';
 import { useRef, useState, useEffect } from 'react';
 import { Pagination, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
+import { BlockTitle } from '@/components/BlockTitle';
+import TransitionLink from '@/components/TransitionLink';
 
 export function BlockCarouselSmall(props: BlockProps<cmsType.component.CarouselSmallDeepRef>) {
   const { smallCard, title, description } = props.block;
@@ -23,7 +25,7 @@ export function BlockCarouselSmall(props: BlockProps<cmsType.component.CarouselS
   return (
     <div className="py-15 lg:py-25">
       <div className="px-gutter text-center">
-        <Typography variant="headline-lg">{title}</Typography>
+        <BlockTitle title={title} moduleIndex={props.index} />
         <Typography variant="subhead-lg" className="mt-5">
           {description}
         </Typography>
@@ -55,24 +57,36 @@ export function BlockCarouselSmall(props: BlockProps<cmsType.component.CarouselS
             },
           }}
         >
-          {smallCard.map((item, index) => (
-            <SwiperSlide
-              key={item.title + index}
-              className="rounded-md overflow-hidden flex flex-col "
-            >
-              <EasyImage
-                url={item?.image?.url || ''}
-                alt={item.image?.alternativeText || item.title || ''}
-                className="w-full aspect-357/203 lg:aspect-430/258"
-              />
-              <Typography
-                variant="headline-sm"
-                className={`uppercase text-ink-terra p-8 text-center bg-surface-mint`}
+          {smallCard
+            .filter((item) => !!item.category)
+            .map((item, index) => (
+              <SwiperSlide
+                key={item.category?.id + '' + item.category?.documentId + '' + index}
+                className="rounded-md overflow-hidden h-auto! bg-surface-mint"
               >
-                {item.title}
-              </Typography>
-            </SwiperSlide>
-          ))}
+                <TransitionLink
+                  className="flex flex-col h-full"
+                  href={`/tips/${item.category?.slug}`}
+                >
+                  <UIImage
+                    src={item.category?.image?.url || ''}
+                    alt={
+                      item.category?.image?.alternativeText ||
+                      item.category?.image?.name ||
+                      item.category?.title ||
+                      ''
+                    }
+                    className="w-full aspect-357/203 lg:aspect-430/258"
+                  />
+                  <Typography
+                    variant="headline-sm"
+                    className={`uppercase flex-1 line-clamp-2 text-ink-terra m-8 text-center `}
+                  >
+                    {item.category?.title || ''}
+                  </Typography>
+                </TransitionLink>
+              </SwiperSlide>
+            ))}
         </Swiper>
       )}
 

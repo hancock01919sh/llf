@@ -1,7 +1,7 @@
-import type { cms } from '@llf/contracts';
 import { Button, type ButtonProps } from '@llf/ui';
 import Link from 'next/link';
 import { ctaHref, isInternalHref } from '@/lib/paths';
+import type { cmsType } from '@llf/contracts';
 
 type Variant = NonNullable<ButtonProps['variant']>;
 
@@ -14,7 +14,7 @@ export function CtaLink({
   variant = 'primary',
   className,
 }: {
-  cta: cms.Cta;
+  cta: cmsType.shared.Cta;
   variant?: Variant;
   className?: string;
 }) {

@@ -19,14 +19,10 @@ export function useAdjacent({
     if (!originalRef.current) {
       return;
     }
-    let next = originalRef.current.closest(tagName)!.nextElementSibling as HTMLElement;
-    let prev = originalRef.current.closest(tagName)!.previousElementSibling as HTMLElement;
-    while (next && next.tagName.toLowerCase() !== tagName.toLowerCase()) {
-      next = next.nextElementSibling as HTMLElement;
-    }
-    while (prev && prev.tagName.toLowerCase() !== tagName.toLowerCase()) {
-      prev = prev.previousElementSibling as HTMLElement;
-    }
+    const section = originalRef.current.closest(tagName);
+    if (!section) return;
+    const next = section.nextElementSibling as HTMLElement;
+    const prev = section.previousElementSibling as HTMLElement;
     setAdjacent((current) => {
       if (current?.next === next && current?.prev === prev) {
         return current;

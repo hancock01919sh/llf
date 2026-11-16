@@ -1,50 +1,43 @@
 {
   "data": {
-    "id": 2,
+    "id": 4,
     "documentId": "wuez0azthpgde9r981vwia17",
     "title": "longlivefood",
-    "searchPlaceholder": "Search Ingredients Tips",
-    "createdAt": "2026-10-23T02:31:20.642Z",
-    "updatedAt": "2026-10-27T09:37:35.978Z",
-    "publishedAt": "2026-10-27T09:37:36.004Z",
     "link": [
       {
-        "id": 15,
         "label": "The Tool",
         "href": "/find-my-tips",
         "isDisplay": true,
         "isButton": null,
-        "newTab": false,
-        "buttonType": null
+        "buttonType": null,
+        "newTab": false
       },
       {
-        "id": 16,
         "label": "Tip Library",
-        "href": "/explore",
+        "href": "/tips",
         "isDisplay": true,
         "isButton": null,
-        "newTab": false,
-        "buttonType": null
+        "buttonType": null,
+        "newTab": false
       },
       {
-        "id": 17,
-        "label": "GENERAL TIPS",
+        "label": "General Tips",
         "href": "/general-tips",
         "isDisplay": true,
         "isButton": null,
-        "newTab": false,
-        "buttonType": null
+        "buttonType": null,
+        "newTab": false
       },
       {
-        "id": 18,
         "label": "About",
         "href": "/about",
         "isDisplay": true,
         "isButton": null,
-        "newTab": false,
-        "buttonType": null
+        "buttonType": null,
+        "newTab": false
       }
-    ]
+    ],
+    "searchPlaceholder": "Search Ingredients Tips"
   },
   "meta": {}
 }

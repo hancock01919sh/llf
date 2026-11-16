@@ -1,16 +1,20 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { cms, cmsType } from '@llf/contracts';
+import { cmsType } from '@llf/contracts';
 import { z } from 'zod';
 import { normalizePath } from './paths';
 
 /**
- * Build-time content loader (TDD §6.2). Runs only in Node during `next build` / `next dev`.
- * Fetches every entry in pages of 100 with explicit populate, then validates each entry with Zod
- * so a bad entry fails the build with a message an editor can act on.
+ * Server-side content loader (TDD D36, §6.2). Runs in the Next.js standalone server: reads Strapi
+ * with the read-only token (CMS_URL, CMS_TOKEN) or the fixtures when CMS_FIXTURES=1, validates each
+ * entry with Zod, and caches the result for one ISR window. A failed refresh (bad entry, CMS down)
+ * keeps the last good content and logs an error instead of taking the page down.
  */
 
 export const PAGE_SIZE = 100;
+
+/** Matches the page-level `revalidate` so content can't outlive the ISR window (TDD D36). */
+export const REVALIDATE_SECONDS = 60;
 
 type Populate = { [key: string]: true | Populate };
 
@@ -46,6 +50,7 @@ const POPULATE = {
         'component.tool-input': {
           populate: {
             button: true,
+            title: true,
             cards: {
               populate: {
                 link: true,
@@ -57,31 +62,37 @@ const POPULATE = {
         'component.accordion': {
           populate: {
             accordionItem: true,
+            title: true,
           },
         },
         'component.highlight-component': {
           populate: {
             link: true,
-            image: ImagePopulate,
+            mobileImage: ImagePopulate,
+            desktopImage: ImagePopulate,
+            title: true,
           },
         },
         'component.category-detail': {
           populate: {
             image: ImagePopulate,
             button: true,
+            title: true,
             popup: {
               populate: {
                 link: true,
+                title: true,
               },
             },
           },
         },
-        'component.404': true,
         'component.search': {
           populate: {
+            title: true,
             popup: {
               populate: {
                 link: true,
+                title: true,
               },
             },
           },
@@ -111,6 +122,7 @@ const POPULATE = {
         'component.tool-spotlight': {
           populate: {
             link: true,
+            title: true,
             spotlightItem: {
               populate: {
                 video: true,
@@ -120,14 +132,24 @@ const POPULATE = {
         },
         'component.category-emoji': {
           populate: {
-            emoji: true,
+            title: true,
+            emoji: {
+              populate: {
+                ingredient_type: true,
+              },
+            },
           },
         },
         'component.category-carousel-feature': {
           populate: {
+            title: true,
             featureCard: {
               populate: {
-                image: ImagePopulate,
+                category: {
+                  populate: {
+                    image: true,
+                  },
+                },
               },
             },
             link: true,
@@ -135,48 +157,67 @@ const POPULATE = {
         },
         'component.header': {
           populate: {
+            title: true,
             image: ImagePopulate,
           },
         },
         'component.carousel-standard': {
           populate: {
+            title: true,
             standardCard: {
               populate: {
-                image: ImagePopulate,
+                category: {
+                  populate: {
+                    image: true,
+                  },
+                },
               },
             },
           },
         },
         'component.ingredient-carousel': {
           populate: {
+            title: true,
             ingredientCard: {
               populate: {
-                image: ImagePopulate,
+                category: {
+                  populate: {
+                    image: true,
+                  },
+                },
               },
             },
           },
         },
         'component.carousel-small': {
           populate: {
+            title: true,
             smallCard: {
               populate: {
-                image: ImagePopulate,
+                category: {
+                  populate: {
+                    image: true,
+                  },
+                },
               },
             },
           },
         },
         'component.5050-text-and-image': {
           populate: {
+            title: true,
             image: ImagePopulate,
           },
         },
         'component.content-spotlight': {
           populate: {
+            title: true,
             image: ImagePopulate,
           },
         },
         'component.text-and-image-card': {
           populate: {
+            title: true,
             image: ImagePopulate,
           },
         },
@@ -184,6 +225,35 @@ const POPULATE = {
           populate: {
             imageMobile: true,
             imageDesktop: true,
+            title: true,
+          },
+        },
+        'component.toolkit-headline': {
+          populate: {
+            cta: true,
+            file: true,
+            title: true,
+          },
+        },
+        'component.toolkit': {
+          populate: {
+            toolkitCategory: {
+              populate: {
+                title: true,
+                subCategory: {
+                  populate: {
+                    title: true,
+                    assets: {
+                      populate: {
+                        image: ImagePopulate,
+                        file: true,
+                        cta: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -202,19 +272,24 @@ const POPULATE = {
   tips: tipFields,
   footer: { link: true, iconLink: true, overlayLink: true },
   navigation: { link: true },
-  global: { load: true, seo: true },
+  global: { load: { populate: { title: true } }, seo: true },
+  'ingredient-types': {
+    seo: true,
+    ingredients: { populate: { image: true, tips: { populate: { tip_type: true } } } },
+  },
 };
 // satisfies Record<string, Populate>;
 
 const SCHEMAS = {
-  pages: cms.Page,
-  categories: cms.Category,
-  groups: cms.Group,
-  ingredients: cms.Ingredient,
-  tips: cms.Tip,
+  pages: cmsType.api.Page,
+  categories: cmsType.api.Category,
+  groups: cmsType.api.Group,
+  ingredients: cmsType.api.IngredientDeepRef,
+  'ingredient-types': cmsType.api.IngredientTypeDeepRef,
+  tips: cmsType.api.Tip,
   footer: cmsType.api.Footer,
   navigation: cmsType.api.Navigation,
-  global: cmsType.api.Global,
+  global: cmsType.api.GlobalDeepRef,
 } as const;
 
 export type CollectionKey = keyof typeof SCHEMAS;
@@ -271,7 +346,7 @@ export function validateCollection<K extends CollectionKey>(key: K, raw: unknown
   return items;
 }
 
-const envelope = cms.collectionResponse(z.unknown());
+const envelope = cmsType.collectionResponse(z.unknown());
 const signalSchema = envelope.extend({
   data: z.unknown(),
 });
@@ -293,10 +368,10 @@ async function fetchFromStrapi(key: CollectionKey): Promise<unknown[] | unknown>
     }).join('&');
     const url = `${base.replace(/\/$/, '')}/api/${key}?${query}`;
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+
     if (!res.ok) {
       throw new ContentError(`Strapi returned ${res.status} for /api/${key} (page ${page}).`);
     }
-
     const raw = await res.json();
     let body = null;
     if (signalKey.includes(key)) {
@@ -322,29 +397,57 @@ async function readFixture(key: CollectionKey): Promise<unknown[]> {
 }
 async function readFixtureSingle(key: CollectionKey): Promise<unknown> {
   const file = path.join(process.cwd(), 'fixtures', 'cms', `${key}.json`);
-  const signalSchema = cms.singleResponse(z.unknown());
+  const signalSchema = cmsType.singleResponse(z.unknown());
   return signalSchema.parse(JSON.parse(await readFile(file, 'utf8'))).data;
 }
 
-const cache = new Map<CollectionKey, Promise<unknown[]>>();
+type CacheEntry = { value: unknown; at: number };
+
+const cache = new Map<CollectionKey, CacheEntry>();
+const inflight = new Map<CollectionKey, Promise<unknown>>();
+
+/**
+ * One cached read per collection. Concurrent requests share the in-flight fetch; a refresh older
+ * than REVALIDATE_SECONDS re-reads. If the refresh fails, the last good value stays live.
+ */
+async function read<K extends CollectionKey>(key: K, single: boolean): Promise<unknown> {
+  const hit = cache.get(key);
+  if (hit && Date.now() - hit.at < REVALIDATE_SECONDS * 1000) return hit.value;
+
+  const pending = inflight.get(key);
+  if (pending) return pending;
+
+  const source =
+    process.env.CMS_FIXTURES === '1' ? (single ? readFixtureSingle : readFixture) : fetchFromStrapi;
+
+  const next = (async () => {
+    try {
+      const raw = await source(key);
+      const value = single
+        ? validateCollection(key, [raw])[0]
+        : validateCollection(key, raw as unknown[]);
+      cache.set(key, { value, at: Date.now() });
+      return value;
+    } catch (error) {
+      if (!hit) throw error;
+      const age = Math.round((Date.now() - hit.at) / 1000);
+      const reason = error instanceof Error ? error.message : String(error);
+      console.error(`[cms] keeping the last good "${key}" (${age}s old): ${reason}`);
+      return hit.value;
+    } finally {
+      inflight.delete(key);
+    }
+  })();
+
+  inflight.set(key, next);
+  return next;
+}
 
 export async function loadCollection<K extends CollectionKey>(key: K): Promise<Item<K>[]> {
-  let pending = cache.get(key);
-  if (!pending) {
-    const source = process.env.CMS_FIXTURES === '1' ? readFixture : fetchFromStrapi;
-    pending = source(key).then((raw) => validateCollection(key, raw as unknown[]));
-    cache.set(key, pending);
-  }
-  return (await pending) as Item<K>[];
+  return (await read(key, false)) as Item<K>[];
 }
 export async function loadSingle<K extends CollectionKey>(key: K): Promise<Item<K>> {
-  let pending = cache.get(key);
-  if (!pending) {
-    const source = process.env.CMS_FIXTURES === '1' ? readFixtureSingle : fetchFromStrapi;
-    pending = source(key).then((raw) => validateCollection(key, [raw]));
-    cache.set(key, pending);
-  }
-  return (await pending)[0] as Item<K>;
+  return (await read(key, true)) as Item<K>;
 }
 
 export { normalizePath };
@@ -353,16 +456,17 @@ export const getPages = () => loadCollection('pages');
 export const getCategories = () => loadCollection('categories');
 export const getGroups = () => loadCollection('groups');
 export const getIngredients = () => loadCollection('ingredients');
+export const getIngredientTypes = () => loadCollection('ingredient-types');
 export const getTips = () => loadCollection('tips');
 
-export async function getPageByPath(value: string): Promise<cms.Page | undefined> {
+export async function getPageByPath(value: string): Promise<cmsType.api.Page | undefined> {
   const wanted = normalizePath(value);
   const pages = await getPages();
   return pages.find((page) => normalizePath(page.path) === wanted);
 }
 
 /** Designed routes need their CMS page; a missing one is an editor error, not a 404. */
-export async function requirePage(value: string): Promise<cms.Page> {
+export async function requirePage(value: string): Promise<cmsType.api.Page> {
   const page = await getPageByPath(value);
   if (!page) {
     throw new ContentError(
@@ -372,8 +476,13 @@ export async function requirePage(value: string): Promise<cms.Page> {
   return page;
 }
 
-export async function getCategory(slug: string): Promise<cms.Category | undefined> {
+export async function getCategory(slug: string): Promise<cmsType.api.Category | undefined> {
   return (await getCategories()).find((category) => category.slug === slug);
+}
+export async function getIngredientType(
+  slug: string,
+): Promise<cmsType.api.IngredientType | undefined> {
+  return (await getIngredientTypes()).find((ingredientType) => ingredientType.slug === slug);
 }
 export async function getPageProviderData() {
   return Promise.all([loadSingle('footer'), loadSingle('navigation'), loadSingle('global')]).then(

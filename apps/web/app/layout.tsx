@@ -12,7 +12,7 @@ import { INDEXABLE, SITE_URL, organizationJsonLd, websiteJsonLd } from '@/lib/se
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: strings.site.name, template: `%s | ${strings.site.name}` },
-  // Dev, staging, and previews are never indexed (TDD §6.7). server.mjs also sends X-Robots-Tag.
+  // Dev, staging, and previews are never indexed (TDD §6.7). middleware.ts also sends X-Robots-Tag.
   robots: INDEXABLE ? undefined : { index: false, follow: false },
 };
 

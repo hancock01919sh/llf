@@ -5,15 +5,11 @@
   },
   "options": {},
   "attributes": {
-    "title": {
-      "type": "string",
-      "required": true
-    },
     "description": {
       "type": "text",
       "required": true
     },
-    "image": {
+    "desktopImage": {
       "type": "media",
       "multiple": false,
       "required": true,
@@ -30,7 +26,9 @@
       "enum": [
         "forest-tint",
         "paper",
-        "forest"
+        "forest",
+        "terra",
+        "sand"
       ]
     },
     "link": {
@@ -42,6 +40,33 @@
     "isFullwidth": {
       "type": "boolean",
       "default": false
+    },
+    "title": {
+      "type": "component",
+      "component": "shared.title",
+      "repeatable": false,
+      "required": true
+    },
+    "mobileImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "interiorBackgroundColor": {
+      "type": "enumeration",
+      "default": "terra",
+      "enum": [
+        "terra",
+        "forest",
+        "sand",
+        "mint",
+        "forest-tint"
+      ]
     }
   },
   "config": {}

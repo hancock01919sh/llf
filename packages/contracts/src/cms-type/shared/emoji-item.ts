@@ -1,20 +1,16 @@
 import { z } from 'zod';
+import { IngredientTypeRef, IngredientTypeDeepRef } from '../api/ingredient-type';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const EmojiItem = z.object({
-  title: z.string(),
-  emoji: nullish(z.string()),
+  ingredient_type: nullish(z.lazy(() => IngredientTypeRef)),
 });
 
-export const EmojiItemRef = z.object({
-  title: z.string(),
-  emoji: nullish(z.string()),
-});
+export const EmojiItemRef = z.object({});
 
 export const EmojiItemDeepRef = z.object({
-  title: z.string(),
-  emoji: nullish(z.string()),
+  ingredient_type: nullish(z.lazy((): z.ZodType<IngredientTypeDeepRef> => IngredientTypeDeepRef)),
 });
 
 export type EmojiItemDeepRef = z.infer<typeof EmojiItemDeepRef>;

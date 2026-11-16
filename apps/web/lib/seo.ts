@@ -1,6 +1,6 @@
-import type { cms } from '@llf/contracts';
 import type { Metadata } from 'next';
 import { strings } from '@/content/strings';
+import type { cmsType } from '@llf/contracts';
 
 /** SEO helpers (TDD §6.7). Metadata comes from the CMS `seo` component; these fill the gaps. */
 
@@ -17,7 +17,7 @@ export function absoluteUrl(path: string): string {
 interface PageMetadataInput {
   title: string;
   path: string;
-  seo?: cms.Seo | null;
+  seo?: cmsType.shared.Seo | null;
   description?: string | null;
   noindex?: boolean;
 }

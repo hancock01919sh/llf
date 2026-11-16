@@ -1,7 +1,6 @@
 'use client';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Typography } from '@/components//Typography';
-import Image from 'next/image';
 import { EffectCards, Navigation, Pagination } from 'swiper/modules';
 import TransitionLink from '@/components/TransitionLink';
 import { carouselConfig } from '@/lib/const';
@@ -10,28 +9,24 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-cards';
 import { IconArrow } from '@/components/Icon';
-import { Fragment } from 'react';
 import type { cmsType } from '@llf/contracts';
 import type { BlockProps } from './types';
+import { BlockTitle } from '@/components/BlockTitle';
+import { UIImage } from '@/components/UIImage';
 export function CategoryCarouselFeature(
   props: BlockProps<cmsType.component.CategoryCarouselFeatureDeepRef>,
 ) {
   const { title, description, link, featureCard } = props.block;
   return (
     <div className="py-15 lg:py-25">
-      <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-5">
-        <Typography
-          variant="headline-lg"
-          className="text-center mx-5 lg:mx-0 lg:text-left"
-          richText={true}
-        >
-          {title}
-        </Typography>
-        <div className="lg:w-1/2 flex flex-col gap-5">
-          <Typography
-            variant="subhead-lg"
-            className="text-center mx-5 mt-5 lg:text-left lg:mx-0 lg:mt-0"
-          >
+      <div className="grid gap-5 lg:grid-cols-2 lg:gap-15">
+        <BlockTitle
+          title={title!}
+          moduleIndex={props.index}
+          className="text-center mx-5 lg:mx-0 lg:text-left lg:1/2"
+        />
+        <div className="flex flex-col gap-5">
+          <Typography variant="subhead-lg" className="text-center mx-5  lg:text-left lg:mx-0">
             {description}
           </Typography>
           <LinkWrapper className="hidden lg:flex gap-5" Link={link} />
@@ -48,26 +43,36 @@ export function CategoryCarouselFeature(
             }}
             {...carouselConfig[320]}
           >
-            {featureCard.map((item, index) => (
-              <SwiperSlide
-                key={index}
-                className="flex flex-col bg-surface-paper overflow-hidden rounded-md aspect-362/420 lg:aspect-auto"
-              >
-                <Image
-                  src={item.image?.url || ''}
-                  alt={item.image?.alternativeText || ''}
-                  width={362}
-                  height={296}
-                  className="aspect-362/296 object-cover lg:aspect-535/438 lg:w-full"
-                />
-                <Typography
-                  variant="headline-sm"
-                  className="text-center p-9 pt-6.5 text-ink-terra uppercase leading-none"
+            {featureCard
+              .filter((item) => !!item.category)
+              .map((item, index) => (
+                <SwiperSlide
+                  key={index}
+                  className="flex flex-col bg-surface-paper overflow-hidden rounded-md h-auto! "
                 >
-                  {item.title}
-                </Typography>
-              </SwiperSlide>
-            ))}
+                  <TransitionLink
+                    className="flex flex-col h-full"
+                    href={`/tips/${item.category?.slug}`}
+                  >
+                    <UIImage
+                      src={item.category?.image?.url || ''}
+                      alt={
+                        item.category?.image?.alternativeText ||
+                        item.category?.image?.name ||
+                        item.category?.title ||
+                        ''
+                      }
+                      className="aspect-362/276 object-cover lg:aspect-535/438 lg:w-full"
+                    />
+                    <Typography
+                      variant="headline-sm"
+                      className="flex-1 line-clamp-2 text-center m-8 text-ink-terra uppercase leading-none"
+                    >
+                      {item.category?.title || ''}
+                    </Typography>
+                  </TransitionLink>
+                </SwiperSlide>
+              ))}
           </Swiper>
         </div>
 
@@ -97,26 +102,36 @@ export function CategoryCarouselFeature(
             }}
             keyboard={true}
           >
-            {featureCard.map((item, index) => (
-              <SwiperSlide
-                key={index}
-                className="flex flex-col bg-surface-paper overflow-hidden rounded-md lg:aspect-535/583"
-              >
-                <Image
-                  src={item.image?.url || ''}
-                  alt={item.image?.alternativeText || ''}
-                  width={362}
-                  height={296}
-                  className="aspect-362/296 object-cover lg:aspect-535/438 lg:w-full"
-                />
-                <Typography
-                  variant="headline-sm"
-                  className="text-center p-9 pt-6.5 text-ink-terra uppercase leading-none"
+            {featureCard
+              .filter((item) => !!item.category)
+              .map((item, index) => (
+                <SwiperSlide
+                  key={item.category?.id + '' + item.category?.documentId + '' + index}
+                  className="h-auto! bg-surface-paper overflow-hidden rounded-md "
                 >
-                  {item.title}
-                </Typography>
-              </SwiperSlide>
-            ))}
+                  <TransitionLink
+                    className="flex flex-col h-full"
+                    href={`/tips/${item.category?.slug}`}
+                  >
+                    <UIImage
+                      src={item.category?.image?.url || ''}
+                      alt={
+                        item.category?.image?.alternativeText ||
+                        item.category?.image?.name ||
+                        item.category?.title ||
+                        ''
+                      }
+                      className="aspect-362/296 object-cover lg:aspect-535/438 lg:w-full"
+                    />
+                    <Typography
+                      variant="headline-sm"
+                      className=" flex-1 line-clamp-2 m-8 text-center text-ink-terra uppercase leading-none"
+                    >
+                      {item.category?.title || ''}
+                    </Typography>
+                  </TransitionLink>
+                </SwiperSlide>
+              ))}
           </Swiper>
         </div>
 
@@ -131,12 +146,13 @@ export function CategoryCarouselFeature(
           },
         ].map((item) => {
           return (
-            <div
+            <button
               key={item.point}
-              className={`${item.className} hidden lg:flex cursor-pointer absolute z-2 top-1/2 -translate-y-1/2 bg-surface-mint-dark w-11 h-11 rounded-full justify-center items-center`}
+              aria-label={item.point === 'left' ? 'prev' : 'next'}
+              className={`${item.className} ${item.point === 'left' ? ' -translate-x-1/2' : ' translate-x-1/2'} disabled:opacity-70 hidden lg:flex cursor-pointer absolute z-2 top-1/2 -translate-y-1/2  bg-surface-mint-dark w-11 h-11 rounded-full justify-center items-center`}
             >
               <IconArrow point={item.point as 'left' | 'right'} />
-            </div>
+            </button>
           );
         })}
       </div>
@@ -153,33 +169,15 @@ function LinkWrapper({
 }) {
   return (
     <div className={className}>
-      {Link.map((item) => {
-        if (item.buttonType === 'Primary') {
-          return (
-            <TransitionLink
-              key={item.label}
-              className={`btn mx-5 lg:mx-0`}
-              href={item.href || '/find'}
-            >
-              {item.label}
-            </TransitionLink>
-          );
-        }
+      {Link.filter((item) => item.buttonType === 'Primary').map((item) => {
         return (
-          <Fragment key={item.label}>
-            <TransitionLink
-              className="link mx-auto block mt-5 lg:mx-0 lg:hidden"
-              href={item.href || '/search'}
-            >
-              {item.label}
-            </TransitionLink>
-            <TransitionLink
-              className="btn black hidden mx-auto lg:block lg:mx-0 lg:px-lg "
-              href={'/search'}
-            >
-              {item.label}
-            </TransitionLink>
-          </Fragment>
+          <TransitionLink
+            key={item.label}
+            className={`btn mx-5 lg:mx-0`}
+            href={item.href || '/find'}
+          >
+            {item.label}
+          </TransitionLink>
         );
       })}
     </div>

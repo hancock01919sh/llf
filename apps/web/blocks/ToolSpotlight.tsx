@@ -17,11 +17,12 @@ import 'swiper/css/pagination';
 import { carouselConfig } from '@/lib/const';
 import type { BlockProps } from './types';
 import type { cmsType } from '@llf/contracts';
+import { BlockTitle } from '@/components/BlockTitle';
 export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlightDeepRef>) {
   const { subTitle, link, spotlightItem, title } = props.block;
   const [swiperIndex, setSwiperIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const defaultTextColor = 'yellow';
+  const defaultTextColor = '#B4BC9C';
   useGSAP(() => {
     if (!containerRef.current || window.innerWidth < 1024) return;
     const texts = gsap.utils.toArray<HTMLParagraphElement>(
@@ -41,11 +42,10 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlightD
     gsap.set(texts, {
       color: defaultTextColor,
     });
-
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
-        start: 'bottom bottom',
+        start: () => `top top`,
         end: () => `+=${window.innerHeight}`,
         pin: true,
         scrub: true,
@@ -103,7 +103,7 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlightD
       tl.to(
         texts[i]!,
         {
-          color: '#fbf5ce',
+          color: '#F0F58E',
           duration: 1,
           ease: 'none',
         },
@@ -126,12 +126,13 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlightD
   return (
     <div
       ref={containerRef}
-      className="py-15 lg:py-25 flex flex-col gap-lg max-w-page mx-auto lg:px-gutter-lg"
+      className="py-15 lg:py-25 flex flex-col gap-lg max-w-page mx-auto lg:px-gutter-lg lg:gap-0"
     >
       <div className="px-4.5 lg:px-0 lg:w-[70%] lg:mx-auto ">
-        <Typography variant="headline-lg" className="text-center">
+        {/* <Typography variant="headline-lg" className="text-center">
           {title}
-        </Typography>
+        </Typography> */}
+        <BlockTitle title={title!} moduleIndex={props.index} className=" text-center" />
         <Typography variant="subhead-lg" className="font-bold mt-5 lg:hidden">
           {subTitle}
         </Typography>
@@ -175,7 +176,7 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlightD
           ))}
         </Swiper>
       </div>
-      <div className="hidden w-full lg:flex lg:mt-35 max-w-page mx-auto">
+      <div className="hidden w-full lg:flex lg:mt-25 max-w-page mx-auto">
         <div className="video-wrapper relative w-1/2">
           {spotlightItem.map((item, index) => (
             <UIVideo

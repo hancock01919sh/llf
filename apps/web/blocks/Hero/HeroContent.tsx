@@ -42,7 +42,7 @@ export function HeroContent({
                   </TransitionLink>
                   <TransitionLink
                     href={l.href || '/search'}
-                    className="btn black hidden lg:block lg:w-max"
+                    className="btn black hidden lg:inline-flex lg:w-max"
                   >
                     {l.label}
                   </TransitionLink>

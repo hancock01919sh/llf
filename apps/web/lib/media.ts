@@ -1,4 +1,4 @@
-import type { cms } from '@llf/contracts';
+import type { cmsType } from '@llf/contracts';
 
 /**
  * Strapi's local upload provider returns relative URLs (`/uploads/...`). The static site lives on a
@@ -20,7 +20,7 @@ export interface ImageProps {
 }
 
 /** Alt text comes from the CMS (TDD §6.6). An image without alt text is treated as decorative. */
-export function toImage(media: cms.Media | null | undefined): ImageProps | null {
+export function toImage(media: cmsType.Media | null | undefined): ImageProps | null {
   if (!media) return null;
   return {
     src: mediaUrl(media.url),

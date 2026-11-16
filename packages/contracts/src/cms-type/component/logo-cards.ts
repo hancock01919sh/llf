@@ -1,23 +1,23 @@
 import { z } from 'zod';
 import { Media } from '../media';
+import { TitleRef, TitleDeepRef } from '../shared/title';
 
 const nullish = <T extends z.ZodType>(schema: T) => schema.nullish();
 
 export const LogoCards = z.object({
   __component: z.literal('component.logo-cards'),
   id: z.number().int(),
-  title: z.string(),
   description: z.string(),
   imageDesktop: nullish(Media.array()),
   backgroundColor: z.enum(['paper', 'forest']),
   imageMobile: nullish(Media.array()),
   isFullwidth: nullish(z.boolean().default(false)),
+  title: z.lazy(() => TitleRef),
 });
 
 export const LogoCardsRef = z.object({
   __component: z.literal('component.logo-cards'),
   id: z.number().int(),
-  title: z.string(),
   description: z.string(),
   imageDesktop: nullish(Media.array()),
   backgroundColor: z.enum(['paper', 'forest']),
@@ -28,12 +28,12 @@ export const LogoCardsRef = z.object({
 export const LogoCardsDeepRef = z.object({
   __component: z.literal('component.logo-cards'),
   id: z.number().int(),
-  title: z.string(),
   description: z.string(),
   imageDesktop: nullish(Media.array()),
   backgroundColor: z.enum(['paper', 'forest']),
   imageMobile: nullish(Media.array()),
   isFullwidth: nullish(z.boolean().default(false)),
+  title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
 });
 
 export type LogoCardsDeepRef = z.infer<typeof LogoCardsDeepRef>;
