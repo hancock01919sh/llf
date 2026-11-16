@@ -93,6 +93,21 @@ export function IngredientsList(
         },
         title: finalIngredients[activeIndex]?.title || '',
       },
+      type: 'download',
+    });
+    setDownloadIng(true);
+  }
+  function shareTip(tip: downloadDataTipProps) {
+    setDownloadTemplateData({
+      tip,
+      ingredient: {
+        image: {
+          url: finalIngredients[activeIndex]?.image?.url || '',
+          alt: finalIngredients[activeIndex]?.image?.alt || '',
+        },
+        title: finalIngredients[activeIndex]?.title || '',
+      },
+      type: 'share',
     });
     setDownloadIng(true);
   }
@@ -176,16 +191,26 @@ export function IngredientsList(
                   <div className="flex flex-col gap-8">
                     <div className="flex-center justify-between">
                       <TipBadge type={item.type?.toLowerCase() as TipBadgeType} />
-                      <div className="relative w-16 h-13">
-                        <div className=" absolute left-0 group-hover/item:opacity-0 py-4 px-6 transition-opacity duration-300">
+                      <div className="relative flex-center gap-6">
+                        <button
+                          disabled={downloadIng}
+                          className=" disabled:[&_path]:fill-ink-terra-40"
+                          onClick={() => {
+                            shareTip({
+                              title: item.title || '',
+                              description: item.description || '',
+                              type: item.type || '',
+                            });
+                          }}
+                        >
                           <IconShare
                             className={` ${!isSearch ? '[&_path]:fill-surface-paper group-hover/item:[&_path]:fill-ink-terra' : ''}`}
                           />
-                        </div>
+                        </button>
 
                         <button
                           disabled={downloadIng}
-                          className={`absolute left-0 opacity-0 transition-opacity duration-300 group-hover/item:opacity-100 bg-surface-paper rounded-full border border-ink-terra py-4 px-6 disabled:bg-ink-terra-40 disabled:border-ink-terra-40 disabled:[&_path]:fill-surface-paper `}
+                          className={`rounded-full disabled:[&_path]:fill-ink-terra-40 `}
                           onClick={() => {
                             downloadTip({
                               title: item.title || '',
@@ -195,7 +220,9 @@ export function IngredientsList(
                           }}
                           aria-label={strings.global.download}
                         >
-                          <IconDownload />
+                          <IconDownload
+                            className={` ${!isSearch ? '[&_path]:fill-surface-paper group-hover/item:[&_path]:fill-ink-terra' : ''}`}
+                          />
                         </button>
                       </div>
                     </div>
@@ -237,6 +264,7 @@ export function IngredientsList(
         ingredient={finalIngredients[activeIndex] as IngredientData}
         downloadTip={downloadTip}
         downloadIng={downloadIng}
+        shareTip={shareTip}
       />
       {downloadTemplateData && (
         <DownloadTemplate
