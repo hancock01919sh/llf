@@ -4,6 +4,14 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { strings } from '@/content/strings';
 import { BlockTipBanner } from './TipBanner';
 
+// The share/download buttons render the tip as an image through html-to-image before
+// handing it to the Web Share API or the browser download. jsdom can't rasterise, so
+// stub the encode step and assert on what TipBanner hands over.
+const JPEG_DATA_URL = 'data:image/jpeg;base64,ZmFrZQ==';
+vi.mock('html-to-image', () => ({
+  toJpeg: vi.fn().mockResolvedValue('data:image/jpeg;base64,ZmFrZQ=='),
+}));
+
 // Shaped after the `component.tip-banner` block in apps/web/fixtures/cms/pages.json (page "home").
 const block = {
   __component: 'component.tip-banner',
@@ -61,53 +69,85 @@ const block = {
   },
 } satisfies cmsType.component.TipBannerDeepRef;
 
+// `DownloadTemplate` names the file `<ingredient>-<first two words of the tip>.jpeg`.
+const EXPECTED_FILENAME = 'Avocado-Gone brown?.jpeg';
+
 const renderBlock = (overrides: Partial<typeof block> = {}) =>
   render(<BlockTipBanner block={{ ...block, ...overrides }} index={1} pageTitle="Home" />);
+
+const getShareButton = () =>
+  screen.getByRole('button', { name: strings.tipBanner.share }) as HTMLButtonElement;
+const getSaveButton = () =>
+  screen.getByRole('button', { name: strings.tipBanner.save }) as HTMLButtonElement;
 
 describe('BlockTipBanner', () => {
   afterEach(() => {
     cleanup();
     vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
   it('renders the CMS label, ingredient, tip title and description', () => {
     renderBlock();
     expect(screen.getByText('Tip Of The Week')).toBeDefined();
-    expect(screen.getByText('Avocado')).toBeDefined();
-    expect(screen.getByText("Gone brown? It's not gone bad.")).toBeDefined();
     expect(screen.getByText(block.tip.description)).toBeDefined();
+    // The ingredient title shows in the banner copy and again in the generated template.
+    expect(screen.getAllByText('Avocado').length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Gone brown? It's not gone bad.").length).toBeGreaterThan(0);
   });
 
   it('renders the tip type badge and both CTAs', () => {
     renderBlock();
     expect(screen.getByText('rescue it')).toBeDefined();
-    expect(screen.getByRole('button', { name: strings.tipBanner.share })).toBeDefined();
-    expect(screen.getByRole('button', { name: strings.tipBanner.save })).toBeDefined();
+    expect(getShareButton()).toBeDefined();
+    expect(getSaveButton()).toBeDefined();
   });
 
-  it('shares a search link for the ingredient through the Web Share API', async () => {
+  it('shares the rendered tip image through the Web Share API', async () => {
     const share = vi.fn().mockResolvedValue(undefined);
-    vi.stubGlobal('navigator', { ...window.navigator, share });
+    const canShare = vi.fn().mockReturnValue(true);
+    vi.stubGlobal('navigator', { ...window.navigator, share, canShare });
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        blob: async () => new Blob(['fake'], { type: 'image/jpeg' }),
+      }),
+    );
     renderBlock();
 
-    fireEvent.click(screen.getByRole('button', { name: strings.tipBanner.share }));
+    fireEvent.click(getShareButton());
 
     await waitFor(() => expect(share).toHaveBeenCalledTimes(1));
-    // The term rides in the fragment, never the query string (TDD §6.1).
-    expect(share.mock.calls[0]?.[0]).toEqual({
-      url: `${window.location.origin}/search/#q=Avocado`,
-    });
+    const payload = share.mock.calls[0]?.[0] as { files: File[] };
+    expect(payload.files).toHaveLength(1);
+    expect(payload.files[0]?.name).toBe(EXPECTED_FILENAME);
+    expect(payload.files[0]?.type).toBe('image/jpeg');
   });
 
-  it('copies the link when the browser has no Web Share API', async () => {
-    const writeText = vi.fn().mockResolvedValue(undefined);
-    vi.stubGlobal('navigator', { ...window.navigator, share: undefined, clipboard: { writeText } });
+  it('downloads the rendered tip image and disables the buttons while it renders', async () => {
+    const links: HTMLAnchorElement[] = [];
+    const createElement = document.createElement.bind(document);
+    vi.spyOn(document, 'createElement').mockImplementation(((
+      tagName: string,
+      options?: ElementCreationOptions,
+    ) => {
+      const element = createElement(tagName, options);
+      if (tagName === 'a') links.push(element as HTMLAnchorElement);
+      return element;
+    }) as typeof document.createElement);
+    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
     renderBlock();
 
-    fireEvent.click(screen.getByRole('button', { name: strings.tipBanner.share }));
+    fireEvent.click(getSaveButton());
 
-    await waitFor(() => expect(writeText).toHaveBeenCalledTimes(1));
-    expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/search/#q=Avocado`);
+    // Both CTAs lock while the image is being generated.
+    expect(getSaveButton().disabled).toBe(true);
+    expect(getShareButton().disabled).toBe(true);
+
+    await waitFor(() => expect(click).toHaveBeenCalledTimes(1));
+    const link = links.at(-1);
+    expect(link?.download).toBe(EXPECTED_FILENAME);
+    expect(link?.getAttribute('href')).toBe(JPEG_DATA_URL);
   });
 
   it('renders without the optional tip', () => {
