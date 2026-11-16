@@ -3,7 +3,7 @@
 
 **Jira:** <!-- e.g. BD3244-123. The PR title must also start with it: "BD3244-123: feat(web): …" (required check) -->
 
-**Target branch:** <!-- Feature PRs target `dev`. `staging` and `prod` only take promotion PRs or `hotfix/*` (TDD §9.3). -->
+**Target branch:** <!-- Feature PRs target `dev`. `stage` and `prod` only take promotion PRs or `hotfix/*` (TDD §9.3). -->
 
 ## Screenshots / recordings
 <!-- Required for UI changes: desktop and mobile. Link the Figma frame. -->
