@@ -24,6 +24,7 @@ export function llfConfig(options = {}) {
         '**/test-results/**',
         '**/next-env.d.ts',
         'apps/cms/**',
+        'apps/web/storybook-static/**',
       ],
     },
     js.configs.recommended,
