@@ -19,7 +19,12 @@ interface NavigationProp {
   onClose?: () => void;
   inPopup?: boolean;
 }
-export function Header({ className = '', showClose = false, onClose = () => {}, inPopup = false }: NavigationProp) {
+export function Header({
+  className = '',
+  showClose = false,
+  onClose = () => {},
+  inPopup = false,
+}: NavigationProp) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
