@@ -19,7 +19,7 @@ const block = {
   label: 'Tip Of The Week',
   backgroundColor: 'terra',
   isFullwidth: false,
-  interiorBackgroundColor: 'forest-tint',
+  interiorBackgroundColor: 'sand',
   cta: [
     {
       label: 'Share',
