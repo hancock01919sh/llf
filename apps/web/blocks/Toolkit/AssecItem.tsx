@@ -26,7 +26,7 @@ export function AssecItem(item: cmsType.shared.AssetsCardsDeepRef & { className?
           {strings.toolkit.filetype}:{item.file?.mime || ''}
         </Typography>
         <a href={item.file?.url} download={item.file?.name} className="btn black mt-5 inline-flex">
-          {strings.toolkit.download}
+          {strings.global.download}
           <IconDownload className="w-4 h-4 [&_path]:fill-surface-paper" />
         </a>
       </div>

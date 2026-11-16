@@ -30,7 +30,7 @@
     "positionOfAddingBgColor": {
       "type": "enumeration",
       "enum": [
-        "Up ",
+        "Up",
         "Down"
       ]
     },

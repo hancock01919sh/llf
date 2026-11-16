@@ -135,11 +135,7 @@ const POPULATE = {
             title: true,
             emoji: {
               populate: {
-                category: {
-                  populate: {
-                    image: true,
-                  },
-                },
+                ingredient_type: true,
               },
             },
           },
@@ -277,6 +273,10 @@ const POPULATE = {
   footer: { link: true, iconLink: true, overlayLink: true },
   navigation: { link: true },
   global: { load: { populate: { title: true } }, seo: true },
+  'ingredient-types': {
+    seo: true,
+    ingredients: { populate: { image: true, tips: { populate: { tip_type: true } } } },
+  },
 };
 // satisfies Record<string, Populate>;
 
@@ -285,6 +285,7 @@ const SCHEMAS = {
   categories: cmsType.api.Category,
   groups: cmsType.api.Group,
   ingredients: cmsType.api.IngredientDeepRef,
+  'ingredient-types': cmsType.api.IngredientTypeDeepRef,
   tips: cmsType.api.Tip,
   footer: cmsType.api.Footer,
   navigation: cmsType.api.Navigation,
@@ -455,6 +456,7 @@ export const getPages = () => loadCollection('pages');
 export const getCategories = () => loadCollection('categories');
 export const getGroups = () => loadCollection('groups');
 export const getIngredients = () => loadCollection('ingredients');
+export const getIngredientTypes = () => loadCollection('ingredient-types');
 export const getTips = () => loadCollection('tips');
 
 export async function getPageByPath(value: string): Promise<cmsType.api.Page | undefined> {
@@ -476,6 +478,11 @@ export async function requirePage(value: string): Promise<cmsType.api.Page> {
 
 export async function getCategory(slug: string): Promise<cmsType.api.Category | undefined> {
   return (await getCategories()).find((category) => category.slug === slug);
+}
+export async function getIngredientType(
+  slug: string,
+): Promise<cmsType.api.IngredientType | undefined> {
+  return (await getIngredientTypes()).find((ingredientType) => ingredientType.slug === slug);
 }
 export async function getPageProviderData() {
   return Promise.all([loadSingle('footer'), loadSingle('navigation'), loadSingle('global')]).then(

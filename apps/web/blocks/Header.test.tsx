@@ -3,7 +3,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { BlockHeader } from './Header';
 
-// Shaped after the `component.header` block in apps/web/fixtures/cms/pages.json (page "Library Landing").
+// Shaped after the `component.header` block in apps/web/fixtures/cms/pages.json.
 const image = {
   id: 103,
   documentId: 'bcggp8n6khopm9x09tuidwbf',
@@ -11,6 +11,11 @@ const image = {
   alternativeText: 'Mike',
   width: 4000,
   height: 6000,
+};
+const video = {
+  ...image,
+  url: '/uploads/brand_opening_clip.mp4',
+  alternativeText: 'Brand opening clip',
 };
 
 const block = {
@@ -54,12 +59,25 @@ describe('BlockHeader', () => {
     expect(screen.queryByRole('heading', { level: 1 })).toBeNull();
   });
 
-  it('plays the CMS image URL in the media element', () => {
-    const { container } = renderBlock();
+  it('renders a video element when the CMS URL is an mp4', () => {
+    const { container } = renderBlock(0, { image: video });
     const videos = [...container.querySelectorAll('video')];
     // The background-colour split renders a second, mobile-only copy.
     expect(videos).toHaveLength(2);
-    for (const video of videos) expect(video.getAttribute('src')).toBe(image.url);
+    for (const v of videos) expect(v.getAttribute('src')).toBe(video.url);
+  });
+
+  it('renders an image element when the CMS URL is not an mp4', () => {
+    const { container } = renderBlock(0, { image });
+    const imgs = [...container.querySelectorAll('img')];
+    expect(imgs.length).toBeGreaterThan(0);
+    // All rendered images should use the CMS URL and alt text.
+    for (const img of imgs) {
+      expect(decodeURIComponent(img.getAttribute('src') ?? '')).toContain(image.url);
+      expect(img.getAttribute('alt')).toBe(image.alternativeText);
+    }
+    // And no video element leaks in.
+    expect(container.querySelectorAll('video')).toHaveLength(0);
   });
 
   it('renders without media instead of a broken element', () => {
@@ -70,9 +88,20 @@ describe('BlockHeader', () => {
         addBackgroundColor: false,
       });
       expect(container.querySelectorAll('video')).toHaveLength(0);
+      expect(container.querySelectorAll('img')).toHaveLength(0);
       expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(block.title.copy);
       expect(container.textContent).toContain('Find yours by meal, ingredient, or something');
       unmount();
     }
+  });
+
+  it('renders without a heading when the CMS title is null', () => {
+    // TitleRef isn't nullish in the contract, but runtime data can carry null and the component
+    // protects with `title &&`, so exercise that branch anyway.
+    renderBlock(0, { title: null as unknown as typeof block.title });
+    expect(screen.queryByRole('heading')).toBeNull();
+    // But subtitle and description still render.
+    expect(screen.getByText(block.subTitle)).toBeDefined();
+    expect(screen.getByText(/Find yours by meal/)).toBeDefined();
   });
 });

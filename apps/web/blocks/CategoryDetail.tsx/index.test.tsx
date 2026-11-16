@@ -1,7 +1,15 @@
 import type { cmsType } from '@llf/contracts';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { CategoryDetailComponent, type CategoryDetailWithSearchProps } from './index';
+import {
+  CategoryDetailComponent,
+  type CategoryDataType,
+  type CategoryDetailWithSearchProps,
+} from './index';
+
+// Deep-ref data with the route's discriminator: the page spreads `getCategory()` (deep refs) and
+// adds `DataType`, so the mock must keep the nested tips while matching the block's props.
+type CategoryTestData = cmsType.api.CategoryDeepRef & { DataType: 'category' };
 
 // IngredientsList/IngredientsHeader read the App Router (rows, result slugs, TransitionLink).
 // The router object must be stable: IngredientsList lists it in an effect dependency array.
@@ -62,6 +70,7 @@ const block = {
 } satisfies CategoryDetailWithSearchProps;
 
 const category = {
+  DataType: 'category',
   id: 1,
   documentId: 'fxca0001',
   title: 'Fruits & Veggies',
@@ -74,7 +83,6 @@ const category = {
       id: 1,
       documentId: 'fxin0001',
       title: 'Banana',
-      type: 'Produce',
       synonyms: 'bananas',
       wasted: 4,
       image: null,
@@ -99,7 +107,6 @@ const category = {
       id: 2,
       documentId: 'fxin0002',
       title: 'Spinach',
-      type: 'Leafy Greens',
       synonyms: 'baby spinach',
       wasted: 5,
       image: null,
@@ -122,10 +129,39 @@ const category = {
     metaKeywords: null,
     metaDescription: 'Tips to keep fruits and vegetables fresh.',
   },
-} satisfies cmsType.api.CategoryDeepRef;
+} satisfies CategoryTestData;
+
+/** The ingredient-type variant renders the classification header without category-only fields. */
+const ingredientType = {
+  DataType: 'ingredient-type',
+  id: 2,
+  documentId: 'fxin0003',
+  title: 'Produce',
+  slug: 'produce',
+  emoji: '🥦',
+  ingredients: [
+    {
+      id: 1,
+      documentId: 'fxin0001',
+      title: 'Banana',
+      synonyms: 'bananas',
+      wasted: 4,
+      image: null,
+    },
+    {
+      id: 2,
+      documentId: 'fxin0002',
+      title: 'Spinach',
+      synonyms: 'baby spinach',
+      wasted: 5,
+      image: null,
+    },
+  ],
+  seo: null,
+} satisfies CategoryDataType;
 
 /** The block is an async server component; call it and render the resolved element. */
-const renderBlock = async (data: cmsType.api.Category = category) => {
+const renderBlock = async (data: CategoryDataType = category) => {
   const element = await CategoryDetailComponent({
     block,
     index: 0,
@@ -169,6 +205,14 @@ describe('CategoryDetailComponent', () => {
     const spinach = await screen.findByRole('button', { name: /Spinach/ });
     fireEvent.keyDown(spinach, { key: 'Enter' });
     expect(spinach.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('renders an ingredient-type page without the category-only fields', async () => {
+    await renderBlock(ingredientType);
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Produce');
+    expect(await screen.findByText('2 ingredients | 0 tips')).toBeDefined();
+    expect(screen.queryByText('Your kitchen')).toBeNull();
+    expect(screen.queryByText('Keep produce fresh for longer.')).toBeNull();
   });
 
   it('renders an empty ingredient list without throwing', async () => {

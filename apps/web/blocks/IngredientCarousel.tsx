@@ -83,7 +83,7 @@ export function BlockIngredientCarousel(
                   />
                   <Typography
                     variant="headline-sm"
-                    className={`uppercase flex-1 line-clamp-2 text-ink-terra m-8 text-center`}
+                    className={`uppercase flex-1 line-clamp-4 text-ink-terra m-8 text-center`}
                   >
                     {item.category?.title || ''}
                   </Typography>

@@ -12,13 +12,18 @@ export function BlockToolkitHeadline(props: BlockProps<cmsType.component.Toolkit
       <Typography variant="subhead-lg" className="mt-5 font-bold">
         {description}
       </Typography>
-      {file?.url && cta?.label && (
+      {cta?.label && file?.url && (
         <a
           href={file.url}
           download={file.name}
           className="btn mt-10 w-auto mx-auto lg:w-max lg:mx-auto"
         >
           {cta?.label} <IconDownload />
+        </a>
+      )}
+      {cta?.label && !file?.url && (
+        <a href={cta.href || '#'} className="btn mt-10 mx-auto w-max lg:mx-auto">
+          {cta?.label}
         </a>
       )}
     </div>

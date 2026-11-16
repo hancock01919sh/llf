@@ -3,4 +3,6 @@ out/
 next-env.d.ts
 playwright-report/
 test-results/
+storybook-static/
+*storybook.log
 *.tsbuildinfo
