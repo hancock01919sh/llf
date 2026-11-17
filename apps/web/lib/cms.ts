@@ -213,6 +213,7 @@ const POPULATE = {
           populate: {
             title: true,
             image: ImagePopulate,
+            cta: true,
           },
         },
         'component.text-and-image-card': {
