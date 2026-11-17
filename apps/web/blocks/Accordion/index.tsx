@@ -7,11 +7,11 @@ import type { cmsType } from '@llf/contracts';
 import { BlockTitle } from '@/components/BlockTitle';
 
 export function BlockAccordion(props: BlockProps<cmsType.component.Accordion>) {
-  const { accordionItem, subTitle, title } = props.block;
+  const { accordionItem, subTitle, title, firstItemExpand } = props.block;
   const [data, setData] = useState(
-    accordionItem?.map((item) => ({
+    accordionItem?.map((item, index) => ({
       ...item,
-      isExpanded: false,
+      isExpanded: index === 0 && firstItemExpand,
     })),
   );
   return (
