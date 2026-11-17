@@ -9,7 +9,7 @@ import { extendTailwindMerge } from 'tailwind-merge';
 const twMerge = extendTailwindMerge({
   extend: {
     theme: {
-      text: ['label', 'paragraph'],
+      text: ['cta'],
       spacing: [
         '2xs',
         'xs',
