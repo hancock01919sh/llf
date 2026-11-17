@@ -12,7 +12,7 @@ Every developer, including the China team.
 - **Node 22** (`nvm use` reads `.nvmrc`) and **pnpm 9** (`corepack enable`).
 - **Docker**, only for the CMS (Postgres 16).
 - Git access to the repo.
-- Mainland China: GitHub, npm, and Docker Hub can be slow. Registry mirrors and VPN are being agreed (TDD §11.4, BD3244-19). Don't try live AI keys from China: use the mock adapter.
+- Mainland China: GitHub, npm, and Docker Hub can be slow. Registry mirrors and VPN are being agreed (TDD §11.4, BD3244-19). Google's API isn't reachable from China, so a Google key doesn't work there: use the mock, or one of the two dev-only routes in [From mainland China](#from-mainland-china-dev-only-tdd-d38).
 
 ## Steps
 1. Install:
@@ -42,9 +42,33 @@ To use a real model locally (TDD D33), add these to your git-ignored `.env`. Art
 ```sh
 AI_PROVIDER=gemini
 AI_MODEL=gemini-3.8-flash
-GEMINI_API_KEY=<from the secure share>
+PROMPT_VERSION=p3
+GEMINI_API_KEY=<ddd's dev key, from the secure share>
 ```
-Restart `pnpm dev`. From mainland China, the live API needs a VPN. Tests and CI always use mock.
+This calls ddd's capped dev key on the Gemini API, the same setup as Render dev. Use **test inputs only**: no real receipts, names, or personal photos. Staging and prod use Gemini on Vertex AI in Ad Council's project without any key (TDD D37); you don't need that locally.
+
+Restart `pnpm dev`. From mainland China this doesn't work: see below. Tests and CI always use mock.
+
+The dev key has a small daily budget shared by the whole team. Switch back to `AI_PROVIDER=mock` when you aren't working on the model path.
+
+### From mainland China (dev only, TDD D38)
+Google's API is blocked from mainland China. Use one of these instead of a Google key. Both are **dev only** and use **test inputs only**: no real receipts, names, or personal photos.
+
+**A. Front-end work: use the tool on Render dev.** No model key on your laptop. Add to `.env`:
+```sh
+REMOTE_API_URL=https://llf-web-dev.onrender.com
+REMOTE_API_AUTH=<dev site user:pass, from the secure share>
+```
+Run `pnpm dev:fe:remote` instead of `pnpm dev:fe`. The web app runs locally and `/api/*` goes to the tool on Render dev, which runs the code on `dev` (not your branch).
+
+**B. Tool work (`services/find-my-tips`): use the Gemini relay.** Your local tool calls Gemini through ddd's relay on Render, so it runs your branch's code. Art sends you a **personal relay token** through a secure share. Add to `.env`:
+```sh
+AI_PROVIDER=gemini
+AI_MODEL=gemini-3.8-flash
+GEMINI_BASE_URL=https://llf-gemini-relay-dev.onrender.com
+GEMINI_API_KEY=<your relay token, not a Google key>
+```
+Restart `pnpm dev`. The relay allows `gemini-3.8-flash` only and has a shared daily cap. A `401` means the token is wrong or revoked; `429` means today's cap is used up (it resets at 00:00 UTC). Ask Art for a new token if yours leaks.
 
 To try the tool:
 ```sh

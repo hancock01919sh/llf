@@ -126,7 +126,7 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlightD
   return (
     <div
       ref={containerRef}
-      className="py-15 lg:py-25 flex flex-col gap-lg max-w-page mx-auto lg:px-gutter-lg"
+      className="py-15 lg:py-25 flex flex-col gap-lg max-w-page mx-auto lg:px-gutter-lg lg:gap-0"
     >
       <div className="px-4.5 lg:px-0 lg:w-[70%] lg:mx-auto ">
         {/* <Typography variant="headline-lg" className="text-center">
@@ -176,7 +176,7 @@ export function ToolSpotlight(props: BlockProps<cmsType.component.ToolSpotlightD
           ))}
         </Swiper>
       </div>
-      <div className="hidden w-full lg:flex lg:mt-35 max-w-page mx-auto">
+      <div className="hidden w-full lg:flex lg:mt-25 max-w-page mx-auto">
         <div className="video-wrapper relative w-1/2">
           {spotlightItem.map((item, index) => (
             <UIVideo

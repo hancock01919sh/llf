@@ -23,6 +23,8 @@ envVarGroups:
         value: p3
       - key: FIND_TIPS_MODE
         value: live
+      # Dev uses ddd's Gemini API key (TDD D33). Vertex AI in Ad Council's project (D37) is for
+      # staging and prod, signed in through Workload Identity Federation, so GEMINI_VERTEX stays off.
       - key: QUOTA_DAILY_MODEL_CALLS
         value: '500'
 
@@ -102,11 +104,36 @@ services:
     envVars:
       - fromGroup: llf-dev-tool
       # Render's proxy appends the visitor's IP and then Cloudflare's edge IP to x-forwarded-for, and
-      # server.mjs passes it on unchanged, so the visitor is 2nd from the right (PROOF_DOC P4).
+      # the web rewrite passes it on unchanged, so the visitor is 2nd from the right (PROOF_DOC P4).
       - key: TRUSTED_PROXY_HOPS
         value: '2'
-      # ddd's Gemini key (dev only, TDD D25). Never commit a value.
+      # Vertex AI dev key bound to llf-gemini-dev in Ad Council's project (TDD D37). Never commit a value.
       - key: GEMINI_API_KEY
+        sync: false
+
+  # Dev-only Gemini relay for developers who can't reach Google from mainland China (TDD D38).
+  # Public, but every call needs a relay token; it swaps in ddd's dev key and forwards
+  # generateContent for allow-listed models only. Never copied to staging or prod.
+  - type: web
+    name: llf-gemini-relay-dev
+    runtime: node
+    plan: 0.5c-512mb
+    branch: dev
+    autoDeployTrigger: off
+    buildCommand: npx --yes pnpm@9.15.2 install --frozen-lockfile --filter @llf/gemini-relay...
+    startCommand: cd services/gemini-relay && node_modules/.bin/tsx src/server.ts
+    healthCheckPath: /healthz
+    envVars:
+      - key: RELAY_MODELS
+        value: gemini-3.8-flash
+      - key: RELAY_DAILY_CALLS
+        value: '300'
+      # ddd's capped Gemini dev key (TDD D33), the same key as llf-tips-dev. Never commit a value.
+      - key: GEMINI_API_KEY
+        sync: false
+      # One random token per developer, comma-separated (openssl rand -hex 24). Share each one
+      # directly, never in Jira, Slack or a PR. Remove a token to revoke it.
+      - key: RELAY_TOKENS
         sync: false
 
   - type: web
@@ -118,7 +145,8 @@ services:
     buildCommand: >-
       npx --yes pnpm@9.15.2 install --frozen-lockfile --filter @llf/web... &&
       npx --yes pnpm@9.15.2 --filter @llf/web... build
-    startCommand: node apps/web/server.mjs
+    # Standalone Next.js server (TDD D36); `server.mjs` is retired.
+    startCommand: npx --yes pnpm@9.15.2 --filter @llf/web start
     healthCheckPath: /healthz
     # Manual previews: add "[render preview]" to a PR title to get a temporary URL (TDD §9.1).
     previews:
@@ -126,11 +154,14 @@ services:
     envVars:
       - key: SITE_ENV
         value: dev
+      # The standalone server binds to $HOSTNAME; make it listen on every interface.
+      - key: HOSTNAME
+        value: 0.0.0.0
       # Builds from fixture content until cms-dev is seeded. Then delete CMS_FIXTURES and set
       # CMS_URL + CMS_TOKEN (read-only token) in the dashboard (docs/runbooks/render-dev.md).
       - key: CMS_FIXTURES
         value: '1'
-      # Where /uploads/* redirects (apps/web/server.mjs). Fixture content references media on
+      # Where /uploads/* redirects (apps/web/middleware.ts). Fixture content references media on
       # cms-dev, and CMS_URL isn't set while CMS_FIXTURES is on. Not a secret.
       - key: CMS_MEDIA_URL
         value: https://llf-cms-dev.onrender.com

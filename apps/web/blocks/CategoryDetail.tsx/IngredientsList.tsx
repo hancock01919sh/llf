@@ -1,7 +1,7 @@
 'use client';
 import { IngredientData, parseResultSlugs } from '@llf/contracts';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Typography } from '@/components/Typography';
 import { useDevice } from '@/components/hooks/useDevice';
 import { IconArrow, IconDownload, IconShare, IconUpload, IconWork2 } from '@/components/Icon';
@@ -11,6 +11,12 @@ import { IngredientsPopup } from './IngredientsPopup';
 import type { SearchDocument } from '@/lib/search';
 import type { CategoryDetailWithSearchProps } from '.';
 import { UIImage } from '@/components/UIImage';
+import {
+  DownloadTemplate,
+  type downloadDataTipProps,
+  type downloadTemplateDataProps,
+} from '@/components/DownloadTemplate';
+import { strings } from '@/content/strings';
 
 export function IngredientsList(
   props: CategoryDetailWithSearchProps & {
@@ -31,6 +37,8 @@ export function IngredientsList(
     ingredients: [],
   });
   const [activeIndex, setActiveIndex] = useState(-1);
+
+  const downloadRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useDevice();
 
   useEffect(() => {
@@ -68,14 +76,50 @@ export function IngredientsList(
     }
     return classText;
   }
+  const [downloadIng, setDownloadIng] = useState<boolean>(false);
+  const [downloadTemplateData, setDownloadTemplateData] =
+    useState<downloadTemplateDataProps | null>(null);
+  useEffect(() => {
+    if (!downloadRef.current || !downloadTemplateData) return;
+    setDownloadIng(true);
+  }, [downloadTemplateData, downloadRef]);
+  function downloadTip(tip: downloadDataTipProps) {
+    setDownloadTemplateData({
+      tip,
+      ingredient: {
+        image: {
+          url: finalIngredients[activeIndex]?.image?.url || '',
+          alt: finalIngredients[activeIndex]?.image?.alt || '',
+        },
+        title: finalIngredients[activeIndex]?.title || '',
+      },
+      type: 'download',
+    });
+    setDownloadIng(true);
+  }
+  function shareTip(tip: downloadDataTipProps) {
+    setDownloadTemplateData({
+      tip,
+      ingredient: {
+        image: {
+          url: finalIngredients[activeIndex]?.image?.url || '',
+          alt: finalIngredients[activeIndex]?.image?.alt || '',
+        },
+        title: finalIngredients[activeIndex]?.title || '',
+      },
+      type: 'share',
+    });
+    setDownloadIng(true);
+  }
   return (
     <>
       {/* {state.status === 'loading' && !isSearch && <Loading open={state.status === 'loading'} />} */}
       {state.status === 'ready' && finalIngredients.length > 0 && (
         <div className={`pb-gutter-lg`}>
           <Typography variant="paragraph-regular" className="px-5">
-            {finalIngredients?.length} ingredients |{' '}
-            {finalIngredients?.reduce((acc, cur) => acc + (cur.tips?.length || 0), 0)} tips
+            {finalIngredients?.length} {strings.global.ingredients} |{' '}
+            {finalIngredients?.reduce((acc, cur) => acc + (cur.tips?.length || 0), 0)}{' '}
+            {strings.global.tips}
           </Typography>
           <div
             className={`flex items-start mt-lg lg:mt-12.5 gap-6 ${state.ingredients[activeIndex]?.tips.length === 0 ? ' items-stretch' : ''}`}
@@ -98,7 +142,7 @@ export function IngredientsList(
                     }
                   }}
                 >
-                  <div className="w-17.5 h-17.5 aspect-square rounded-full bg-ink-terra-40">
+                  <div className="w-17.5 h-17.5 aspect-square rounded-full bg-ink-terra-40 shrink-0">
                     {item.image?.url && (
                       <UIImage
                         src={item.image?.url || ''}
@@ -109,10 +153,14 @@ export function IngredientsList(
                   </div>
 
                   <div className="flex-1 flex flex-col lg:flex-row gap-2.5 lg:flex-center lg:justify-between">
-                    <Typography as="h2" variant="subhead-md" className="font-bold font-fustat!">
+                    <Typography
+                      as="h2"
+                      variant="subhead-md"
+                      className="font-bold font-fustat! line-clamp-1 flex-1"
+                    >
                       {item.title}
                     </Typography>
-                    <Typography variant="paragraph-sm" className="lg:text-paragraph-sm">
+                    <Typography variant="paragraph-sm" className="lg:text-paragraph-sm shrink-0">
                       {item?.tips?.length || 0} tips available
                     </Typography>
                   </div>
@@ -143,21 +191,38 @@ export function IngredientsList(
                   <div className="flex flex-col gap-8">
                     <div className="flex-center justify-between">
                       <TipBadge type={item.type?.toLowerCase() as TipBadgeType} />
-                      <div className="relative w-16 h-13">
-                        <div className=" absolute left-0 group-hover/item:opacity-0 py-4 px-6 transition-opacity duration-300">
+                      <div className="relative flex-center gap-6">
+                        <button
+                          disabled={downloadIng}
+                          className=" disabled:[&_path]:fill-ink-terra-40"
+                          onClick={() => {
+                            shareTip({
+                              title: item.title || '',
+                              description: item.description || '',
+                              type: item.type || '',
+                            });
+                          }}
+                        >
                           <IconShare
                             className={` ${!isSearch ? '[&_path]:fill-surface-paper group-hover/item:[&_path]:fill-ink-terra' : ''}`}
                           />
-                        </div>
+                        </button>
 
                         <button
-                          className={`absolute left-0 opacity-0 transition-opacity duration-300 group-hover/item:opacity-100 bg-surface-paper rounded-full border border-ink-terra py-4 px-6`}
+                          disabled={downloadIng}
+                          className={`rounded-full disabled:[&_path]:fill-ink-terra-40 `}
                           onClick={() => {
-                            // console.log('share');
+                            downloadTip({
+                              title: item.title || '',
+                              description: item.description || '',
+                              type: item.type || '',
+                            });
                           }}
-                          aria-label="save tip"
+                          aria-label={strings.global.download}
                         >
-                          <IconDownload />
+                          <IconDownload
+                            className={` ${!isSearch ? '[&_path]:fill-surface-paper group-hover/item:[&_path]:fill-ink-terra' : ''}`}
+                          />
                         </button>
                       </div>
                     </div>
@@ -171,18 +236,6 @@ export function IngredientsList(
                       </Typography>
                     </div>
                   </div>
-                  {/* <div className="mt-0 opacity-0 overflow-hidden transition-all duration-500 grid grid-rows-[0fr] group-hover/item:grid-rows-[1fr] group-hover/item:opacity-100 group-hover/item:mt-10">
-                    <div className="flex gap-3 min-h-0 ">
-                      <button className="btn">
-                        Share
-                        <IconShare className="w-4 h-4" />
-                      </button>
-                      <button className="btn">
-                        Save
-                        <IconDownload className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div> */}
                 </div>
               ))}
               {activeIndex === -1 && (
@@ -209,7 +262,19 @@ export function IngredientsList(
         open={activeIndex !== -1 && isMobile}
         onClose={() => setActiveIndex(-1)}
         ingredient={finalIngredients[activeIndex] as IngredientData}
+        downloadTip={downloadTip}
+        downloadIng={downloadIng}
+        shareTip={shareTip}
       />
+      {downloadTemplateData && (
+        <DownloadTemplate
+          onComplete={() => {
+            setDownloadIng(false);
+            setDownloadTemplateData(null);
+          }}
+          {...downloadTemplateData}
+        />
+      )}
     </>
   );
 }

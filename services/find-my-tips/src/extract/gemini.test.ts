@@ -7,6 +7,8 @@ import {
   GEMINI_THINKING_BUDGETS,
   buildGeminiRequest,
   createGeminiProvider,
+  geminiUrl,
+  vertexHost,
 } from './gemini';
 import { createProvider, extractIngredients } from './index';
 import { systemPrompt } from './prompt';
@@ -276,5 +278,71 @@ describe('gemini through extractIngredients', () => {
       (e: unknown) => e,
     );
     expect((error as ToolError).code).toBe('upstream_error');
+  });
+});
+
+describe('Vertex AI mode (TDD D37)', () => {
+  const vertex = { project: 'llf-proj', location: 'us' };
+
+  it('picks the multi-region, regional and global hosts', () => {
+    expect(vertexHost('us')).toBe('https://aiplatform.us.rep.googleapis.com');
+    expect(vertexHost('eu')).toBe('https://aiplatform.eu.rep.googleapis.com');
+    expect(vertexHost('us-east5')).toBe('https://us-east5-aiplatform.googleapis.com');
+    expect(vertexHost('global')).toBe('https://aiplatform.googleapis.com');
+  });
+
+  it('builds the publisher-model generateContent URL', () => {
+    expect(geminiUrl({ vertex }, 'gemini-test')).toBe(
+      'https://aiplatform.us.rep.googleapis.com/v1/projects/llf-proj/locations/us/publishers/google/models/gemini-test:generateContent',
+    );
+    expect(geminiUrl({}, 'gemini-test')).toBe(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-test:generateContent',
+    );
+  });
+
+  it('sends a bound API key in a header, never in the URL', async () => {
+    const { fetch, calls } = fakeFetch(() => ok(generated(JSON.stringify(RESULT))));
+    const provider = createProvider('gemini', { geminiApiKey: KEY, geminiVertex: vertex, fetch });
+    await provider.extract(
+      { kind: 'text', text: 'milk' },
+      { ...ctx, signal: AbortSignal.timeout(1_000) },
+    );
+    const [call] = calls;
+    expect(call?.url).toContain(
+      '/locations/us/publishers/google/models/gemini-test:generateContent',
+    );
+    expect(call?.url).not.toContain(KEY);
+    expect(call?.init.headers).toEqual({
+      'x-goog-api-key': KEY,
+      'content-type': 'application/json',
+    });
+  });
+
+  it('uses an OAuth token when there is no key (WIF in staging and prod)', async () => {
+    const { fetch, calls } = fakeFetch(() => ok(generated(JSON.stringify(RESULT))));
+    const provider = createGeminiProvider({
+      vertex,
+      getAccessToken: async () => 'ya29.test',
+      fetch,
+    });
+    await provider.extract(
+      { kind: 'text', text: 'milk' },
+      { ...ctx, signal: AbortSignal.timeout(1_000) },
+    );
+    expect(calls[0]?.init.headers).toEqual({
+      authorization: 'Bearer ya29.test',
+      'content-type': 'application/json',
+    });
+  });
+
+  it('is not configured without a key or a token source', async () => {
+    const { fetch, calls } = fakeFetch(() => ok(generated(JSON.stringify(RESULT))));
+    await expect(
+      createGeminiProvider({ vertex, fetch }).extract(
+        { kind: 'text', text: 'milk' },
+        { ...ctx, signal: AbortSignal.timeout(1_000) },
+      ),
+    ).rejects.toBeInstanceOf(ProviderNotConfiguredError);
+    expect(calls).toHaveLength(0);
   });
 });

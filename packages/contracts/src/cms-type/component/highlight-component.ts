@@ -10,11 +10,14 @@ export const HighlightComponent = z.object({
   id: z.number().int(),
   description: z.string(),
   desktopImage: Media,
-  backgroundColor: z.enum(['forest-tint', 'paper', 'forest']),
+  backgroundColor: z.enum(['forest-tint', 'paper', 'forest', 'terra', 'sand']),
   link: nullish(z.array(z.lazy(() => LinksRef))),
   isFullwidth: nullish(z.boolean().default(false)),
   title: z.lazy(() => TitleRef),
   mobileImage: nullish(Media),
+  interiorBackgroundColor: nullish(
+    z.enum(['terra', 'forest', 'sand', 'mint', 'forest-tint']).default('terra'),
+  ),
 });
 
 export const HighlightComponentRef = z.object({
@@ -22,9 +25,12 @@ export const HighlightComponentRef = z.object({
   id: z.number().int(),
   description: z.string(),
   desktopImage: Media,
-  backgroundColor: z.enum(['forest-tint', 'paper', 'forest']),
+  backgroundColor: z.enum(['forest-tint', 'paper', 'forest', 'terra', 'sand']),
   isFullwidth: nullish(z.boolean().default(false)),
   mobileImage: nullish(Media),
+  interiorBackgroundColor: nullish(
+    z.enum(['terra', 'forest', 'sand', 'mint', 'forest-tint']).default('terra'),
+  ),
 });
 
 export const HighlightComponentDeepRef = z.object({
@@ -32,11 +38,14 @@ export const HighlightComponentDeepRef = z.object({
   id: z.number().int(),
   description: z.string(),
   desktopImage: Media,
-  backgroundColor: z.enum(['forest-tint', 'paper', 'forest']),
+  backgroundColor: z.enum(['forest-tint', 'paper', 'forest', 'terra', 'sand']),
   link: nullish(z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef))),
   isFullwidth: nullish(z.boolean().default(false)),
   title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
   mobileImage: nullish(Media),
+  interiorBackgroundColor: nullish(
+    z.enum(['terra', 'forest', 'sand', 'mint', 'forest-tint']).default('terra'),
+  ),
 });
 
 export type HighlightComponentDeepRef = z.infer<typeof HighlightComponentDeepRef>;

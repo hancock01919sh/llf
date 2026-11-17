@@ -39,7 +39,7 @@ export function Provider({
   return (
     <AppContext.Provider value={{ footer, navigation, global, path }}>
       <Header className={getHeaderClassByPath(path)} />
-      <main>{children}</main>
+      <main id="main">{children}</main>
       <AppFooter />
     </AppContext.Provider>
   );

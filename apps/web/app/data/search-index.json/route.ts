@@ -1,7 +1,7 @@
 import { getSearchIndexJson } from '@/lib/data';
 
-/** Site-search index, written to `out/data/search-index.json` by the static export (TDD §6.5). */
-export const dynamic = 'force-static';
+/** Site-search index, served from a route handler with the page ISR window (TDD D36, §6.5). */
+export const revalidate = 60;
 
 export async function GET() {
   return new Response(JSON.stringify(await getSearchIndexJson()), {

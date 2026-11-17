@@ -13,6 +13,7 @@ describe('loadConfig', () => {
       anthropicApiKey: undefined,
       openaiApiKey: undefined,
       geminiApiKey: undefined,
+      geminiBaseUrl: undefined,
       reasoningEffort: undefined,
       port: 8787,
       trustedProxyHops: 0,
@@ -80,6 +81,41 @@ describe('loadConfig', () => {
     expect(loadConfig({ GEMINI_API_KEY: ' g-test ' }).geminiApiKey).toBe('g-test');
     expect(loadConfig({ GEMINI_API_KEY: '' }).geminiApiKey).toBeUndefined();
     expect(() => loadConfig({ GEMINI_API_KEY: 'g-secret', PORT: 'abc' })).not.toThrow(/g-secret/);
+  });
+
+  it('turns on Gemini on Vertex AI with a project, defaulting to the US multi-region (D37)', () => {
+    expect(loadConfig({}).geminiVertex).toBeUndefined();
+    expect(loadConfig({ GOOGLE_CLOUD_PROJECT: 'p' }).geminiVertex).toBeUndefined();
+    expect(loadConfig({ GEMINI_VERTEX: '1', GOOGLE_CLOUD_PROJECT: 'p' }).geminiVertex).toEqual({
+      project: 'p',
+      location: 'us',
+    });
+    expect(
+      loadConfig({
+        GEMINI_VERTEX: 'true',
+        GOOGLE_CLOUD_PROJECT: 'p',
+        GOOGLE_CLOUD_LOCATION: 'global',
+      }).geminiVertex,
+    ).toEqual({ project: 'p', location: 'global' });
+    expect(
+      loadConfig({ GEMINI_VERTEX: '0', GOOGLE_CLOUD_PROJECT: 'p' }).geminiVertex,
+    ).toBeUndefined();
+    expect(() => loadConfig({ GEMINI_VERTEX: '1' })).toThrow(/GOOGLE_CLOUD_PROJECT/);
+    expect(() =>
+      loadConfig({
+        GEMINI_VERTEX: '1',
+        GOOGLE_CLOUD_PROJECT: 'p',
+        GOOGLE_CLOUD_LOCATION: 'us/../x',
+      }),
+    ).toThrow(/GOOGLE_CLOUD_LOCATION/);
+  });
+
+  it('reads a Gemini relay base URL for dev (D38)', () => {
+    expect(loadConfig({ GEMINI_BASE_URL: 'https://relay.example.com' }).geminiBaseUrl).toBe(
+      'https://relay.example.com',
+    );
+    expect(loadConfig({ GEMINI_BASE_URL: '' }).geminiBaseUrl).toBeUndefined();
+    expect(() => loadConfig({ GEMINI_BASE_URL: 'not a url' })).toThrow(/GEMINI_BASE_URL/);
   });
 
   it('accepts gemini as AI_PROVIDER', () => {

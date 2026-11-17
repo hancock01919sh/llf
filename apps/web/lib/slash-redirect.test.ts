@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { slashRedirect } from './slash-redirect.mjs';
+import { slashRedirect } from './slash-redirect';
 
 describe('slashRedirect', () => {
   it('adds the trailing slash and keeps the query', () => {

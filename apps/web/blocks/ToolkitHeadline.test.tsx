@@ -10,7 +10,7 @@ const block = {
   description: 'This is the toolkit overview.',
   cta: {
     label: 'download campaign overview',
-    href: null,
+    href: null as string | null,
     isDisplay: true,
     isButton: true,
     buttonType: null,
@@ -68,9 +68,28 @@ describe('BlockToolkitHeadline', () => {
     expect(screen.queryByRole('link')).toBeNull();
   });
 
-  it('renders no link when the CMS has no file to download', () => {
+  it('falls back to the CTA href when there is no file to download', () => {
+    renderBlock(1, {
+      file: undefined,
+      cta: {
+        label: 'contact us',
+        href: '/contact',
+        isDisplay: true,
+        isButton: true,
+        buttonType: null,
+        newTab: false,
+      },
+    });
+    const link = screen.getByRole('link', { name: 'contact us' });
+    expect(link.getAttribute('href')).toBe('/contact');
+    expect(link.getAttribute('download')).toBeNull();
+  });
+
+  it('renders the CTA anchor with the "#" placeholder when there is neither file nor href', () => {
     renderBlock(1, { file: undefined });
     expect(screen.getByRole('heading', { level: 2 }).textContent).toBe('Toolkit headline');
-    expect(screen.queryByRole('link')).toBeNull();
+    const link = screen.getByRole('link', { name: 'download campaign overview' });
+    expect(link.getAttribute('href')).toBe('#');
+    expect(link.getAttribute('download')).toBeNull();
   });
 });

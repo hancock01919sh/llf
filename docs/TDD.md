@@ -7,8 +7,8 @@
 | **Delivery** | dotdotdash (ddd) |
 | **Owner / author** | Art Longbottom (tech lead) |
 | **Reviewers** | James Calhoun (tech lead), James Steele (AWS/DevOps), Adam Paikowsky (analytics), Danish Aziz (PM), China dev team (Eva Fan, Alessandro Grena, Maggie Ding) |
-| **Status** | **DRAFT v0.3.26.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
-| **Last updated** | 2026-11-04 |
+| **Status** | **DRAFT v0.3.31.** For internal ddd review. A work-in-progress copy goes to the China team on **Thu Oct 8** for input. A client-shareable cut follows at Design sign-off ([§0](#0-document-purpose-and-lifecycle)) |
+| **Last updated** | 2026-11-06 |
 | **Go-live** | **Friday, January 8, 2027** (go/no-go Thursday, January 7). There's **no contingency** after final QA |
 
 > **How to read this document.** Every significant statement has a label:
@@ -79,9 +79,10 @@ We're building **longlivefood.org**, a fast, accessible, SEO-friendly content si
   - **Phase B (in parallel, with James Steele):** we build the target architecture in **Ad Council's AWS** and move staging, then production, onto it. UAT and launch both run on AWS ([§12](#12-delivery-plan)).
   - Render is a ddd dev tool, **not the production host**. It gets switched off after handoff.
 - **Postgres everywhere** [TL DECISION]: Docker Postgres locally, Render Postgres in Phase A, and **RDS Postgres** in Phase B.
+- **Containers on Fargate, no Lambda** [TL DECISION, D36]: in Phase B there are two Docker images on **ECS Fargate**: the Next.js server (pages **and** the tool API) and Strapi. No Lambda, API Gateway, or Elastic Beanstalk. AWS deploys run on **CodePipeline**.
 - **Frontend** [TL DECISION]: **Next.js** (App Router, TypeScript) with **Tailwind CSS and shadcn/ui** (built on Radix primitives).
   - Every component has to meet **WCAG 2.1 AA**.
-  - Static export or server rendering is still **OPEN-4**. We recommend static-first, and spike P3 confirmed static routing and `?i=` work. The data layer is kept separate so switching later is cheap.
+  - **Server-rendered** (D36): the Next.js server (`output: 'standalone'`) runs as a container, pages render on request and are cached for about a minute (ISR). No static export, no OpenNext.
 - **CMS:** the existing **Strapi 5** project, hardened for production with Postgres, S3 media, and the Cloud plugin removed.
   - The **admin runs on its own domain, open only to allow-listed IPs** [TL DECISION]. Staging and production always enforce this. On **dev** during the build, the allow-list is lifted, except for the first-admin sign-up (D31).
   - The public site runs on a public endpoint. Visitors never reach Strapi.
@@ -91,7 +92,7 @@ We're building **longlivefood.org**, a fast, accessible, SEO-friendly content si
   - Images: the model extracts ingredient terms from **receipts, lists, and dish photos**. Code matches them against the catalog.
   - The provider sits behind a swappable adapter.
   - **Development uses ddd's Anthropic (Claude) keys** [TL DECISION]. We switch to a key that Ad Council provides once one exists (OPEN-1).
-  - Runtime: a small Node service on Render in Phase A, then **API Gateway + Lambda** behind CloudFront and WAF in Phase B. Both run **one handler** behind thin adapters.
+  - Runtime: **Next.js route handlers** in the site's own server (D36). The handler (`Request` → `Response`) is a library the routes call, on Render in Phase A and **ECS Fargate** in Phase B. No separate API service.
 - **Branches map to environments** [TL DECISION]:
 
   | Branch | Deploys to |
@@ -175,7 +176,7 @@ See [§12.3](#123-decision-deadlines).
 | Performance | LCP < 2.5 s, INP < 200 ms, CLS < 0.1 at p75 on mobile. The JS bundle for content pages should be ≤ 150 KB gzipped (target) |
 | Availability | Content pages: ≥ 99.9% (static files on CloudFront). Tool API: ≥ 99.5%. These apply in production (AWS). Render environments have no SLA |
 | Security | OWASP ASVS L1 baseline. SSRF-safe URL fetching. WAF in production. The CMS admin is IP-restricted. Secrets live only in the platform's secret store |
-| Privacy | No personal data in logs or analytics. **User text and images are never stored** (OPEN-5). AI data is processed and stored **only in the US**, with usage and spend controls (weekly status). **What "US-only" covers** [PROPOSED]: the AI provider's processing and retention, plus everything we store (DynamoDB, logs, S3, RDS, all in `us-east-1`). CloudFront and WAF are **global edge** services, so a visitor's request is received (TLS-terminated and inspected) at the nearest edge location, which may be outside the US, but nothing is stored there except standard logs, which are delivered to `us-east-1`. Legal confirms this reading (OPEN-31) |
+| Privacy | No personal data in logs or analytics. **User text and images are never stored** (OPEN-5). AI data is processed and stored **only in the US**, with usage and spend controls (weekly status). **What "US-only" covers** [PROPOSED]: the AI provider's processing and retention, plus everything we store (logs, S3, RDS, all in `us-east-1`). CloudFront and WAF are **global edge** services, so a visitor's request is received (TLS-terminated and inspected) at the nearest edge location, which may be outside the US, but nothing is stored there except standard logs, which are delivered to `us-east-1`. Legal confirms this reading (OPEN-31) |
 | Cost | **Pro-bono / at cost.** Choose the cheapest option that meets these requirements. Estimates are in [§9.5](#95-cost-estimate). AI spend is limited by an in-app daily quota and kill switch, with provider budget alerts as a backstop (§7.6) |
 | Maintainability | IaC for everything on AWS. Runbooks. Can be handed to the new DevOps partner. The repo lives in Ad Council's GitHub org |
 | Browser support | The last 2 versions of evergreen browsers, plus iOS Safari 16+ |
@@ -196,9 +197,9 @@ See [§12.3](#123-decision-deadlines).
   - The **Toolkit** page is desktop-only for now. ddd is adapting it for mobile, and it still needs coalition approval.
   - Copy and images can still change.
 - **New SaaS or vendors need Ad Council IT approval.**
-  - Approved so far: GitHub, AWS, Strapi, and **Anthropic**, the **only authorized AI vendor** [CONFIRMED (Art, Oct 19)].
+  - Approved so far: GitHub, AWS, Strapi, and two AI vendors: **Anthropic** [CONFIRMED (Art, Oct 19)] and **Google (Gemini)** [CONFIRMED (Art, Nov 6), D37]. Production Gemini runs on **Vertex AI in Ad Council's own Google Cloud project** (BD3244-86).
   - **OpenAI is not authorized.** Earlier drafts listed it as approved; that was wrong. TBWA's capped OpenAI test key is used for the eval only.
-  - Dev/eval only, pending acceptance: **Gemini** (Google) on ddd's own key, for the model arena with test data only (§7.7, D25). Production use would still need IT approval.
+  - ddd's own Gemini key stays **dev/eval only**, with test data (§7.7, D25). Production never uses it.
   - That's why production uses AWS-native services, for example WAF Bot Control instead of reCAPTCHA or Turnstile.
 - **There's no production AI account yet.**
   - No client-owned Anthropic account or production key exists yet (OPEN-1).
@@ -233,6 +234,10 @@ See [§12.3](#123-decision-deadlines).
 
 ### 4.1 Software architecture
 
+![Phase B architecture on Ad Council AWS](./architecture/phase-b.svg)
+
+*Phase B at a glance (D36, D37). Source: the "LLF · Phase B · AWS + Google Cloud · D36/D37" frame in the [Figma architecture file](https://www.figma.com/design/fbvFTow5YUbtCoXNfrQC4n/?node-id=54-710), exported to [`docs/architecture/phase-b.svg`](./architecture/phase-b.svg). Edit it in Figma and re-export; AWS-style icons are stand-ins.*
+
 **Phase A: local + Render (ddd account), from now until AWS staging is ready** [TL DECISION]
 
 ```mermaid
@@ -240,70 +245,73 @@ flowchart LR
   devs([Developers<br/>incl. China team]) -->|PRs| gh[GitHub repo<br/>dev / staging / prod]
   gh -->|CI green → Deploy dev workflow<br/>Render API, exact commit| render
   subgraph render[Render, ddd account]
-    web[web: static export served by<br/>a small Node server with basic auth]
-    api[find-my-tips: Node adapter<br/>private service]
+    web[web: Next.js server, SSR + ISR<br/>basic auth · /api/* → tool]
+    api[find-my-tips: private service<br/>until the route handlers land, BD3244-87]
+    relay[gemini-relay: dev only, D38<br/>public, token required, daily cap]
     cms[Strapi 5: Docker image<br/>admin allow-listed in app]
     pg[(Render Postgres)]
     disk[(Persistent disk:<br/>media uploads)]
   end
   testers([ddd, TBWA, Ad Council testers]) --> web
+  china([China team laptops<br/>dev only, test inputs only]) -->|A: pnpm dev:fe:remote<br/>/api/* with basic auth| web
+  china -->|B: local tool, GEMINI_BASE_URL<br/>personal relay token| relay
+  relay -->|ddd Gemini dev key<br/>generateContent, allow-listed model| claude
+  web -->|content, read-only token| cms
   web -->|/api/*| api
-  api -->|catalog for current release| web
   api -->|extraction| claude[[AI provider via adapter<br/>ddd dev keys: Gemini, Anthropic]]
   api -->|fetch recipe page| www((Public web))
   editors([Editors on allow-listed IPs]) --> cms
   cms --> pg
   cms --> disk
-  cms -->|publish webhook| hook[Render deploy hook: web]
 ```
 
-**Phase B: Ad Council AWS (target for UAT and launch)** [PROPOSED; to be agreed with James Steele at tech validation]
+**Phase B: Ad Council AWS (target for UAT and launch)** [TL DECISION, D36; details with James Steele]
 
 ```mermaid
 flowchart LR
-  user([Visitor<br/>mobile-first]) -->|HTTPS longlivefood.org| cf[CloudFront + AWS WAF<br/>CF Function: routing + release pointer]
-  cf -->|/releases/build-id/*| s3web[(S3: immutable site releases<br/>pages + catalog.json)]
-  cf -->|/api/*| apigw[API Gateway HTTP API]
-  apigw --> lam[Lambda: find-my-tips]
-  lam -->|catalog for current release| s3web
-  lam -->|term cache, daily quota| ddb[(DynamoDB)]
-  lam -->|fetch recipe page| www((Public web))
-  lam -->|extraction| ai[[AI provider via adapter<br/>client key]]
+  user([Visitor]) -->|HTTPS longlivefood.org| cfs[CloudFront + WAF · site]
+  cfs -->|pages + /api/*| alb[ALB · shared<br/>host rules]
+  alb -->|site host| web[Next.js server<br/>pages + /api/* route handlers<br/>ECS Fargate]
+  web -->|content, read-only token| strapi
+  web -->|safeFetch| www((Recipe sites))
+  web -->|extract| ai[[AI provider]]
 
-  editor([Editors on allow-listed IPs]) -->|HTTPS cms domain| cfc[CloudFront + WAF IP set]
-  gha[GitHub Actions] -->|/api/* with read-only token| cfc
-  cfc --> alb[ALB] --> strapi[Strapi 5: same Docker image<br/>EB Docker or ECS Fargate]
+  editor([Editors on allow-listed IPs]) -->|HTTPS cms domain| cfc[CloudFront + WAF IP set · CMS]
+  cfc --> alb
+  alb -->|cms host + CMS secret| strapi[Strapi 5<br/>ECS Fargate]
   strapi --> rds[(RDS Postgres)]
-  strapi --> s3media[(S3: media)] --> cfm[CloudFront: media domain]
-  strapi -->|webhook: publish, unpublish, delete| relay[Lambda: publish relay]
-  relay -->|repository_dispatch| gha
-  gha -->|upload release, then flip pointer| s3web
+  strapi --> s3m[(S3 media)] --> cfm[CloudFront · media]
+  strapi -->|publish webhook| web
+  web -->|invalidate| cfs
+
+  gh[GitHub] -->|CodeConnections| cp[CodePipeline per env] --> cb[CodeBuild] --> ecr[(ECR)] --> ecs[ECS rolling deploy]
 ```
 
-The same code runs in both phases. Only the adapters and the environment configuration change:
+The same code runs in both phases. Only the hosting and the environment configuration change:
 
 | Concern | Phase A (Render) | Phase B (AWS) |
 |---|---|---|
-| Site files | Static export, served by a small Node server (basic auth, shared routing rules) | Static export in S3 under `/releases/<build-id>/`, behind CloudFront |
-| Tool API | `services/find-my-tips` with its Node HTTP adapter | The same handler with its Lambda adapter |
-| CMS | Strapi Docker image on a Render web service | The same image on EB (Docker platform) or ECS Fargate (D3) |
+| Site | Next.js server (`next start`, standalone build) on a Render web service, with basic auth in middleware | The same image on **ECS Fargate** behind the shared ALB (site host rule), with CloudFront + WAF in front |
+| Tool API | Next.js route handlers (`app/api/find-tips/*`) in the web service | The same, in the same Fargate service |
+| CMS | Strapi Docker image on a Render web service | The same image on **ECS Fargate** behind the shared ALB (CMS host rule) |
 | Database | Render Postgres (paid instance, because free instances expire after 30 days [VERIFIED]) | RDS Postgres |
 | Media | Render persistent disk (`UPLOAD_PROVIDER=local`) | S3 + CloudFront (`UPLOAD_PROVIDER=aws-s3`) |
-| Publish → rebuild | Strapi webhook → Render deploy hook | Strapi webhook → relay Lambda → GitHub Actions (§5.3) |
+| Publish → live | Pages refresh on their own within about a minute (ISR) | The same, plus a CloudFront invalidation from the publish route (§5.3) |
 | Admin IP restriction | App middleware in Strapi (§5.4) | WAF IP set on the CMS CloudFront distribution |
 | Abuse controls | In-app rate limiting and a daily quota | WAF (rate rules, Bot Control, Challenge) plus the same in-app quota (§7.6) |
 | Secrets | Render environment groups | AWS Secrets Manager |
+| Deploys | `deploy-dev.yml` (GitHub Actions → Render API) | **CodePipeline** per environment (§9.3) |
 
 ### 4.2 Components
 | Component | Tech | Responsibility | Status |
 |---|---|---|---|
-| `apps/web` | Next.js (App Router, latest stable at scaffold time), React 19, TypeScript, **Tailwind CSS + shadcn/ui** (Radix) | Blocks, data-driven routes, site strings (`content/`), search, the tool UI | [TL DECISION] stack; details [PROPOSED] |
+| `apps/web` | Next.js (App Router, latest stable at scaffold time), React 19, TypeScript, **Tailwind CSS + shadcn/ui** (Radix). Standalone server build (D36) | Blocks, data-driven routes, site strings (`content/`), search, the tool UI | [TL DECISION] stack; details [PROPOSED] |
 | `apps/cms` | Strapi 5.45 (JS), Postgres (`pg`), S3 upload provider, Dockerfile | Content, media, editor workflow | [VERIFIED] base; changes [PROPOSED] |
-| `services/find-my-tips` | TypeScript. One handler (Web `Request` → `Response`) with **Node** and **Lambda** adapters | Extraction, matching, quotas, the publish relay | [PROPOSED] |
+| `services/find-my-tips` | TypeScript library. One handler (Web `Request` → `Response`), called by the Next.js route handlers (D36) | Extraction, matching, quotas, and the publish hook | [PROPOSED] |
 | `packages/contracts` | Zod + TypeScript types | API request/response schemas, catalog snapshot schema, `ExtractionResult` | [PROPOSED] |
 | `packages/matching` | TypeScript | Normalization and matching with no AI, used by site search **and** the service | [PROPOSED] |
 | `packages/ui` *(optional)* | shadcn/ui components + Tailwind preset | Design-system primitives generated from the Figma tokens | [PROPOSED] |
-| `infra` | AWS CDK v2 (TypeScript) + `render.yaml` (Render Blueprint) | AWS stacks for each environment. Render services for Phase A | [PROPOSED] |
+| `infra` | AWS CDK v2 (TypeScript) + `render.yaml` (Render Blueprint) | AWS stacks and the CodePipeline for each environment. Render services for Phase A | [PROPOSED] |
 | `scripts/seed` | TypeScript CLI | Validated JSON → idempotent import into Strapi through the REST API (§5.5). The synthetic fixture seed is built; the one-off scrape or extract of the project seed is not | [VERIFIED] synthetic seed (BD3244-24); [PROPOSED] scrape |
 | `eval` | TypeScript CLI (`services/find-my-tips/src/eval/`), data in root `eval/` | Accuracy evaluation against a labeled set, run only on purpose | [VERIFIED] harness (BD3244-33); labeled set pending |
 
@@ -313,63 +321,61 @@ The same code runs in both phases. Only the adapters and the environment configu
 
 | Env | Branch | Phase A host | Phase B host | CMS / DB | AI key | Who uses it |
 |---|---|---|---|---|---|---|
-| **local** | any | Laptop (Docker Compose: Postgres) | n/a | Local Strapi + seed data | **Mock** by default. ddd's dev key (Gemini or Anthropic) optional (D33) | Every developer, **including the China team** |
+| **local** | any | Laptop (Docker Compose: Postgres) | n/a | Local Strapi + seed data | **Mock** by default. ddd's dev key (Gemini or Anthropic) optional (D33). From mainland China: the Render dev tool or the Gemini relay, never a Google key (D38, §11.4) | Every developer, **including the China team** |
 | **dev** | `dev` (trunk, default) | Render | Render until launch. After handoff: recreated on AWS or retired (OPEN-24) | cms-dev / own DB | ddd Anthropic key, low cap | Developers, internal QA |
 | **staging** (PM sheet: **UAT**) | `staging` | Render, until AWS staging is ready | **AWS** | cms-staging / own DB | Client key once one exists. Until then, ddd's dev key with test inputs only | Internal QA, TBWA UAT, Ad Council UAT, coalition review, **pre-launch content entry** |
 | **prod** (PM sheet: **Live**) | `prod` | **None. Production never runs on Render** | **AWS** | cms-prod / own DB | Client production key (OPEN-1) | The public |
 
-**Network design** (Phase B; Phase A equivalents are in the §4.1 table) [PROPOSED]
+**Network design** (Phase B; Phase A equivalents are in the §4.1 table) [TL DECISION, D36; details with James Steele]
 
 ```mermaid
 flowchart TB
   subgraph internet[Public internet]
     v([Visitors])
     ed([Editors: allow-listed IPs])
-    gha([GitHub Actions runners])
     other([Anyone else])
   end
   subgraph edge[AWS edge: CloudFront + WAF]
-    site[longlivefood.org<br/>WAF: AWS managed rules, Bot Control, rate rules<br/>public]
-    cmsd[cms domain, e.g. cms.longlivefood.org<br/>WAF: IP set on all paths<br/>except /api/* with a bearer token]
+    site[longlivefood.org<br/>WAF: managed rules, Bot Control, rate rules]
+    cmsd[cms domain, e.g. cms.longlivefood.org<br/>WAF: IP set on every path]
     media[media domain<br/>public, read-only]
   end
-  subgraph acct[Ad Council AWS account]
-    s3w[(S3 site releases<br/>OAC only)]
-    api[API Gateway + Lambda<br/>no VPC]
+  subgraph acct[Ad Council AWS account · us-east-1]
     s3m[(S3 media<br/>OAC only)]
-    subgraph vpc[VPC]
+    subgraph vpc[VPC · 2 AZs · no NAT gateway]
       subgraph pub[Public subnets]
-        alb[ALB<br/>SG: CloudFront origin-facing prefix list only]
-        app[Strapi task or instance<br/>public IP for egress, no NAT<br/>SG: inbound from ALB only]
+        alb[ALB · shared, host rules<br/>CloudFront prefix list only]
+        web[Next.js tasks<br/>pages + /api/*<br/>sg-web]
+        strapi[Strapi task<br/>sg-strapi]
       end
       subgraph priv[Private subnets]
-        rds[(RDS Postgres<br/>SG: from Strapi only)]
+        rds[(RDS Postgres<br/>sg-rds: from sg-strapi only)]
       end
     end
   end
-  v --> site
-  ed --> cmsd
-  gha -->|read-only token| cmsd
-  other -.->|403 on admin paths| cmsd
-  site --> s3w
-  site --> api
-  cmsd --> alb --> app --> rds
-  app --> s3m
+  v --> site --> alb
+  alb -->|site host| web
+  ed --> cmsd --> alb
+  alb -->|cms host| strapi --> rds
+  other -.->|403| cmsd
+  web -->|1337, Service Connect| strapi
+  strapi -->|3000, publish webhook| web
+  strapi --> s3m
   media --> s3m
 ```
 
 | Zone | Exposure | Controls |
 |---|---|---|
-| Public site (`longlivefood.org`, `www`, the `finishthefridge` redirect domains) | Public | CloudFront + WAF (managed rules, Bot Control, rate rules). S3 reachable only through OAC. Security headers set by a response-headers policy |
-| Tool API (`/api/*` on the site domain) | Public, same origin | WAF rate rules and Challenge, API Gateway throttling, in-app daily quota and kill switch (§7.6) |
-| **CMS domain** (admin, auth, and admin APIs) | **IP allow-list only** [TL DECISION] | WAF IP set: Ad Council editors, ddd US, China team (OPEN-17). Everything is blocked except `/api/*` with a bearer token, which the build runners use. Strapi auth is still required on top of that |
-| Strapi compute | Reachable only through the ALB | Security groups. The ALB only accepts CloudFront's origin-facing prefix list plus a secret origin header. **No NAT gateway** (cost, see the note below). The compute runs in **public subnets with a public IP**, used **only for outbound** traffic (S3 media, Secrets Manager, ECR, logs, the publish relay). Its security group allows **inbound only from the ALB's security group**, so the public IP accepts nothing directly |
-| Database | Private subnets only | Reachable only from Strapi's security group. Admin access through SSM port forwarding, never a public endpoint |
+| Public site (`longlivefood.org`, `www`, the `finishthefridge` redirect domains) | Public | CloudFront + WAF (managed rules, Bot Control, rate rules). Security headers set by a response-headers policy. HTML is cached briefly at the edge, `/_next/static/*` for a year (hashed) |
+| Tool API (`/api/*` on the site domain) | Public, same origin | WAF rate rules and Challenge, in-app rate limit, daily quota, and kill switch (§7.6). Not cached |
+| **CMS domain** (admin, auth, and APIs) | **IP allow-list only** [TL DECISION] | WAF IP set on **every path**: Ad Council editors, ddd US, China team (OPEN-17). The site reads content **inside the VPC** (Service Connect), so nothing outside needs `/api/*` on this domain. Strapi auth is still required on top of that |
+| Fargate tasks (web, Strapi) | Reachable only through their ALB, or from each other on named ports | **One ALB per environment** with host-based listener rules (James S, Nov 10). It accepts only CloudFront's origin-facing prefix list, and **each CloudFront distribution sends its own secret origin header**: the site rule needs the site host and the site secret, the CMS rule needs the CMS host and the CMS secret, and anything else gets a fixed 403. That way a request through the site distribution with a forged `Host: cms…` can't reach Strapi and skip the CMS WAF IP set. `sg-web` accepts 3000 from the ALB and `sg-strapi` (publish webhook); `sg-strapi` accepts 1337 from the ALB and `sg-web`. **No NAT gateway**: tasks run in **public subnets with a public IP used only for outbound** traffic (AI provider, recipe sites, ECR, logs, Secrets Manager) |
+| Database | Private subnets only | `sg-rds` accepts 5432 only from `sg-strapi`. Admin access through **ECS Exec** / SSM Session Manager, never a public endpoint |
 | Media | Public read-only CDN | S3 private behind OAC. Uploads go only through Strapi |
 
-> **Why no NAT gateway, and the alternative** [PROPOSED; confirm with James S]: a NAT gateway costs about $32/month per AZ plus data charges, which is a lot for a pro-bono, single-instance CMS. A public IP with an inbound-only-from-ALB security group gives the same exposure. If Ad Council IT requires the compute to sit in **private subnets with no internet route**, we'd use **VPC endpoints** instead: interface endpoints for ECR (`api`, `dkr`), CloudWatch Logs, Secrets Manager, SSM (`ssm`, `ssmmessages`, `ec2messages`), STS, and Lambda (to reach the relay), plus a free **gateway** endpoint for S3. Interface endpoints cost about **$7–8 per endpoint per AZ per month**, so roughly $60–70/month in one AZ, more than a NAT gateway. With public egress, Strapi's built-in webhook POSTs to the relay's Function URL (§5.3). In the endpoint-only option there's no route to that URL, so a small Strapi plugin calls the relay with the Lambda `Invoke` API through the Lambda endpoint instead.
+> **Why no NAT gateway, and the alternative** [PROPOSED; confirm with James S]: a NAT gateway costs about $32/month per AZ plus data charges, which is a lot for a pro-bono site. A public IP with an inbound-only-from-ALB security group gives the same exposure. If Ad Council IT requires **private subnets with no internet route**, the CMS and web tasks can use **VPC endpoints** (ECR `api` and `dkr`, CloudWatch Logs, Secrets Manager, SSM, STS, and a free S3 gateway endpoint), about **$60–70/month per environment** in one AZ. The web service still needs the internet for the tool (recipe sites and the AI provider), so it would need a NAT gateway or stay in a public subnet.
 >
-> **Why `/api/*` on the CMS domain isn't IP-restricted:** GitHub-hosted runners don't have fixed IPs, so they can't be allow-listed. The Public role has **no permissions**, so `/api/*` returns nothing without the read-only token. If Ad Council IT wants the whole CMS domain IP-only, we'd run the build inside AWS instead (CodeBuild), which costs a little more. That's tracked in [`PROOF_DOC.md`](./PROOF_DOC.md).
+> **The SSRF boundary** (§7.6): the tool fetches arbitrary recipe URLs from the same tasks that read Strapi. `safeFetch` resolves DNS first and blocks private and link-local ranges (including the ECS task metadata endpoint and the Service Connect addresses), so a recipe URL can't reach Strapi or RDS, and RDS isn't reachable from `sg-web` at all. **If IT wants a hard network boundary**, the same image runs as a second ECS service that serves only `/api/*` (an ALB path rule) with no route to Strapi. No code change, about $20–40/month more.
 
 ### 4.4 Repository layout [VERIFIED for apps/, services/, packages/, scripts/, and root tooling; and eval/ (harness, BD3244-33); PROPOSED for the rest of infra/ and the project-seed scrape]
 
@@ -378,22 +384,22 @@ A single **pnpm workspace** monorepo, so the contracts and matching code are sha
 ```
 /
 ├─ apps/
-│  ├─ web/                 # Next.js + Tailwind + shadcn/ui (static export)
+│  ├─ web/                 # Next.js + Tailwind + shadcn/ui (standalone server, SSR + ISR, D36)
 │  │  ├─ content/          # typed site strings (Zod-validated), changed by PR (D21)
 │  │  ├─ blocks/           # dynamic-zone blocks + registry (every Page, D32)
 │  │  ├─ fixtures/cms/     # recorded CMS JSON for builds without Strapi (CMS_FIXTURES=1)
 │  │  └─ e2e/              # Playwright + axe specs (API mocked with page.route)
 │  └─ cms/                 # Strapi project, imported from AdCouncil/ending-wasted-food-strapi (+ Dockerfile)
 ├─ services/
-│  └─ find-my-tips/        # handler + adapters (node, lambda), publish relay; src/extract (providers, prompts), src/eval (runner)
+│  └─ find-my-tips/        # handler library called by apps/web route handlers; src/extract (providers, prompts), src/eval (runner)
 ├─ packages/
 │  ├─ contracts/           # Zod schemas and TS types (API, catalog snapshot, extraction)
 │  ├─ matching/            # normalize() + match(); shared by search and the API
 │  ├─ ui/                  # shadcn components; Figma tokens in styles/tokens.css
 │  └─ config/              # shared tsconfig, eslint, prettier
 ├─ infra/
-│  ├─ aws/                 # AWS CDK app (stacks per env)
-│  └─ cloudfront-functions/ # site viewer-request function (§6.2) + unit tests
+│  ├─ aws/                 # AWS CDK app (stacks + CodePipeline per env)
+│  └─ cloudfront-functions/ # host redirects + trailing slash (§6.2) + unit tests
 ├─ render.yaml             # Render Blueprint for Phase A (dev now; staging later). At the root, where Render looks for it
 ├─ scripts/
 │  ├─ ensure-cms-env.mjs   # creates apps/cms/.env with random local secrets if missing (unset keys commented out)
@@ -544,14 +550,8 @@ Before the first real content is entered (target: end of Oct), we can make these
 
 **Editor experience** [PROPOSED]
 - **Typeahead and relation pickers:** Strapi 5's built-in relation picker already supports search. Building a custom admin typeahead is **deferred** until editors tell us the built-in one isn't enough.
-- **Preview:** Strapi 5 **Preview** is available on the free Community plan [VERIFIED]. It shows a "Preview" button on each entry that opens a frontend URL we configure. Where that URL points depends on OPEN-4 (§6.2):
-  - **If we go static:** a separate **preview environment** for each CMS (`preview-staging`, and `preview-prod` from Jan 4), behind basic auth:
-    - It runs the same build as the site, but fetches with `status=draft` using a separate read-only **preview token**. It's never indexed (`noindex` + `X-Robots-Tag`), and it never touches the live release pointer.
-    - It's triggered by `entry.create` / `entry.update` (plus the publish events) through the same webhook path as §5.3, into its own Actions concurrency group (`build-preview-<env>`), so a burst of saves coalesces into at most two builds.
-    - The Preview button opens the entry's URL on the preview host. A small banner shows the preview **build time**, so editors can tell whether their last save is in yet. Expect a few minutes' delay.
-    - Phase A: one more Render web service per environment, running the same `server.mjs`. Phase B: its own S3 prefix and CloudFront distribution (§9.2).
-    - If OPEN-16 or the budget rules this out, Preview is **deferred** and editors review on staging after publishing there.
-  - **If we go SSR:** Next.js **Draft Mode**. Editors see changes instantly.
+- **Preview:** Strapi 5 **Preview** is available on the free Community plan [VERIFIED]. It shows a "Preview" button on each entry that opens a frontend URL we configure. Where that URL points (§6.2):
+  - **Server-rendered (D36):** the Preview button opens the entry's URL on the same site with Next.js **draft mode** turned on through `/api/preview?secret=…&path=…`. Draft-mode pages fetch with `status=draft` using a separate read-only **preview token**, skip the ISR cache, and send `noindex`. No separate preview environment or build. On staging and dev the site is behind basic auth anyway; on prod, draft mode needs the preview secret.
 - **Roles:** Super Admin (ddd), **Editor** (Ad Council content: create and publish), and **Author** (create only, if the coalition needs it). Approvals happen through Draft & Publish plus these roles, because Review Workflows needs the Enterprise plan (§5.6).
 - **Copy changes outside the CMS** [PROPOSED, D21; agent flow pending P13]: site strings and layouts live in code, so a change goes through GitHub. Whether the agent and its Jira integration are allowed in Ad Council's GitHub and Jira, and who files these after handoff, is OPEN-32. Without the agent, a developer makes the same small PR.
   1. The requester files a **"Copy change" issue** (a GitHub issue form, `.github/ISSUE_TEMPLATE/copy-change.yml`, built in BD3244-26) or a Jira ticket, with the page, the current text, and the new text.
@@ -559,26 +559,20 @@ Before the first real content is entered (target: end of Oct), we can make these
   3. CI runs (types, Zod, tests), and Render posts a **PR preview** link on the PR (§9.1).
   4. The reviewer checks the preview, approves, and merges to `dev`. It's promoted to `staging` and `prod` like any other change (§9.3).
 
-### 5.3 Publishing flow [PROPOSED]
+### 5.3 Publishing flow [TL DECISION, D36]
 
-**Phase A (Render):** a Strapi webhook in each environment calls the **Render deploy hook** for that environment's `web` service. Render rebuilds and swaps the deploy, and a failed build leaves the previous one live. Dev and staging don't publish much, so we accept the occasional extra build. **The deploy-hook URL is a secret:** anyone holding it can trigger builds. It lives only in the Strapi webhook config and the Render environment group, and it's regenerated if it leaks (§9.3).
+There is **no rebuild on publish**. The site is server-rendered, so a page reads current content the next time it renders.
 
-**Phase B (AWS), with atomic releases:**
-1. An editor publishes, unpublishes, or deletes an entry in **cms-prod**. Strapi sends a webhook for **`entry.publish`, `entry.unpublish`, `entry.delete`**, and `media.update` / `media.delete` (the exact event list is checked in the spike). Drafts being saved don't trigger a production build.
-2. The **publish-relay Lambda** (its own **Lambda Function URL**, not behind the tool's API Gateway, which only accepts CloudFront traffic, §7.6) checks the shared-secret header, filters on model and event, and sends a GitHub `repository_dispatch` (`content-published`). The relay stores nothing. **A Lambda can't debounce** without extra state, so we don't ask it to.
-   - **GitHub auth:** the relay authenticates as a dedicated **GitHub App** installed on **this repo only**, with the minimum permission (**Contents: write**, which `repository_dispatch` requires) and nothing else. The App's private key is in Secrets Manager. On each call the relay mints a **short-lived installation token** (valid for 1 hour) and never stores it. **No personal access tokens.**
-   - `repository_dispatch` always runs the workflow file from the **default branch** (`dev`) [VERIFIED (GitHub docs)]. The workflow then checks out the branch for the target environment, which is passed in `client_payload.env` and checked against an allow-list.
-   - The GitHub App and its key are created on Ad Council's GitHub org after the repo move (OPEN-11).
-3. **Coalescing is handled by GitHub Actions concurrency** (`group: build-prod`, `cancel-in-progress: false`). At most one build runs and one waits. A newer pending run replaces an older one, and every build reads the **latest** content, so a burst of 20 publishes produces at most 2 builds. Nothing gets lost.
-4. The build:
-   - fetches all content with a **read-only API token**, paginated (`maxLimit 100`)
-   - validates it with Zod (the build **fails on invalid content**)
-   - renders the site and writes `catalog.json` (with `catalogVersion = <build-id>`)
-   - uploads everything to an **immutable prefix**, `s3://site/releases/<build-id>/`
-5. **Atomic switch:** the build updates the **current-release pointer** in a CloudFront KeyValueStore. The viewer-request CloudFront Function (§6.2) rewrites **every** site request (pages, `/data/*`, `/_next/static/*`) to `/releases/<current>/…`, and the tool API reads the catalog from the **same** release. So pages and the catalog always change together. Rolling back means pointing at the previous `<build-id>`. Old releases expire after 30 days (keeping the last 10). The branded 404 page is also copied to a fixed, unversioned key (`/404.html`) on each deploy, because CloudFront's custom error page path can't follow the pointer.
-6. Changes go live in about **3–6 minutes** (target). **A bad publish never reaches production**, because the previous release stays live.
+1. An editor publishes, unpublishes, or deletes an entry (or changes media) in the environment's CMS. Saving a draft changes nothing on the site.
+2. **ISR does the rest on its own.** Pages and the data routes (`/data/catalog.json`, `/data/ingredients/<slug>.json`, `/data/search-index.json`) are cached by Next.js with **`revalidate: 60`**. Within about a minute each web task re-renders from Strapi in the background and swaps in the new version. A visitor never waits on Strapi.
+3. **Phase B also clears the edge.** Strapi's webhook (`entry.publish`, `entry.unpublish`, `entry.delete`, `media.update`, `media.delete`) calls the web service's route **`POST /api/hooks/publish`** inside the VPC (Service Connect) with a shared-secret header. The route checks the secret, filters on model and event, revalidates the catalog on that task, and asks CloudFront for one invalidation of `/*` (debounced to at most one per minute). It stores nothing.
+4. Changes are live in about **1–2 minutes**.
 
-The tool API includes `catalogVersion` in every response. If it doesn't match the build ID of the page the user is on, the page reloads its tip data, so a stale tab still renders correctly. **Nothing is cached forever.** HTML and JSON are revalidated on each request, and only hashed assets are immutable.
+**If content is bad.** Every CMS response is still **validated with Zod** (`packages/contracts`). If a page's content fails validation, Next.js **keeps serving the last good version** of that page (ISR doesn't replace a page when the render throws), the failing block is hidden by its error boundary where possible, and a CloudWatch alarm fires on validation errors. Staging is where editors preview before publishing to production.
+
+**Catalog consistency.** The tool API reads the catalog from the web service and returns `catalogVersion` (the catalog's content hash) with every response. If it doesn't match the version the page loaded, the page reloads its tip data, so a stale tab still renders correctly.
+
+**Phase A (Render):** the same ISR behavior. No deploy hook and no rebuild; the Render web service re-renders pages within about a minute.
 
 ### 5.4 Hosting and operations
 
@@ -595,23 +589,19 @@ The tool API includes `catalogVersion` in every response. If it doesn't match th
   - Render Postgres has **IP rules on every plan**, so we turn off external database access.
 - Backups: Render's managed Postgres backups, plus a nightly `strapi export` to the ddd backup location while real content lives on Render.
 
-**Phase B: Ad Council AWS** [PROPOSED; options to agree with James Steele]
-- **Compute (D3):** the same Strapi Docker image on either:
-  - **(a) Elastic Beanstalk, Docker platform**, load-balanced with one instance. This is TBWA's plan. **Note:** EB's *single-instance* mode has **no ALB**, so it can't use ACM certificates or the security-group pattern in §4.3.
-  - **(b) ECS Fargate** behind an ALB.
-
-  Both cost about the same at this size. (b) is closer to the Render setup, and (a) is what Ad Council expected.
-- **RDS Postgres 16** (`db.t4g.micro` for dev and staging, `db.t4g.small` for prod), with automated backups, **point-in-time recovery**, and deletion protection. Multi-AZ for prod is optional and depends on budget.
+**Phase B: Ad Council AWS** [TL DECISION, D36; sizes with James Steele]
+- **Compute:** the same Strapi Docker image on **ECS Fargate** behind the shared ALB on its own host rule (one task; Strapi's admin isn't built for several writers on local state). No Elastic Beanstalk.
+- **RDS Postgres 18:** `db.t4g.micro` for staging; for prod, a **non-bursting** class (James S, Nov 10: burstable `t4g` is for dev, staging and preview, not production). We use the smallest Graviton general-purpose class, **`db.m8g.large`** (or `m7g` if `m8g` isn't available), rather than the `r8g.large` in the Nov 6 diagram, since reads are cached. Automated backups, **point-in-time recovery**, and deletion protection (§9.5).
 - **S3 media bucket** (private) behind a CloudFront media domain. Uploads go only through Strapi.
-- Secrets (`APP_KEYS`, `API_TOKEN_SALT`, `ADMIN_JWT_SECRET`, `JWT_SECRET`, `TRANSFER_TOKEN_SALT`, `DATABASE_*`) go in **Secrets Manager** and are injected by the CDK.
-- **CMS domain** (e.g. `cms.longlivefood.org`, or a separate Ad Council domain; OPEN-20): CloudFront plus a WAF **IP set** (§4.3) [TL DECISION].
+- Secrets (`APP_KEYS`, `API_TOKEN_SALT`, `ADMIN_JWT_SECRET`, `JWT_SECRET`, `TRANSFER_TOKEN_SALT`, `DATABASE_*`) go in **Secrets Manager** and are injected into the task definition by the CDK.
+- **CMS domain** (e.g. `cms.longlivefood.org`, or a separate Ad Council domain; OPEN-20): CloudFront plus a WAF **IP set** on every path (§4.3) [TL DECISION].
 - **Lockdown, in both phases:**
   - The Public role gets **no permissions**.
-  - The site build uses a **read-only API token**.
+  - The web service reads content with a **read-only API token**, inside the VPC.
   - Visitors never call Strapi.
   - `NODE_ENV=production` turns off the Content-Type Builder in staging and prod. Schema changes ship as code.
 - **Backups:** RDS snapshots plus a nightly encrypted `strapi export` to S3, so content can be restored without the database.
-- **China team access:** they get Strapi admin accounts on cms-dev: **Super Admin** for the team leads (so they can add users) and **Editor** for everyone else. On dev they don't need allow-listed IPs while the admin is open (D31); for staging their IPs go on the allow-list (OPEN-17). Schema changes and migrations ship as code through a deploy, never by editing a deployed admin. Local development uses seed data, from the day they get repo access after the GitHub move (§11.4).
+- **China team access:** they get Strapi admin accounts on cms-dev: **Super Admin** for the team leads (so they can add users) and **Editor** for everyone else. On dev they don't need allow-listed IPs while the admin is open (D31); for staging their IPs go on the allow-list (OPEN-17). Schema changes and migrations ship as code through a deploy, never by editing a deployed admin.
 
 ### 5.5 Content seeding and migration
 
@@ -681,32 +671,29 @@ Every Page entry in Strapi, including Home, Find My Tips, and Library, is render
 - After the first publish, a slug is **locked**. A lifecycle hook stops edits unless a Super Admin sets `allowSlugChange`, and then a redirect is added.
 - Code refers to entries by Strapi `documentId` or slug, never by numeric `id`, which differs between environments.
 
-### 6.2 Rendering, routing, and data fetching [PROPOSED; mode is OPEN-4; routing VERIFIED by spike P3]
+### 6.2 Rendering, routing, and data fetching [TL DECISION, D36; replaces the static export (D2)]
 
-**Recommendation: static first** (`output: 'export'`). The site is content that changes when someone publishes, plus one dynamic tool. Static output works the same way on Render (Phase A) and S3/CloudFront (Phase B), costs almost nothing, and has no server to scale or patch. **We switch to SSR/ISR only if** the spike or the designs need something static output can't provide, such as instant SSR preview or a very large number of pages.
+**Server-rendered Next.js in a container.** `next.config` uses **`output: 'standalone'`**, and the image runs `node server.js` on Render (Phase A) and ECS Fargate (Phase B). **No OpenNext**: it exists to run Next.js on Lambda, and on Fargate the standard Node server is all we need.
 
-During the build:
-1. `lib/cms` fetches every Page, Category, Group, Ingredient, Tip, the taxonomies, Global, and Tool Copy, in pages of **100** (`maxLimit`), with explicit `populate` settings for each slot and block (Strapi 5's `on` fragments for dynamic zones).
-2. **Every response is validated with Zod** (`packages/contracts`). Invalid content fails the build with editor-friendly messages (for example, "Tip 'X' has no ingredient").
-3. `generateStaticParams` creates every route.
-4. The build writes the **release**: HTML pages, `/data/ingredients/<slug>.json`, `/data/search-index.json`, and **`/data/catalog.json`** (titles, slugs, synonyms, `catalogVersion`). Pages and the catalog ship **together** (§5.3).
+**Data fetching**
+1. `lib/cms` fetches Pages, Categories, Groups, Ingredients, Tips, the taxonomies, Global, and Tool Copy on the server, in pages of **100** (`maxLimit`), with explicit `populate` settings (Strapi 5's `on` fragments for dynamic zones). Requests carry the **read-only token** and go to Strapi **inside the network** (Render private network, or ECS Service Connect in Phase B).
+2. **Every response is validated with Zod** (`packages/contracts`). On failure the page keeps its last good version and an alarm fires (§5.3).
+3. Pages use **ISR with `revalidate: 60`**. `generateStaticParams` can return the known routes, but the build **doesn't need Strapi**: pages render on the first request and are cached after that. So images build once and deploy to any environment.
+4. **The tool API** lives here too: `app/api/find-tips/extract` and `/status` are route handlers that call the `services/find-my-tips` handler (Node runtime, never cached). The Phase A `llf-tips` service is retired once they land.
+5. **Data routes** are route handlers with the same revalidation: `/data/catalog.json` (titles, slugs, synonyms, `catalogVersion`), `/data/ingredients/<slug>.json`, and `/data/search-index.json`.
 
-**Routing on static hosting** (the rubber-duck review flagged this):
-- `trailingSlash: true`, so `/tips/fruit/` is exported as `/tips/fruit/index.html`. Plain object storage can serve that without rewrite rules for every page.
-- **Phase B:** a **CloudFront Function** (viewer request) on the site's default cache behavior does the following, **in this order**. The source is `infra/cloudfront-functions/src/site-viewer-request.js` (cloudfront-js-2.0), unit-tested against a mock KeyValueStore. Leading `//` or `\` in the path is collapsed to one `/` first, so a redirect `Location` can never point at another host.
-  1. **`/api/*` is left alone.** It's a separate cache behavior with API Gateway as its origin, so the function isn't attached there. As a guard, the function also returns any `/api/*` request unchanged.
-  2. **Host redirect:** `finishthefridge.*` and `www` → `https://longlivefood.org/<same path>` with a 301. The trailing slash is added in the **same** 301 (one hop), and the query string is kept.
-  3. **Trailing slash:** a path with no file extension and no trailing slash gets a 301 to the same path plus `/`, **keeping the query string** (so `?i=` survives).
-  4. **Directory index:** a path ending in `/` gets `index.html` appended.
-  5. **Release prefix:** **every** remaining URI (pages, `/data/*`, `/_next/static/*`, images, `robots.txt`, `sitemap.xml`) is prefixed with `/releases/<current>/`, where `<current>` is read from the KeyValueStore. If the key is missing or isn't a plain release ID (`[A-Za-z0-9._-]+`), the function returns **503** rather than guessing a path.
+**Cache and scaling.** Each web task keeps its own ISR cache. With one-minute revalidation that's fine: tasks converge within a minute, and CloudFront is invalidated on publish (§5.3). We don't add a shared cache (Redis, EFS) unless traffic needs more than a few tasks.
 
-  Unknown keys return the branded 404 with status **404**. The CloudFront custom error response (for 403/404 from the origin) can only point at a fixed path, so each deploy also copies the release's `404.html` to the **stable, unversioned key `/404.html`** (§5.3). The release still has its own copy, so the page is found whichever key CloudFront fetches.
-- **Phase A:** a tiny **Node static server** (`apps/web/server.mjs`, using `serve-handler`) does the same mapping, plus **basic auth** for dev and staging and a correct 404. It issues the trailing-slash 301 itself (`apps/web/lib/slash-redirect.mjs`, same rules as the function) because `serve-handler`'s own redirect **drops the query string** (found in P3). We use this instead of Render's static-site product, which can't add basic auth or IP rules.
-- **The results page** (`/find-my-tips/results/`) is a static shell. The component that reads `?i=` calls `useSearchParams()` and **must be inside `<Suspense>`**. **[VERIFIED, P3]** Without it, `next build` with static export fails with a prerender error, so the build itself enforces the rule. An e2e test checks that `?i=` survives the slash redirect.
+**Routing**
+- `trailingSlash: true`, with Next.js issuing the 301 itself (the query string is kept, so `?i=` survives).
+- A small **CloudFront Function** on the site distribution does only the **host redirects**: `finishthefridge.*` and `www` → `https://longlivefood.org/<same path>` with a 301. Release pointers and rewrites are gone.
+- **404:** Next.js renders the branded `not-found` page with status 404.
+- **The results page** (`/find-my-tips/results/`) reads `?i=` with `useSearchParams()` inside `<Suspense>`, as before. It's `noindex`.
+- **Basic auth** for dev and staging moves into Next.js **middleware** (`BASIC_AUTH`). `apps/web/server.mjs` and the static-hosting helpers are retired.
+
+**Caching headers.** HTML: `s-maxage=60, stale-while-revalidate`. `/_next/static/*`: immutable for a year. `/data/*`: same as HTML. `/api/*`: never cached.
 
 **Images:** `next/image` with `unoptimized`, using **Strapi's responsive formats** (`thumbnail`, `small`, `medium`, `large`) as the `srcset`. The media comes from the Render CMS in Phase A and the media CDN in Phase B. **Fonts:** self-hosted with Fontsource packages.
-
-**If we pick SSR/ISR** (OPEN-4): on Render, a Node web service (`next start`). On AWS, OpenNext on Lambda, or a container on the same ECS/EB setup as Strapi. `lib/cms` is isolated so that switching costs little. The routing section above would then be handled by Next.js itself.
 
 ### 6.3 Styling and the component library [TL DECISION]
 - **Tailwind CSS (v4)** plus **shadcn/ui** (built on Radix primitives). The shadcn components are copied into `packages/ui`, so **we own the code**: no runtime dependency on a hosted component library, and the styling follows the brand.
@@ -865,17 +852,17 @@ The flow is the same in both phases. Only the edge and the storage change:
 | Part | Phase A (Render) | Phase B (AWS) |
 |---|---|---|
 | Edge | Render's proxy plus **basic auth** on the whole dev/staging site | CloudFront + WAF (rate rules, Bot Control, Challenge) |
-| Tool API | `find-my-tips` Node web service (the same handler, through an HTTP adapter) | API Gateway HTTP API + Lambda |
-| Cache and quota counters | **Render Key Value** (IP-restricted, no external access) | **DynamoDB** (on-demand, TTL) |
-| Catalog | `/data/catalog.json` from the current `web` deploy | `/releases/<current>/data/catalog.json` |
+| Tool API | Next.js route handlers in `llf-web` | The same route handlers in the Next.js Fargate service |
+| Cache and quota counters | In the service's memory | **In the service's memory** (no DynamoDB; Nov 6 review). Counters are per web task, so the daily quota is split across the fixed task count (§7.6) |
+| Catalog | `/data/catalog.json` from the web service | The same route, read inside the VPC and cached until the next publish |
 
 ```mermaid
 sequenceDiagram
   autonumber
   participant B as Browser
-  participant E as Edge (WAF / Render proxy)
+  participant E as Edge (CloudFront + WAF / Render proxy)
   participant A as Tool API
-  participant C as Cache + quota (DynamoDB / Key Value)
+  participant C as Cache + quota (in memory)
   participant W as Recipe site
   participant M as Model adapter
   B->>B: validate input, resize image ≤1600px JPEG
@@ -902,7 +889,7 @@ sequenceDiagram
   end
   A->>A: Zod validate → normalize → match(current catalog)
   A-->>B: { matches[slug], unmatchedCount, readable, catalogVersion }
-  B->>E: GET /data/ingredients/{slug}.json (same release)
+  B->>E: GET /data/ingredients/{slug}.json (ISR, same catalogVersion)
   B->>B: render tips sorted by wasted desc, priority desc
 ```
 
@@ -1006,15 +993,15 @@ match(term, catalog):
 | Control | Phase A (Render, dev/staging) | Phase B (AWS) |
 |---|---|---|
 | **Who can reach it** | Only people with the **basic-auth** credentials (the team, TBWA, Ad Council testers) | Public |
-| **Rate limiting** | In-app per-IP token bucket in Key Value | WAF rate-based rules per IP: **image and text 10 per 5 min**, **URL 30 per 5 min** (to tune), plus the same in-app limit. API Gateway throttling as a backstop |
+| **Rate limiting** | In-app per-IP token bucket (in memory) | WAF rate-based rules per IP: **image and text 10 per 5 min**, **URL 30 per 5 min** (to tune), plus the same in-app limit per task |
 | **Bot defense** | Not needed behind basic auth | **WAF Bot Control** (common) plus a **WAF Challenge** on `POST /api/find-tips/*`, and **CAPTCHA** for repeat offenders. The site loads the **WAF JS integration** and calls the API through **`AwsWafIntegration.fetch`**, which gets and refreshes the **`aws-waf-token` cookie**. The client handles **202 (challenge)** and **405 (CAPTCHA)** responses by running the challenge or showing the CAPTCHA, then retrying once. AWS-native, but **WAF Bot Control and CAPTCHA are paid add-ons**, so they're in §9.5 |
-| **Origin protection** | Basic auth | CloudFront adds a secret `x-origin-verify` header. A **Lambda authorizer** on every route checks it **before** any quota, cache, or model work, and returns 403 if it's missing or wrong. During rotation it accepts the **current and previous** secrets, so there's no outage. The default **`execute-api` endpoint is disabled**, so the API is only reachable through its custom domain, and a smoke test checks that a **direct call without the header fails** |
+| **Origin protection** | Basic auth | CloudFront adds a secret `x-origin-verify` header. The **ALB's site listener rule** forwards only requests that carry the site's secret (anything else gets a fixed 403), and the route handler checks it again **before** any quota, cache, or model work. During rotation both accept the **current and previous** secrets, so there's no outage. The ALB security group accepts only CloudFront's origin-facing prefix list, and a smoke test checks that a **direct call without the header fails** |
 | **Kill switch** (backend) | `FIND_TIPS_MODE` env var | SSM parameter `FIND_TIPS_MODE` = `live` / `jsonld-only` / `off`, read by the API **on every request** (cached for 30 s). `off` returns 503. The UI reads `/api/find-tips/status` and shows the Unavailable state |
-| **Daily quota** (backend) | Key Value counter | DynamoDB atomic counter **per input type per UTC day** (for example, 3,000 model calls; we set the real number from the eval's cost per request and the budget). When the quota runs out, the API **switches to `jsonld-only`** for the rest of the day, and an alert fires |
-| **Size and type limits** | Same | Client: reject non-images and files over 25 MB before decoding, then resize to ≤ 1600 px JPEG at q≈0.8. Server: body ≤ **4 MB** (Lambda's sync payload limit is 6 MB, and base64 adds about 33%), decoded image ≤ 3 MB. Check magic bytes. Text ≤ 5,000 chars. URL ≤ 2,048 chars |
-| **SSRF (`safeFetch`)** | Same code | Only `http`/`https` on ports 80 and 443. **Resolve DNS, then block** private, loopback, link-local (169.254.0.0/16, including IMDS), CGNAT, multicast, and IPv6 ULA/link-local. **Connect to the resolved IP** (stops DNS rebinding). **At most 3 redirects, each checked again.** **3 MB** response cap. **5 s** total timeout. `text/html` only. Custom User-Agent. On AWS the Lambda runs **outside a VPC**, so there's nothing internal to reach |
-| **Timeouts** | Same | Model 15 s, handler 25 s. API Gateway's default integration timeout is about 29–30 s, and we design to stay under it rather than asking for more. The client aborts at 35 s, shows progress, and retries **once**, only on 502/504. The local static server's `/api` proxy times out at 40 s so it never cuts off the client first. A blocked recipe page gets its own error code, `source_unavailable` (HTTP 424), and is never auto-retried, since a retry fails the same way (§7.10, BD3244-36, built) |
-| **Spend backstops** | ddd's Anthropic workspace **spend limit** and alerts | The client provider's budget alerts plus **AWS Budgets** alarms. **These alert. They aren't hard caps.** The hard limits are the quota and the kill switch above. Reserved Lambda concurrency (for example, 50) limits throughput, not total spend |
+| **Daily quota** (backend) | In-memory counter | An in-memory counter **per input type per UTC day** in each web task (for example, 3,000 model calls in total, split across the task count). The web service runs a **fixed task count** (no auto-scaling) so the total stays predictable. When a task's share runs out it **switches to `jsonld-only`** for the rest of the day, and an alert fires. A restart resets that task's counter, which the spend alerts backstop |
+| **Size and type limits** | Same | Client: reject non-images and files over 25 MB before decoding, then resize to ≤ 1600 px JPEG at q≈0.8. Server: body ≤ **4 MB** (checked in the route handler; base64 adds about 33%), decoded image ≤ 3 MB. Check magic bytes. Text ≤ 5,000 chars. URL ≤ 2,048 chars |
+| **SSRF (`safeFetch`)** | Same code | Only `http`/`https` on ports 80 and 443. **Resolve DNS, then block** private, loopback, link-local (169.254.0.0/16, including IMDS), CGNAT, multicast, and IPv6 ULA/link-local. **Connect to the resolved IP** (stops DNS rebinding). **At most 3 redirects, each checked again.** **3 MB** response cap. **5 s** total timeout. `text/html` only. Custom User-Agent. The ECS task metadata endpoint (169.254.170.2) is in the blocked range, and so are the Service Connect addresses, so a recipe URL can never reach Strapi; RDS isn't reachable from the web tasks at all (§4.3) |
+| **Timeouts** | Same | Model 15 s, handler 25 s. The ALB idle timeout is set to 60 s, and CloudFront's origin response timeout to 60 s, so neither cuts off a slow extraction. The client aborts at 35 s, shows progress, and retries **once**, only on 502/504. The local static server's `/api` proxy times out at 40 s so it never cuts off the client first. A blocked recipe page gets its own error code, `source_unavailable` (HTTP 424), and is never auto-retried, since a retry fails the same way (§7.10, BD3244-36, built) |
+| **Spend backstops** | ddd's Anthropic workspace **spend limit** and alerts | The client provider's budget alerts plus **AWS Budgets** alarms. **These alert. They aren't hard caps.** The hard limits are the quota and the kill switch above. The fixed web task count limits throughput, not total spend |
 | **Prompt injection** | Same | The input is wrapped as untrusted data. The system prompt says to *extract only*. The output is a forced, schema-locked tool call, and the closed-catalog match is the final filter (§7.1). The eval set includes injection cases (§7.9) |
 | **Logging** | Same | `requestId`, input type, source, match and unmatched counts, latency, provider/model/prompt version, and token usage. **No URLs from users** (only a hash), **no images, no text, and no terms**. **Edge logs too:** user text never goes in a URL (site search uses a `#q=` fragment, §6.1, and tool input goes in POST bodies, which CloudFront doesn't log). **WAF logging redacts** the query string and the `authorization` and `cookie` headers. CloudFront and WAF logs are kept 30 days |
 
@@ -1035,7 +1022,7 @@ export async function extractIngredients(input, ctx): Promise<ExtractionResult> 
 | `anthropic` | **Dev and Phase A**, on **ddd's Anthropic key** [TL DECISION]. **Built** (`extract/anthropic.ts`, BD3244-33): Messages API with a forced `report_ingredients` tool call, output checked with Zod. `bedrock` stays a stub until OPEN-1 | `AI_PROVIDER=anthropic`, `AI_MODEL=…`, `PROMPT_VERSION=p1`, `ANTHROPIC_API_KEY` in a Render env group | **Authorized** by Ad Council IT [CONFIRMED (Art, Oct 19)]. Dev uses ddd's account with test data (D17); production needs a client account and key (OPEN-1) |
 | `openai` | The prototype's provider (PROJECT.md §7.4), kept as an arena comparison point. **Built** (`extract/openai.ts`, BD3244-37) for the arena: Chat Completions with a strict JSON schema, output checked with Zod, and `reasoning_effort` sent only when `AI_REASONING_EFFORT` is set (`minimal`, `low`, `medium`, `high`). With no key it fails as `upstream_error` | `AI_PROVIDER=openai`, `AI_MODEL=…`, optional `AI_REASONING_EFFORT`. For eval, `OPENAI_API_KEY` is **TBWA's capped test key**, used locally and on Render dev only. No production key | **Not authorized** by Ad Council IT [CONFIRMED (Art, Oct 19)]. Eval only, on TBWA's capped key. No production use unless IT approves OpenAI |
 | `bedrock` | An alternative that runs in Ad Council's AWS with IAM-only auth | `AI_PROVIDER=bedrock`, `AI_MODEL=…`, `AWS_REGION` | **Still a vendor decision.** Anthropic models on Bedrock run in AWS-owned accounts under Anthropic's model terms. IT may treat this as a new vendor (OPEN-2) |
-| `gemini` | A cheap comparison point raised in the Oct 8 arena meeting. **Built** (`extract/gemini.ts`): `generateContent` with a JSON response schema, Zod-checked; `AI_REASONING_EFFORT` maps to `thinkingBudget` | `AI_PROVIDER=gemini`, `GEMINI_API_KEY` (ddd's key) | ddd's own account, dev/eval with test data only (D25). **Not authorized** for production: Google needs Ad Council IT approval (OPEN-2) |
+| `gemini` | Gemini over REST, no SDK. **Built** (`extract/gemini.ts`): `generateContent` with a JSON response schema, Zod-checked; `AI_REASONING_EFFORT` maps to `thinkingBudget`. **Vertex AI mode built** (D37, #22): with `GEMINI_VERTEX=1` it calls the publisher model at `aiplatform.us.rep.googleapis.com/v1/projects/{project}/locations/us/publishers/google/models/{model}:generateContent`, signed with a bound API key (dev) or an OAuth token (staging and prod). **To add with BD3244-87:** the token source, Google's `google-auth-library` reading a Workload Identity Federation credential config for the ECS task role [PROPOSED; Google's official library, an authorized vendor] | All: `AI_PROVIDER=gemini`, `AI_MODEL`, `GEMINI_VERTEX=1`, `GOOGLE_CLOUD_PROJECT=iconic-indexer-513915-t1`, `GOOGLE_CLOUD_LOCATION=us`. Dev and local: plus `GEMINI_API_KEY` (the key bound to `llf-gemini-dev`). Staging and prod: plus the WIF credential config (no key) | **Authorized** (D37). Production runs on **Vertex AI in Ad Council's own GCP project** (`us` multi-region), with separate service identities for staging and prod, federated from each environment's ECS task role. ddd's key stays dev/eval only (D25) |
 
 **Requirements for the production provider:** US-only processing and storage of request data (for example, a US data-residency project or a US-region Bedrock model, not a global or cross-region endpoint), no training on our data, the shortest retention available (zero data retention if possible), and a project-level spend limit. Whichever provider we pick must **show these in its contract or settings**. We record the evidence in [`CLIENT_AUDIT.md`](./CLIENT_AUDIT.md).
 
@@ -1182,43 +1169,46 @@ Ad Council wants a report of the items people submit that we have no tips for, s
 | `llf-cms-<env>` | Web service (Docker), paid instance + persistent disk | Strapi. Admin IP allow-list middleware (§5.4) |
 | `llf-db-<env>` | Render Postgres (paid) | External access off |
 | `llf-kv-<env>` | Render Key Value | Tool cache, quota, and rate-limit counters. External access off. **Not in the Blueprint yet:** the tool keeps them in memory on its single instance until the shared store adapter lands |
-| `llf-web-<env>` | Web service (Node) | Static export served by `server.mjs` with basic auth (§6.2). **The review link** (D27) |
-| `llf-tips-<env>` | **Private service** (Node) | Find My Tips HTTP adapter (§7.2). Reachable only from `llf-web-<env>` over Render's private network; `TIPS_URL` comes from the Blueprint. `TRUSTED_PROXY_HOPS=2` so rate limits key on the visitor's IP, not Cloudflare's or the web service's (P4) |
+| `llf-web-<env>` | Web service (Node) | Next.js standalone server (SSR + ISR) with basic auth in middleware (§6.2). **The review link** (D27) |
+| `llf-tips-<env>` | **Private service** (Node) | Find My Tips service. **Retired** once the route handlers land in `llf-web` (D36). Reachable only from `llf-web-<env>` over Render's private network; `TIPS_URL` comes from the Blueprint. `TRUSTED_PROXY_HOPS=2` so rate limits key on the visitor's IP, not Cloudflare's or the web service's (P4) |
 
 - **`render.yaml` is at the repo root** and defines `dev` today (`llf-db-dev`, `llf-cms-dev`, `llf-tips-dev`, `llf-web-dev`, and the `llf-dev-tool` env group). Staging gets the same services with `-staging` names when the `staging` branch exists. Secrets are `sync: false` (entered once in Render) or generated by Render; none are in the file.
-- **Deploys** (D27): every service has `autoDeployTrigger: off`. After **CI passes on a push to `dev`**, `deploy-dev.yml` deploys **that exact commit** to cms → tips → web through the Render API, waits for each to go live, and smoke-tests the live URLs. A red build never reaches the review link. Content publishes call the `web` **deploy hook** (§5.3).
+- **Deploys** (D27): every service has `autoDeployTrigger: off`. After **CI passes on a push to `dev`**, `deploy-dev.yml` deploys **that exact commit** to cms → tips → web through the Render API, waits for each to go live, and smoke-tests the live URLs. A red build never reaches the review link. Content changes reach the site through ISR within about a minute; no deploy hook (§5.3).
 - **Deploy mirror** (D30): Render's GitHub link can't fetch `dotdotdashdev/3244_tbw_ad_council`, so the services build from a private mirror, `dotdotdash-OMC/3244_tbw_ad_council` (ddd's EMU org, as on other OMC projects). Nobody works in the mirror: `deploy-dev.yml` pushes the CI-tested tree (minus `.github/workflows`, which the deploy key may not change) to its `dev` as a commit named after the source SHA, with a write deploy key, then deploys that commit. It goes away when the repo moves (OPEN-11). The dev services were created through the Render API from `render.yaml` (the API can't apply a Blueprint), so the file and the services are kept in step by hand until the Blueprint is linked.
 - **The review link** for TBWA and Ad Council is the `llf-web-dev` URL (`https://llf-web-dev.onrender.com`), behind basic auth. It always reflects the last green commit on `dev`. Setup: [`render-dev`](./runbooks/render-dev.md).
 - **Ad Council IT needs to accept** that test content and AI test inputs sit on ddd's Render account during the build (OPEN-23).
 
 **Phase B, Ad Council AWS** [PROPOSED with James Steele]
 - Everything is in **Ad Council's AWS org**. Ideally there are separate **non-prod** and **prod** accounts, or at least separate stacks with tags (`project=llf`, `env=…`) and IAM boundaries (OPEN-3).
-- **Region `us-east-1`.** CloudFront's ACM certificates and CloudFront-scope WAF have to be there anyway, and it keeps **stored** data in the US. CloudFront and WAF still run at global edge locations (§2.4). If legal decides US-only must hold **end to end** (OPEN-31), the tool API moves to a **regional** API Gateway with a **regional WAF** in `us-east-1`, which the site calls on its own subdomain (with CORS) instead of through CloudFront. Static pages stay on CloudFront, because they carry no user data.
+- **Region `us-east-1`.** CloudFront's ACM certificates and CloudFront-scope WAF have to be there anyway, and it keeps **stored** data in the US. CloudFront and WAF still run at global edge locations (§2.4). If legal decides US-only must hold **end to end** (OPEN-31), the tool API is served from the **ALB directly** with a **regional WAF** in `us-east-1`, on its own subdomain (with CORS) instead of through CloudFront. Pages stay on CloudFront, because they carry no user data.
 - **The current access problem** [CONFIRMED (kickoff)]: James Calhoun's account is a **real IAM user** (username and password, not SSO). It can create a CodeBuild project but **can't list users or pipelines**, so we can't see what exists or invite anyone. James Steele is checking whether his account (from Cat) has admin. **Danish's account is on hold** until this is fixed. We prefer **scoped roles** to one superuser. **What we've asked for**, relayed by Danish to Cat:
   1. **IAM Identity Center** (SSO) permission sets for each ddd engineer: **ReadOnlyAccess** across the project accounts, plus a **project admin** set limited by tag (`project=llf`) or by account.
-  2. A **GitHub OIDC deploy role** that the repo's Actions can assume. No long-lived keys.
+  2. **CodePipeline / CodeBuild service roles** and a **CodeConnections** link to the GitHub org (D36). No long-lived keys.
   3. **DNS:** Route 53 hosted zone delegation for `longlivefood.org`, or a named contact who can make changes within a day (OPEN-20).
   4. **Bedrock model access**, only if we pick Bedrock (OPEN-1).
 
   **Needed by Oct 16.** If it slips, Phase A carries us further, but AWS staging must be ready **before UAT on Dec 8** (§12).
 
-### 9.2 Target AWS architecture (Phase B)
+### 9.2 Target AWS architecture (Phase B) [TL DECISION, D36; sizes with James Steele]
+
+Same topology for **staging** and **prod**, each with its own CMS and database. Dev stays on Render until handoff (OPEN-24).
 
 | Stack (CDK, `infra/`) | Resources |
 |---|---|
-| `Edge` | ACM certificates, CloudFront distributions (site, media, cms), WAF web ACLs (site: rate rules, Bot Control, Challenge/CAPTCHA; cms: IP set), CloudFront Functions (routing + release pointer, redirects, security headers; site function in `infra/cloudfront-functions/`), CloudFront KeyValueStore (current release) |
-| `Site` | S3 site bucket (OAC, private) with immutable `releases/<build-id>/` prefixes and a lifecycle rule (§5.3) |
-| `Cms` | **D3:** EB Docker (load-balanced, 1 instance) **or** ECS Fargate + ALB. Strapi in **public subnets with a public IP for outbound only** (security group: inbound from the ALB only). RDS Postgres in private subnets. S3 media bucket. Secrets Manager. Backup plan. **No NAT gateway** (§4.3 explains why, and the VPC-endpoint alternative if IT requires private subnets) |
-| `FindMyTips` | API Gateway HTTP API (**default `execute-api` endpoint disabled**; regional custom domain as the CloudFront origin) with a **Lambda authorizer** for `x-origin-verify` (§7.6). Lambdas `extract` and `status`. `publish-relay` Lambda with its **own Function URL** (§5.3) and the GitHub App key in Secrets Manager. DynamoDB table (cache + quota, TTL). SSM parameters (kill switch, quota, model) |
+| `Edge` | ACM certificates, CloudFront distributions (site, media, CMS), WAF web ACLs (site: managed rules, rate rules, Bot Control, Challenge/CAPTCHA; CMS: IP set), the host-redirect CloudFront Function, response-headers policies |
+| `Network` | VPC across **2 AZs**, public and private subnets, **no NAT gateway** (§4.3), security groups `sg-app-alb`, `sg-cms-alb`, `sg-web`, `sg-strapi`, `sg-rds`, the ECS cluster and a **Service Connect** namespace |
+| `Cms` | Strapi on **ECS Fargate** (1 task, 1 vCPU / 2 GB) behind the shared ALB (CMS host rule). RDS Postgres 18 in private subnets. S3 media bucket. Backup plan |
+| `App` | **Next.js** service (Fargate, fixed 2 tasks in prod, 1 vCPU / 2 GB for image handling) behind the shared ALB (site host rule), serving pages and `/api/*`. SSM parameters (kill switch, quota, model) |
+| `Pipeline` | One **CodePipeline** per environment (§9.3): CodeConnections source → CodeBuild (tests + two images) → ECR → CDK deploy → ECS rolling deploys |
 | `Observability` | CloudWatch dashboards, alarms, and log groups (30-day retention, KMS-encrypted), SNS → email/Slack, AWS Budgets, and an account-level **CloudTrail** trail if Ad Council doesn't already run one |
 
-- **Database access:** no public endpoint and no bastion with SSH. Admins use **SSM Session Manager** port forwarding through the app's subnet (or ECS Exec) for the rare times they need `psql`.
-- **The cms ALB** accepts traffic only from the **CloudFront managed prefix list** and checks a secret header. Its DNS name isn't published.
+- **Database access:** no public endpoint and no bastion. Admins use **ECS Exec** (SSM Session Manager) on the Strapi task for the rare times they need `psql`.
+- **The ALB** accepts traffic only from the **CloudFront managed prefix list**, and each host rule requires its own distribution's secret origin header. Their DNS names aren't published.
+- **Deploys** are ECS rolling updates with the deployment circuit breaker on, so a task that fails its health check rolls back on its own.
 - **Security headers** (CloudFront response headers policy):
   - `HSTS`, `X-Content-Type-Options`, and `Referrer-Policy: strict-origin-when-cross-origin`
   - `Permissions-Policy`: camera only on the tool page, if we add live capture
-  - a **CSP** that allows only self, the media CDN, the API, GTM/GA4 (`googletagmanager.com`, `google-analytics.com`), and the **WAF integration SDK** domain
-- **If IT wants even the CMS's `/api/*` to be IP-only:** the site build moves into **CodeBuild inside the VPC** (triggered by the relay), and the WAF IP set then covers the whole CMS domain. Everything else stays the same.
+  - a **CSP** that allows only self, the media CDN, GTM/GA4 (`googletagmanager.com`, `google-analytics.com`), and the **WAF integration SDK** domain
 
 ### 9.3 CI/CD and the branch model [TL DECISION for the branches; VERIFIED for `ci.yml`; PROPOSED for the other workflows]
 
@@ -1236,23 +1226,33 @@ Ad Council wants a report of the items people submit that we have no tips for, s
 | `ci.yml` **cms-image** (**built**) | same as `ci.yml` | Builds the CMS Docker image (the one Render runs), starts it against a Postgres 16 service container with throwaway secrets and an **empty allow-list**, and checks `/_health` → 204, `/admin` → 403 (also with a forged `X-Forwarded-For`), `/api/pages` → 401/403 |
 | `pr-title.yml` (**built**) | PR to `dev`, `staging`, or `prod` (opened, edited, synchronized) | Fails unless the title starts with `BD3244-<n>`. The title is passed through `env`, never interpolated into the script. Promotion PRs (`dev` → `staging`, `staging` → `prod`) are exempt. No permissions |
 | `deploy-dev.yml` (**built**, Phase A) | `workflow_run`: CI completed **successfully** on a **push** to `dev`; manual | GitHub Environment `dev` (`RENDER_API_KEY` secret; `RENDER_SERVICE_ID_*_DEV` variables). `scripts/render-deploy.mjs` deploys the CI-tested commit to cms → tips → web, polls until live, smoke-tests (`/admin` 200 or 403, first-admin sign-up 403, `/api` 401/403, web `/` 401), and writes the URLs to the run summary. Skips cleanly until the secret exists. One deploy at a time. CMS schema changes ship this way only |
-| `deploy-infra.yml` | push to `dev` / `staging` / `prod` (Phase B) | `cdk diff` → `cdk deploy` for that environment. **GitHub Environments** with required reviewers for `staging` and `prod` |
-| `deploy-cms.yml` | push touching `apps/cms` (Phase B) | build the Docker image → ECR → deploy to that environment's EB/ECS |
-| `deploy-site.yml` | `repository_dispatch: content-published`, push, manual | build from that environment's CMS → upload `releases/<build-id>/` → switch the pointer (§5.3). Concurrency group per environment |
-| `deploy-service.yml` | push touching `services/**` | esbuild → `cdk deploy FindMyTips` |
+| **CodePipeline** `llf-<env>` (Phase B, D36) | push to `staging` / `prod` (CodeConnections); manual | **Source** (GitHub via CodeConnections) → **Build** (CodeBuild: `pnpm install` → tests with `AI_PROVIDER=mock` → `cdk synth` → build the **web** and **CMS** images → push to ECR) → **Deploy** (`cdk deploy` for the environment, then ECS rolling deploys CMS → web). `prod` has a **manual approval** action before Deploy |
 | `eval.yml` | `workflow_dispatch` only | runs `eval/` with a budget input, posts a summary. **Not built yet** (James Steele); the CLI it wraps is built (§7.9) |
 
-- **Auth:** GitHub OIDC → the deploy role (§9.1). **No AWS keys in GitHub.** Environment secrets per environment for the read-only Strapi token and the webhook secret.
-- **About the DevOps transition:** TBWA planned CodePipeline. We **recommend GitHub Actions**, because the code lives on GitHub (an approved tool) and it's simpler to hand over. If James S prefers CodePipeline or CodeBuild, the steps move over unchanged, since the CDK and scripts don't depend on the CI system (OPEN-3).
+- **Auth:** GitHub Actions has **no AWS access**. AWS deploys run inside AWS: CodeConnections reads the repo, and the pipeline and build use their own service roles (§9.1). `ci.yml` stays on GitHub for PR checks, and `deploy-dev.yml` keeps deploying dev to Render.
+- **CI/CD on AWS is CodePipeline** [TL DECISION, D36; Nov 6 review]. It matches Ad Council's DevOps partner and keeps AWS deploy credentials out of GitHub. The CDK and scripts don't depend on the CI system, so the steps are the same ones `ci.yml` runs.
 
 **Secrets and configuration**
+**Google Cloud, Vertex AI** [VERIFIED (Nov 6) for the project, APIs, service accounts, role, and pool; PROPOSED for the AWS providers] (D37, BD3244-86)
+- **Project:** `iconic-indexer-513915-t1` ("Long-Live-Food", project number `889077788394`), in **Ad Council's Google Cloud organization**, on Ad Council's billing account. Owners: Cat (Ad Council) and Art. Setup steps: [`vertex-gemini`](./runbooks/vertex-gemini.md).
+- **Endpoint:** the **US multi-region**, location `us`, host `aiplatform.us.rep.googleapis.com`. Google keeps ML processing in the US on it. **Never the `global` endpoint**, which Google says may process requests anywhere and gives no residency. `gemini-3.8-flash` answered on `us` on Nov 6; it isn't served from `us-central1`.
+- **One identity per environment**, each with only the custom role **`llfGeminiInvoker`** (`aiplatform.endpoints.predict`: call models, nothing else):
+
+| Environment | Service account | How it signs in |
+|---|---|---|
+| dev (Render) and local | (`llf-gemini-dev`, unused) | **Not on Vertex.** Dev and local use **ddd's capped Gemini API key** (D25, D33) with test inputs only, in Render (`GEMINI_API_KEY` on `llf-tips-dev`) and in developers' git-ignored `.env` via Art's secure share. A Vertex key bound to the service account is blocked by Ad Council's org policy and isn't needed (Nov 12) |
+| staging | `llf-gemini-staging` | **Workload Identity Federation**, no key: pool `llf-aws`, with an AWS provider for the non-prod account. Only the staging web task role (`assumed-role/<llf-web-staging task role>`) may impersonate the service account |
+| prod | `llf-gemini-prod` | The same pool, with an AWS provider for the prod account and the prod web task role only |
+
+- **Waiting on James Steele (BD3244-77):** the AWS account IDs and task-role names, then the two providers and impersonation bindings in the runbook. Until then the pool has no providers, so nothing can sign in to it.
+- **Waiting on Cat:** billing alerts on the billing account, and the abuse-monitoring logging exemption request (BD3244-86).
+
 - **Local:** one root `.env` (git-ignored). `.env.example` lists every key **with no real values**. `scripts/ensure-cms-env.mjs` creates `apps/cms/.env` with random local-only Strapi secrets the first time `pnpm dev` or `pnpm dev:cms` runs. Keys with no value are written commented out (`# KEY=`), so Strapi falls back to its defaults instead of reading an empty string.
-- **Render:** non-secret tool settings live in an **environment group** per environment (`llf-dev-tool`). Render groups can't hold Blueprint `sync: false` values, so each secret sits on the one service that needs it (`GEMINI_API_KEY` on tips, `ADMIN_IP_ALLOWLIST` on cms, `BASIC_AUTH` on web), entered once in the dashboard, and the Strapi secrets are generated by Render. The **Render API key** used by `deploy-dev.yml` is account-wide: it lives only in the GitHub `dev` environment (deployments limited to `dev`).
-- **Render deploy-hook URLs** (Phase A) are secrets. They're stored only in the Strapi webhook settings and the Render environment group, never in the repo or in Jira.
-- **AWS:** Secrets Manager for credentials (Strapi keys, DB, AI provider key, Strapi API tokens, origin-verify secret, webhook secret, and the **publish relay's GitHub App private key**, §5.3). SSM Parameter Store for non-secret configuration (kill switch, quota, model name).
+- **Render:** non-secret tool settings live in an **environment group** per environment (`llf-dev-tool`). Render groups can't hold Blueprint `sync: false` values, so each secret sits on the one service that needs it (`GEMINI_API_KEY` on tips, ddd's dev key, D33; `ADMIN_IP_ALLOWLIST` on cms, `BASIC_AUTH` on web), entered once in the dashboard, and the Strapi secrets are generated by Render. The **Render API key** used by `deploy-dev.yml` is account-wide: it lives only in the GitHub `dev` environment (deployments limited to `dev`).
+- **AWS:** Secrets Manager for credentials (Strapi keys, DB, an AI provider key only if production runs on Anthropic, since Gemini on Vertex signs in through WIF with no key (D37), the read-only Strapi API token, the origin-verify secret, and the publish-webhook secret, §5.3). SSM Parameter Store for non-secret configuration (kill switch, quota, model name).
 - **Rotation:**
-  - Every quarter: the origin-verify secret (dual-accept, §7.6), the webhook secret, and the GitHub App private key (add a new key, deploy, then delete the old one).
-  - When someone leaves the team: Strapi API tokens, the Render env group, and the Render deploy hooks (regenerate).
+  - Every quarter: the origin-verify secret (dual-accept, §7.6) and the publish-webhook secret.
+  - When someone leaves the team: Strapi API tokens and the Render env group.
   - **ddd's Anthropic key is revoked** when the client key goes live.
 
 ### 9.4 Observability and alerting
@@ -1263,8 +1263,9 @@ Ad Council wants a report of the items people submit that we have no tips for, s
 | Daily quota reached / mode change | Log + Slack webhook | SNS → Slack and email |
 | WAF blocks and challenges | — | Spike (anomaly) → informational |
 | AI spend | ddd's Anthropic spend limit and alerts | Client provider alerts at 50%, 80%, and 100%, plus AWS Budgets on the forecast |
-| Strapi health | Render health check on `/_health` | EB/ECS health, ALB 5xx, RDS CPU/storage/connections |
-| Site build | Render deploy-failure email | `deploy-site` failure → Slack and email (**content didn't publish**) |
+| Service health | Render health checks | ECS service health (web, API, Strapi), ALB 5xx and target health, RDS CPU/storage/connections |
+| Content validation | Logged | Zod validation errors on page renders → Slack and email (**a page is serving its last good version**, §5.3) |
+| Deploys | Render deploy-failure email | CodePipeline failure or ECS rollback → Slack and email |
 | Synthetics (optional) | — | A CloudWatch canary does a JSON-LD URL extraction every 15 min (no model call), against a site that passed Spike P8 |
 
 Logs are structured JSON with a `requestId`. **No request bodies, user URLs, images, or terms** (§7.6). Retention is 30 days.
@@ -1281,24 +1282,27 @@ Logs are structured JSON with a `requestId`. **No request bodies, user URLs, ima
 | Strapi web service (paid instance, enough RAM for the admin build) + persistent disk | ~$25–30 | ~$50–60 |
 | Render Postgres (smallest paid) | ~$6–20 | ~$12–40 |
 | Key Value (smallest) | ~$0–10 | ~$0–20 |
-| `web` + `tips` web services (Starter) | ~$14 | ~$28 |
+| `web` (Next.js server) + `tips` services (Starter; `tips` retired later) | ~$14 | ~$28 |
 | **Total Phase A** | | **~$90–150 / month**, plus Render's per-seat workspace fee if any |
 | Anthropic (dev and eval) | | Capped by the workspace spend limit (start at **$100 / month**) |
 | OpenAI test key (eval only) | | TBWA's capped key; the cap is set by TBWA. Arena runs stay inside the per-cell and global budgets in the matrix (§7.9) |
 
-**Phase B, AWS (Ad Council, monthly, dev + staging + prod)**
+**Phase B, AWS (Ad Council, monthly, staging + prod; dev stays on Render, OPEN-24)**
 | Item | Monthly estimate |
 |---|---|
-| Strapi compute (EB or Fargate) × 3 + ALBs | ~$60–110 |
-| RDS Postgres (2 × micro + small) | ~$40–70 |
+| ECS Fargate: web (2 tasks) + Strapi (1) in prod; 1 each in staging | ~$90–120 |
+| ALB (one, shared) × 2 environments | ~$35–45 |
+| RDS Postgres (staging `t4g.micro` + prod `m8g.large`, single-AZ) | ~$135–150 (James to confirm; ~$190 with `r8g.large`) |
 | CloudFront, S3, WAF (+ Bot Control, CAPTCHA per request) | ~$20–80 |
-| Lambda, API Gateway, DynamoDB | < $20 at launch traffic |
-| **Infra total (excluding AI)** | **~$120–280** |
+| CodePipeline + CodeBuild + ECR | ~$5–20 |
+| **Infra total (excluding AI)** | **~$290–420** |
 | AI | **To be modeled after the eval:** cost per request × expected PSA-driven traffic × (1 − JSON-LD/cache hit rate). The daily quota sets the ceiling. Spike P8: a URL with JSON-LD costs about $0 (no model call), and about 40% of URLs fail at fetch and also cost nothing, so AI cost comes from photo and typed-text input. The model arena (§7.9, D24) forecasts $/month per model at **25K and 50K uses/month** against the client's **~$500/month** AI budget. A guardrail pre-call doubles the calls per use |
+
+Containers cost more than the static design (which had no servers on the request path), mainly the always-on Fargate tasks, an ALB per environment, and a non-bursting prod database.
 
 These figures assume **no NAT gateway** (§4.3). If IT requires private subnets with VPC endpoints instead, add roughly **$60–70 / month per environment** (one AZ).
 
-To save money we can consider: **turning dev off** after handoff (OPEN-24), sharing one ALB across environments, and skipping Bot Control until there's real traffic (WAF rate rules and Challenge are cheap).
+To save money we can consider: **Fargate Spot** for staging, running staging at one task per service, skipping Bot Control until there's real traffic, and **turning dev off** after handoff (OPEN-24).
 
 ### 9.6 Operations and handoff (input to the O&M manual)
 
@@ -1320,13 +1324,13 @@ Under the Tech Process, Launch includes an **O&M manual, training, and a handoff
 | Threat | Mitigation |
 |---|---|
 | Prompt injection through recipe pages or images | Forced, schema-locked tool call. The model returns raw terms only, and code does closed-catalog matching. Model text is never shown. Injection cases in the eval must pass 100% (§7.1, §7.9) |
-| SSRF through recipe URL | `safeFetch` (§7.6). On AWS the Lambda is outside any VPC. On Render the tool service has no private-network access to the CMS or DB (separate services, external access off). IMDS ranges blocked |
+| SSRF through recipe URL | `safeFetch` (§7.6). On AWS `safeFetch` blocks the task metadata and Service Connect ranges, and RDS isn't reachable from the web tasks. On Render the tool service has no access to the CMS or DB (external access off) |
 | Cost abuse or denial of wallet | Phase A: basic auth on the whole site. Phase B: WAF rate rules, Bot Control, Challenge/CAPTCHA. Both: in-app rate limit, **backend daily quota and kill switch** (the hard limits), provider and AWS budget alerts (§7.6) |
 | CMS compromise | Admin reachable **only from allow-listed IPs** (Strapi middleware on Render, WAF IP set on AWS) [TL DECISION]. Exception: cms-dev during the build, which holds no user data (D31). No permissions on the Public role. Least-privilege roles. Strong unique passwords in a password manager. **Strapi has no built-in 2FA, and SSO is a paid feature** (§5.6), so the IP allow-list is the main compensating control. Monthly Strapi patch upgrades |
 | Admin IP spoofing (Phase A) | The middleware trusts only the client-IP header that Render's proxy sets, and the spike proves it can't be spoofed by the client. If it can, we fall back to an extra basic-auth layer on admin paths |
 | Supply chain | `pnpm audit` in CI, Dependabot, locked versions, **no new runtime SaaS**, shadcn components copied into the repo (no hosted component library) |
 | Eavesdropping or downgrade (encryption in transit) | **HTTPS only, TLS 1.2 minimum** [TL DECISION]. CloudFront viewer policy `TLSv1.2_2021`, so TLS 1.0/1.1 and legacy ciphers are off. HTTP redirects to HTTPS, plus HSTS. The ALB uses a TLS 1.2+ policy, and the CMS → RDS connection requires TLS (`rds.force_ssl`). Render dev serves TLS 1.2/1.3 only [VERIFIED Oct 26: TLS 1.0/1.1 handshakes refused] |
-| Data exposure at rest | **AES-256 encryption at rest** [TL DECISION] through AWS KMS: RDS (including snapshots and automated backups), S3 (media and backups), DynamoDB, and CloudWatch Logs. The nightly `strapi export` is encrypted too. No user text or images are stored (D20) |
+| Data exposure at rest | **AES-256 encryption at rest** [TL DECISION] through AWS KMS: RDS (including snapshots and automated backups), S3 (media and backups), and CloudWatch Logs. The nightly `strapi export` is encrypted too. No user text or images are stored (D20) |
 | Secrets leakage | Render env groups, then Secrets Manager and OIDC. GitHub secret scanning with push protection. `.env*` git-ignored. **No secrets in Jira, Slack, or chat** |
 | XSS through CMS content | Blocks are rendered as React elements (no `dangerouslySetInnerHTML`). URLs are validated (`https:`, `/`, `mailto:` only). CSP |
 | Repo access | Until the move to Ad Council's GitHub org, the repo is **private on ddd's org** with ddd-only access. After the move, the China team gets **access to this one repo only** (OPEN-11) |
@@ -1396,7 +1400,15 @@ See [`AGENTS.md`](../AGENTS.md) and the [PR template](../.github/pull_request_te
 - **Local stack:** `pnpm dev` starts the web app, the CMS against **Postgres in Docker Compose** (the same engine as every environment), and the tool handler with `AI_PROVIDER=mock`. **No Render, AWS, or AI credentials are needed** for about 95% of the work. **[VERIFIED]** `pnpm dev` runs `db:up` → `ensure-cms-env` → web (port 3000) + tool (8787, `TOOL_PORT`) + Strapi (1337). `pnpm dev:fe` runs only web + tool, and `pnpm dev:cms` runs only Postgres + Strapi. See the [README Quickstart](../README.md).
 - **Seed data [VERIFIED]:** `pnpm seed` loads JSON into the local CMS. Until the validated project seed exists (P6, Oct 21), it loads the **synthetic fixture seed** (BD3244-24): made-up ingredients and tips, every block, and a page for every template route, validated against the `contracts` schemas. It's idempotent, and it verifies what it wrote. After P6, it loads the scraped set from §5.5. See [`scripts/seed/README.md`](../scripts/seed/README.md).
 - **Fixture mode:** with `CMS_FIXTURES=1`, the frontend builds entirely from `apps/web/fixtures/cms/*.json`, so frontend work doesn't depend on Strapi running. Without it, `CMS_URL` and `CMS_TOKEN` are required and the build fails fast if they're missing.
-- **Network from China:** mainland China can't reach the Anthropic, OpenAI, or Google (Gemini) APIs directly, and GitHub, npm, and Docker Hub can be slow. The team uses the **mock adapter** locally, or a live dev key over a VPN (D33), and the shared **dev environment on Render** (behind basic auth) for live tests. We'll ask about VPN and registry mirrors at the Oct 8 kickoff.
+- **Network from China:** mainland China can't reach the Anthropic, OpenAI, or Google (Gemini) APIs directly, and GitHub, npm, and Docker Hub can be slow. Render is reachable (BD3244-19). The Omnicom VPN exits in the US, but Gemini still wasn't reachable from the team's office network (Nov 12), so live model calls go through ddd's Render account instead (D38).
+- **Dev-only considerations for the China team** [TL DECISION, D38, BD3244-109]. Everything here exists only on **dev** and only on **ddd's Render account**. Staging and prod call the model directly from AWS (§9.2, D37) and have no relay.
+  - **Default: the mock adapter.** Tests and CI always run on mock (D33). Most work needs nothing else.
+  - **A. Front-end work → the tool on Render dev.** `pnpm dev:fe:remote` runs the web app locally and `scripts/remote-api.mjs` forwards `/api/*` to `llf-web-dev` with the dev site's basic auth, so the call runs on `llf-tips-dev` in the US. No model key on the laptop. It runs the code on `dev`, not the developer's branch.
+  - **B. Tool work → the Gemini relay.** `llf-gemini-relay-dev` accepts `generateContent` calls with a **personal relay token**, swaps in ddd's capped Gemini dev key, and forwards them to Google. The local tool points at it with `GEMINI_BASE_URL` and sends the relay token as `GEMINI_API_KEY`, so it runs the developer's own branch. Guardrails: one token per person (revocable on its own), a model allow-list (`gemini-3.8-flash`), a shared daily cap, size and time limits, and logs with no bodies, tokens, or keys (D20). The Google key's own spend cap still applies.
+  - **Test inputs only.** No real receipts, names, or personal photos go through either route.
+  - **Secrets.** Relay tokens and the dev site's basic auth go through a secure share only, never Jira, Slack, PRs, or docs. Once the relay is live, the Google key shared on Nov 12 is rotated and no Google key is held in China. Issue and revoke tokens with [render-dev](./runbooks/render-dev.md#gemini-relay-tokens-tdd-d38); setup is in [run-locally](./runbooks/run-locally.md#from-mainland-china-dev-only-tdd-d38).
+  - **Terms.** Google's Gemini API terms restrict use from unsupported regions, and mainland China is one. The relay is limited to development with test data on ddd's account, and it's raised with Danish and Ad Council IT before the team depends on it.
+  - **Retirement.** The relay goes when dev moves to AWS or is retired (OPEN-24), or earlier if the team gets a working VPN. It's never copied to staging or prod.
 - **Deploys and previews:** the China team doesn't touch AWS or the Render dashboard. They open a PR into `dev`; CI runs; after review and merge, `deploy-dev.yml` puts the commit on the **dev review link** (§9.1). A PR can get its own **Render preview link** by adding `[render preview]` to its title. Render workspace seats for logs are added when needed.
 - **CMS access:** Strapi admin accounts on **cms-dev**: Super Admin for the team leads (to manage users) and Editor for the rest (§5.4). The admin is IP-restricted, so each person sends the **public IP** they'll work from (OPEN-17). Schema changes and migrations ship as code through a deploy.
 - **Process docs** [kickoff, James Calhoun]: because of the language barrier and the time-zone gap, the standard processes are written down step by step in `docs/runbooks/`: branching and PRs, running the stack locally, adding a template, block, or string, schema changes and migrations, seeding, creating CMS users, and reading logs. Short, numbered, with commands that can be copied. James Calhoun owns them ([BD3244-18](https://dotdotdash.atlassian.net/browse/BD3244-18)), and Art reviews them for technical accuracy.
@@ -1415,7 +1427,7 @@ See [`AGENTS.md`](../AGENTS.md) and the [PR template](../.github/pull_request_te
 
 ### 11.6 Launch and handoff
 - **Go/no-go: Thursday, Jan 7.** The criteria are in the [Launch Checklist](./LAUNCH_CHECKLIST.md): no open P1, agreed P2 workarounds, Omnicom IT sign-off on security/failover/load, a11y pass, analytics verified in production, DNS and certificates ready, rollback rehearsed, the production AI key in place with the quota set, and editors trained.
-- **Cutover: Friday, Jan 8.** Content was transferred to prod on Jan 4 (§5.5). Steps: switch DNS to CloudFront (TTL lowered a week earlier) → **smoke test** (every route, tool on every input type, analytics in debug, 404, redirects) → announce. Rollback means pointing the release pointer back, or DNS back to the holding page.
+- **Cutover: Friday, Jan 8.** Content was transferred to prod on Jan 4 (§5.5). Steps: switch DNS to CloudFront (TTL lowered a week earlier) → **smoke test** (every route, tool on every input type, analytics in debug, 404, redirects) → announce. Rollback means redeploying the previous ECS task definition (images are tagged by commit), or DNS back to the holding page.
 - **Hypercare: Jan 8–22.** ddd is on call for P1s, with daily checks of the alarms and quota.
 - **Handoff:** the **as-built TDD** (this document updated), the O&M inputs (§9.6), the training recording, a list of credentials and owners (stored in the client's vault, **never in docs**), and the continued-development plan.
 
@@ -1485,7 +1497,7 @@ gantt
 | Render staging live | Oct 23 | From `staging`. First promotion PR `dev` → `staging` |
 | **AWS IAM access** | **Oct 16** | The §9.1 ask. If it isn't in place by Oct 16, escalate through Danish to Cat the same day |
 | AWS non-prod foundations | Nov 6 | CDK bootstrap, OIDC role, `Edge`/`Site`/`Cms`/`FindMyTips`/`Observability` stacks for **staging**, DNS records for staging hostnames |
-| Render → AWS parity check | Nov 13 | The same artifacts and env contract on both platforms: seed, publish → build → release pointer, tool smoke tests, admin IP restriction ([`PROOF_DOC.md`](./PROOF_DOC.md)) |
+| Render → AWS parity check | Nov 13 | The same artifacts and env contract on both platforms: seed, publish → ISR refresh → CloudFront invalidation, tool smoke tests, admin IP restriction ([`PROOF_DOC.md`](./PROOF_DOC.md)) |
 | **Staging moves to AWS** | **Nov 25** | `strapi transfer` Render staging → AWS staging. The `staging` branch deploys to AWS from then on. Render staging stays read-only as a fallback until Dec 8, then is deleted |
 | Client AI key in staging | Dec 1 | Depends on OPEN-1 (due Nov 13). Until then, the dev key with test inputs only |
 | **AWS prod infra ready** | **Dec 18** (hard limit: before Jan 4) | Prod stacks deployed **dark**. Holding page on the prod domains if DNS is switched early (OPEN-20) |
@@ -1500,7 +1512,7 @@ gantt
 |---|---|---|---|
 | **Wed Oct 14** | Can one tip apply to many ingredients? (If late, added later as an additive change, §5.2) | 14 | Seed format and CMS schema v1 |
 | **Fri Oct 16** | AWS IAM access (SSO ReadOnly + project admin, OIDC deploy role, DNS contact) | 3, 20 | All of Phase B |
-| **Fri Oct 16** | Rendering mode: static export or SSR | 4 | Site hosting and the publish pipeline |
+| ~~**Fri Oct 16**~~ | Rendering mode: **decided Nov 6, SSR on Fargate (D36)** | 4 | Site hosting and the publish flow |
 | **Fri Oct 16** | GitHub org and the repo move | 11 | China team repo access, CI setup |
 | **Fri Oct 16** | Spanish / i18n at launch? | 12 | CMS schema v1 |
 | **Fri Oct 16** | IT accepts Render for development (Anthropic: authorized, confirmed Oct 19) | 23 | Phase A environments |
@@ -1537,7 +1549,7 @@ Jira project **BD3244** ([board](https://dotdotdash.atlassian.net/jira/software/
 | **SEED** | [BD3244-3](https://dotdotdash.atlassian.net/browse/BD3244-3) | Synthetic fixture seed, then scrape → JSON → validated import, `strapi transfer` runbook | Art (fixture seed), then the China team |
 | **FE-PLATFORM** | [BD3244-5](https://dotdotdash.atlassian.net/browse/BD3244-5) | Next.js shell, Tailwind tokens, `packages/ui` (shadcn), block registry, site strings (`content/`), fixture mode, SEO, a11y harness, perf budgets | Art |
 | **FE-MODULES** | [BD3244-8](https://dotdotdash.atlassian.net/browse/BD3244-8) | One story per module and route (§6.1, §6.4), Toolkit desktop and mobile | China team (component specs from Figma before the move; code after) |
-| **TOOL** | [BD3244-10](https://dotdotdash.atlassian.net/browse/BD3244-10) | Handler, Node and Lambda adapters, `safeFetch`, JSON-LD parser, matching, provider adapters, quota and kill switch, UX states | Art + China team |
+| **TOOL** | [BD3244-10](https://dotdotdash.atlassian.net/browse/BD3244-10) | Handler and Next.js route handlers, `safeFetch`, JSON-LD parser, matching, provider adapters, quota and kill switch, UX states | Art + China team |
 | **EVAL** | [BD3244-9](https://dotdotdash.atlassian.net/browse/BD3244-9) | Labeled set, runner, model recommendation | Art + content support |
 | **INFRA-AWS** | [BD3244-6](https://dotdotdash.atlassian.net/browse/BD3244-6) | IAM ask, CDK stacks, CI/CD, DNS, observability, runbooks, Render → AWS migration | **James Steele** + Art |
 | **ANALYTICS** | [BD3244-4](https://dotdotdash.atlassian.net/browse/BD3244-4) | `dataLayer`, GTM container, GA4, consent defaults | **Adam Paikowsky** + FE |
@@ -1557,7 +1569,7 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | R3 | **Strapi repo is less complete than described** (modules, admin typeahead, content) | **Confirmed** | M | Audit (§5.1). Figma is the source of truth. Seed our own content (§5.5) |
 | R4 | **Render → AWS migration** finds differences late (IP headers, media, routing, build triggers) | M | H | One artifact and env contract for both. Parity check Nov 13. Staging on AWS for the last two weeks of internal QA |
 | R5 | **No contingency** after final QA (Jan 4–7), and UAT spans the holidays | H | H | Dark prod by Dec 18. Content freeze Dec 23. Daily triage during UAT. Coalition feedback limited to development bugs. Cut scope rather than slip |
-| R6 | China team blocked (AI APIs unreachable, slow GitHub/npm, repo access only after the move) | M | M | Mock-first, fixtures, shared Render dev tool. Move the repo by Oct 16. Check network access at kickoff. **If the move slips:** Art keeps scaffolding, the China team writes Figma component specs and static markup from Jira, and we escalate through Danish the same day (§11.4) |
+| R6 | China team blocked (AI APIs unreachable, slow GitHub/npm, repo access only after the move) | M | M | Mock-first, fixtures, shared Render dev tool, and the dev-only Gemini relay for tool work (D38). Move the repo by Oct 16. Check network access at kickoff. **If the move slips:** Art keeps scaffolding, the China team writes Figma component specs and static markup from Jira, and we escalate through Danish the same day (§11.4) |
 | R7 | Extraction accuracy below the bar on receipts and dish photos | M | H | JSON-LD-first, synonyms, eval loop, partial-match UX. Dish photos show "likely" ingredients only (§7.5) |
 | R8 | AI cost spike from PSA traffic or abuse | M | M | Daily quota and kill switch (hard limits). WAF rate rules, Bot Control, Challenge. Caching. Provider budget alerts (not caps) |
 | R9 | Content not loaded in time (100+ ingredients, hundreds of tips) | M | H | Seeding pipeline (§5.5). Owner and volume due Oct 23 (OPEN-22). Bulk import from CSV |
@@ -1581,10 +1593,10 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | # | Decision | Status | Rationale |
 |---|---|---|---|
 | D1 | Retrieval, not generation. The model returns raw terms only; code matches against a closed catalog. No model text shown to users | PROPOSED (agreed direction in PROJECT.md §7.2; needs client sign-off) | Safety, coalition review, prompt-injection containment |
-| D2 | Next.js static export (Phase B: S3 + CloudFront) | PROPOSED (OPEN-4, due Oct 16); routing VERIFIED by P3 | No servers on the request path, cheapest, small attack surface. SSR is the documented alternative (§6.2) |
-| D3 | Strapi as a Docker image on **EB (load-balanced)** or **ECS Fargate + ALB**, with RDS Postgres and S3 media. Cloud plugin removed | PROPOSED (choose with James S during tech validation) | Same image on Render and AWS. EB single-instance has no ALB, so it doesn't fit the CMS domain design |
+| D2 | ~~Next.js static export (Phase B: S3 + CloudFront)~~ | **Superseded by D36** (Nov 6) | Server rendering on Fargate replaced it |
+| D3 | ~~Strapi on EB (load-balanced) or ECS Fargate + ALB~~ | **Superseded by D36** (Nov 6): ECS Fargate only | No Elastic Beanstalk |
 | D4 | **A separate CMS and database per environment** (dev, staging, prod). Content moves with `strapi transfer` | TL DECISION | Isolation for UAT. Prod content is entered in staging, then transferred on Jan 4 (§5.5) |
-| D5 | API Gateway + Lambda for the tool in Phase B, outside any VPC. One handler with Node and Lambda adapters | PROPOSED | Scales to zero. Limits the SSRF blast radius. The same code runs on Render |
+| D5 | ~~API Gateway + Lambda for the tool in Phase B~~ | **Superseded by D36** (Nov 6): Next.js route handlers on ECS Fargate | No Lambdas |
 | D6 | AWS WAF Bot Control + Challenge instead of a third-party CAPTCHA | PROPOSED | No new vendor approval |
 | D7 | Provider-agnostic adapter (`mock`, `anthropic`, `openai`, `bedrock`) | CONFIRMED requirement | The model is chosen by eval and set in config |
 | D8 | One deterministic matcher, shared by search and the tool | PROPOSED | Consistent results, testable |
@@ -1604,7 +1616,7 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | D22 | **Figma audit outcomes.** The Tip Modal, Save/Share, header, mobile menu, and footer are shared UI, not CMS blocks. `component.modal` is dropped and `component.scroll-lock` deferred; the Home animated sections live in the Home template (OPEN-36). Toolkit is built from `asset-list`, `jump-nav`, and `accordion` blocks. Library Groups gain `layout` and `order`. Tokens come straight from Figma variables, plus contrast rules (§6.3) | TL DECISION | The modal and animations are bound to one designed page, so blocks would add CMS surface without giving editors real choices. The contrast rules keep AA without redesigning the palette |
 | D23 | **Scaffold conventions** (BD3244-16). CI runs on GitHub Actions with the mock AI provider and CMS fixtures, no secrets, read-only permissions, and SHA-pinned actions. One root `.env`, with `apps/cms/.env` generated locally. Fonts are self-hosted with Fontsource instead of `next/font`. No Turborepo until build times need it | TL DECISION | CI can run on forks and PRs without secrets. Fontsource builds offline and gives the same no-Google-calls result. Fewer tools for the China team to learn |
 | D24 | **Model arena for provider-neutral model selection** (BD3244-37). Every candidate (vendor × model × settings) runs the same labeled set, prompt, and harness (`pnpm arena`, §7.9). The pick is the **cheapest cell that meets G2** (precision ≥ 0.9, recall ≥ 0.8; bar still to agree, OPEN-8) **with 100% injection resistance, and** whose forecast stays under the monthly AI cap at 25K–50K uses. Feeds the OPEN-1 recommendation | TL DECISION | Same inputs across vendors make the comparison fair. Per-cell and global budgets cap eval spend. Tying the forecast to the client's budget keeps the choice honest about cost, not only accuracy |
-| D25 | **Gemini on ddd's own key for dev and eval** (BD3244-37). The `gemini` adapter runs in the arena and on Render dev with test data only. Google isn't an authorized vendor (OPEN-2) | TL DECISION | A cheap comparison point in the arena without waiting on a new-vendor approval. No production use without Ad Council IT approval |
+| D25 | **Gemini on ddd's own key for dev and eval** (BD3244-37). The `gemini` adapter runs in the arena and on Render dev with test data only. Production Gemini runs on Ad Council's Vertex AI instead (D37) | TL DECISION | A cheap comparison point in the arena. The dev key never reaches staging or prod |
 | D26 | **Relations redeclared in place** (BD3244-23, spike P1). Tip taxonomy → manyToOne, Category `ingredients`/`tips`, `Page.featured`, and the carousel, link-list, and tip-list relations → manyToMany, `shared.cta.page` → manyToOne. Done as a direct schema edit, not expand/contract | TL DECISION | Strapi 5.45 generates identical join-table DDL for old and new declarations, so no data moves and nothing can be dropped. Two-phase (§5.2) stays the rule for any change that alters tables or columns |
 | D27 | **Render dev deploys from GitHub Actions after CI** (BD3244-15). Blueprint at the repo root (`render.yaml`); Render auto-deploy is off. `deploy-dev.yml` deploys the CI-tested commit to cms → tips → web via the Render API, then smoke-tests the live URLs (first-admin sign-up 403, API 401/403, web basic auth). The tool is a Render **private service**. The `llf-web-dev` URL is the stable **review link** for TBWA and Ad Council | TL DECISION | A red build never reaches the link the client reviews. Deploying the exact SHA CI tested avoids Render building a newer commit. The smoke test proves the first-admin sign-up is still locked after every deploy (D31). A private tool service keeps the model endpoint off the internet |
 | D28 | **Branch protection now, in ddd's org, and Jira keys in PR titles** (BD3244-15). `dev` and `main` are protected from Oct 19 (PR, code-owner review, required checks, resolved threads, no force-push); `staging` and `prod` get the same rules when created. PR titles start with `BD3244-<n>` (required check). `dev` is the default branch | TL DECISION | The China team has write access before the repo move, so the rules can't wait for it. Titles with keys keep every change traceable to a ticket in the GitHub UI and in Jira's development panel |
@@ -1615,6 +1627,9 @@ James Calhoun reviews architecture and security decisions and owns the process d
 | D33 | **Local dev may use a real AI dev key; CI stays on mock** (Nov 2, BD3244-72). Mock remains the default. A developer may set `AI_PROVIDER` and ddd's capped dev key (Gemini or Anthropic) in their git-ignored `.env`. CI keeps `AI_PROVIDER=mock` with no secrets. Unit and component tests run on mock regardless. Keys are shared by Art through a secure share and are revocable. Replaces the "local dev runs on mock" half of the AGENTS.md rule | TL DECISION | The team needs to see real model behaviour while building the tool UI (loading time, partial matches, unreadable input) without waiting on Render dev. CI stays deterministic and secret-free. Accepted risks: more spend, mitigated by the key's cap and the service's daily quota; key exposure on more machines, mitigated by revocable dev-only keys that are rotated if a developer leaves; and no change to the vendor position, since Gemini stays dev-only pending IT (OPEN-2) |
 | D34 | **The China team merges its own PRs into `dev`; Art reviews after merge** (Nov 2, BD3244-72). Feihu (`omc-panghu`) and Davis (`DavisWang-Omc`) are code owners for every path, Chad (`chadwang0919`) also for `apps/cms/`, and any one of them can approve and merge into `dev`. Art is a co-owner everywhere but **never a gate on `dev`**: he reviews merged work and raises problems as follow-up Jira tickets or PRs, and a "changes requested" review from him is a checklist, not a block. The other §9.3 rules stand: PR only, green CI, Jira key in the title, 1 approving review from a teammate, resolved threads. `staging` and `prod` promotions still need a tech lead | TL DECISION | Waiting on Art's review was holding up the build team, which owns delivery to Alpha (Nov 11) and feature-complete (Nov 18). CI, the TDD, and AGENTS.md carry the rules, and fixes after merge are cheap on `dev`. The gate stays where mistakes are costly: promotion to `staging` and `prod`. Accepted risk: issues found after merge land on `dev` first and reach the dev review link before they're fixed |
 | D35 | **Catalog gaps from a second, text-only classification step in the same stateless request** (Nov 4, Ad Council request). Unmatched extractor terms go to `classifyGapTerms()` (temperature 0), which returns a generic item name and a class (`edible` / `inedible` / `compostable` / `exclude`). Pure-function filters drop anything personal. The only output is a `tips_tool_gap` GA4 event per kept term, keyed by `requestId`. **No data retention on our side**: no store, cache, queue, counter, or CMS collection. Behind `GAP_LOG`, off until legal answers OPEN-5 | PROPOSED (OPEN-5) | Ad Council needs to know which items lack tips in order to write new ones. Keeping it stateless and idempotent means there's nothing of ours to secure, retain, or delete, and retries can't double-count. Accepted: one small extra call per tool use with unmatched items, and a narrow exception to "nothing the model extracted goes to analytics" (generic, filtered names only). Accepted risk: a model miss could pass a personal term; mitigated by the code filters, GA4 thresholds, and a 100% eval bar on planted personal data |
+| D36 | **Containers on ECS Fargate; no Lambda, API Gateway, or Elastic Beanstalk** (Nov 6 architecture review, Art). The **site** is a server-rendered Next.js app (`output: 'standalone'`, ISR with 60 s revalidation) in a Fargate service, with **no OpenNext**. The **tool API** is Next.js **route handlers** in the same service, calling the `services/find-my-tips` handler, with cache and quota in memory (no DynamoDB). **No Express**: it would only be added if Next.js couldn't run self-hosted, and it can. The **CMS** is the Strapi image on Fargate. CloudFront + WAF front **one ALB per environment** with host rules for the site and CMS, each rule tied to its distribution's secret origin header (Nov 10, James S). **Prod RDS is non-bursting** (`db.m8g.large`). Publishing needs no rebuild: ISR picks up changes, and Strapi's webhook to `POST /api/hooks/publish` invalidates CloudFront. AWS CI/CD is **CodePipeline** per environment (CodeConnections → CodeBuild → ECR → CDK/ECS). Supersedes D2, D3, and D5; closes OPEN-4 | TL DECISION | Ad Council's DevOps partner runs Fargate, so one runtime (containers) and one deploy path is easier to own than Lambda, EB, and S3 releases together. SSR removes the release-pointer machinery and makes publishes live in about a minute. One Next.js service is one codebase, one image, and one runtime for the China team. Accepted: higher fixed cost than static (always-on tasks and ALBs, §9.5); Strapi now serves runtime reads (cached, inside the VPC); a bad publish can reach a page (mitigated by Zod + last-good ISR + alarms); and the tool shares tasks with the pages, so the SSRF boundary is `safeFetch`, not the network (a second service from the same image is the fallback, §4.3) |
+| D37 | **Google (Gemini) is an authorized AI vendor, on its own Vertex AI setup** (Nov 6, Art). Production Gemini runs on **Vertex AI in Ad Council's own Google Cloud project** (`us` multi-region), not on ddd's key or the Gemini API. Staging and prod each get their own service identity, reached through **Workload Identity Federation** from that environment's ECS task role, so there are no Google keys to store. Billing alerts sit on Ad Council's billing account; the abuse-monitoring logging exemption is Ad Council's request to Google (BD3244-86). The `gemini` adapter gains a Vertex mode; the provider stays swappable by env config | TL DECISION | Ad Council owns the account, billing, and data terms, and Vertex keeps processing in the US with no training on customer data. Federation avoids long-lived keys crossing from AWS to Google. Anthropic stays authorized, so OPEN-1 (which model ships) is still Ad Council's choice. **Set up Nov 6** [VERIFIED]: see [§9.1 Google Cloud](#91-accounts-access-and-regions) and [`vertex-gemini`](./runbooks/vertex-gemini.md) |
+| D38 | **Developers in mainland China reach live models only through ddd's Render dev** (Nov 12, BD3244-109). Front-end work uses the tool on Render dev from a local web app (`pnpm dev:fe:remote`); tool work uses `llf-gemini-relay-dev`, a dev-only relay that takes per-person tokens, swaps in ddd's capped Gemini dev key, and forwards `generateContent` for allow-listed models. `GEMINI_BASE_URL` points the tool's Gemini adapter at it. Never on staging or prod | TL DECISION | Google's API is unreachable from mainland China, so the shared key didn't work there, and a VPN isn't agreed. Render is reachable and already runs dev, so no new vendor is added (Render is approved for dev). Per-person tokens keep the Google key off China laptops and can be revoked one by one. Accepted: the relay is a public endpoint (mitigated by tokens, a model allow-list, a daily cap, and logs without bodies), and Google's terms restrict use from unsupported regions (dev with test data only, raised with Danish and Ad Council IT) |
 
 Bigger decisions get a short ADR in `docs/adr/NNNN-title.md` once they're approved.
 
@@ -1626,10 +1641,10 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 
 | ID | Question | Owner | Due |
 |---|---|---|---|
-| OPEN-1 | **Production AI provider, account, and key.** "Most likely Anthropic" (kickoff), direct or via Bedrock. **Anthropic is the only authorized AI vendor; OpenAI is not** (confirmed Oct 19). The eval's best value, Gemini 3.8 Flash, needs Google approved (OPEN-2); Claude Opus 5.5 meets G2 but costs about $806/month on product photos at 50K, over the cap. It must meet US-only data handling, no training, and spend controls (§7.7). **Progress (Oct 8):** the model arena is built (D24, BD3244-37) and the `anthropic` and `openai` adapters are ready; live runs wait on keys and the labeled set | Ad Council (Cat + AI lead) | Nov 13 |
-| OPEN-2 | ~~Does Ad Council IT accept ddd's Anthropic key for development?~~ **Answered (Oct 19):** Anthropic is authorized; OpenAI is not. **Still open:** will IT approve **Google (Gemini)** for production? **One production model, no backup model** (decided Oct 26). | Ad Council IT | Nov 13 |
+| OPEN-1 | **Production AI provider, account, and key.** "Most likely Anthropic" (kickoff), direct or via Bedrock. **Anthropic and Google (Gemini) are both authorized; OpenAI is not** (Oct 19, Nov 6, D37). Ad Council has created a Google Cloud project for Gemini on Vertex AI (BD3244-86). The eval's best value is Gemini 3.8 Flash; Claude Opus 5.5 meets G2 but costs about $806/month on product photos at 50K, over the cap. It must meet US-only data handling, no training, and spend controls (§7.7). **Progress (Oct 8):** the model arena is built (D24, BD3244-37) and the `anthropic` and `openai` adapters are ready; live runs wait on keys and the labeled set | Ad Council (Cat + AI lead) | Nov 13 |
+| OPEN-2 | ~~Does Ad Council IT accept ddd's Anthropic key for development? Will IT approve Google (Gemini) for production?~~ **Answered:** Anthropic is authorized (Oct 19); **Google (Gemini) is authorized** (Nov 6), on Vertex AI in Ad Council's own GCP project (D37). OpenAI is not. **One production model, no backup model** (decided Oct 26) | Ad Council IT | Closed |
 | OPEN-3 | **Usable AWS access**: the current IAM users can't list users or pipelines. We need scoped access (SSO ReadOnly + project admin), GitHub OIDC deploy role, account structure, and how the DevOps partner change affects CI/CD (§9.1). Danish's account waits on this | Ad Council IT / James S (via Danish → Cat) | Oct 16 |
-| OPEN-4 | Rendering mode: static export (recommended) or SSR/ISR? Spike P3 found no blocker for static | ddd → Ad Council | Oct 16 |
+| OPEN-4 | ~~Rendering mode: static export or SSR/ISR?~~ **Closed Nov 6:** server-rendered Next.js (ISR) on Fargate, no OpenNext (D36) | ddd | Closed |
 | OPEN-5 | Are uploaded images or typed text kept? (Recommendation: no.) Also: may we send **generic unmatched item names** (edible/inedible/compostable, filtered for people, pets, and personal data) to GA4 for the catalog-gap report? Nothing is stored by us (D35, §7.8). This affects the privacy policy, FAQ, the tool's privacy notice, and FR-8 | Ad Council legal | Nov 13 |
 | OPEN-6 | Are recipes in scope, and who owns them? | Ad Council | Oct 23 |
 | OPEN-7 | Fridge photos at launch? | Ad Council | Oct 23 |
@@ -1656,7 +1671,7 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | OPEN-28 | Images: ≈ 20 lifestyle (Ad Council iStock), ≈ 50 tip-library categories (stock first, AI backup), and ingredient images (AI approved). Final counts and delivery date | Colleen Miller / Ad Council | Nov 30 |
 | OPEN-29 | Feedback format for Ad Council and the coalition (Jira access or a spreadsheet) | Danish / Ad Council | Nov 20 |
 | OPEN-30 | **Seed content source**: Dan's export, earlier Ad Council campaign content, coalition spreadsheets, or a mix? Who approves the scraped content? | Ad Council content + ddd | Oct 16 |
-| OPEN-31 | **What "US-only" covers.** Our reading: AI-provider processing and retention, plus everything we store (all in `us-east-1`); CloudFront and WAF edges are global. If it must hold end to end, the tool API uses a regional API Gateway and regional WAF (§2.4, §9.1) | Ad Council legal (via Danish) | Nov 13 |
+| OPEN-31 | **What "US-only" covers.** Our reading: AI-provider processing and retention, plus everything we store (all in `us-east-1`); CloudFront and WAF edges are global. If it must hold end to end, the tool API is served from the ALB with a regional WAF on its own subdomain (§2.4, §9.1) | Ad Council legal (via Danish) | Nov 13 |
 | OPEN-32 | Is the **Copilot coding agent** (and its Jira integration) available in Ad Council's GitHub org and Jira? Who files copy changes after handoff, and can client editors file GitHub issues or Jira tickets? (§5.2) | Ad Council IT + ddd | Oct 16 |
 | OPEN-33 | **Figma file location.** ~~Transfer out of the MullenLowe org~~ (no file admins; Amber is the org admin; Colleen's ticket is open). **Workaround (Oct 6):** Art's first copy ([`IgstWize…`](https://www.figma.com/design/IgstWizeCgx5EsDVEJAhnM/)) had no edit access; the second copy, [`JZTCmehamc5QkAYw1lw5jW`](https://www.figma.com/design/JZTCmehamc5QkAYw1lw5jW/) in TBWA Worldwide (Full seat), works with MCP and is the **working copy** (§6.1). **Still open:** rename it from "Untitled" (and delete the unused first copy), and Colleen and Sam confirm all design edits move to it and the MullenLowe original is frozen | Colleen Miller / Sam + Art | Oct 16 |
 | OPEN-34 | **Missing tool-state designs.** Figma covers idle, input errors, loading, and success. It doesn't cover the 10-second "still working" message and Cancel, partial match, likely-ingredient chips (dish photo), no match, unreadable, rate-limited, unavailable (kill switch), or blocked recipe site (Spike P8, R20), or the dish-photo flow in general (§7.10, R19) | Colleen Miller | Oct 23 |
@@ -1682,7 +1697,7 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 - **Data-driven route:** a code route generated from the collections (Category, Search, tool results), with no Page entry.
 - **Site strings:** short UI text (labels, hints, aria text, the 404 page) kept in typed files in `apps/web/content/` and changed by PR (D21).
 - **Phase A / Phase B:** Render on ddd's account (dev, staging) / Ad Council AWS (staging, prod).
-- **Release pointer:** the CloudFront KeyValueStore entry that tells the edge which `releases/<build-id>/` to serve. Switching it is how we publish and roll back.
+- **ISR (incremental static regeneration):** Next.js caches a rendered page and re-renders it in the background after `revalidate` seconds (60 here), so publishes go live without a rebuild (D36).
 - **Kill switch / daily quota:** backend controls that turn the tool off or down to JSON-LD only (§7.6).
 - **Dark deploy:** production infrastructure and site live on their final hosts, with no public DNS pointing at them yet.
 - **UAT / Live:** the PM sheet's names for the staging and prod environments.
@@ -1695,8 +1710,8 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 - Figma: the working copy [`JZTCmehamc5QkAYw1lw5jW`](https://www.figma.com/design/JZTCmehamc5QkAYw1lw5jW/) (copied from "Food Waste I Design R2"). Pages: Desktop `0:1`, Mobile `1:3600`, Design System `1:5779`, Components `1:5992`, Mobile Specs `1:9756`, Desktop Specs `1:12636`
 - Strapi 5 docs: relations, REST populate, upload providers, webhooks, Preview, data transfer, pricing/plans
 - Render docs: service previews (PR previews), Blueprints, Postgres (free-tier expiry), Key Value, persistent disks, deploy hooks, environment groups, inbound IP rules
-- AWS: WAF Bot Control, Challenge/CAPTCHA, and JS integration; CloudFront OAC, Functions, and KeyValueStore; API Gateway HTTP API; Elastic Beanstalk Docker; ECS Fargate; IAM Identity Center; GitHub OIDC
-- Next.js: static export, `trailingSlash`. Tailwind CSS v4. shadcn/ui
+- AWS: WAF Bot Control, Challenge/CAPTCHA, and JS integration; CloudFront OAC and Functions; ECS Fargate and Service Connect; Application Load Balancer; CodePipeline, CodeBuild, and CodeConnections; IAM Identity Center
+- Next.js: standalone output, ISR, `trailingSlash`. Tailwind CSS v4. shadcn/ui
 - GitHub docs: Copilot coding agent, and the Copilot for Jira integration (public preview). Figma docs: MCP server plans and rate limits
 - schema.org: Recipe (`recipeIngredient`), FAQPage, BreadcrumbList, Organization, WebSite
 
@@ -1733,3 +1748,8 @@ IDs 1–10 match PROJECT.md §10, with some reworded after the kickoff. IDs 11 a
 | 0.3.24 | 2026-11-02 | Art Longbottom (with Claude) | **D33:** local dev may use a real AI dev key; CI stays on the mock |
 | 0.3.25 | 2026-11-03 | Art Longbottom (with Claude) | **D34:** the China team approves and merges its own PRs into `dev`; Art reviews after merge. Branch protection isn't available on the current GitHub plan, so the rules are followed by agreement. P4 passed |
 | 0.3.26 | 2026-11-04 | Art Longbottom (with Claude) | **D35: catalog gaps** (Ad Council request). A second, text-only `classifyGapTerms()` step sorts unmatched items into edible, inedible, and compostable, with personal data, people, and pets filtered out by the model and by code. **One stateless, idempotent request, with no data retention on our side.** The only output is a `tips_tool_gap` GA4 event. Behind `GAP_LOG`, off until legal answers OPEN-5. Updated FR-8, §5.2, §7.8, §8, OPEN-5 |
+| 0.3.27 | 2026-11-06 | Art Longbottom (with Claude) | **D36: containers on ECS Fargate** (Nov 6 architecture review): server-rendered Next.js (ISR, no OpenNext), tool API as route handlers in the same service, Strapi on Fargate, two ALBs behind CloudFront + WAF, CodePipeline per environment. No Lambda, API Gateway, Elastic Beanstalk, Express, DynamoDB, S3 site releases, or publish relay. New Phase B diagram (`docs/architecture/phase-b.svg`). Rewrote §4.1–4.4, §5.3–5.4, §6.2, §7.2, §7.6, §9.1–9.5; D2, D3, D5 superseded; OPEN-4 closed **D37:** Google (Gemini) authorized on Ad Council's own Vertex AI project (§3, §7.7, OPEN-1, OPEN-2 closed). |
+| 0.3.28 | 2026-11-06 | Art Longbottom (with Claude) | **D37 set up:** Ad Council's Google Cloud project `iconic-indexer-513915-t1` has Vertex AI on the US multi-region endpoint, one Gemini-only service account per environment, a bound API key for dev, and a WIF pool for staging and prod (§9.1, `vertex-gemini` runbook). The `gemini` adapter's Vertex mode is built (#22) |
+| 0.3.29 | 2026-11-11 | Art Longbottom (with Claude) | **D36 update (James S, Nov 10):** one shared ALB per environment with host rules, each tied to its CloudFront distribution's own secret origin header so the CMS IP set can't be bypassed; prod RDS non-bursting (`db.m8g.large`). Updated §4.1–4.3, §5.4, §7.6, §9.1, §9.5 |
+| 0.3.30 | 2026-11-12 | Art Longbottom (with Claude) | **D37 dev path:** no Vertex key for dev. Ad Council's org policy blocks service-account API keys for Vertex, and dev doesn't need one: dev and local stay on ddd's capped Gemini key (D25, D33); Vertex by WIF is for staging and prod only. The China team runs live AI locally over the Omnicom VPN (US exit). §9.1, §11.4, `vertex-gemini` runbook |
+| 0.3.31 | 2026-11-16 | Art Longbottom (with Claude) | **D38: Gemini relay on Render dev for the China team** (#46, BD3244-109), merged with D36/D37. The Phase A diagram shows the Next.js server, the tool service until the route handlers land, and the relay. The Omnicom VPN exits in the US, but Gemini wasn't reachable from the team's office network, so live calls go through the relay (§4.1, §11.4) |

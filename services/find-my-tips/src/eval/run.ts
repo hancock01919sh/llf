@@ -159,6 +159,7 @@ async function main(): Promise<void> {
       anthropicApiKey: config.anthropicApiKey,
       openaiApiKey: config.openaiApiKey,
       geminiApiKey: config.geminiApiKey,
+      geminiVertex: config.geminiVertex,
     }),
     model,
     promptVersion,

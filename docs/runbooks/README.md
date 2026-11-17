@@ -16,11 +16,13 @@ Every runbook has: purpose, when to use it, who, prerequisites, steps, verificat
 | [tool-kill-switch](./tool-kill-switch.md) | Turn Find My Tips off or to JSON-LD only. Includes a spend-cap breach |
 | [rotate-secrets](./rotate-secrets.md) | Scheduled rotation, someone leaves, or a leak |
 | [swap-ai-provider](./swap-ai-provider.md) | Change `AI_PROVIDER`, `AI_MODEL`, or the prompt version |
+| [vertex-gemini](./vertex-gemini.md) | Gemini on Ad Council's Vertex AI: project, service accounts, and WIF for staging and prod (D37) |
 | [restore-cms](./restore-cms.md) | Restore the CMS from a snapshot or export |
 | [cms-ip-allow-list](./cms-ip-allow-list.md) | Add or remove an IP for the CMS admin |
 | [strapi-patch-upgrade](./strapi-patch-upgrade.md) | Monthly Strapi patch upgrade |
 | [transfer-content](./transfer-content.md) | Move content between environments (`strapi transfer`) |
 | [render-dev](./render-dev.md) | Set up the Render dev environment, deploy it, or point it at cms-dev |
+| [aws-containers](./aws-containers.md) | Build and run the web, tool, and CMS images for AWS Fargate, and their runtime env |
 | [render-shutdown](./render-shutdown.md) | Close out Phase A after hypercare |
 
 ## Process docs (TDD §11.4)

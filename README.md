@@ -63,7 +63,7 @@ First e2e run: `pnpm --filter @llf/web exec playwright install chromium`. `pnpm 
 ## Stack
 Next.js + Tailwind CSS + shadcn/ui (static export, WCAG 2.1 AA) · Strapi 5 on Postgres · Find My Tips API (swappable AI provider) · GitHub Actions · GTM + GA4.
 
-**Hosting:** Phase A (now): local Docker Compose + **Render** (ddd account) for dev and staging. Phase B (Beta onward, and prod): **Ad Council AWS**: S3 + CloudFront + WAF, Strapi on EB or ECS + RDS, API Gateway + Lambda, AWS CDK. See [TDD §4](docs/TDD.md#4-system-architecture) and [§9.2](docs/TDD.md#92-target-aws-architecture-phase-b).
+**Hosting:** Phase A (now): local Docker Compose + **Render** (ddd account) for dev and staging. Phase B (Beta onward, and prod): **Ad Council AWS**: CloudFront + WAF in front of **ECS Fargate** (the Next.js server, which also serves the tool API, and Strapi) + RDS, deployed by CodePipeline with AWS CDK. No Lambda (D36). See [TDD §4](docs/TDD.md#4-system-architecture) and [§9.2](docs/TDD.md#92-target-aws-architecture-phase-b).
 
 **Branches:** `dev` → `staging` → `prod`, promoted by PR. Feature PRs target `dev`.
 

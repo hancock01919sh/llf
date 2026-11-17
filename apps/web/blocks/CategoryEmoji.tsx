@@ -16,16 +16,16 @@ export function CategoryEmoji(props: BlockProps<cmsType.component.CategoryEmojiD
       <div className="w-full mt-11.25 lg:max-w-332 lg:mx-auto">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-6">
           {emoji
-            .filter((item) => !!item.category)
+            .filter((item) => !!item.ingredient_type)
             .map((item) => (
               <div
-                key={item.category?.id + '' + item.category?.documentId}
+                key={item.ingredient_type?.id + '' + item.ingredient_type?.documentId}
                 className=" aspect-square border border-brand-forestflex items-center flex! flex-col justify-center rounded-md text-center  px-2"
               >
-                <TransitionLink href={`/tips/${item.category?.slug}`}>
-                  <span className="text-[88px] leading-[1.1]">{item.emoji}</span>
+                <TransitionLink href={`/tips/${item.ingredient_type?.slug}`}>
+                  <span className="text-[88px] leading-[1.1]">{item.ingredient_type?.emoji}</span>
                   <Typography variant="label" className="lg:text-subhead-sm line-clamp-2">
-                    {item.category?.title}
+                    {item.ingredient_type?.title}
                   </Typography>
                 </TransitionLink>
               </div>

@@ -23,7 +23,10 @@ All keys are optional and every one has a default. Empty values are treated as u
 | `PROMPT_VERSION` | `p1` | System prompt version (`src/extract/prompt.ts`). Add a new version instead of editing one that an eval has scored. |
 | `ANTHROPIC_API_KEY` | unset | Dev only: ddd's key, on Render dev and for `pnpm eval` (D17). Without it, `anthropic` returns `upstream_error`. Never logged. |
 | `OPENAI_API_KEY` | unset | TBWA's capped test key, for Render dev, `pnpm eval`, and `pnpm arena` only (OPEN-1). Without it, `openai` returns `upstream_error`. Never logged. |
-| `GEMINI_API_KEY` | unset | ddd's own key, for Render dev, `pnpm eval`, and `pnpm arena` only, with test data only (TDD D25). Without it, `gemini` returns `upstream_error`. Never logged. |
+| `GEMINI_API_KEY` | unset | ddd's capped Gemini API dev key (Render dev and local, D33; `pnpm arena`, D25). Test data only. Staging and prod use no key (Vertex by WIF, D37). Without a key or token, `gemini` returns `upstream_error`. Never logged. |
+| `GEMINI_VERTEX` | unset | `1` calls Gemini on Vertex AI in Ad Council's Google Cloud project (TDD D37) instead of the Gemini API. Needs `GOOGLE_CLOUD_PROJECT`. |
+| `GOOGLE_CLOUD_PROJECT` | unset | Ad Council's project, `iconic-indexer-513915-t1`. |
+| `GOOGLE_CLOUD_LOCATION` | `us` | Vertex location. `us` is the US multi-region endpoint (`aiplatform.us.rep.googleapis.com`). Never `global`: it gives no data residency. |
 | `AI_REASONING_EFFORT` | unset | `none` \| `minimal` \| `low` \| `medium` \| `high`. Sent to OpenAI as `reasoning_effort`; mapped to a Gemini `thinkingBudget` (0 / 0 / 1024 / 8192 / 24576). Anthropic and the mock ignore it. Unset uses the model's default. |
 | `FIND_TIPS_MODE` | `live` | Kill switch (TDD §7.7). `jsonld-only` makes no model calls; `off` returns 503 `unavailable`. |
 | `TOOL_PORT` / `PORT` | `8787` | `TOOL_PORT` takes precedence. Render sets `PORT`. |

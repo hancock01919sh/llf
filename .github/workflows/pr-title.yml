@@ -1,11 +1,11 @@
 # Every PR title starts with its Jira key, e.g. "BD3244-123: feat(web): hero block" (AGENTS.md,
-# TDD §9.3). Promotion PRs (dev → staging, staging → prod) are exempt. Required check on dev.
+# TDD §9.3). Promotion PRs (dev → stage, stage → prod) are exempt. Required check on dev.
 name: PR title
 
 on:
   pull_request:
     types: [opened, edited, synchronize, reopened]
-    branches: [dev, staging, prod]
+    branches: [dev, stage, prod]
 
 permissions: {}
 
@@ -21,7 +21,7 @@ jobs:
           HEAD: ${{ github.event.pull_request.head.ref }}
           BASE: ${{ github.event.pull_request.base.ref }}
         run: |
-          if { [ "$BASE" = staging ] && [ "$HEAD" = dev ]; } || { [ "$BASE" = prod ] && [ "$HEAD" = staging ]; }; then
+          if { [ "$BASE" = stage ] && [ "$HEAD" = dev ]; } || { [ "$BASE" = prod ] && [ "$HEAD" = stage ]; }; then
             echo "Promotion PR ($HEAD → $BASE): no Jira key needed."
             exit 0
           fi

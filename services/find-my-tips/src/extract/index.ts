@@ -1,6 +1,6 @@
 import { ExtractionResult } from '@llf/contracts/find-tips';
 
-import type { ProviderName } from '../config';
+import type { GeminiVertex, ProviderName } from '../config';
 import { ToolError } from '../http';
 import { downscaleImage } from '../image';
 import { createAnthropicProvider } from './anthropic';
@@ -25,6 +25,8 @@ export type ProviderOptions = {
   anthropicApiKey?: string | undefined;
   openaiApiKey?: string | undefined;
   geminiApiKey?: string | undefined;
+  geminiVertex?: GeminiVertex | undefined;
+  geminiBaseUrl?: string | undefined;
   fetch?: typeof fetch;
 };
 
@@ -48,6 +50,8 @@ export function createProvider(
     case 'gemini':
       return createGeminiProvider({
         apiKey: options.geminiApiKey,
+        ...(options.geminiVertex ? { vertex: options.geminiVertex } : {}),
+        ...(options.geminiBaseUrl ? { baseUrl: options.geminiBaseUrl } : {}),
         ...(options.fetch ? { fetch: options.fetch } : {}),
       });
     case 'bedrock':

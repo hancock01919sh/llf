@@ -5,15 +5,21 @@ import { pageMetadata } from '@/lib/seo';
 import { requirePage } from '@/lib/cms';
 import { PageTemplate } from '@/templates/PageTemplate';
 import { Suspense } from 'react';
-const page = await requirePage('search');
-/** Results depend on the fragment, so the page itself has nothing to index (TDD §6.5, §6.7). */
-export const metadata: Metadata = pageMetadata({
-  title: page.title,
-  path: '/search/',
-  noindex: true,
-});
 
-export default function SearchPage() {
+export const revalidate = 60;
+
+/** Results depend on the fragment, so the page itself has nothing to index (TDD §6.5, §6.7). */
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await requirePage('search');
+  return pageMetadata({
+    title: page.title,
+    path: '/search/',
+    noindex: true,
+  });
+}
+
+export default async function SearchPage() {
+  const page = await requirePage('search');
   return (
     <Suspense fallback={<div></div>}>
       <PageTemplate page={page} />

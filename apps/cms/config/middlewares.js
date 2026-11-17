@@ -15,7 +15,19 @@ module.exports = ({ env }) => [
   },
   'strapi::logger',
   'strapi::errors',
-  'strapi::security',
+  {
+    // The admin previews media from the S3 media domain in AWS (plugins.js); add it to the CSP.
+    name: 'strapi::security',
+    config: {
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          'img-src': ["'self'", 'data:', 'blob:', 'market-assets.strapi.io', env('MEDIA_BASE_URL', '')].filter(Boolean),
+          'media-src': ["'self'", 'data:', 'blob:', env('MEDIA_BASE_URL', '')].filter(Boolean),
+        },
+      },
+    },
+  },
   'strapi::cors',
   'strapi::poweredBy',
   'strapi::query',

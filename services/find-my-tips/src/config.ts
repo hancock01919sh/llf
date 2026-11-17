@@ -19,8 +19,22 @@ const EnvSchema = z.object({
   ANTHROPIC_API_KEY: z.string().trim().min(1).optional(),
   // TBWA's capped test key (dev and the eval arena only). Never logged or echoed.
   OPENAI_API_KEY: z.string().trim().min(1).optional(),
-  // ddd's own Gemini key (dev and the eval arena only, TDD D25). Never logged or echoed.
+  // Gemini key. With GEMINI_VERTEX=1 it is the Vertex AI key bound to the llf-gemini-dev
+  // service account in Ad Council's Google Cloud project (TDD D37; Render dev and local).
+  // Without it, ddd's own Gemini API key (eval arena only, TDD D25). Never logged or echoed.
   GEMINI_API_KEY: z.string().trim().min(1).optional(),
+  // Call Gemini on Vertex AI in Ad Council's Google Cloud project (TDD D37) instead of the
+  // Gemini API. Location `us` is the US multi-region endpoint; `global` has no residency.
+  GEMINI_VERTEX: z.enum(['0', '1', 'false', 'true']).optional(),
+  GOOGLE_CLOUD_PROJECT: z.string().trim().min(1).optional(),
+  GOOGLE_CLOUD_LOCATION: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9-]+$/)
+    .default('us'),
+  // Dev only: send Gemini calls through ddd's relay instead of Google (TDD D38, for developers
+  // who can't reach Google from mainland China). GEMINI_API_KEY is then the relay token.
+  GEMINI_BASE_URL: z.url().optional(),
   // Only sent to providers that support it (OpenAI reasoning models, Gemini thinking
   // budgets). Unset = provider default.
   AI_REASONING_EFFORT: z.enum(REASONING_EFFORTS).optional(),
@@ -44,6 +58,8 @@ const EnvSchema = z.object({
   HANDLER_TIMEOUT_MS: intFromEnv(25_000),
 });
 
+export type GeminiVertex = { project: string; location: string };
+
 export type Config = {
   mode: ToolMode;
   provider: ProviderName;
@@ -53,6 +69,8 @@ export type Config = {
   anthropicApiKey: string | undefined;
   openaiApiKey: string | undefined;
   geminiApiKey: string | undefined;
+  geminiVertex: GeminiVertex | undefined;
+  geminiBaseUrl: string | undefined;
   reasoningEffort: ReasoningEffort | undefined;
   port: number;
   trustedProxyHops: number;
@@ -78,6 +96,10 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     throw new Error(`find-my-tips: invalid environment (${fields})`);
   }
   const e = parsed.data;
+  const vertex = e.GEMINI_VERTEX === '1' || e.GEMINI_VERTEX === 'true';
+  if (vertex && !e.GOOGLE_CLOUD_PROJECT) {
+    throw new Error('find-my-tips: invalid environment (GOOGLE_CLOUD_PROJECT)');
+  }
   return {
     mode: e.FIND_TIPS_MODE,
     provider: e.AI_PROVIDER,
@@ -87,6 +109,11 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     anthropicApiKey: e.ANTHROPIC_API_KEY,
     openaiApiKey: e.OPENAI_API_KEY,
     geminiApiKey: e.GEMINI_API_KEY,
+    geminiVertex:
+      vertex && e.GOOGLE_CLOUD_PROJECT
+        ? { project: e.GOOGLE_CLOUD_PROJECT, location: e.GOOGLE_CLOUD_LOCATION }
+        : undefined,
+    geminiBaseUrl: e.GEMINI_BASE_URL,
     reasoningEffort: e.AI_REASONING_EFFORT,
     port: e.TOOL_PORT ?? e.PORT,
     trustedProxyHops: e.TRUSTED_PROXY_HOPS,

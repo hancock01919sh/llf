@@ -27,8 +27,13 @@ const block = {
   image,
 } satisfies cmsType.component._5050TextAndImageDeepRef;
 
+// Blocks are always rendered inside a ModuleBoundary <section> (TDD §8); useAdjacent walks to its siblings.
 const renderBlock = (overrides: Partial<cmsType.component._5050TextAndImageDeepRef> = {}) =>
-  render(<BlockTextAndImage55 block={{ ...block, ...overrides }} index={3} pageTitle="Home" />);
+  render(
+    <section>
+      <BlockTextAndImage55 block={{ ...block, ...overrides }} index={3} pageTitle="Home" />
+    </section>,
+  );
 
 describe('BlockTextAndImage55', () => {
   afterEach(cleanup);

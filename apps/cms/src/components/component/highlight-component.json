@@ -26,7 +26,9 @@
       "enum": [
         "forest-tint",
         "paper",
-        "forest"
+        "forest",
+        "terra",
+        "sand"
       ]
     },
     "link": {
@@ -53,6 +55,17 @@
         "files",
         "videos",
         "audios"
+      ]
+    },
+    "interiorBackgroundColor": {
+      "type": "enumeration",
+      "default": "terra",
+      "enum": [
+        "terra",
+        "forest",
+        "sand",
+        "mint",
+        "forest-tint"
       ]
     }
   },
