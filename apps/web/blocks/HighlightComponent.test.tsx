@@ -32,6 +32,7 @@ const block = {
   id: 163,
   description: 'Most of us don’t know where we’re losing food.',
   backgroundColor: 'forest-tint',
+  interiorBackgroundColor: 'sand',
   isFullwidth: true,
   link: [learnMore],
   mobileImage: null,

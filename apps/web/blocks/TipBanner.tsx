@@ -9,20 +9,21 @@ import { strings } from '@/content/strings';
 import { DownloadTemplate, type downloadTemplateDataProps } from '@/components/DownloadTemplate';
 import { useState } from 'react';
 export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeepRef>) {
-  const { tip, label } = props.block;
+  const { tip, label, interiorBackgroundColor } = props.block;
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadTemplateData, setDownloadTemplateData] =
     useState<downloadTemplateDataProps | null>(null);
   return (
     <div className="py-15 lg:py-25">
-      <div className="w-full rounded-md  text-ink-terra bg-surface-forest-tint ">
-        <Typography
-          variant="eyebrow"
-          className="lg:text-subhead-md bg-surface-forest-tint  border-2 border-ink-terra py-4 px-13 text-center rounded-md font-bold w-max mx-auto -translate-y-1/2  lg:w-[32%] lg:px-0 capitalize"
-          as="div"
+      <div data-surface={interiorBackgroundColor} className="w-full rounded-md  text-ink-terra ">
+        <div
+          data-surface={interiorBackgroundColor}
+          className=" py-4 px-13  lg:text-subhead-md border-2 border-ink-terratext-center rounded-md font-bold w-max mx-auto -translate-y-1/2  lg:w-[32%] lg:px-0 capitalize"
         >
-          {label || ''}
-        </Typography>
+          <Typography variant="eyebrow" className="" as="div">
+            {label}
+          </Typography>
+        </div>
 
         <div className="flex items-center flex-col px-8 pb-14.5 -mt-4 lg:flex-row lg:px-15 lg:justify-end">
           <TipBannerImage className="hidden lg:block" image={tip?.ingredient?.image} />

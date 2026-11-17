@@ -30,6 +30,15 @@
     "isFullwidth": {
       "type": "boolean",
       "default": false
+    },
+    "interiorBackgroundColor": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "forest-tint",
+        "sand",
+        "paper"
+      ]
     }
   },
   "config": {}

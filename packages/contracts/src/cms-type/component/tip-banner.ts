@@ -12,6 +12,7 @@ export const TipBanner = z.object({
   cta: nullish(z.array(z.lazy(() => LinksRef))),
   backgroundColor: z.enum(['terra', 'forest']),
   isFullwidth: nullish(z.boolean().default(false)),
+  interiorBackgroundColor: z.enum(['forest-tint', 'sand', 'paper']),
 });
 
 export const TipBannerRef = z.object({
@@ -20,6 +21,7 @@ export const TipBannerRef = z.object({
   label: z.string(),
   backgroundColor: z.enum(['terra', 'forest']),
   isFullwidth: nullish(z.boolean().default(false)),
+  interiorBackgroundColor: z.enum(['forest-tint', 'sand', 'paper']),
 });
 
 export const TipBannerDeepRef = z.object({
@@ -30,6 +32,7 @@ export const TipBannerDeepRef = z.object({
   cta: nullish(z.array(z.lazy((): z.ZodType<LinksDeepRef> => LinksDeepRef))),
   backgroundColor: z.enum(['terra', 'forest']),
   isFullwidth: nullish(z.boolean().default(false)),
+  interiorBackgroundColor: z.enum(['forest-tint', 'sand', 'paper']),
 });
 
 export type TipBannerDeepRef = z.infer<typeof TipBannerDeepRef>;

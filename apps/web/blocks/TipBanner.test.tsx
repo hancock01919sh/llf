@@ -19,6 +19,7 @@ const block = {
   label: 'Tip Of The Week',
   backgroundColor: 'terra',
   isFullwidth: false,
+  interiorBackgroundColor: 'sand',
   cta: [
     {
       label: 'Share',
@@ -94,6 +95,13 @@ describe('BlockTipBanner', () => {
     // The ingredient title shows in the banner copy and again in the generated template.
     expect(screen.getAllByText('Avocado').length).toBeGreaterThan(0);
     expect(screen.getAllByText("Gone brown? It's not gone bad.").length).toBeGreaterThan(0);
+  });
+
+  it('applies the CMS interior background to the banner and the label', () => {
+    const { container } = renderBlock({ interiorBackgroundColor: 'sand' });
+    // Both the banner and the floating label opt into the CMS surface (packages/ui tokens).
+    expect(container.querySelectorAll('[data-surface="sand"]')).toHaveLength(2);
+    expect(container.querySelectorAll('[data-surface="forest-tint"]')).toHaveLength(0);
   });
 
   it('renders the tip type badge and both CTAs', () => {
