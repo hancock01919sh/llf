@@ -23,6 +23,8 @@ envVarGroups:
         value: p3
       - key: FIND_TIPS_MODE
         value: live
+      # Dev uses ddd's Gemini API key (TDD D33). Vertex AI in Ad Council's project (D37) is for
+      # staging and prod, signed in through Workload Identity Federation, so GEMINI_VERTEX stays off.
       - key: QUOTA_DAILY_MODEL_CALLS
         value: '500'
 
@@ -105,7 +107,7 @@ services:
       # the web rewrite passes it on unchanged, so the visitor is 2nd from the right (PROOF_DOC P4).
       - key: TRUSTED_PROXY_HOPS
         value: '2'
-      # ddd's Gemini key (dev only, TDD D25). Never commit a value.
+      # Vertex AI dev key bound to llf-gemini-dev in Ad Council's project (TDD D37). Never commit a value.
       - key: GEMINI_API_KEY
         sync: false
 

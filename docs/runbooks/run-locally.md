@@ -42,9 +42,14 @@ To use a real model locally (TDD D33), add these to your git-ignored `.env`. Art
 ```sh
 AI_PROVIDER=gemini
 AI_MODEL=gemini-3.8-flash
-GEMINI_API_KEY=<from the secure share>
+PROMPT_VERSION=p3
+GEMINI_API_KEY=<ddd's dev key, from the secure share>
 ```
+This calls ddd's capped dev key on the Gemini API, the same setup as Render dev. Use **test inputs only**: no real receipts, names, or personal photos. Staging and prod use Gemini on Vertex AI in Ad Council's project without any key (TDD D37); you don't need that locally.
+
 Restart `pnpm dev`. From mainland China this doesn't work: see below. Tests and CI always use mock.
+
+The dev key has a small daily budget shared by the whole team. Switch back to `AI_PROVIDER=mock` when you aren't working on the model path.
 
 ### From mainland China (dev only, TDD D38)
 Google's API is blocked from mainland China. Use one of these instead of a Google key. Both are **dev only** and use **test inputs only**: no real receipts, names, or personal photos.

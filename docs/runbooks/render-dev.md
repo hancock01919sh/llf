@@ -55,7 +55,7 @@ The services were created through the Render API from the values in `render.yaml
    | Key | Service | Value |
    |---|---|---|
    | `ADMIN_IP_ALLOWLIST` | `llf-cms-dev` | Comma-separated IPs/CIDRs ([cms-ip-allow-list](./cms-ip-allow-list.md), OPEN-17). On dev it only guards the first-admin sign-up while `ADMIN_IP_OPEN=true` (`render.yaml`, D31); empty blocks the sign-up for everyone |
-   | `GEMINI_API_KEY` | `llf-tips-dev` | ddd's Gemini dev key (TDD D25). Leave empty to run the tool with no live model |
+   | `GEMINI_API_KEY` | `llf-tips-dev` | ddd's capped Gemini dev key (TDD D33). Leave empty to run the tool with no live model |
    | `BASIC_AUTH` | `llf-web-dev` | `user:password` for the whole dev site |
    | `GEMINI_API_KEY` | `llf-gemini-relay-dev` | The same ddd Gemini dev key as `llf-tips-dev` (TDD D38) |
    | `RELAY_TOKENS` | `llf-gemini-relay-dev` | One token per developer, comma-separated, each from `openssl rand -hex 24` (see [Gemini relay tokens](#gemini-relay-tokens-tdd-d38)) |
