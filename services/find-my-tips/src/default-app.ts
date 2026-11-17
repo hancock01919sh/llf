@@ -3,6 +3,7 @@ import { MemoryCacheStore, MemoryCounterStore } from './cache';
 import { createCatalogSource } from './catalog';
 import type { Config } from './config';
 import { createProvider } from './extract';
+import { createVertexAccessTokenSource } from './extract/vertex-token';
 import { stdoutLogger } from './log';
 
 /**
@@ -12,6 +13,9 @@ import { stdoutLogger } from './log';
  */
 export function createDefaultApp(config: Config): App {
   const logger = stdoutLogger;
+  // Vertex without a key (staging and prod on Fargate) needs an OAuth token source; dev keeps
+  // using the API key, so this is undefined there (TDD D37).
+  const geminiAccessToken = createVertexAccessTokenSource(config);
 
   const catalog = createCatalogSource({
     refreshMs: config.catalogRefreshMs,
@@ -30,6 +34,7 @@ export function createDefaultApp(config: Config): App {
       geminiApiKey: config.geminiApiKey,
       geminiVertex: config.geminiVertex,
       geminiBaseUrl: config.geminiBaseUrl,
+      ...(geminiAccessToken ? { geminiAccessToken } : {}),
     }),
     cache: new MemoryCacheStore(),
     counters: new MemoryCounterStore(),

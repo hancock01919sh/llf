@@ -27,6 +27,8 @@ export type ProviderOptions = {
   geminiApiKey?: string | undefined;
   geminiVertex?: GeminiVertex | undefined;
   geminiBaseUrl?: string | undefined;
+  /** Vertex OAuth token source for staging and prod, where no API key is present (TDD D37). */
+  geminiAccessToken?: (() => Promise<string>) | undefined;
   fetch?: typeof fetch;
 };
 
@@ -52,6 +54,7 @@ export function createProvider(
         apiKey: options.geminiApiKey,
         ...(options.geminiVertex ? { vertex: options.geminiVertex } : {}),
         ...(options.geminiBaseUrl ? { baseUrl: options.geminiBaseUrl } : {}),
+        ...(options.geminiAccessToken ? { getAccessToken: options.geminiAccessToken } : {}),
         ...(options.fetch ? { fetch: options.fetch } : {}),
       });
     case 'bedrock':
