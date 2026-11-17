@@ -1,7 +1,6 @@
 import type { ExtractedItem, IngredientMatch } from '@llf/contracts/find-tips';
-import type { Matcher, MatchTier } from '@llf/matching';
-
-const TIER_RANK: Record<MatchTier, number> = { strong: 0, good: 1, weak: 2 };
+import type { Matcher } from '@llf/matching';
+import { TIER_RANK } from '@llf/matching';
 
 export type MatchSummary = { matches: IngredientMatch[]; unmatchedCount: number };
 

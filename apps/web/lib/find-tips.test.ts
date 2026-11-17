@@ -23,6 +23,7 @@ const response = (overrides: Partial<ExtractResponse> = {}): ExtractResponse => 
   readable: true,
   matches: [{ slug: 'banana', title: 'Banana', inferred: false }],
   unmatchedCount: 0,
+  gaps: [],
   source: 'jsonld',
   catalogVersion: 'abc123',
   ...overrides,

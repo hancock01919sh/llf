@@ -215,7 +215,7 @@ export function createMatcher(
   };
 }
 
-const TIER_RANK: Record<MatchTier, number> = { strong: 0, good: 1, weak: 2 };
+export const TIER_RANK: Record<MatchTier, number> = { strong: 0, good: 1, weak: 2 };
 
 /** Matches each term, removes duplicates by slug (keeping the best tier), and counts misses. */
 export function matchTerms(

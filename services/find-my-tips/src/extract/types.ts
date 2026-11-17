@@ -1,4 +1,5 @@
 import type { IMAGE_MIME_TYPES } from '@llf/contracts/find-tips';
+// import type { GapResult } from '@llf/contracts/find-tips';
 
 export type ExtractionInput =
   | { kind: 'text'; text: string }
@@ -16,6 +17,12 @@ export type ExtractionContext = {
   model: string;
   promptVersion: string;
   reasoningEffort?: ReasoningEffort;
+};
+
+export type GapClassificationContext = {
+  signal: AbortSignal;
+  model: string;
+  promptVersion: string;
 };
 
 /**
@@ -40,6 +47,7 @@ export type ProviderOutput = { result: unknown; usage?: ExtractionUsage };
 export interface ExtractionProvider {
   readonly name: string;
   extract(input: ExtractionInput, ctx: ExtractionContext): Promise<ProviderOutput>;
+  classifyGaps?(terms: readonly string[], ctx: GapClassificationContext): Promise<ProviderOutput>;
 }
 
 export class ProviderNotConfiguredError extends Error {

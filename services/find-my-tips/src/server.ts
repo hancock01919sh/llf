@@ -22,6 +22,7 @@ const logger = stdoutLogger;
 const catalog = createCatalogSource({
   refreshMs: config.catalogRefreshMs,
   ...(config.catalogUrl ? { catalogUrl: config.catalogUrl } : {}),
+  ...(config.catalogToken ? { catalogToken: config.catalogToken } : {}),
   ...(config.catalogFile ? { catalogFile: config.catalogFile } : {}),
   onLoad: (catalogVersion) => logger({ requestId: '', event: 'catalog', catalogVersion }),
 });

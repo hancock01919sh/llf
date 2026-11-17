@@ -55,6 +55,52 @@ export type DetectedType = z.infer<typeof DetectedType>;
 export const ExtractSource = z.enum(['jsonld', 'model', 'cache']);
 export type ExtractSource = z.infer<typeof ExtractSource>;
 
+export const GAP_CLASSES = ['edible', 'inedible', 'compostable', 'exclude'] as const;
+export const GapClass = z.enum(GAP_CLASSES);
+export type GapClass = z.infer<typeof GapClass>;
+
+export const GapClassification = z.object({
+  name: z.string().min(1).max(200),
+  class: GapClass,
+});
+export type GapClassification = z.infer<typeof GapClassification>;
+
+export const GapResult = z.object({
+  items: z.array(GapClassification).max(60),
+});
+export type GapResult = z.infer<typeof GapResult>;
+
+export const CLASSIFY_GAPS_TOOL = {
+  name: 'classify_gaps',
+  description: 'Classify unmatched physical items for a food-waste catalog.',
+  inputSchema: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['items'],
+    properties: {
+      items: {
+        type: 'array',
+        maxItems: 60,
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['name', 'class'],
+          properties: {
+            name: { type: 'string', maxLength: 200 },
+            class: { type: 'string', enum: [...GAP_CLASSES] },
+          },
+        },
+      },
+    },
+  },
+} as const;
+
+export const GapTerm = z.object({
+  name: z.string().min(1).max(32),
+  class: z.enum(['edible', 'inedible', 'compostable']),
+});
+export type GapTerm = z.infer<typeof GapTerm>;
+
 export const IngredientMatch = z.object({
   slug: z.string().min(1),
   /** Catalog title from the CMS, never from the model. */
@@ -71,6 +117,7 @@ export const ExtractResponse = z.object({
   matches: z.array(IngredientMatch),
   /** A count only, never the raw strings. */
   unmatchedCount: z.number().int().nonnegative(),
+  gaps: z.array(GapTerm).max(20),
   source: ExtractSource,
   catalogVersion: z.string().min(1),
 });

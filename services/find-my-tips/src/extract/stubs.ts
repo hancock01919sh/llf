@@ -12,6 +12,9 @@ function stub(name: string): ExtractionProvider {
     async extract() {
       throw new ProviderNotConfiguredError(name);
     },
+    async classifyGaps() {
+      throw new ProviderNotConfiguredError(name);
+    },
   };
 }
 

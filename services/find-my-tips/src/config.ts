@@ -11,6 +11,7 @@ const intFromEnv = (fallback: number) => z.coerce.number().int().positive().defa
 const EnvSchema = z.object({
   // Phase A kill switch (TDD §7.7). Phase B reads an SSM parameter instead.
   FIND_TIPS_MODE: ToolMode.default('live'),
+  GAP_LOG: z.enum(['on', 'off']).default('off'),
   AI_PROVIDER: z.enum(PROVIDERS).default('mock'),
   AI_MODEL: z.string().trim().min(1).default('mock-1'),
   PROMPT_VERSION: z.string().trim().min(1).default('p1'),
@@ -45,6 +46,7 @@ const EnvSchema = z.object({
   // on dev). 0 = use the socket address, as in local dev. Decides the rate-limit key (§7.6).
   TRUSTED_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(0),
   CATALOG_URL: z.url().optional(),
+  CATALOG_TOKEN: z.string().trim().min(1).optional(),
   CATALOG_FILE: z.string().trim().min(1).optional(),
   CATALOG_REFRESH_MS: intFromEnv(60_000),
   QUOTA_DAILY_MODEL_CALLS: intFromEnv(3000),
@@ -62,6 +64,7 @@ export type Config = {
   mode: ToolMode;
   provider: ProviderName;
   model: string;
+  gapLog: boolean;
   promptVersion: string;
   anthropicApiKey: string | undefined;
   openaiApiKey: string | undefined;
@@ -72,6 +75,7 @@ export type Config = {
   port: number;
   trustedProxyHops: number;
   catalogUrl: string | undefined;
+  catalogToken: string | undefined;
   catalogFile: string | undefined;
   catalogRefreshMs: number;
   quotaDailyModelCalls: number;
@@ -100,6 +104,7 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     mode: e.FIND_TIPS_MODE,
     provider: e.AI_PROVIDER,
     model: e.AI_MODEL,
+    gapLog: e.GAP_LOG === 'on',
     promptVersion: e.PROMPT_VERSION,
     anthropicApiKey: e.ANTHROPIC_API_KEY,
     openaiApiKey: e.OPENAI_API_KEY,
@@ -113,6 +118,7 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     port: e.TOOL_PORT ?? e.PORT,
     trustedProxyHops: e.TRUSTED_PROXY_HOPS,
     catalogUrl: e.CATALOG_URL,
+    catalogToken: e.CATALOG_TOKEN,
     catalogFile: e.CATALOG_FILE,
     catalogRefreshMs: e.CATALOG_REFRESH_MS,
     quotaDailyModelCalls: e.QUOTA_DAILY_MODEL_CALLS,

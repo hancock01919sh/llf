@@ -100,7 +100,8 @@ describe('status endpoint', () => {
   it('turns an unexpected failure into a 500 without leaking details', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const broken: CatalogSource = {
-      get: () => Promise.reject(new Error('db password in message')),
+      version: () => Promise.reject(new Error('db password in message')),
+      matcher: async () => ({ match: () => null }),
     };
     const { app } = makeApp({}, { catalog: broken });
     const res = await app.handle(new Request(base + FIND_TIPS_API.status));
@@ -186,6 +187,40 @@ describe('extract: happy paths', () => {
     expect(logged).not.toContain('mystery');
     expect(logged).not.toContain('recipes.test');
     expect(logged).not.toContain('spinach');
+  });
+
+  it('classifies unmatched terms only when enabled and never logs their names', async () => {
+    const mock = createMockProvider();
+    const provider: ExtractionProvider = {
+      ...mock,
+      classifyGaps: async (terms) => ({
+        result: { items: terms.map(() => ({ name: 'dragonfruit', class: 'edible' })) },
+      }),
+    };
+    const { app, logs } = makeApp({ GAP_LOG: 'on' }, { provider });
+    const res = await app.handle(post({ inputType: 'text', text: 'milk, mystery' }));
+    const body = ExtractResponse.parse(await res.json());
+    expect(body.gaps).toEqual([{ name: 'dragonfruit', class: 'edible' }]);
+    expect(body.matches.map((item) => item.slug)).toContain('milk');
+    expect(JSON.stringify(logs)).not.toContain('dragonfruit');
+  });
+
+  it('returns the normal result when gap classification fails', async () => {
+    const mock = createMockProvider();
+    const provider: ExtractionProvider = {
+      ...mock,
+      classifyGaps: async () => {
+        throw new Error('private term should not be logged');
+      },
+    };
+    const { app, logs } = makeApp({ GAP_LOG: 'on' }, { provider });
+    const res = await app.handle(post({ inputType: 'text', text: 'milk, secret-term' }));
+    const body = ExtractResponse.parse(await res.json());
+    expect(res.status).toBe(200);
+    expect(body.matches.map((item) => item.slug)).toContain('milk');
+    expect(body.unmatchedCount).toBe(1);
+    expect(body.gaps).toEqual([]);
+    expect(JSON.stringify(logs)).not.toContain('secret-term');
   });
 });
 
