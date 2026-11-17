@@ -17,6 +17,7 @@ import { resultsHref } from '@/lib/paths';
 import type { cmsType } from '@llf/contracts';
 import { Loading } from './Loading';
 import { UIImage } from '@/components/UIImage';
+import { RichText } from '@/components/RichText';
 export function Tool(props: BlockProps<cmsType.component.ToolInput> & { className?: string }) {
   const { block } = props;
   const findTipsLabel = block.button?.[2]?.label as string;
@@ -268,7 +269,8 @@ export function Tool(props: BlockProps<cmsType.component.ToolInput> & { classNam
         </form>
       )}
 
-      <Typography variant="paragraph-sm">{props.block.copy}</Typography>
+      {/* <Typography variant="paragraph-sm">{props.block.copy}</Typography> */}
+      <RichText className="paragraph-sm" content={props.block.copy} />
       <Loading open={showLoading} />
     </div>
   );
