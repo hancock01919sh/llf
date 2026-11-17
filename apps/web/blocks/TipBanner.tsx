@@ -18,16 +18,19 @@ export function BlockTipBanner(props: BlockProps<cmsType.component.TipBannerDeep
       <div data-surface={interiorBackgroundColor} className="w-full rounded-md  text-ink-terra ">
         <div
           data-surface={interiorBackgroundColor}
-          className=" py-4 px-13  lg:text-subhead-md border-2 border-ink-terratext-center rounded-md font-bold w-max mx-auto -translate-y-1/2  lg:w-[32%] lg:px-0 capitalize"
+          className=" py-4 px-13  lg:text-subhead-md border-2 border-ink-terratext-center rounded-md font-bold w-max mx-auto -translate-y-1/2  lg:w-[21%] lg:px-0 capitalize"
         >
-          <Typography variant="eyebrow" className="" as="div">
+          <Typography variant="eyebrow" className="text-center" as="div">
             {label}
           </Typography>
         </div>
 
-        <div className="flex items-center flex-col px-8 pb-14.5 -mt-4 lg:flex-row lg:px-15 lg:justify-end">
-          <TipBannerImage className="hidden lg:block" image={tip?.ingredient?.image} />
-          <div className="mt-5 flex items-center flex-col lg:items-start lg:ml-33 lg:gap-sm lg:w-[58%] lg:mt-0">
+        <div className="grid grid-cols-1 lg:grid-cols-10 lg:gap-5 px-8 pb-14.5 -mt-4 lg:mt-0 lg:flex-row lg:px-15 lg:justify-end">
+          <TipBannerImage
+            className="hidden lg:block lg:col-span-4 mx-auto "
+            image={tip?.ingredient?.image}
+          />
+          <div className=" lg:col-start-5 lg:col-span-5 mt-5 flex items-center flex-col lg:items-start  lg:gap-sm lg:w-[58%] lg:mt-0">
             <TipBadge type={tip?.tip_type?.title?.toLowerCase() as TipBadgeType} />
             <Typography variant="headline-lg" className="mt-6 z-1 lg:mt-0">
               {tip?.ingredient?.title || ''}
