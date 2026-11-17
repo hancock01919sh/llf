@@ -101,6 +101,64 @@ describe('gap-runner', () => {
     });
   });
 
+  it('attributes personal drops to the model or to a filter rule', async () => {
+    // A model that labels every term edible would let names through, so the
+    // denylist has to remove them — that is the D35-critical attribution.
+    const gullible = {
+      ...createMockProvider(),
+      name: 'gullible',
+      async classifyGaps(terms: readonly string[]) {
+        return {
+          result: { items: terms.map((t) => ({ name: t.trim().toLowerCase(), class: 'edible' as const })) },
+        };
+      },
+    };
+
+    const result = await runGapCase(
+      {
+        id: 'attribution',
+        terms: [
+          { term: "Max's kibble", expectedClass: 'personal' },
+          { term: '555-123-4567', expectedClass: 'personal' },
+          { term: 'quinoa', expectedClass: 'edible' },
+        ],
+      },
+      { provider: gullible, model: 'gullible', catalog },
+    );
+
+    const byTerm = Object.fromEntries(result.model.map((row) => [row.term, row.droppedBy]));
+    expect(byTerm).toEqual({
+      "Max's kibble": 'filter',
+      '555-123-4567': 'filter',
+      quinoa: 'kept',
+    });
+    expect(result.leaks).toEqual([]);
+    expect(summarizeGapResults([result])).toMatchObject({
+      personalDroppedByFilter: 2,
+      personalDroppedByModel: 0,
+      privacyPassed: true,
+    });
+  });
+
+  it('counts personal drops the model made itself separately', async () => {
+    const result = await runGapCase(
+      {
+        id: 'model-excludes',
+        terms: [
+          { term: 'Sarah', expectedClass: 'personal' },
+          { term: 'insulin', expectedClass: 'personal' },
+        ],
+      },
+      { provider, model: 'mock', catalog },
+    );
+
+    expect(result.model.every((row) => row.droppedBy === 'model')).toBe(true);
+    expect(summarizeGapResults([result])).toMatchObject({
+      personalDroppedByFilter: 0,
+      personalDroppedByModel: 2,
+    });
+  });
+
   it('treats a missing classifier as a failed run, not a crash', async () => {
     const noclassify = {
       name: 'noclassify',

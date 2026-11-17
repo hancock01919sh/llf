@@ -7,10 +7,18 @@ import type { GapCase, GapExpectedClass } from './gap-set';
 import { KEPT_LABELS, PERSONAL_LABELS } from './gap-set';
 import type { CatalogSource } from '../catalog';
 
+/**
+ * Who removed a term: the model's own `exclude` class, a filter rule, or nobody.
+ * The distinction matters for D35: a term dropped by `model` never exercised the
+ * denylist, so a clean run full of `model` rows proves less than one full of
+ * `filter` rows.
+ */
+export type GapDrop = 'kept' | 'model' | 'filter' | 'error';
+
 export type GapCaseResult = {
   id: string;
   /** Raw model classification, one per input term. */
-  model: { term: string; expected: GapExpectedClass; modelClass: GapClass }[];
+  model: { term: string; expected: GapExpectedClass; modelClass: GapClass; droppedBy: GapDrop }[];
   /** After filterGapTerms. */
   kept: GapTerm[];
   /** True when a kept term corresponds to a `personal` ground-truth label. */
@@ -35,6 +43,10 @@ export type GapRunSummary = {
   wrongClass: number;
   totalKeptExpected: number;
   classAccuracy: number | null;
+  /** Personal terms the model itself marked `exclude`. */
+  personalDroppedByModel: number;
+  /** Personal terms the model treated as food but a filter rule removed. */
+  personalDroppedByFilter: number;
   /** The bar from D35 / TDD §7.8: zero personal leaks across every case. */
   privacyPassed: boolean;
   /** True when every case has zero leaks AND zero expected-missing AND zero wrong-class. */
@@ -53,6 +65,10 @@ export type GapRun = {
 
 const PERSONAL: ReadonlySet<GapExpectedClass> = PERSONAL_LABELS;
 const KEPT: ReadonlySet<GapExpectedClass> = KEPT_LABELS;
+
+function normalize(value: string): string {
+  return value.trim().toLowerCase().replace(/\s+/g, ' ');
+}
 
 /** Whole-word-ish containment; a kept "maxwell street mix" does not leak a planted "max". */
 function leaksPlanted(keptTerm: string, sourceTerm: string): boolean {
@@ -87,16 +103,25 @@ export async function runGapCase(
       promptVersion: GAP_PROMPT_VERSION,
     });
     const kept = filterGapTerms(classified, () => false, terms);
-    const modelOutput = classified.items.map((out, idx) => ({
-      term: terms[idx] ?? '',
-      expected: item.terms[idx]?.expectedClass ?? 'exclude',
-      modelClass: out.class,
-    }));
+    const keptIndex = new Map(kept.map((k) => [normalize(k.name), k]));
+    const modelOutput = classified.items.map((out, idx) => {
+      const term = terms[idx] ?? '';
+      const droppedBy: GapDrop = keptIndex.has(normalize(term))
+        ? 'kept'
+        : out.class === 'exclude'
+          ? 'model'
+          : 'filter';
+      return {
+        term,
+        expected: item.terms[idx]?.expectedClass ?? 'exclude',
+        modelClass: out.class,
+        droppedBy,
+      };
+    });
 
     // Leak = any kept term whose expected label is personal (i.e. the step let
     // something through that should never reach analytics).
     const leaks: string[] = [];
-    const keptIndex = new Map(kept.map((k) => [k.name.toLowerCase().replace(/\s+/g, ' '), k]));
     for (const label of item.terms) {
       if (!PERSONAL.has(label.expectedClass)) continue;
       // Check by normalized form of the *labeled* term and as a planted phrase
@@ -126,7 +151,7 @@ export async function runGapCase(
     let keptExpectedCorrect = 0;
     for (const label of item.terms) {
       if (PERSONAL.has(label.expectedClass)) continue;
-      const key = label.term.toLowerCase().replace(/\s+/g, ' ');
+      const key = normalize(label.term);
       const modelRow = modelOutput.find(
         (row) => row.term.toLowerCase().replace(/\s+/g, ' ') === key,
       );
@@ -160,7 +185,8 @@ export async function runGapCase(
       model: item.terms.map((t) => ({
         term: t.term,
         expected: t.expectedClass,
-        modelClass: 'exclude',
+        modelClass: 'exclude' as GapClass,
+        droppedBy: 'error' as GapDrop,
       })),
       kept: [],
       leaks: [],
@@ -193,6 +219,9 @@ export function summarizeGapResults(results: GapCaseResult[]): GapRunSummary {
     (s, r) => s + r.model.filter((row) => KEPT.has(row.expected)).length,
     0,
   );
+  const personalRows = results.flatMap((r) => r.model.filter((row) => PERSONAL.has(row.expected)));
+  const personalDroppedByModel = personalRows.filter((r) => r.droppedBy === 'model').length;
+  const personalDroppedByFilter = personalRows.filter((r) => r.droppedBy === 'filter').length;
   return {
     cases,
     passed: results.filter((r) => r.passed).length,
@@ -202,6 +231,8 @@ export function summarizeGapResults(results: GapCaseResult[]): GapRunSummary {
     wrongClass,
     totalKeptExpected,
     classAccuracy: classTotal === 0 ? null : totalKeptExpected / classTotal,
+    personalDroppedByModel,
+    personalDroppedByFilter,
     privacyPassed: leakedCases === 0,
     perfectPass: results.every((r) => r.passed) && missingKept === 0 && wrongClass === 0,
   };

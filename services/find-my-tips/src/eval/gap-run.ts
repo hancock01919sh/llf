@@ -51,6 +51,7 @@ function renderGapMarkdown(run: Awaited<ReturnType<typeof runGapSet>>, setVersio
     `- Set: \`${setVersion}\`, catalog \`${run.catalogVersion}\`, prompt \`${run.promptVersion}\``,
     `- Cases: ${s.cases}`,
     `- Personal leaks: **${s.leakedTerms}** across ${s.leakedCases} case(s) ${s.leakedCases === 0 ? '(✅ D35 bar)' : '(❌ D35 bar FAIL)'}`,
+    `- Personal terms dropped by a filter rule: ${s.personalDroppedByFilter}; by the model's own \`exclude\`: ${s.personalDroppedByModel} (only the former exercises the denylist)`,
     `- Expected terms missing from kept: ${s.missingKept}`,
     `- Non-personal wrong class: ${s.wrongClass}`,
     `- Class accuracy on edible/inedible/compostable: ${s.classAccuracy === null ? '—' : (s.classAccuracy * 100).toFixed(1) + '%'}`,
@@ -60,13 +61,23 @@ function renderGapMarkdown(run: Awaited<ReturnType<typeof runGapSet>>, setVersio
   ];
 
   if (s.cases > 0) {
-    lines.push('## Per-case', '', '| Case | Leaks | Missing | Wrong class | Latency |', '|---|---|---|---|---|');
+    lines.push(
+      '## Per-case',
+      '',
+      '| Case | Leaks | Missing | Wrong class | Personal dropped (filter/model) | Latency |',
+      '|---|---|---|---|---|---|',
+    );
     for (const result of run.results) {
       const leakCell = result.leaks.length === 0 ? '—' : `**${result.leaks.join(', ')}**`;
       const missingCell = result.missing.length === 0 ? '—' : result.missing.join(', ');
       const wrongCell = result.wrongClass.length === 0 ? '—' : result.wrongClass.join(', ');
+      const personal = result.model.filter((row) => row.expected === 'personal');
+      const personalCell =
+        personal.length === 0
+          ? '—'
+          : `${personal.filter((r) => r.droppedBy === 'filter').length} / ${personal.filter((r) => r.droppedBy === 'model').length}`;
       lines.push(
-        `| \`${result.id}\` | ${leakCell} | ${missingCell} | ${wrongCell} | ${result.latencyMs} ms |`,
+        `| \`${result.id}\` | ${leakCell} | ${missingCell} | ${wrongCell} | ${personalCell} | ${result.latencyMs} ms |`,
       );
     }
     lines.push('');
@@ -82,10 +93,10 @@ function renderGapMarkdown(run: Awaited<ReturnType<typeof runGapSet>>, setVersio
           lines.push(`_classifyGapTerms error: ${result.error}_`, '');
           continue;
         }
-        lines.push('| Term | Expected | Model | Kept |', '|---|---|---|---|');
+        lines.push('| Term | Expected | Model | Dropped by | Kept |', '|---|---|---|---|---|');
         for (const row of result.model) {
-          const kept = result.kept.find((k) =>
-            k.name.toLowerCase().replace(/\s+/g, ' ') === row.term.toLowerCase().replace(/\s+/g, ' '),
+          const kept = result.kept.find(
+            (k) => k.name.toLowerCase().replace(/\s+/g, ' ') === row.term.toLowerCase().replace(/\s+/g, ' '),
           );
           const keptCell = kept ? `${kept.class}` : '—';
           let marker = '';
@@ -94,7 +105,9 @@ function renderGapMarkdown(run: Awaited<ReturnType<typeof runGapSet>>, setVersio
           } else if (row.expected !== 'personal') {
             if (row.modelClass !== row.expected) marker = ' ❌';
           }
-          lines.push(`| \`${row.term}\` | ${row.expected} | ${row.modelClass}${marker} | ${keptCell} |`);
+          lines.push(
+            `| \`${row.term}\` | ${row.expected} | ${row.modelClass}${marker} | ${row.droppedBy} | ${keptCell} |`,
+          );
         }
         lines.push('');
       }
@@ -172,6 +185,7 @@ export async function main(argv: string[]): Promise<number> {
   const s = run.summary;
   write(
     `leaks ${s.leakedTerms} (${s.leakedCases} case${s.leakedCases === 1 ? '' : 's'}), ` +
+      `personal dropped by filter ${s.personalDroppedByFilter} / model ${s.personalDroppedByModel}, ` +
       `class accuracy ${s.classAccuracy === null ? 'n/a' : (s.classAccuracy * 100).toFixed(1) + '%'}, ` +
       `passed ${s.passed}/${s.cases}`,
   );
