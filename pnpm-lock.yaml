@@ -65,6 +65,9 @@ importers:
       '@llf/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@llf/find-my-tips':
+        specifier: workspace:*
+        version: link:../../services/find-my-tips
       '@llf/matching':
         specifier: workspace:*
         version: link:../../packages/matching

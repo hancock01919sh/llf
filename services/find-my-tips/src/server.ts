@@ -2,45 +2,19 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'node:ht
 
 import { BODY_MAX_BYTES } from '@llf/contracts/find-tips';
 
-import { createApp } from './app';
-import { MemoryCacheStore, MemoryCounterStore } from './cache';
-import { createCatalogSource } from './catalog';
 import { loadConfig } from './config';
-import { createProvider } from './extract';
+import { createDefaultApp } from './default-app';
 import { clientIp, errorResponse } from './http';
 import { stdoutLogger } from './log';
 
 /**
- * Node http adapter for Render (Phase A, TDD §7.3). Basic auth is enforced by
- * the web proxy in front of this service; this process is not public.
- * Stores are in-memory here; Render Key Value / DynamoDB adapters replace them
- * behind the same interfaces.
+ * Node http adapter for Render (Phase A, TDD §7.3). The app is built by `createDefaultApp`, which
+ * the Next route handler shares (BD3244-87). Basic auth is enforced by the web proxy in front of
+ * this service; this process is not public.
  */
 const config = loadConfig();
 const logger = stdoutLogger;
-
-const catalog = createCatalogSource({
-  refreshMs: config.catalogRefreshMs,
-  ...(config.catalogUrl ? { catalogUrl: config.catalogUrl } : {}),
-  ...(config.catalogToken ? { catalogToken: config.catalogToken } : {}),
-  ...(config.catalogFile ? { catalogFile: config.catalogFile } : {}),
-  onLoad: (catalogVersion) => logger({ requestId: '', event: 'catalog', catalogVersion }),
-});
-
-const app = createApp({
-  config,
-  catalog,
-  provider: createProvider(config.provider, {
-    anthropicApiKey: config.anthropicApiKey,
-    openaiApiKey: config.openaiApiKey,
-    geminiApiKey: config.geminiApiKey,
-    geminiVertex: config.geminiVertex,
-    geminiBaseUrl: config.geminiBaseUrl,
-  }),
-  cache: new MemoryCacheStore(),
-  counters: new MemoryCounterStore(),
-  logger,
-});
+const app = createDefaultApp(config);
 
 class BodyTooLargeError extends Error {}
 

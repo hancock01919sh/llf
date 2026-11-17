@@ -18,8 +18,9 @@ const TIPS_URL = (/^https?:\/\//.test(TIPS_TARGET) ? TIPS_TARGET : `http://${TIP
  * rendered on first request, so the build needs no Strapi. Basic auth, `/uploads/*` and the
  * trailing-slash 301 live in `middleware.ts`; `server.mjs` is retired.
  *
- * The tool API is still proxied to `services/find-my-tips` until its handlers move into
- * `/api/find-tips/*` route handlers (BD3244-87, tool part).
+ * The tool API now runs in `/api/find-tips/*` route handlers (BD3244-87). The rewrite to
+ * `services/find-my-tips` stays until the handlers pass on Render dev, then retires with
+ * `llf-tips-dev`.
  */
 export default function config(): NextConfig {
   return {
@@ -33,9 +34,16 @@ export default function config(): NextConfig {
     images: { unoptimized: true },
     reactStrictMode: true,
     poweredByHeader: false,
-    transpilePackages: ['@llf/contracts', '@llf/matching', '@llf/ui'],
+    transpilePackages: ['@llf/contracts', '@llf/find-my-tips', '@llf/matching', '@llf/ui'],
+    // `/api/find-tips/*` is a catch-all route handler, and `afterFiles` rewrites run *before*
+    // dynamic routes, so this has to be a `fallback` rewrite. It only catches `/api/*` paths with
+    // no route handler, and retires with `llf-tips-dev` (BD3244-87).
     async rewrites() {
-      return [{ source: '/api/:path*', destination: `${TIPS_URL}/api/:path*` }];
+      return {
+        beforeFiles: [],
+        afterFiles: [],
+        fallback: [{ source: '/api/:path*', destination: `${TIPS_URL}/api/:path*` }],
+      };
     },
   };
 }
