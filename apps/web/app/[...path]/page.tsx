@@ -1,34 +1,19 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getPageByPath, getPages, normalizePath } from '@/lib/cms';
+import { getPageByPath } from '@/lib/cms';
 import { pageMetadata } from '@/lib/seo';
 import { PageTemplate } from '@/templates/PageTemplate';
-
-/** Paths with their own route. A CMS page at one of these renders there, not here (TDD §6.1). */
-const RESERVED = ['', 'find-my-tips', 'tips', 'search', 'find-my-tips/results'];
-
-function isReserved(path: string): boolean {
-  return RESERVED.some(
-    (reserved) => path === reserved || (reserved && path.startsWith(`${reserved}/`)),
-  );
-}
 
 interface Params {
   params: Promise<{ path: string[] }>;
 }
 
-export const revalidate = 60;
+// This route can call notFound(), which renders the dynamic not-found boundary. A static ISR
+// route can't switch to dynamic at runtime, so force dynamic and let @/lib/cms cache for 60s.
+export const dynamic = 'force-dynamic';
 
 // A page created after the build renders on first request instead of 404-ing (TDD D36).
 export const dynamicParams = true;
-
-export async function generateStaticParams() {
-  const pages = await getPages();
-  return pages
-    .map((page) => normalizePath(page.path))
-    .filter((path) => !isReserved(path))
-    .map((path) => ({ path: path.split('/') }));
-}
 
 async function load({ params }: Params) {
   const { path } = await params;
