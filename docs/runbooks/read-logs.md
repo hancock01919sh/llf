@@ -41,7 +41,7 @@ Pending BD3244-15.
 
 ## AWS (Phase B)
 Pending BD3244-6.
-- **CloudWatch Logs** for the `extract`, `status`, and `publish-relay` Lambdas, and for the Strapi task or instance. Search by `requestId` with Logs Insights.
+- **CloudWatch Logs** for the ECS services: `web` (pages, `/api/find-tips/*`, and the publish hook) and `cms` (Strapi). Search by `requestId` with Logs Insights.
 - **GitHub Actions** for builds and deploys.
 - **CloudFront and WAF logs** are kept 30 days, with the query string and `authorization` / `cookie` headers redacted. User text never goes in a URL.
 

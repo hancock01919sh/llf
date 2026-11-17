@@ -15,7 +15,7 @@
 > - **Tailwind CSS + shadcn/ui**, WCAG 2.1 AA.
 > - **CMS admin on its own domain behind an IP allow-list.**
 > - **Branches `dev` → `staging` → `prod`.** The repo moves to Ad Council's GitHub by Oct 16; the China team works from Jira tickets.
-> - **AI in dev runs on ddd's Anthropic key** (Anthropic is the only authorized AI vendor, confirmed Oct 19; OpenAI is not); the production provider is still OPEN-1 ("most likely Anthropic" at kickoff).
+> - **AI in dev runs on ddd's Anthropic key** (Anthropic was authorized Oct 19 and Google (Gemini) on Nov 6, on Vertex AI in Ad Council's own GCP project, TDD D37; OpenAI is not); the production provider is still OPEN-1 ("most likely Anthropic" at kickoff).
 > - **Hybrid content model (D21).** The CMS holds collections, Global, Tool Copy, long-form rich text, and asset slots (such as hero images). Site strings live in typed files in `apps/web/content/`; designed routes use code templates; a dynamic zone of blocks is used only for generic pages. There's **no Microcopy type**. Copy changes to strings go issue → Copilot coding agent → PR → Render preview (OPEN-32). This supersedes the Strings and Page notes in §5 below.
 > - The **V2 timeline**, QA rounds, and decision deadlines are in [TDD §12](./TDD.md#12-delivery-plan).
 

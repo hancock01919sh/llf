@@ -19,7 +19,7 @@ Tech lead on call (ddd). Editors report the problem. They don't fix it.
 
 ## How publishing works
 - **Phase A (Render):** a Strapi webhook calls the Render **deploy hook** for the environment's `llf-web-<env>` service. Render rebuilds. A failed build leaves the previous deploy live.
-- **Phase B (AWS):** Strapi webhook → `publish-relay` Lambda → GitHub `repository_dispatch` (`content-published`) → `deploy-site.yml` builds, uploads `releases/<build-id>/`, and switches the release pointer. A failed build leaves the previous release live. **A bad publish never reaches production.**
+- **Phase B (AWS, D36):** no rebuild. Pages refresh through ISR within about a minute, and Strapi's webhook calls `POST /api/hooks/publish` on the Next.js service, which invalidates CloudFront. If a page's content fails Zod validation, that page keeps serving its last good version and a CloudWatch alarm fires: check the web service's logs for the failing entry, fix it in the CMS, and publish again.
 
 ## Steps
 

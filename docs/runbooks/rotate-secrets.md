@@ -52,7 +52,7 @@ A tech lead, with James Steele for AWS. Ad Council IT owns the client's AI accou
 
 ### C. An AI provider key
 1. In the provider console, create a new key in the **same project or workspace** (with the same spend limit).
-2. Set it in the env group or Secrets Manager. Render restarts the tool service. On AWS, redeploy or wait for the Lambda to pick it up. Pending BD3244-6.
+2. Set it in the env group or Secrets Manager. Render restarts the service. On AWS, force a new deployment of the ECS service so the tasks pick it up. Pending BD3244-6.
 3. Verify with a test input (see [swap-ai-provider](./swap-ai-provider.md) verification).
 4. Revoke the old key in the provider console.
 
