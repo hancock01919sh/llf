@@ -1,5 +1,4 @@
 'use client';
-import { Typography } from '@/components/Typography';
 import {
   useEffect,
   useId,
