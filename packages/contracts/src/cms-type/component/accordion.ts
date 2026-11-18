@@ -12,6 +12,7 @@ export const Accordion = z.object({
   backgroundColor: z.enum(['forest-tint']),
   isFullwidth: nullish(z.boolean().default(false)),
   title: z.lazy(() => TitleRef),
+  firstItemExpand: z.boolean().default(true),
 });
 
 export const AccordionRef = z.object({
@@ -20,6 +21,7 @@ export const AccordionRef = z.object({
   subTitle: z.string(),
   backgroundColor: z.enum(['forest-tint']),
   isFullwidth: nullish(z.boolean().default(false)),
+  firstItemExpand: z.boolean().default(true),
 });
 
 export const AccordionDeepRef = z.object({
@@ -30,6 +32,7 @@ export const AccordionDeepRef = z.object({
   backgroundColor: z.enum(['forest-tint']),
   isFullwidth: nullish(z.boolean().default(false)),
   title: z.lazy((): z.ZodType<TitleDeepRef> => TitleDeepRef),
+  firstItemExpand: z.boolean().default(true),
 });
 
 export type AccordionDeepRef = z.infer<typeof AccordionDeepRef>;

@@ -16,7 +16,7 @@ export function ToolHeader(props: BlockProps<cmsType.component.ToolInput>) {
             </Typography>
             <BlockTitle title={props.block.title} moduleIndex={props.index} className="mt-10" />
 
-            <Typography variant="subhead-lg" className="font-bold mt-5">
+            <Typography variant="subhead-lg" className="font-bold mt-5 lg:font-normal">
               {props.block.description}
             </Typography>
             <Tool {...props} className="mt-10" />

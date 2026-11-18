@@ -96,7 +96,9 @@ function renderGapMarkdown(run: Awaited<ReturnType<typeof runGapSet>>, setVersio
         lines.push('| Term | Expected | Model | Dropped by | Kept |', '|---|---|---|---|---|');
         for (const row of result.model) {
           const kept = result.kept.find(
-            (k) => k.name.toLowerCase().replace(/\s+/g, ' ') === row.term.toLowerCase().replace(/\s+/g, ' '),
+            (k) =>
+              k.name.toLowerCase().replace(/\s+/g, ' ') ===
+              row.term.toLowerCase().replace(/\s+/g, ' '),
           );
           const keptCell = kept ? `${kept.class}` : '—';
           let marker = '';
@@ -150,12 +152,9 @@ export async function main(argv: string[]): Promise<number> {
     values.set ?? fileURLToPath(new URL('../../../../eval/sets/gaps-v1.json', import.meta.url)),
   );
   const catalogPath = fromCwd(
-    values.catalog ??
-      fileURLToPath(new URL('../fixtures/catalog.json', import.meta.url)),
+    values.catalog ?? fileURLToPath(new URL('../fixtures/catalog.json', import.meta.url)),
   );
-  const outDir = fromCwd(
-    values.out ?? fileURLToPath(new URL('../../../../eval', import.meta.url)),
-  );
+  const outDir = fromCwd(values.out ?? fileURLToPath(new URL('../../../../eval', import.meta.url)));
   const strict = Boolean(values.strict);
 
   const provider = createProvider(config.provider);

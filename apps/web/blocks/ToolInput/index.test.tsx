@@ -21,7 +21,18 @@ const block = {
   cardDescription:
     'Three simple steps between your ingredients and the tips that help you use them better.',
   placeholder: 'Enter a recipe URL or video link',
-  copy: 'Works with any recipe site or video link from YouTube, TikTok, or Instagram.',
+  // `copy` is Strapi Blocks rich text (Block.array()), not a plain string.
+  copy: [
+    {
+      type: 'paragraph',
+      children: [
+        {
+          type: 'text',
+          text: 'Works with any recipe site or video link from YouTube, TikTok, or Instagram.',
+        },
+      ],
+    },
+  ],
   backgroundColor: 'paper',
   isFullwidth: true,
   title: { copy: 'Input ingredients,  get tips, waste less', header: 'h1' },

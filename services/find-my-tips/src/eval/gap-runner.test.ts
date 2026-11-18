@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 import { createMockProvider } from '../extract/mock';
+import type { ExtractionProvider } from '../extract';
 import { staticCatalogSource } from '../catalog';
 import { runGapCase, runGapSet, summarizeGapResults } from './gap-runner';
 import { loadGapSet } from './gap-set';
@@ -33,7 +34,11 @@ describe('gap-runner', () => {
     expect(result.missing).toEqual([]);
     expect(result.wrongClass).toEqual([]);
     expect(result.passed).toBe(true);
-    expect(result.kept.map((g) => g.name).sort()).toEqual(['dragonfruit', 'orange peel', 'plastic wrap']);
+    expect(result.kept.map((g) => g.name).sort()).toEqual([
+      'dragonfruit',
+      'orange peel',
+      'plastic wrap',
+    ]);
   });
 
   it('reports wrong-class when expected edible term is dropped because model misclassifies', async () => {
@@ -43,7 +48,7 @@ describe('gap-runner', () => {
     const misclass = {
       ...createMockProvider(),
       name: 'misclass',
-      async classifyGaps(terms: readonly string[], ctx: any) {
+      async classifyGaps(terms: readonly string[], _ctx: unknown) {
         return {
           result: {
             items: terms.map((t) => ({
@@ -109,7 +114,9 @@ describe('gap-runner', () => {
       name: 'gullible',
       async classifyGaps(terms: readonly string[]) {
         return {
-          result: { items: terms.map((t) => ({ name: t.trim().toLowerCase(), class: 'edible' as const })) },
+          result: {
+            items: terms.map((t) => ({ name: t.trim().toLowerCase(), class: 'edible' as const })),
+          },
         };
       },
     };
@@ -163,9 +170,9 @@ describe('gap-runner', () => {
     const noclassify = {
       name: 'noclassify',
       async extract() {
-        return { result: {} as any, usage: { inputTokens: 0, outputTokens: 0 } };
+        return { result: {}, usage: { inputTokens: 0, outputTokens: 0 } };
       },
-    } as any;
+    } as unknown as ExtractionProvider;
     await expect(
       runGapCase(
         { id: 'bad', terms: [{ term: 'quinoa', expectedClass: 'edible' }] },

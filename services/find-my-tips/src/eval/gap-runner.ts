@@ -147,8 +147,6 @@ export async function runGapCase(
     // important signal because it means a real gap was hidden from analytics.
     const missing: string[] = [];
     const wrongClass: string[] = [];
-    let keptExpectedCount = 0;
-    let keptExpectedCorrect = 0;
     for (const label of item.terms) {
       if (PERSONAL.has(label.expectedClass)) continue;
       const key = normalize(label.term);
@@ -156,16 +154,9 @@ export async function runGapCase(
         (row) => row.term.toLowerCase().replace(/\s+/g, ' ') === key,
       );
       const modelClass = modelRow?.modelClass ?? 'exclude';
-      const modelDiffers = modelClass !== label.expectedClass;
-      if (modelDiffers) wrongClass.push(label.term);
-      if (KEPT.has(label.expectedClass)) {
-        keptExpectedCount += 1;
-        const found = keptIndex.get(key);
-        if (!found) {
-          missing.push(label.term);
-        } else if (found.class === label.expectedClass) {
-          keptExpectedCorrect += 1;
-        }
+      if (modelClass !== label.expectedClass) wrongClass.push(label.term);
+      if (KEPT.has(label.expectedClass) && !keptIndex.has(key)) {
+        missing.push(label.term);
       }
     }
 
@@ -209,7 +200,8 @@ export function summarizeGapResults(results: GapCaseResult[]): GapRunSummary {
     const exp = r.model.filter((row) => KEPT.has(row.expected));
     const correct = exp.filter((row) => {
       const kept = r.kept.find(
-        (k) => k.name.toLowerCase().replace(/\s+/g, ' ') === row.term.toLowerCase().replace(/\s+/g, ' '),
+        (k) =>
+          k.name.toLowerCase().replace(/\s+/g, ' ') === row.term.toLowerCase().replace(/\s+/g, ' '),
       );
       return kept && kept.class === row.expected;
     });
@@ -245,7 +237,10 @@ export function fingerprintRun(
   cases: GapCaseResult[],
 ): string {
   const payload = cases
-    .map((c) => `${c.id}:leaks=${c.leaks.length},missing=${c.missing.length},wrong=${c.wrongClass.length}`)
+    .map(
+      (c) =>
+        `${c.id}:leaks=${c.leaks.length},missing=${c.missing.length},wrong=${c.wrongClass.length}`,
+    )
     .join('|');
   return createHash('sha256')
     .update(`${provider}|${model}|${catalogVersion}|${payload}`)
@@ -262,9 +257,7 @@ export async function runGapSet(
   },
 ): Promise<GapRun> {
   const catalogVersion = await options.catalog.version();
-  const results = await Promise.all(
-    set.cases.map((item) => runGapCase(item, options)),
-  );
+  const results = await Promise.all(set.cases.map((item) => runGapCase(item, options)));
   const summary = summarizeGapResults(results);
   return {
     results,
