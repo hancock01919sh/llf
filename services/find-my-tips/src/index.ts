@@ -10,5 +10,5 @@ export {
 export { loadConfig, PROVIDERS, type Config, type ProviderName } from './config';
 export * from './extract';
 export { classifyGapTerms, filterGapTerms, GAP_PROMPT_VERSION } from './gaps';
-export { ToolError, ERROR_STATUS } from './http';
+export { clientIp, ERROR_STATUS, ToolError } from './http';
 export { silentLogger, stdoutLogger, type LogFields, type Logger } from './log';

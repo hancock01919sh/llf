@@ -1,27 +1,41 @@
 #!/usr/bin/env node
-// Dev only (TDD D38). Stands in for the local tool and forwards `/api/*` to the Render dev site,
-// adding its basic auth, so `pnpm dev:fe:remote` gets live results without a model key on this
-// laptop. Built for the China team: Google's API is unreachable from mainland China, but Render
-// dev isn't. Next.js rewrites can't add an auth header, so this sits between them.
+// Dev only (TDD D39). Stands in for the local tool and forwards `/api/*` to a remote Find My Tips
+// API, so `pnpm dev:fe:remote` gets live results without a model key on this laptop. Built for the
+// China team: Google's API is unreachable from mainland China, but Render dev isn't. Next.js
+// rewrites can't add an auth header, so this sits between them.
 //
-//   REMOTE_API_URL   the Render dev site, e.g. https://llf-web-dev.onrender.com
-//   REMOTE_API_AUTH  "user:pass" for that site (the dev BASIC_AUTH, from the secure share)
-//   TOOL_PORT        where to listen; the web dev server already proxies /api/* here (8787)
+// The easy path, the Gemini proxy (same two lines as for tool work):
+//   GEMINI_PROXY_URL    e.g. https://llf-gemini-relay-dev.onrender.com
+//   GEMINI_PROXY_TOKEN  your personal token (from Art's secure share), sent as a Bearer token
+// Or the Render dev site itself:
+//   REMOTE_API_URL      e.g. https://llf-web-dev.onrender.com
+//   REMOTE_API_AUTH     "user:pass" for that site (the dev BASIC_AUTH)
+//   TOOL_PORT           where to listen; the web dev server already proxies /api/* here (8787)
 import { createServer } from 'node:http';
 
-const target = (process.env.REMOTE_API_URL ?? '').replace(/\/+$/, '');
-const auth = process.env.REMOTE_API_AUTH ?? '';
+const site = process.env.REMOTE_API_URL && process.env.REMOTE_API_AUTH;
+const target = ((site ? process.env.REMOTE_API_URL : process.env.GEMINI_PROXY_URL) ?? '').replace(
+  /\/+$/,
+  '',
+);
+const credential = (site ? process.env.REMOTE_API_AUTH : process.env.GEMINI_PROXY_TOKEN) ?? '';
 const port = Number(process.env.TOOL_PORT ?? '8787');
 const MAX_BYTES = 6 * 1024 * 1024;
 
-if (!/^(https:\/\/|http:\/\/(localhost|127\.0\.0\.1)[:/])/.test(target) || !auth.includes(':')) {
+if (
+  !/^(https:\/\/|http:\/\/(localhost|127\.0\.0\.1)[:/])/.test(target) ||
+  !credential ||
+  (site && !credential.includes(':'))
+) {
   console.error(
-    'remote-api: set REMOTE_API_URL (https://…) and REMOTE_API_AUTH (user:pass) in .env',
+    'remote-api: set GEMINI_PROXY_URL and GEMINI_PROXY_TOKEN in .env (or REMOTE_API_URL and REMOTE_API_AUTH)',
   );
   process.exit(1);
 }
 
-const authorization = `Basic ${Buffer.from(auth).toString('base64')}`;
+const authorization = site
+  ? `Basic ${Buffer.from(credential).toString('base64')}`
+  : `Bearer ${credential}`;
 const PASS_HEADERS = ['content-type', 'accept', 'x-request-id'];
 
 const server = createServer(async (req, res) => {
