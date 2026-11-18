@@ -111,24 +111,30 @@ services:
       - key: GEMINI_API_KEY
         sync: false
 
-  # Dev-only Gemini relay for developers who can't reach Google from mainland China (TDD D38).
-  # Public, but every call needs a relay token; it swaps in ddd's dev key and forwards
-  # generateContent for allow-listed models only. Never copied to staging or prod.
+  # Dev-only Gemini proxy for developers who can't reach Google from mainland China (TDD D39).
+  # Keeps the relay's service name and URL so existing tokens and .env files keep working. Public,
+  # but every route except /healthz needs a personal token. Serves the full Find My Tips API
+  # (Gemini only) and relays generateContent for a locally run tool. Never on staging or prod.
   - type: web
     name: llf-gemini-relay-dev
     runtime: node
     plan: 0.5c-512mb
     branch: dev
     autoDeployTrigger: off
-    buildCommand: npx --yes pnpm@9.15.2 install --frozen-lockfile --filter @llf/gemini-relay...
-    startCommand: cd services/gemini-relay && node_modules/.bin/tsx src/server.ts
+    buildCommand: npx --yes pnpm@9.15.2 install --frozen-lockfile --filter @llf/gemini-proxy...
+    startCommand: cd services/gemini-proxy && node_modules/.bin/tsx src/server.ts
     healthCheckPath: /healthz
     envVars:
+      # The tool settings (Gemini 3.8 Flash, p3, thinking off, the daily quota) shared with tips.
+      - fromGroup: llf-dev-tool
+      # Render's proxy appends the caller's IP and then Cloudflare's edge IP (PROOF_DOC P4).
+      - key: TRUSTED_PROXY_HOPS
+        value: '2'
       - key: RELAY_MODELS
         value: gemini-3.8-flash
       - key: RELAY_DAILY_CALLS
         value: '300'
-      # ddd's capped Gemini dev key (TDD D33), the same key as llf-tips-dev. Never commit a value.
+      # ddd's capped Gemini dev key (TDD D33). Never commit a value.
       - key: GEMINI_API_KEY
         sync: false
       # One random token per developer, comma-separated (openssl rand -hex 24). Share each one
