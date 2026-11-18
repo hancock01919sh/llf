@@ -16,7 +16,8 @@
     "arena": "tsx --env-file-if-exists=../../.env src/eval/arena-run.ts",
     "rescore": "tsx src/eval/rescore-run.ts",
     "soak": "tsx --env-file-if-exists=../../.env src/eval/soak-run.ts",
-    "catalog-diff": "tsx src/eval/catalog-diff-run.ts"
+    "catalog-diff": "tsx src/eval/catalog-diff-run.ts",
+    "eval:gaps": "tsx --env-file-if-exists=../../.env src/eval/gap-run.ts"
   },
   "dependencies": {
     "@llf/contracts": "workspace:*",
