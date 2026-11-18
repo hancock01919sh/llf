@@ -26,6 +26,7 @@ export function BlockAccordion(props: BlockProps<cmsType.component.Accordion>) {
           <AccordionItemComponent
             key={item.label}
             {...item}
+            index={_index}
             isExpanded={item.isExpanded}
             toggleIsExpanded={(isExpanded) => {
               setData((prev) =>
