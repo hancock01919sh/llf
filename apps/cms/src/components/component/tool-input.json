@@ -28,9 +28,6 @@
     "placeholder": {
       "type": "string"
     },
-    "copy": {
-      "type": "string"
-    },
     "button": {
       "type": "component",
       "component": "shared.links",
@@ -62,6 +59,10 @@
       "type": "component",
       "component": "shared.title",
       "repeatable": false,
+      "required": true
+    },
+    "copy": {
+      "type": "blocks",
       "required": true
     }
   },

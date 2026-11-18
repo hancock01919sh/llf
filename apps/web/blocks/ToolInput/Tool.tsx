@@ -17,12 +17,14 @@ import { resultsHref } from '@/lib/paths';
 import type { cmsType } from '@llf/contracts';
 import { Loading } from './Loading';
 import { UIImage } from '@/components/UIImage';
+import { RichText } from '@/components/RichText';
 export function Tool(props: BlockProps<cmsType.component.ToolInput> & { className?: string }) {
   const { block } = props;
   const findTipsLabel = block.button?.[2]?.label as string;
   const tabs = block.button?.map((item) => item.label).slice(0, 2) || [];
   const ids = { base: useId() };
   const tabRefs = useRef<Partial<Record<number, HTMLButtonElement | null>>>({});
+  const urlInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [linkActive, setLinkActive] = useState(false);
@@ -38,6 +40,7 @@ export function Tool(props: BlockProps<cmsType.component.ToolInput> & { classNam
     setLinkActive(false);
     setUploadInfo(null);
     setLinkText('');
+    if (urlInputRef.current) urlInputRef.current.value = '';
   }, [activeTab]);
   const imageActive = useMemo(() => uploadInfo !== null, [uploadInfo]);
 
@@ -144,11 +147,13 @@ export function Tool(props: BlockProps<cmsType.component.ToolInput> & { classNam
               {block?.placeholder || tabs[0]}
             </label>
             <input
+              ref={urlInputRef}
               id={`${ids.base}-url-input`}
               type="text"
               placeholder={block?.placeholder || ''}
               name="input-url"
-              className="flex-1  mx-4 outline-none"
+              autoComplete="off"
+              className="bg-transparent flex-1 mx-4 outline-none placeholder:text-ink-terra placeholder:font-medium"
               onInput={(e) => {
                 setLinkText((e.target as HTMLInputElement).value.trim());
                 const urlReg = /^https?:\/\//;
@@ -268,7 +273,8 @@ export function Tool(props: BlockProps<cmsType.component.ToolInput> & { classNam
         </form>
       )}
 
-      <Typography variant="paragraph-sm">{props.block.copy}</Typography>
+      {/* <Typography variant="paragraph-sm">{props.block.copy}</Typography> */}
+      <RichText className="paragraph-sm" content={props.block.copy} />
       <Loading open={showLoading} />
     </div>
   );

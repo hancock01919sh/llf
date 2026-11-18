@@ -110,6 +110,20 @@ describe('loadConfig', () => {
     ).toThrow(/GOOGLE_CLOUD_LOCATION/);
   });
 
+  it('uses the dev proxy URL and token when no real Gemini key is set (D39)', () => {
+    const proxy = { GEMINI_PROXY_URL: 'https://proxy.example.com', GEMINI_PROXY_TOKEN: 'tok' };
+    expect(loadConfig(proxy)).toMatchObject({
+      geminiBaseUrl: 'https://proxy.example.com',
+      geminiApiKey: 'tok',
+    });
+    // A real key always wins and goes straight to Google.
+    expect(loadConfig({ ...proxy, GEMINI_API_KEY: 'real' })).toMatchObject({
+      geminiBaseUrl: undefined,
+      geminiApiKey: 'real',
+    });
+    expect(loadConfig({ GEMINI_PROXY_TOKEN: 'tok' }).geminiApiKey).toBeUndefined();
+  });
+
   it('reads a Gemini relay base URL for dev (D38)', () => {
     expect(loadConfig({ GEMINI_BASE_URL: 'https://relay.example.com' }).geminiBaseUrl).toBe(
       'https://relay.example.com',

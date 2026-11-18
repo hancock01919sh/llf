@@ -19,7 +19,7 @@ export function AppFooter({ inPopup = false, inMenu = false, className = '' }: F
     <Tag className={`footer-container text-ink-terra ${className}`}>
       {!inMenu && (
         <div
-          className={`bg-ink-terra text-surface-mint text-[35px] py-16.5 px-5 lg:px-15 lg:py-25 lg:text-lg-headline-lg`}
+          className={`bg-ink-terra text-surface-mint text-[35px] flex-center px-5 lg:px-15 lg:text-lg-headline-lg h-39.25 lg:h-62.5`}
         >
           {/* <TransitionLink href={`/#${MAIN_ID}`}>{footer.title}</TransitionLink> */}
           <a href={`/#${MAIN_ID}`}>{footer.title}</a>
