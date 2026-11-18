@@ -22,6 +22,7 @@ Every runbook has: purpose, when to use it, who, prerequisites, steps, verificat
 | [strapi-patch-upgrade](./strapi-patch-upgrade.md) | Monthly Strapi patch upgrade |
 | [transfer-content](./transfer-content.md) | Move content between environments (`strapi transfer`) |
 | [render-dev](./render-dev.md) | Set up the Render dev environment, deploy it, or point it at cms-dev |
+| [gemini-proxy](./gemini-proxy.md) | Use the dev Gemini proxy from mainland China; its endpoints and error states; issue or revoke tokens |
 | [aws-containers](./aws-containers.md) | Build and run the web, tool, and CMS images for AWS Fargate, and their runtime env |
 | [render-shutdown](./render-shutdown.md) | Close out Phase A after hypercare |
 
