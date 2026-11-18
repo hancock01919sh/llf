@@ -8,7 +8,7 @@
 //   RENDER_SERVICE_ID_CMS          srv-… for llf-cms-dev     (optional: skipped when unset)
 //   RENDER_SERVICE_ID_TIPS         srv-… for llf-tips-dev    (optional)
 //   RENDER_SERVICE_ID_WEB          srv-… for llf-web-dev     (optional)
-//   RENDER_SERVICE_ID_RELAY        srv-… for llf-gemini-relay-dev (optional, TDD D38)
+//   RENDER_SERVICE_ID_RELAY        srv-… for llf-gemini-relay-dev, the Gemini proxy (optional, TDD D39)
 //   GITHUB_OUTPUT / GITHUB_STEP_SUMMARY  set by Actions
 import { appendFileSync } from 'node:fs';
 
@@ -53,12 +53,14 @@ const SERVICES = [
   },
   { name: 'tips', id: process.env.RENDER_SERVICE_ID_TIPS, smoke: [] },
   // Dev-only Gemini relay for the China team (TDD D38). Public, so it must refuse calls without
-  // a relay token.
+  // Dev-only Gemini proxy for the China team (TDD D39), on the relay's service and URL. Public, so
+  // every route but /healthz must refuse calls without a token.
   {
-    name: 'relay',
+    name: 'proxy',
     id: process.env.RENDER_SERVICE_ID_RELAY,
     smoke: [
       ['/healthz', [200]],
+      ['/api/find-tips/status', [401]],
       ['/v1beta/models/gemini-3.8-flash:generateContent', [401], 'POST'],
     ],
   },
