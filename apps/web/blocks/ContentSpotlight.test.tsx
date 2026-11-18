@@ -1,7 +1,13 @@
 import type { cmsType } from '@llf/contracts';
 import { cleanup, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { BlockContentSpotlight } from './ContentSpotlight';
+
+// The CTA renders through TransitionLink, which needs an App Router provider jsdom doesn't have.
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+  usePathname: () => '/',
+}));
 
 // Shaped after the `component.content-spotlight` block in apps/web/fixtures/cms/pages.json.
 const image = {
@@ -13,11 +19,16 @@ const image = {
   height: 1314,
 };
 
+const descriptionText =
+  "It's rarely one bad decision. It's a bag of greens behind the milk. A jar opened for one recipe. A date label that sounds more final than it is. Most kitchens share the same handful of patterns, and most people have never had a reason to notice them. Once you see the pattern, the fixes are small, and they hold.";
+
+// `description` is Strapi Blocks rich text (Block.array()), not a plain string.
+const description = [{ type: 'paragraph', children: [{ type: 'text', text: descriptionText }] }];
+
 const block = {
   __component: 'component.content-spotlight',
   id: 23,
-  description:
-    "It's rarely one bad decision. It's a bag of greens behind the milk. A jar opened for one recipe. A date label that sounds more final than it is. Most kitchens share the same handful of patterns, and most people have never had a reason to notice them. Once you see the pattern, the fixes are small, and they hold.",
+  description,
   backgroundColor: 'sand',
   makeImageLeft: null,
   isFullwidth: false,
@@ -34,7 +45,7 @@ describe('BlockContentSpotlight', () => {
   it('renders the CMS title, description and image', () => {
     const { container } = renderBlock();
     expect(screen.getByRole('heading', { level: 2 }).textContent).toBe(block.title.copy);
-    expect(screen.getByText(block.description)).toBeDefined();
+    expect(screen.getByText(descriptionText)).toBeDefined();
     const img = container.querySelector('img');
     expect(img?.getAttribute('alt')).toBe(image.alternativeText);
     expect(decodeURIComponent(img?.getAttribute('src') ?? '')).toContain(image.url);
@@ -55,12 +66,28 @@ describe('BlockContentSpotlight', () => {
   it('renders without an image instead of a broken one', () => {
     const { container } = renderBlock({ image: undefined });
     expect(container.querySelectorAll('img')).toHaveLength(0);
-    expect(screen.getByText(block.description)).toBeDefined();
+    expect(screen.getByText(descriptionText)).toBeDefined();
+  });
+
+  it('renders the CTA when the CMS adds one', () => {
+    renderBlock({
+      cta: {
+        label: 'Learn more',
+        href: '/about',
+        isDisplay: true,
+        isButton: true,
+        newTab: false,
+        buttonType: null,
+      },
+    });
+    expect(screen.getByRole('link', { name: 'Learn more' }).getAttribute('href')).toContain(
+      '/about',
+    );
   });
 
   it('renders the description when the CMS title is empty', () => {
     renderBlock({ title: { copy: null, header: 'h2' } });
     expect(screen.queryByRole('heading')).toBeNull();
-    expect(screen.getByText(block.description)).toBeDefined();
+    expect(screen.getByText(descriptionText)).toBeDefined();
   });
 });

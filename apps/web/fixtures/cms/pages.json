@@ -363,6 +363,7 @@
           "subTitle": "Not sure what to try first? Here's what works.",
           "backgroundColor": "forest-tint",
           "isFullwidth": false,
+          "firstItemExpand": true,
           "accordionItem": [
             {
               "id": 94,
@@ -3839,7 +3840,17 @@
         {
           "__component": "component.content-spotlight",
           "id": 15,
-          "description": "It's rarely one bad decision. It's a bag of greens behind the milk. A jar opened for one recipe. A date label that sounds more final than it is. Most kitchens share the same handful of patterns, and most people have never had a reason to notice them. Once you see the pattern, the fixes are small, and they hold.",
+          "description": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "text": "It's rarely one bad decision. It's a bag of greens behind the milk. A jar opened for one recipe. A date label that sounds more final than it is. Most kitchens share the same handful of patterns, and most people have never had a reason to notice them. Once you see the pattern, the fixes are small, and they hold."
+                }
+              ]
+            }
+          ],
           "backgroundColor": "sand",
           "makeImageLeft": null,
           "isFullwidth": false,
@@ -4305,7 +4316,17 @@
           "cardTitle": "How it works",
           "cardDescription": "Three simple steps between your ingredients and the tips that help you use them better.",
           "placeholder": "Enter a recipe URL or video link",
-          "copy": "Works with any recipe site or video link from YouTube, TikTok, or Instagram.",
+          "copy": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "text": "Works with any recipe site or video link from YouTube, TikTok, or Instagram."
+                }
+              ]
+            }
+          ],
           "backgroundColor": "paper",
           "isFullwidth": true,
           "button": [
@@ -4387,6 +4408,7 @@
           "subTitle": "Not sure what to try first? Here’s what works.",
           "backgroundColor": "forest-tint",
           "isFullwidth": false,
+          "firstItemExpand": true,
           "accordionItem": [
             {
               "id": 74,

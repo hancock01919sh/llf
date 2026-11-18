@@ -16,12 +16,13 @@ const block = {
   subTitle: 'Not sure what to try first? Here’s what works.',
   backgroundColor: 'forest-tint',
   isFullwidth: false,
+  firstItemExpand: false,
   title: { copy: 'what can you upload?', header: 'h2' },
   accordionItem: [photo, recipe],
 } satisfies cmsType.component.Accordion;
 
-const renderBlock = () =>
-  render(<BlockAccordion block={block} index={1} pageTitle="Find My Tips" />);
+const renderBlock = (overrides: Partial<cmsType.component.Accordion> = {}) =>
+  render(<BlockAccordion block={{ ...block, ...overrides }} index={1} pageTitle="Find My Tips" />);
 
 const trigger = (label: string) => screen.getByRole('button', { name: label });
 /** The panel a trigger controls, via the `aria-controls` wiring. */
@@ -44,6 +45,12 @@ describe('BlockAccordion', () => {
       expect(trigger(entry.label).getAttribute('aria-expanded')).toBe('false');
       expect(panel(entry.label).getAttribute('aria-hidden')).toBe('true');
     }
+  });
+
+  it('opens the first item by default when firstItemExpand is set', () => {
+    renderBlock({ firstItemExpand: true });
+    expect(trigger(photo.label).getAttribute('aria-expanded')).toBe('true');
+    expect(trigger(recipe.label).getAttribute('aria-expanded')).toBe('false');
   });
 
   it('opens on click and keeps only one item open', () => {

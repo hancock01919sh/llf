@@ -5,14 +5,17 @@ import type { cmsType } from '@llf/contracts';
 export function AccordionItemComponent({
   label,
   description,
+  index,
   isExpanded,
   toggleIsExpanded,
 }: cmsType.shared.AccordionItem & {
+  index: number;
   isExpanded: boolean;
   toggleIsExpanded: (isExpanded: boolean) => void;
 }) {
-  const headerId = `accordion-header-${label}`;
-  const panelId = `accordion-panel-${label}`;
+  // Labels contain spaces, which aren't valid in an id, so key the aria wiring on the index.
+  const headerId = `accordion-header-${index}`;
+  const panelId = `accordion-panel-${index}`;
   return (
     <div
       className={` font-bold w-full flex flex-col p-5 lg:p-lg rounded-sm mx-auto transition-colors duration-300 ${isExpanded ? 'bg-surface-paper' : 'bg-surface-sand'}`}
