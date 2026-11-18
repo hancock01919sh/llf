@@ -218,18 +218,15 @@ export function createGeminiProvider(options: GeminiProviderOptions = {}): Extra
     },
     async classifyGaps(terms, ctx): Promise<ProviderOutput> {
       if (!options.apiKey) throw new ProviderNotConfiguredError('gemini');
-      const res = await doFetch(
-        `${baseUrl}/v1beta/models/${encodeURIComponent(ctx.model)}:generateContent`,
-        {
-          method: 'POST',
-          headers: {
-            'x-goog-api-key': options.apiKey,
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify(buildGeminiGapRequest(terms, ctx)),
-          signal: ctx.signal,
+      const res = await doFetch(geminiUrl(options, ctx.model), {
+        method: 'POST',
+        headers: {
+          'x-goog-api-key': options.apiKey,
+          'content-type': 'application/json',
         },
-      );
+        body: JSON.stringify(buildGeminiGapRequest(terms, ctx)),
+        signal: ctx.signal,
+      });
       if (!res.ok) {
         await res.body?.cancel();
         throw new Error(`gemini: HTTP ${res.status}`);

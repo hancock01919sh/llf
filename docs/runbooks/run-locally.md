@@ -12,7 +12,7 @@ Every developer, including the China team.
 - **Node 22** (`nvm use` reads `.nvmrc`) and **pnpm 9** (`corepack enable`).
 - **Docker**, only for the CMS (Postgres 16).
 - Git access to the repo.
-- Mainland China: GitHub, npm, and Docker Hub can be slow. Registry mirrors and VPN are being agreed (TDD §11.4, BD3244-19). Google's API isn't reachable from China, so a Google key doesn't work there: use the mock, or one of the two dev-only routes in [From mainland China](#from-mainland-china-dev-only-tdd-d38).
+- Mainland China: GitHub, npm, and Docker Hub can be slow. Registry mirrors and VPN are being agreed (TDD §11.4, BD3244-19). Google's API isn't reachable from China, so a Google key doesn't work there: use the mock, or one of the two dev-only routes in [From mainland China](#from-mainland-china-dev-only-tdd-d39).
 
 ## Steps
 1. Install:
@@ -51,24 +51,19 @@ Restart `pnpm dev`. From mainland China this doesn't work: see below. Tests and 
 
 The dev key has a small daily budget shared by the whole team. Switch back to `AI_PROVIDER=mock` when you aren't working on the model path.
 
-### From mainland China (dev only, TDD D38)
-Google's API is blocked from mainland China. Use one of these instead of a Google key. Both are **dev only** and use **test inputs only**: no real receipts, names, or personal photos.
+### From mainland China (dev only, TDD D39)
+Google's API is blocked from mainland China, so use ddd's **Gemini proxy** in the US instead of a Google key. **Dev only, test inputs only**: no real receipts, names, or personal photos. Full guide, endpoints and error states: [gemini-proxy](./gemini-proxy.md).
 
-**A. Front-end work: use the tool on Render dev.** No model key on your laptop. Add to `.env`:
+Art sends you a **personal token** through a secure share. Add two lines to `.env` and leave `GEMINI_API_KEY` empty:
 ```sh
-REMOTE_API_URL=https://llf-web-dev.onrender.com
-REMOTE_API_AUTH=<dev site user:pass, from the secure share>
+GEMINI_PROXY_URL=https://llf-gemini-relay-dev.onrender.com
+GEMINI_PROXY_TOKEN=<your personal token>
 ```
-Run `pnpm dev:fe:remote` instead of `pnpm dev:fe`. The web app runs locally and `/api/*` goes to the tool on Render dev, which runs the code on `dev` (not your branch).
+Check it with `pnpm proxy:check`. Then:
+- **Front-end work:** `pnpm dev:fe:remote`. The web app runs locally and `/api/*` gets the full Find My Tips API from the proxy (the code on `dev`, not your branch).
+- **Tool work** (`services/find-my-tips`): set `AI_PROVIDER=gemini` and run `pnpm dev`. Your local tool runs your branch and sends only its Gemini call through the proxy.
 
-**B. Tool work (`services/find-my-tips`): use the Gemini relay.** Your local tool calls Gemini through ddd's relay on Render, so it runs your branch's code. Art sends you a **personal relay token** through a secure share. Add to `.env`:
-```sh
-AI_PROVIDER=gemini
-AI_MODEL=gemini-3.8-flash
-GEMINI_BASE_URL=https://llf-gemini-relay-dev.onrender.com
-GEMINI_API_KEY=<your relay token, not a Google key>
-```
-Restart `pnpm dev`. The relay allows `gemini-3.8-flash` only and has a shared daily cap. A `401` means the token is wrong or revoked; `429` means today's cap is used up (it resets at 00:00 UTC). Ask Art for a new token if yours leaks.
+`401` means the token is wrong or revoked; `429` from the relay means today's shared cap is used up (it resets at 00:00 UTC). Ask Art for a new token if yours leaks. The old relay setup (`GEMINI_BASE_URL` + `GEMINI_API_KEY=<token>`) still works.
 
 To try the tool:
 ```sh
