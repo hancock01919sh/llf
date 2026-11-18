@@ -316,7 +316,10 @@
       "id": "exclude-personal-term-length",
       "note": "Very long term (>32 chars) that would be filtered by length check, but also contains personal data",
       "terms": [
-        { "term": "this is a very long personal story about Sarah and her favorite pizza recipe", "expectedClass": "personal" },
+        {
+          "term": "this is a very long personal story about Sarah and her favorite pizza recipe",
+          "expectedClass": "personal"
+        },
         { "term": "bok choy", "expectedClass": "edible" }
       ]
     },
