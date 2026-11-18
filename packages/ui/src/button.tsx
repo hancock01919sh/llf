@@ -11,8 +11,8 @@ import { cn } from './cn';
  */
 export const buttonVariants = cva(
   [
-    'inline-flex shrink-0 items-center justify-center gap-xs rounded-pill font-sans whitespace-nowrap',
-    'transition-colors motion-reduce:transition-none',
+    'text-cta font-bold inline-flex items-center justify-center box-border rounded-full w-auto h-12.5 lg:h-16.5 px-6 gap-2.5 shrink-0 whitespace-nowrap',
+    'transition-colors duration-300 motion-reduce:transition-none',
     'focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-focus',
     'inactive:pointer-events-none',
     '[&_svg]:pointer-events-none [&_svg]:size-5 [&_svg]:shrink-0',
@@ -22,32 +22,43 @@ export const buttonVariants = cva(
       variant: {
         // Mobile pressed is Mint Dark; desktop pressed is Forest with Sand text.
         primary: [
-          'bg-interactive text-on-interactive hover:bg-interactive-hover',
-          'active:bg-interactive-hover md:active:bg-brand-forest md:active:text-surface-sand',
-          'inactive:bg-ink-terra-15 inactive:text-ink-terra-40',
+          'bg-surface-mint text-ink-terra',
+          'hover:bg-surface-mint-dark',
+          'active:bg-brand-forest active:text-surface-sand',
+          'focus-visible:bg-surface-mint focus-visible:border-brand-forest',
+          'disabled:bg-ink-terra-15 disabled:text-ink-terra-40',
         ],
         // Hover and pressed fills are light, so text switches to Terra to keep contrast on dark surfaces.
         secondary: [
-          'border-[1.5px] border-line bg-transparent text-fg',
-          'hover:bg-surface-paper hover:text-ink-terra active:bg-surface-sand active:text-ink-terra',
-          'inactive:text-ink-terra-40',
+          'bg-ink-terra text-surface-paper',
+          'hover:bg-ink-terra-40',
+          'active:bg-ink-terra-70 active:text-surface-sand',
+          'focus-visible:bg-ink-terra focus-visible:border-0',
+          'disabled:bg-ink-terra-15 disabled:text-ink-terra-40',
         ],
-        tertiary: ['bg-transparent text-fg active:text-fg-muted', 'inactive:text-ink-terra-40'],
+        tertiary: [
+          'bg-surface-paper text-ink-terra border-ink-terra border',
+          'active:bg-surface-sand active:border-ink-terra-15',
+          'disabled:border-ink-terra-15 disabled:text-ink-terra-40',
+        ],
         // Use aria-pressed for the Saved state.
         save: [
-          'bg-surface-sand text-ink-terra hover:bg-surface-paper aria-pressed:bg-surface-mint',
-          'inactive:bg-ink-terra-15 inactive:text-ink-terra-40',
+          'bg-surface-paper text-ink-terra border-ink-terra border',
+          'active:bg-surface-sand active:border-ink-terra-15',
+          'disabled:border-ink-terra-15 disabled:text-ink-terra-40',
         ],
         share: [
-          'bg-interactive text-on-interactive hover:bg-interactive-hover',
-          'active:bg-brand-forest active:text-surface-sand',
-          'inactive:bg-ink-terra-15 inactive:text-ink-terra-40',
+          'bg-ink-terra text-surface-paper',
+          'hover:bg-ink-terra-40',
+          'active:bg-ink-terra-70 active:text-surface-sand',
+          'focus-visible:bg-ink-terra focus-visible:border-0',
+          'disabled:bg-ink-terra-15 disabled:text-ink-terra-40',
         ],
       },
       size: {
         // Mobile/Label (SemiBold 18/1) below md; Desktop/Paragraph Bold (20/1.4) from md.
-        default: 'h-control px-xs text-label font-semibold md:px-lg md:text-paragraph md:font-bold',
-        compact: 'h-control-compact min-w-36 px-xs text-paragraph font-bold',
+        default: 'md:px-lg ',
+        compact: 'min-w-36',
       },
       width: {
         auto: '',
