@@ -86,7 +86,13 @@ describe('loadConfig', () => {
   it('turns on Gemini on Vertex AI with a project, defaulting to the US multi-region (D37)', () => {
     expect(loadConfig({}).geminiVertex).toBeUndefined();
     expect(loadConfig({ GOOGLE_CLOUD_PROJECT: 'p' }).geminiVertex).toBeUndefined();
-    expect(loadConfig({ GEMINI_VERTEX: '1', GOOGLE_CLOUD_PROJECT: 'p' }).geminiVertex).toEqual({
+    expect(
+      loadConfig({
+        GEMINI_VERTEX: '1',
+        GOOGLE_CLOUD_PROJECT: 'p',
+        GOOGLE_WIF_CREDENTIALS: '{"type":"external_account"}',
+      }).geminiVertex,
+    ).toEqual({
       project: 'p',
       location: 'us',
     });
@@ -95,6 +101,7 @@ describe('loadConfig', () => {
         GEMINI_VERTEX: 'true',
         GOOGLE_CLOUD_PROJECT: 'p',
         GOOGLE_CLOUD_LOCATION: 'global',
+        GOOGLE_WIF_CREDENTIALS: '{"type":"external_account"}',
       }).geminiVertex,
     ).toEqual({ project: 'p', location: 'global' });
     expect(

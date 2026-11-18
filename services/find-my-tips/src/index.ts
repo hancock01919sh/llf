@@ -8,6 +8,7 @@ export {
   type CatalogSource,
 } from './catalog';
 export { loadConfig, PROVIDERS, type Config, type ProviderName } from './config';
+export { createDefaultApp } from './default-app';
 export * from './extract';
 export { classifyGapTerms, filterGapTerms, GAP_PROMPT_VERSION } from './gaps';
 export { clientIp, ERROR_STATUS, ToolError } from './http';

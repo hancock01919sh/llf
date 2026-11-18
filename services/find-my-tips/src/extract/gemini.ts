@@ -153,17 +153,24 @@ export function buildGeminiGapRequest(
   };
 }
 
+/**
+ * API key when present, otherwise an OAuth token from the Vertex token source (TDD D37).
+ * Shared by extraction and gap classification so the two can't drift.
+ */
+async function geminiAuth(options: GeminiProviderOptions): Promise<Record<string, string>> {
+  if (options.apiKey) return { 'x-goog-api-key': options.apiKey };
+  const tokenSource = options.vertex ? options.getAccessToken : undefined;
+  if (tokenSource) return { authorization: `Bearer ${await tokenSource()}` };
+  throw new ProviderNotConfiguredError('gemini');
+}
+
 export function createGeminiProvider(options: GeminiProviderOptions = {}): ExtractionProvider {
   const doFetch = options.fetch ?? fetch;
 
   return {
     name: 'gemini',
     async extract(input, ctx): Promise<ProviderOutput> {
-      const tokenSource = options.vertex ? options.getAccessToken : undefined;
-      let auth: Record<string, string>;
-      if (options.apiKey) auth = { 'x-goog-api-key': options.apiKey };
-      else if (tokenSource) auth = { authorization: `Bearer ${await tokenSource()}` };
-      else throw new ProviderNotConfiguredError('gemini');
+      const auth = await geminiAuth(options);
 
       const res = await doFetch(geminiUrl(options, ctx.model), {
         method: 'POST',
@@ -217,11 +224,11 @@ export function createGeminiProvider(options: GeminiProviderOptions = {}): Extra
       };
     },
     async classifyGaps(terms, ctx): Promise<ProviderOutput> {
-      if (!options.apiKey) throw new ProviderNotConfiguredError('gemini');
+      const auth = await geminiAuth(options);
       const res = await doFetch(geminiUrl(options, ctx.model), {
         method: 'POST',
         headers: {
-          'x-goog-api-key': options.apiKey,
+          ...auth,
           'content-type': 'application/json',
         },
         body: JSON.stringify(buildGeminiGapRequest(terms, ctx)),

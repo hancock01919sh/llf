@@ -21,6 +21,7 @@
     "@fontsource/anton": "5.3.0",
     "@gsap/react": "^2.1.2",
     "@llf/contracts": "workspace:*",
+    "@llf/find-my-tips": "workspace:*",
     "@llf/matching": "workspace:*",
     "@llf/ui": "workspace:*",
     "@strapi/blocks-react-renderer": "1.0.2",

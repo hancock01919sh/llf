@@ -32,6 +32,9 @@ const EnvSchema = z.object({
     .trim()
     .regex(/^[a-z0-9-]+$/)
     .default('us'),
+  // Workload Identity Federation config for Vertex on Fargate (TDD D37, runbook §3): a file path
+  // or the JSON itself. Required when GEMINI_VERTEX=1 and GEMINI_API_KEY is unset.
+  GOOGLE_WIF_CREDENTIALS: z.string().trim().min(1).optional(),
   // Dev only: send Gemini calls through ddd's relay instead of Google (TDD D38, for developers
   // who can't reach Google from mainland China). GEMINI_API_KEY is then the relay token.
   GEMINI_BASE_URL: z.url().optional(),
@@ -74,6 +77,7 @@ export type Config = {
   openaiApiKey: string | undefined;
   geminiApiKey: string | undefined;
   geminiVertex: GeminiVertex | undefined;
+  googleWifCredentials: string | undefined;
   geminiBaseUrl: string | undefined;
   reasoningEffort: ReasoningEffort | undefined;
   port: number;
@@ -104,6 +108,10 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
   if (vertex && !e.GOOGLE_CLOUD_PROJECT) {
     throw new Error('find-my-tips: invalid environment (GOOGLE_CLOUD_PROJECT)');
   }
+  // Staging and prod carry no key, so the build must fail loudly rather than at the first call.
+  if (vertex && !e.GEMINI_API_KEY && !e.GOOGLE_WIF_CREDENTIALS) {
+    throw new Error('find-my-tips: invalid environment (GOOGLE_WIF_CREDENTIALS)');
+  }
   return {
     mode: e.FIND_TIPS_MODE,
     provider: e.AI_PROVIDER,
@@ -117,6 +125,7 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
       vertex && e.GOOGLE_CLOUD_PROJECT
         ? { project: e.GOOGLE_CLOUD_PROJECT, location: e.GOOGLE_CLOUD_LOCATION }
         : undefined,
+    googleWifCredentials: e.GOOGLE_WIF_CREDENTIALS,
     geminiBaseUrl: e.GEMINI_BASE_URL ?? (e.GEMINI_API_KEY ? undefined : e.GEMINI_PROXY_URL),
     reasoningEffort: e.AI_REASONING_EFFORT,
     port: e.TOOL_PORT ?? e.PORT,
